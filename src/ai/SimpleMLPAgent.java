@@ -9,7 +9,7 @@ import com.mojang.mario.Environments.IEnvironment;
  * Date: Apr 28, 2009
  * Time: 2:09:42 PM
  */
-public class SimpleMLPAgent implements IAgent, Evolvable {
+public class SimpleMLPAgent implements IAgent {
 
     private String name = "SimpleMLPAgent";
     final MLP mlp;
@@ -25,11 +25,11 @@ public class SimpleMLPAgent implements IAgent, Evolvable {
     }
 
     public Evolvable getNewInstance() {
-        return new SimpleMLPAgent(mlp.getNewInstance());
+        return (Evolvable) new SimpleMLPAgent(mlp.getNewInstance());
     }
 
     public Evolvable copy() {
-        return new SimpleMLPAgent (mlp.copy ());  //To change body of implemented methods use File | Settings | File Templates.
+        return (Evolvable) new SimpleMLPAgent (mlp.copy ()); 
     }
 
     public IAgent reset() {
