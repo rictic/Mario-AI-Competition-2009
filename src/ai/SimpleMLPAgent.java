@@ -11,12 +11,22 @@ import com.mojang.mario.Environments.IEnvironment;
  */
 public class SimpleMLPAgent implements IAgent {
 
+    final MLP mlp;
+
+    public SimpleMLPAgent () {
+        mlp = new MLP (10, 6, 6);
+    }
+
+    public SimpleMLPAgent (MLP mlp) {
+        this.mlp = mlp;
+    }
+
     public IAgent reset() {
         return null;
     }
 
     public boolean[] GetAction(IEnvironment observation) {
-        return new boolean[0];  //To change body of implemented methods use File | Settings | File Templates.
+        return new boolean[0];
     }
 
     public AGENT_TYPE getType() {
