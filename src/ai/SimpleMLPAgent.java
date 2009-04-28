@@ -29,7 +29,7 @@ public class SimpleMLPAgent implements IAgent, Evolvable {
     }
 
     public Evolvable copy() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return new SimpleMLPAgent (mlp.copy ());  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public IAgent reset() {
@@ -38,7 +38,7 @@ public class SimpleMLPAgent implements IAgent, Evolvable {
     }
 
     public void mutate() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        mlp.mutate ();
     }
 
     public boolean[] GetAction(IEnvironment observation) {
