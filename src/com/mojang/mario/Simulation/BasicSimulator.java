@@ -19,7 +19,7 @@ public class BasicSimulator implements ISimulation
 
     public BasicSimulator(SimulationOptions simulationOptions)
     {
-        GlobalOptions.VizualizationOn = simulationOptions.isVisualization();
+        GlobalOptions.VisualizationOn = simulationOptions.isVisualization();
         this.marioComponent = simulationOptions.getMarioComponent();
         this.setSimulationOptions(simulationOptions);
     }

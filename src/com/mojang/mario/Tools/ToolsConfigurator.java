@@ -4,6 +4,7 @@ import com.mojang.mario.GlobalOptions;
 import com.mojang.mario.MarioComponent;
 import com.mojang.mario.Agents.IAgent;
 import com.mojang.mario.Agents.RegisterableAgent;
+import com.mojang.mario.Agents.TCPAgent;
 import com.mojang.mario.Agents.Human.HumanKeyboardAgent;
 import com.mojang.mario.Agents.AI.ForwardAgent;
 import com.mojang.mario.Agents.AI.RandomAgent;
@@ -68,6 +69,8 @@ public class ToolsConfigurator extends JFrame
             toolsConfigurator.CheckboxStopSimulationIfWin.setState(cmdLineOptions.isStopSimulationIfWin());
         }
 
+        GlobalOptions.CurrentAgentStr = toolsConfigurator.ChoiceAgent.getSelectedItem();
+
         gameViewer = new GameViewer(null, null);
 
         CreateMarioComponentFrame();
@@ -101,7 +104,7 @@ public class ToolsConfigurator extends JFrame
         marioComponentFrame.setResizable(false);
         marioComponentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         marioComponentFrame.setLocation(0, 0);
-        marioComponentFrame.setVisible(GlobalOptions.VizualizationOn);
+        marioComponentFrame.setVisible(GlobalOptions.VisualizationOn);
     }
 
     enum INTERFACE_TYPE {CONSOLE, GUI}
@@ -114,7 +117,7 @@ public class ToolsConfigurator extends JFrame
     public Label LabelConsole = new Label("Console:");
     public TextArea TextAreaConsole = new TextArea("Console:"/*, 8,40*/); // Verbose all, keys, events, actions, observations
     private ConsoleHistory consoleHistory;
-    public Checkbox CheckboxShowVizualization = new Checkbox("Enable Visualization", GlobalOptions.VizualizationOn);
+    public Checkbox CheckboxShowVizualization = new Checkbox("Enable Visualization", GlobalOptions.VisualizationOn);
     public Checkbox CheckboxMaximizeFPS = new Checkbox("Maximize FPS");
     public Choice ChoiceAgent = new Choice();
     public Choice ChoiceLevelType = new Choice();
@@ -181,15 +184,18 @@ public class ToolsConfigurator extends JFrame
         //        ChoiceAgent
 
         ChoiceAgent.addItemListener(toolsConfiguratorActions);
+
+        // Create an Agent here
         new ForwardAgent();
         new HumanKeyboardAgent();
         new RandomAgent();
         new ForwardJumpingAgent();
         new MLPAgent();
+        new TCPAgent(4242); // TODO: Take port from CmdLineOptions;
         Set<String> AgentsNames = RegisterableAgent.getAgentsNames();
         for (String s : AgentsNames)
             ChoiceAgent.addItem(s);
-        GlobalOptions.CurrentAgentStr = ChoiceAgent.getSelectedItem();
+
 
 
         //       ChoiceLevelType
@@ -414,8 +420,8 @@ public class ToolsConfigurator extends JFrame
             else if (ob == CheckboxShowVizualization)
             {
                 consoleHistory.addRecord("Vizualization " + (CheckboxShowVizualization.getState() ? "On" : "Off") );
-                GlobalOptions.VizualizationOn = CheckboxShowVizualization.getState();
-                marioComponentFrame.setVisible(GlobalOptions.VizualizationOn);
+                GlobalOptions.VisualizationOn = CheckboxShowVizualization.getState();
+                marioComponentFrame.setVisible(GlobalOptions.VisualizationOn);
             }
             else if (ob == CheckboxMaximizeFPS)
             {

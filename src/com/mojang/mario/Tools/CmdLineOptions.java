@@ -48,7 +48,7 @@ public class CmdLineOptions extends EvaluatorOptions
 
         ArgsHashMap.put("-ag", agentName.setValue(GlobalOptions.defaults.getAgentName()));
         ArgsHashMap.put("-agentName", agentName);
-        ArgsHashMap.put("-visual", visualization.setValue(GlobalOptions.VizualizationOn));
+        ArgsHashMap.put("-visual", visualization.setValue(GlobalOptions.VisualizationOn));
         ArgsHashMap.put("-vis", visualization);
         ArgsHashMap.put("-gui", gui.setValue(GlobalOptions.defaults.isGui()));
         ArgsHashMap.put("-levelDifficulty", levelDifficulty.setValue(GlobalOptions.defaults.getLevelDifficulty()));
@@ -71,6 +71,7 @@ public class CmdLineOptions extends EvaluatorOptions
         ArgsHashMap.put("-attemptsNumber", attemptsNumber.setValue(GlobalOptions.defaults.getAttemptsNumber()));
         ArgsHashMap.put("-an", attemptsNumber);
         ArgsHashMap.put("-echo", echo.setValue(GlobalOptions.defaults.isEcho()));
+        ArgsHashMap.put("-e", echo);
         ArgsHashMap.put("-maxFPS", maxFPS.setValue(GlobalOptions.defaults.isMaxFPS()));
         ArgsHashMap.put("-pw", pauseWorld.setValue(GlobalOptions.defaults.isPauseWorld()));
         ArgsHashMap.put("-pauseWorld", pauseWorld);
@@ -88,7 +89,7 @@ public class CmdLineOptions extends EvaluatorOptions
             for (Map.Entry<String,ISmart> el : ArgsHashMap.entrySet())
                 System.out.println(el.getKey() + ": " + el.getValue().getValue());
         }
-        GlobalOptions.VizualizationOn = isVisualization();
+        GlobalOptions.VisualizationOn = isVisualization();
         GlobalOptions.GameVeiwerContinuousUpdatesOn = isGameViewerContinuousUpdates();
         GlobalOptions.FPS = (isMaxFPS()) ? GlobalOptions.InfiniteFPS : 24;
         GlobalOptions.pauseWorld = isPauseWorld();
@@ -97,7 +98,7 @@ public class CmdLineOptions extends EvaluatorOptions
     }
 
     public void ParseArgs(String[] args) {
-        int i = 0;
+        int i;
         for (i = 0; i < args.length - 1; i += 2)
             try  {((ISmart) ArgsHashMap.get(args[i])).setValueFromStr(args[i + 1]); }
             catch (NullPointerException e)

@@ -1,9 +1,13 @@
 package com.mojang.mario;
 
-import com.mojang.mario.sprites.Sprite;
 import com.mojang.mario.Tools.GameViewer;
 import com.mojang.mario.Simulation.SimulationOptions;
 import com.mojang.mario.level.LevelGenerator;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class GlobalOptions {
     public static boolean Labels = false;
@@ -12,7 +16,7 @@ public class GlobalOptions {
     public static int InfiniteFPS = 100;
     public static boolean pauseWorld = false;
 
-    public static boolean VizualizationOn = true;
+    public static boolean VisualizationOn = true;
     public static boolean GameVeiwerOn = true;
 
     private static MarioComponent marioComponent = null;
@@ -36,12 +40,18 @@ public class GlobalOptions {
         gameViewer = gv;
     }
 
-    public static void AdjustMarioComponentFPS() {
-        marioComponent.AdjustFPS();
-    }
+    public static void AdjustMarioComponentFPS() { marioComponent.AdjustFPS(); }
 
-    public static void gameViewerTick() {
-        gameViewer.tick();
+    public static void gameViewerTick() {gameViewer.tick();    }
+
+    public static String getDateTime(Long d)
+    {
+        DateFormat dateFormat = (d == null) ? new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:ms") :
+                new SimpleDateFormat("HH:mm:ss:ms") ;
+        if (d != null)
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        Date date = (d == null) ? new Date() : new Date(d);
+        return dateFormat.format(date);
     }
 
     public static class Defaults extends SimulationOptions

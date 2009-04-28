@@ -76,132 +76,6 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 //        System.out.println("Delay: " + delay);
     }
 
-    private void toggleKey(int keyCode, boolean isPressed)
-    {
-//        System.out.println("key code:" + keyCode);
-//        if (keyCode == KeyEvent.VK_LEFT)
-//        {
-//            System.out.println("Left");
-//            scene.toggleKey(Mario.KEY_LEFT, isPressed);
-//        }
-//        if (keyCode == KeyEvent.VK_RIGHT)
-//        {
-//            System.out.println("right");
-//            scene.toggleKey(Mario.KEY_RIGHT, isPressed);
-//        }
-//        if (keyCode == KeyEvent.VK_DOWN)
-//        {
-//            scene.toggleKey(Mario.KEY_DOWN, isPressed);
-//        }
-//        if (keyCode == KeyEvent.VK_UP)
-//        {
-//            scene.toggleKey(Mario.KEY_UP, isPressed);
-//        }
-//        if (keyCode == KeyEvent.VK_A)
-//        {
-//            System.out.println("A");
-//            scene.toggleKey(Mario.KEY_SPEED, isPressed);
-//        }
-//        if (keyCode == KeyEvent.VK_S)
-//        {
-//            if (isPressed)
-//                System.out.println("S");
-//            scene.toggleKey(Mario.KEY_JUMP, isPressed);
-//        }
-//        if (keyCode == KeyEvent.VK_P)
-//        {
-//            if (isPressed)
-//            {
-//                System.out.println("MarioComponent: Paused On/Off");
-//                GlobalOptions.pauseWorld = !GlobalOptions.pauseWorld;
-//                if (GlobalOptions.pauseWorld)
-//                    scene.toggleKey(Mario.KEY_PAUSE, true);
-//                else
-//                    scene.toggleKey(Mario.KEY_PAUSE, false);
-//
-//            }
-//        }
-//
-//        if (keyCode == KeyEvent.VK_D)
-//        {
-//            if (isPressed)
-//                System.out.println("Dump Current World");
-//            gameViewer.tick();
-//        }
-//
-//        if (keyCode == KeyEvent.VK_U)
-//        {
-//            if (isPressed)
-//                System.out.println("Life UP!");
-//            scene.toggleKey(Mario.KEY_LIFE_UP, isPressed);
-//        }
-//
-//        if (keyCode == KeyEvent.VK_W)
-//        {
-//            if (isPressed)
-//            {
-//                System.out.println("Force WIn!");
-////                stop();
-//            }
-//            scene.toggleKey(Mario.KEY_WIN, isPressed);
-//        }
-//
-//
-//        if (keyCode == KeyEvent.VK_L)
-//        {
-//            if (isPressed)
-//            {
-//                System.out.println("Labels On/Off");
-//                GlobalOptions.Labels = !GlobalOptions.Labels;
-//            }
-//        }
-//
-//        if (keyCode == KeyEvent.VK_C)
-//        {
-//            if (isPressed)
-//            {
-//                System.out.println("Center On/Off");
-//                GlobalOptions.MarioAlwaysInCenter = !GlobalOptions.MarioAlwaysInCenter;
-//            }
-//        }
-//
-//        if (keyCode == KeyEvent.VK_R)
-//        {
-//            if (isPressed)
-//            {
-//
-//                System.out.println("Random Agent On/Off");
-//                GlobalOptions.RandomAgent = !GlobalOptions.RandomAgent;
-//            }
-//        }
-//
-//        if (keyCode == 61)
-//        {
-//            if (isPressed)
-//            {
-//
-//                System.out.println("FPS increase by 1. Current FPS is " + ++GlobalOptions.FPS);
-//                AdjustFPS();
-//            }
-//        }
-//
-//        if (keyCode == 45)
-//        {
-//            if (isPressed)
-//            {
-//
-//                System.out.println("FPS decrease . Current FPS is " + --GlobalOptions.FPS);
-//                AdjustFPS();
-//            }
-//
-//        }
-//
-//        if (isPressed && keyCode == KeyEvent.VK_F1)
-//        {
-//            useScale2x = !useScale2x;
-//        }
-    }
-
     public void paint(Graphics g)
     {
     }
@@ -212,7 +86,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     public void Init()
     {
-//        if (GlobalOptions.VizualizationOn)
+//        if (GlobalOptions.VisualizationOn)
 //        {
 //
             graphicsConfiguration = getGraphicsConfiguration();
@@ -254,7 +128,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         g = getGraphics();
         og = image.getGraphics();
 
-        if (!GlobalOptions.VizualizationOn)
+        if (!GlobalOptions.VisualizationOn)
         {
             String msgClick = "Vizualization is not available";
             drawString(og, msgClick, 160 - msgClick.length() * 4, 110, 1);
@@ -283,7 +157,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             float alpha = 0;
 
 //            og.setColor(Color.RED);
-            if (GlobalOptions.VizualizationOn)
+            if (GlobalOptions.VisualizationOn)
             {
                 og.fillRect(0, 0, 320, 240);
                 scene.render(og, alpha);
@@ -301,7 +175,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             ((LevelScene) scene).mario.keys = action;
             ((LevelScene) scene).mario.cheatKeys = cheatAgent.GetAction(null);
 
-            if (GlobalOptions.VizualizationOn) {
+            if (GlobalOptions.VisualizationOn) {
                 String msg = GlobalOptions.CurrentAgentStr + ". ";
                 drawString(og, msg, 7, 41, 0);
                 drawString(og, msg, 6, 40, 2);
@@ -408,10 +282,6 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 //        scene = mapScene;
         Mario.lives--;
         stop();
-    }
-
-    public void keyTyped(KeyEvent arg0)
-    {
     }
 
     public void focusGained(FocusEvent arg0)

@@ -85,7 +85,7 @@ public class Mario extends Sprite
 
     public Mario(LevelScene world)
     {
-        kind = 90;
+        kind = 95;
         Mario.instance = this;
         this.world = world;
         keys = Scene.keys;      // SK: in fact, this is already redundant due to using IAgent

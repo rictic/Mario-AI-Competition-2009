@@ -63,7 +63,7 @@ public class LevelScene extends Scene implements SpriteContext
         String s = "";
         if  (el == 0)
             s = "##";
-        s += el;
+        s += (el == mario.kind) ? "M" : el;
         while (s.length() < 4)
             s += "#";
         return s + " ";
@@ -156,7 +156,7 @@ public class LevelScene extends Scene implements SpriteContext
                 else
                     ret[obsX][obsY] = 0;
                 if (x == MarioXInMap && y == MarioYInMap)
-                    ret[obsX][obsY] = (byte)obsX;
+                    ret[obsX][obsY] = mario.kind;
             }
         }
         return ret;
@@ -602,7 +602,7 @@ public class LevelScene extends Scene implements SpriteContext
 //                init();
             }
 
-            renderBlackout(g, (int) (mario.xDeathPos - xCam), (int) (mario.yDeathPos - yCam), (int) (320 - t));
+            renderBlackout(g, mario.xDeathPos - xCam, mario.yDeathPos - yCam, (int) (320 - t));
         }
 
         if (mario.deathTime > 0)
@@ -767,8 +767,7 @@ public class LevelScene extends Scene implements SpriteContext
     public void update(boolean[] action)
     {
         //TODO: Use NumberOfActions or just mario.keys = action;
-        for (int i = 0; i < 6; ++i)
-            mario.keys[i] = action[i];           
+        System.arraycopy(action, 0, mario.keys, 0, 6);           
     }
 
     public int getStartTime() {  return startTime / 15;    }

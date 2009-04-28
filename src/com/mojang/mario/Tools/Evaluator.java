@@ -29,7 +29,10 @@ public class Evaluator implements Runnable
         // Simulate One Level
 
         EvaluationInfo evaluationInfo;
-        boolean continueCondition = true;
+        boolean continueCondition;
+
+        long startTime = System.currentTimeMillis();
+        consoleHistory.addRecord("Evaluation started at " + GlobalOptions.getDateTime(null));
         do
         {
             consoleHistory.addRecord("Attempts left: " + evaluatorOptions.maxAttempts);
@@ -52,7 +55,10 @@ public class Evaluator implements Runnable
 //            System.out.println(ev);
             consoleHistory.addRecord(ev.toString());
         }
-        consoleHistory.addRecord("Evaluation Finished.");
+        long currentTime = System.currentTimeMillis();
+        long elapsed = currentTime - startTime;
+        consoleHistory.addRecord("Evaluation Finished at " + GlobalOptions.getDateTime(null));
+        consoleHistory.addRecord("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed));
     }
 
     public void reset()
