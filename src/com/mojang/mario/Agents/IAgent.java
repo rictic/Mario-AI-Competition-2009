@@ -11,7 +11,7 @@ import com.mojang.mario.Environments.IEnvironment;
  */
 public interface IAgent
 {
-    public enum AGENT_TYPE {AI, HUMAN};
+    public enum AGENT_TYPE {AI, HUMAN, TCP}
 
     // clears all dynamic data, such as hidden layers in recurrent networks
     // just implement an empty method for a reactive controller
