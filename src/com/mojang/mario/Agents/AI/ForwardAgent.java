@@ -99,7 +99,7 @@ public class ForwardAgent extends RegisterableAgent implements IAgent
             trueJumpCounter = 0;
         }
 
-        if (trueJumpCounter > 20)
+        if (trueJumpCounter > 16)
         {
             trueJumpCounter = 0;
             Action[Mario.KEY_JUMP] = false;
@@ -114,10 +114,7 @@ public class ForwardAgent extends RegisterableAgent implements IAgent
 //        else
 //            Action[Mario.KEY_SPEED] = false;
 
-        if (DangerOfGap(levelScene))
-            Action[Mario.KEY_SPEED] = true;
-        else
-            Action[Mario.KEY_SPEED] = false;
+        Action[Mario.KEY_SPEED] = DangerOfGap(levelScene);
         return Action;
     }
 }
