@@ -12,9 +12,10 @@ import com.mojang.mario.Environments.IEnvironment;
 public class SimpleMLPAgent implements IAgent {
 
     final MLP mlp;
+    final int numberOfOutputs = 6;
 
     public SimpleMLPAgent () {
-        mlp = new MLP (10, 6, 6);
+        mlp = new MLP (10, 6, numberOfOutputs);
     }
 
     public SimpleMLPAgent (MLP mlp) {
@@ -22,15 +23,22 @@ public class SimpleMLPAgent implements IAgent {
     }
 
     public IAgent reset() {
-        return null;
+        mlp.reset ();
+        return this;
     }
 
     public boolean[] GetAction(IEnvironment observation) {
-        return new boolean[0];
+        double[] inputs = null;
+        double[] outputs = mlp.propagate (inputs);
+        boolean[] action = new boolean[numberOfOutputs];
+        for (int i = 0; i < action.length; i++) {
+            action[i] = outputs[i] > 0;    
+        }
+        return action;
     }
 
     public AGENT_TYPE getType() {
-        return null;
+        return AGENT_TYPE.HUMAN;
     }
 
     public String getName() {
