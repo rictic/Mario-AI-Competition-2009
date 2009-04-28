@@ -8,7 +8,7 @@ import java.util.Random;
  * Date: Apr 28, 2009
  * Time: 2:15:10 PM
  */
-public class MLP implements FA<double[], double[]> {
+public class MLP implements FA<double[], double[]>, Evolvable {
 
         private double[][] firstConnectionLayer;
     private double[][] secondConnectionLayer;

@@ -9,17 +9,27 @@ import com.mojang.mario.Environments.IEnvironment;
  * Date: Apr 28, 2009
  * Time: 2:09:42 PM
  */
-public class SimpleMLPAgent implements IAgent {
+public class SimpleMLPAgent implements IAgent, Evolvable {
 
+    private String name = "SimpleMLPAgent";
     final MLP mlp;
     final int numberOfOutputs = 6;
+    final int numberOfInputs = 10;
 
     public SimpleMLPAgent () {
-        mlp = new MLP (10, 6, numberOfOutputs);
+        mlp = new MLP (numberOfInputs, 6, numberOfOutputs);
     }
 
     public SimpleMLPAgent (MLP mlp) {
         this.mlp = mlp;
+    }
+
+    public Evolvable getNewInstance() {
+        return new SimpleMLPAgent(mlp.getNewInstance());
+    }
+
+    public Evolvable copy() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public IAgent reset() {
@@ -27,8 +37,14 @@ public class SimpleMLPAgent implements IAgent {
         return this;
     }
 
+    public void mutate() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public boolean[] GetAction(IEnvironment observation) {
-        double[] inputs = null;
+        double[] inputs = new double[numberOfInputs];
+        byte[][] scene = observation.getLevelSceneObservation();
+        int[][] enemies = observation.getEnemiesObservation();
         double[] outputs = mlp.propagate (inputs);
         boolean[] action = new boolean[numberOfOutputs];
         for (int i = 0; i < action.length; i++) {
@@ -42,10 +58,10 @@ public class SimpleMLPAgent implements IAgent {
     }
 
     public String getName() {
-        return null;
+        return name;
     }
 
     public void setName(String name) {
-        
+        this.name = name;    
     }
 }
