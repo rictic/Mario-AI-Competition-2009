@@ -46,7 +46,7 @@ public class SimpleMLPAgent extends RegisterableAgent implements Evolvable {
     public boolean[] GetAction(IEnvironment observation) {
         double[] inputs = new double[numberOfInputs];
         byte[][] scene = observation.getLevelSceneObservation();
-        int[][] enemies = observation.getEnemiesObservation();
+        byte[][] enemies = observation.getEnemiesObservation();
         double[] outputs = mlp.propagate (inputs);
         boolean[] action = new boolean[numberOfOutputs];
         for (int i = 0; i < action.length; i++) {

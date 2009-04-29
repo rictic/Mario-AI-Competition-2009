@@ -332,7 +332,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     public byte[][] getLevelSceneObservation() {
         if (scene instanceof LevelScene)
-            return ((LevelScene)scene).LevelSceneObservation(1);
+            return ((LevelScene)scene).levelSceneObservation(1);
         return null;
     }
 

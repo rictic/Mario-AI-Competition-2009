@@ -135,9 +135,9 @@ public class LevelScene extends Scene implements SpriteContext
         return el; //TODO: Throw unknown ZLevel exception
     }
 
-    public byte[][] LevelSceneObservation(int ZLevel)
+    public byte[][] levelSceneObservation(int ZLevel)
     {
-// TODO: Move to constants          11
+        // TODO: Move to constants          11
         int HalfObsWidth = 11;
         int HalfObsHeight = 11;
         byte[][] ret = new byte[HalfObsWidth*2][HalfObsHeight*2];
@@ -162,6 +162,18 @@ public class LevelScene extends Scene implements SpriteContext
         return ret;
     }
 
+    public byte[][] enemiesObservation(int i) {
+        for (int w = 0; w < level.width; w++)
+            for (int h = 0; h < level.height; h++)
+                level.observation[w][h] = -1;
+        for (Sprite sprite : sprites)
+            if (sprite.mapX >= 0 && sprite.mapX < level.observation.length &&
+                    sprite.mapY >= 0 && sprite.mapY < level.observation[0].length)
+                level.observation[sprite.mapX][sprite.mapY] = sprite.kind;
+        return level.observation;
+    }
+
+
     public List<String> LevelSceneAroundMarioASCIIDump(boolean Enemies, boolean LevelMap, boolean CompleteObservation, int ZLevel){
 //        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));//        bw.write("\nTotal world width = " + level.width);
         List<String> ret = new ArrayList<String>();
@@ -177,7 +189,7 @@ public class LevelScene extends Scene implements SpriteContext
             int MarioYInMap = (int)mario.y/16;
             ret.add("Calibrated Mario Position (x,y): (" + MarioXInMap + "," + MarioYInMap + ")\n");
 
-            byte[][] levelScene = LevelSceneObservation(ZLevel);
+            byte[][] levelScene = levelSceneObservation(ZLevel);
             if (LevelMap)
             {
                 ret.add("~ZLevel: Z" + ZLevel + " map:\n");
@@ -200,15 +212,10 @@ public class LevelScene extends Scene implements SpriteContext
                 }
             }
 
+            byte[][] enemiesObservation = null;
             if (Enemies || CompleteObservation)
             {
-                for (int w = 0; w < level.width; w++)
-                    for (int h = 0; h < level.height; h++)
-                        level.observation[w][h] = -1;
-                for (Sprite sprite : sprites)
-                    if (sprite.mapX >= 0 && sprite.mapX < level.observation.length &&
-                            sprite.mapY >= 0 && sprite.mapY < level.observation[0].length)
-                        level.observation[sprite.mapX][sprite.mapY] = sprite.kind;
+                enemiesObservation = enemiesObservation(1);
             }
 
             if (Enemies)
@@ -221,7 +228,7 @@ public class LevelScene extends Scene implements SpriteContext
                     for (int x = MarioXInMap - 10; x < MarioXInMap + 10 + 1; x++)
                     {
                         if (x >=0 && x <= level.xExit)
-                            tmpData += level.observation[x][y] + " ";
+                            tmpData += enemiesObservation[x][y] + " ";
                     }
                     ret.add(tmpData);
                 }
@@ -774,14 +781,4 @@ public class LevelScene extends Scene implements SpriteContext
 
     public int getTimeLeft() {        return timeLeft / 15;    }
 
-    public byte[][] enemiesObservation(int i) {
-        for (int w = 0; w < level.width; w++)
-            for (int h = 0; h < level.height; h++)
-                level.observation[w][h] = -1;
-        for (Sprite sprite : sprites)
-            if (sprite.mapX >= 0 && sprite.mapX < level.observation.length &&
-                    sprite.mapY >= 0 && sprite.mapY < level.observation[0].length)
-                level.observation[sprite.mapX][sprite.mapY] = sprite.kind;
-        return level.observation;
-    }
 }
