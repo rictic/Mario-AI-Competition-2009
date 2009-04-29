@@ -74,6 +74,7 @@ public class GlobalOptions {
             setVisualization(true);
             setLevelType(LevelGenerator.TYPE_OVERGROUND);
             setGui(false);
+            setAttemptsNumber(1);
             setEcho(false);
             setMaxFPS(false);
             setPauseWorld(false);
@@ -81,7 +82,7 @@ public class GlobalOptions {
             setStopSimulationIfWin(false);
             setAgentName("ForwardAgent");
         }
-
+        
         public static boolean isGui() {  return gui; }
 
         public static void setGui(boolean gui) { Defaults.gui = gui;  }
