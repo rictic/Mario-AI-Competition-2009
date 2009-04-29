@@ -1,7 +1,7 @@
 package ch.idsia.java.tools;
 
-import ch.idsia.java.mario.engine.simulation.BasicSimulator;
-import ch.idsia.java.mario.engine.simulation.ISimulation;
+import ch.idsia.java.ai.simulation.BasicSimulator;
+import ch.idsia.java.ai.simulation.ISimulation;
 import ch.idsia.java.mario.engine.sprites.Mario;
 import ch.idsia.java.mario.engine.GlobalOptions;
 

@@ -5,8 +5,8 @@ import ch.idsia.java.ai.agents.IAgent;
 import ch.idsia.java.ai.agents.human.CheaterKeyboardAgent;
 import ch.idsia.java.tools.GameViewer;
 import ch.idsia.java.tools.EvaluationInfo;
-import ch.idsia.java.mario.engine.environments.IEnvironment;
-import ch.idsia.java.mario.engine.environments.EnvCell;
+import ch.idsia.java.ai.environments.IEnvironment;
+import ch.idsia.java.ai.environments.EnvCell;
 
 import javax.swing.*;
 import java.awt.*;

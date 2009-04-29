@@ -1,6 +1,6 @@
 package ch.idsia.java.ai.agents;
 
-import ch.idsia.java.mario.engine.environments.IEnvironment;
+import ch.idsia.java.ai.environments.IEnvironment;
 
 import java.io.BufferedReader;
 import java.io.PrintStream;

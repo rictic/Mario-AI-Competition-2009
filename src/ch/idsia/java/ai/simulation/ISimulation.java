@@ -1,4 +1,4 @@
-package ch.idsia.java.mario.engine.simulation;
+package ch.idsia.java.ai.simulation;
 
 import ch.idsia.java.tools.EvaluationInfo;
 

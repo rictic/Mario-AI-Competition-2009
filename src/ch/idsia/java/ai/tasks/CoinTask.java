@@ -1,4 +1,4 @@
-package ch.idsia.java.mario.engine.tasks;
+package ch.idsia.java.ai.tasks;
 
 import ch.idsia.java.ai.agents.IAgent;
 

@@ -1,6 +1,6 @@
 package ch.idsia.java.ai.agents.human;
 
-import ch.idsia.java.mario.engine.environments.IEnvironment;
+import ch.idsia.java.ai.environments.IEnvironment;
 import ch.idsia.java.mario.engine.sprites.Mario;
 import ch.idsia.java.ai.agents.IAgent;
 import ch.idsia.java.ai.agents.RegisterableAgent;

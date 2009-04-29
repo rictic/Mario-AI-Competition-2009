@@ -1,4 +1,4 @@
-package ch.idsia.java.mario.engine.simulation;
+package ch.idsia.java.ai.simulation;
 
 import ch.idsia.java.mario.engine.MarioComponent;
 import ch.idsia.java.mario.engine.GlobalOptions;
