@@ -1,4 +1,4 @@
-package ch.idsia.java.ai.environments;
+package ch.idsia.ai.environments;
 
 /**
  * Created by IntelliJ IDEA.

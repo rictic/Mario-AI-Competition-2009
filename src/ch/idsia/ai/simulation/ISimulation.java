@@ -1,4 +1,4 @@
-package ch.idsia.java.ai.simulation;
+package ch.idsia.ai.simulation;
 
 import ch.idsia.tools.EvaluationInfo;
 

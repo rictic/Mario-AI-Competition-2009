@@ -1,8 +1,8 @@
-package ch.idsia.java.ai.simulation;
+package ch.idsia.ai.simulation;
 
 import ch.idsia.engine.MarioComponent;
 import ch.idsia.engine.GlobalOptions;
-import ch.idsia.java.ai.agents.IAgent;
+import ch.idsia.ai.agents.IAgent;
 import ch.idsia.tools.EvaluationInfo;
 
 /**

@@ -1,4 +1,4 @@
-package ch.idsia.java.ai;
+package ch.idsia.ai;
 
 
 /**

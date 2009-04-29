@@ -2,14 +2,14 @@ package ch.idsia.tools;
 
 import ch.idsia.engine.GlobalOptions;
 import ch.idsia.engine.MarioComponent;
-import ch.idsia.java.ai.agents.IAgent;
-import ch.idsia.java.ai.agents.RegisterableAgent;
-import ch.idsia.java.ai.agents.TCPAgent;
-import ch.idsia.java.ai.agents.human.HumanKeyboardAgent;
-import ch.idsia.java.ai.agents.ai.ForwardAgent;
-import ch.idsia.java.ai.agents.ai.RandomAgent;
-import ch.idsia.java.ai.agents.ai.MLPAgent;
-import ch.idsia.java.ai.agents.ai.ForwardJumpingAgent;
+import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.ai.agents.TCPAgent;
+import ch.idsia.ai.agents.human.HumanKeyboardAgent;
+import ch.idsia.ai.agents.ai.ForwardAgent;
+import ch.idsia.ai.agents.ai.RandomAgent;
+import ch.idsia.ai.agents.ai.MLPAgent;
+import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
 import ch.idsia.engine.level.LevelGenerator;
 
 import javax.swing.*;

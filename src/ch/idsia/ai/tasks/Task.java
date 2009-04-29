@@ -1,6 +1,6 @@
-package ch.idsia.java.ai.tasks;
+package ch.idsia.ai.tasks;
 
-import ch.idsia.java.ai.agents.IAgent;
+import ch.idsia.ai.agents.IAgent;
 
 /**
  * Created by IntelliJ IDEA.

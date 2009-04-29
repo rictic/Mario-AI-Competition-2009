@@ -1,12 +1,12 @@
 package ch.idsia.engine;
 
 import ch.idsia.engine.sprites.Mario;
-import ch.idsia.java.ai.agents.IAgent;
-import ch.idsia.java.ai.agents.human.CheaterKeyboardAgent;
+import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.human.CheaterKeyboardAgent;
 import ch.idsia.tools.GameViewer;
 import ch.idsia.tools.EvaluationInfo;
-import ch.idsia.java.ai.environments.IEnvironment;
-import ch.idsia.java.ai.environments.EnvCell;
+import ch.idsia.ai.environments.IEnvironment;
+import ch.idsia.ai.environments.EnvCell;
 
 import javax.swing.*;
 import java.awt.*;
@@ -323,6 +323,10 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 //    public EnvCell[][] getCompleteObservation() {
 //        return new EnvCell[0][];  //To change body of implemented methods use File | Settings | File Templates.
 //    }
+
+    public EnvCell[][] getCompleteObservation() {
+        return new EnvCell[0][];  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
     public byte[][] getEnemiesObservation() {
         if (scene instanceof LevelScene)

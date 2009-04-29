@@ -1,7 +1,7 @@
-package ch.idsia.java.ai.ea;
+package ch.idsia.ai.ea;
 
-import ch.idsia.java.ai.EA;
-import ch.idsia.java.ai.Evolvable;
+import ch.idsia.ai.EA;
+import ch.idsia.ai.Evolvable;
 
 /**
  * Created by IntelliJ IDEA.

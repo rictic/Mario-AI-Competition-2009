@@ -1,6 +1,6 @@
-package ch.idsia.java.ai.agents;
+package ch.idsia.ai.agents;
 
-import ch.idsia.java.ai.agents.ai.BasicAIAgent;
+import ch.idsia.ai.agents.ai.BasicAIAgent;
 
 import java.util.*;
 

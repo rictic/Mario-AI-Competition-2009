@@ -1,6 +1,6 @@
-package ch.idsia.java.ai.agents;
+package ch.idsia.ai.agents;
 
-import ch.idsia.java.ai.environments.IEnvironment;
+import ch.idsia.ai.environments.IEnvironment;
 
 import java.io.BufferedReader;
 import java.io.PrintStream;

@@ -1,7 +1,7 @@
 package ch.idsia.engine;
 
-import ch.idsia.java.ai.agents.IAgent;
-import ch.idsia.java.ai.agents.human.HumanKeyboardAgent;
+import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 
 import java.awt.*;
 import javax.swing.*;

@@ -1,4 +1,4 @@
-package ch.idsia.java.ai;
+package ch.idsia.ai;
 
 /**
  * Interface to a Generic Evolutionary Algorithm.<br>

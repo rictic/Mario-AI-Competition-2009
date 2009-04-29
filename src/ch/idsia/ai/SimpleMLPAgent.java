@@ -1,7 +1,7 @@
-package ch.idsia.java.ai;
+package ch.idsia.ai;
 
-import ch.idsia.java.ai.agents.RegisterableAgent;
-import ch.idsia.java.ai.environments.IEnvironment;
+import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.ai.environments.IEnvironment;
 
 /**
  * Created by IntelliJ IDEA.

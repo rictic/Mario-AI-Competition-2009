@@ -1,9 +1,9 @@
-package ch.idsia.java.ai.agents.human;
+package ch.idsia.ai.agents.human;
 
-import ch.idsia.java.ai.environments.IEnvironment;
+import ch.idsia.ai.environments.IEnvironment;
 import ch.idsia.engine.sprites.Mario;
-import ch.idsia.java.ai.agents.IAgent;
-import ch.idsia.java.ai.agents.RegisterableAgent;
+import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.RegisterableAgent;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
