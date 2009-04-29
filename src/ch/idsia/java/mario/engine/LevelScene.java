@@ -773,5 +773,15 @@ public class LevelScene extends Scene implements SpriteContext
     public int getStartTime() {  return startTime / 15;    }
 
     public int getTimeLeft() {        return timeLeft / 15;    }
-    
+
+    public byte[][] enemiesObservation(int i) {
+        for (int w = 0; w < level.width; w++)
+            for (int h = 0; h < level.height; h++)
+                level.observation[w][h] = -1;
+        for (Sprite sprite : sprites)
+            if (sprite.mapX >= 0 && sprite.mapX < level.observation.length &&
+                    sprite.mapY >= 0 && sprite.mapY < level.observation[0].length)
+                level.observation[sprite.mapX][sprite.mapY] = sprite.kind;
+        return level.observation;
+    }
 }

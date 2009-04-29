@@ -89,7 +89,7 @@ public class TCPAgent extends RegisterableAgent implements IAgent
             try {
                 throw new Exception();
             } catch (Exception e) {
-                System.err.println("KSDF:LSKDF:SLDKFH:SLKDFS:DFKHSD:FK");
+                System.err.println("Critical Server Error");
                 System.out.println("length" + dataLength + ", " + tmpData.length() + tmpData.split(" ").length );
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }

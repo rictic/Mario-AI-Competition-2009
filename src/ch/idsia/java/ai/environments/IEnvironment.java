@@ -18,7 +18,7 @@ public interface IEnvironment
     // always centered on the agent
     public EnvCell[][] getCompleteObservation();
 
-    public int[][] getEnemiesObservation(); // usually < 5 and therefore matrix would be Very sparce
+    public byte[][] getEnemiesObservation(); // usually < 5 and therefore matrix would be Very sparce
 
     public byte[][] getLevelSceneObservation();
 

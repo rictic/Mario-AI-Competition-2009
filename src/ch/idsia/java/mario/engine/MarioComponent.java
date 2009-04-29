@@ -324,8 +324,10 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         return new EnvCell[0][];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public int[][] getEnemiesObservation() {
-        return new int[0][];  //To change body of implemented methods use File | Settings | File Templates.
+    public byte[][] getEnemiesObservation() {
+        if (scene instanceof LevelScene)
+            return ((LevelScene)scene).enemiesObservation(1);
+        return null;
     }
 
     public byte[][] getLevelSceneObservation() {
