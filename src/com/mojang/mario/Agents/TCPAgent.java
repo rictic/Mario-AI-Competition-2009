@@ -1,6 +1,6 @@
 package com.mojang.mario.agents;
 
-import com.mojang.mario.Environments.IEnvironment;
+import com.mojang.mario.environments.IEnvironment;
 
 import java.io.BufferedReader;
 import java.io.PrintStream;

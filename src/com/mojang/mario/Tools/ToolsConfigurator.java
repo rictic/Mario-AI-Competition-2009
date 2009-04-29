@@ -1,11 +1,11 @@
-package com.mojang.mario.Tools;
+package com.mojang.mario.tools;
 
 import com.mojang.mario.GlobalOptions;
 import com.mojang.mario.MarioComponent;
 import com.mojang.mario.agents.IAgent;
 import com.mojang.mario.agents.RegisterableAgent;
 import com.mojang.mario.agents.TCPAgent;
-import com.mojang.mario.agents.Human.HumanKeyboardAgent;
+import com.mojang.mario.agents.human.HumanKeyboardAgent;
 import com.mojang.mario.agents.ai.ForwardAgent;
 import com.mojang.mario.agents.ai.RandomAgent;
 import com.mojang.mario.agents.ai.MLPAgent;
@@ -132,7 +132,7 @@ public class ToolsConfigurator extends JFrame
     public Choice ChoiceVerbose = new Choice();
     private static final String strPlay        = "->  Play! ->";
     private static final String strSimulate    = "Simulate! ->";
-    public Checkbox CheckboxStopSimulationIfWin = new Checkbox("Stop Simulation If Win");
+    public Checkbox CheckboxStopSimulationIfWin = new Checkbox("Stop simulation If Win");
     public JButton JButtonPlaySimulate = new JButton(strPlay);
     public JButton JButtonResetEvaluationSummary = new JButton("Reset");
 
@@ -454,7 +454,7 @@ public class ToolsConfigurator extends JFrame
             else if (ob == CheckboxStopSimulationIfWin)
             {
                 GlobalOptions.StopSimulationIfWin = CheckboxStopSimulationIfWin.getState();
-                consoleHistory.addRecord("Stop Simulation if Win Criteria Turned " +
+                consoleHistory.addRecord("Stop simulation if Win Criteria Turned " +
                         (GlobalOptions.StopSimulationIfWin ? "on" : "off"));
             }
             else if (ob == ChoiceAgent)

@@ -1,6 +1,6 @@
-package com.mojang.mario.Tools;
+package com.mojang.mario.tools;
 
-import com.mojang.mario.Simulation.SimulationOptions;
+import com.mojang.mario.simulation.SimulationOptions;
 
 /**
  * Created by IntelliJ IDEA.

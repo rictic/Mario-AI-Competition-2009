@@ -1,9 +1,9 @@
-package com.mojang.mario.Simulation;
+package com.mojang.mario.simulation;
 
 import com.mojang.mario.agents.IAgent;
 import com.mojang.mario.MarioComponent;
-import com.mojang.mario.Utils.SmartBool;
-import com.mojang.mario.Utils.SmartInt;
+import com.mojang.mario.utils.SmartBool;
+import com.mojang.mario.utils.SmartInt;
 
 /**
  * Created by IntelliJ IDEA.

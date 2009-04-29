@@ -1,4 +1,4 @@
-package com.mojang.mario.Utils;
+package com.mojang.mario.utils;
 
 /**
  * Created by IntelliJ IDEA.

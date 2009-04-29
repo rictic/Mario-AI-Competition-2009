@@ -1,4 +1,4 @@
-package com.mojang.mario.Environments;
+package com.mojang.mario.environments;
 
 /**
  * Created by IntelliJ IDEA.

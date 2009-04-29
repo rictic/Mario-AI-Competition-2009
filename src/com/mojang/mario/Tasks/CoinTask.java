@@ -1,4 +1,4 @@
-package com.mojang.mario.Tasks;
+package com.mojang.mario.tasks;
 
 import com.mojang.mario.agents.IAgent;
 

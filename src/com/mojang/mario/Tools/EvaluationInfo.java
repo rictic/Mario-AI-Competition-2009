@@ -1,4 +1,4 @@
-package com.mojang.mario.Tools;
+package com.mojang.mario.tools;
 
 import com.mojang.mario.sprites.Mario;
 

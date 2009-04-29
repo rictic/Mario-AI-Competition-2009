@@ -1,7 +1,7 @@
-package com.mojang.mario.Tools;
+package com.mojang.mario.tools;
 
-import com.mojang.mario.Simulation.BasicSimulator;
-import com.mojang.mario.Simulation.ISimulation;
+import com.mojang.mario.simulation.BasicSimulator;
+import com.mojang.mario.simulation.ISimulation;
 import com.mojang.mario.sprites.Mario;
 import com.mojang.mario.GlobalOptions;
 

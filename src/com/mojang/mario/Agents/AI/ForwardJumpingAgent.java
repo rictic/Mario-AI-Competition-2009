@@ -1,6 +1,6 @@
 package com.mojang.mario.agents.ai;
 
-import com.mojang.mario.Environments.IEnvironment;
+import com.mojang.mario.environments.IEnvironment;
 import com.mojang.mario.agents.IAgent;
 import com.mojang.mario.agents.RegisterableAgent;
 import com.mojang.mario.sprites.Mario;

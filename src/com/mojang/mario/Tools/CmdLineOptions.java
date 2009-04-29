@@ -1,10 +1,10 @@
-package com.mojang.mario.Tools;
+package com.mojang.mario.tools;
 
 import com.mojang.mario.GlobalOptions;
-import com.mojang.mario.Utils.ISmart;
-import com.mojang.mario.Utils.SmartBool;
-import com.mojang.mario.Utils.SmartInt;
-import com.mojang.mario.Utils.SmartType;
+import com.mojang.mario.utils.ISmart;
+import com.mojang.mario.utils.SmartBool;
+import com.mojang.mario.utils.SmartInt;
+import com.mojang.mario.utils.SmartType;
 
 import java.util.HashMap;
 import java.util.Map;

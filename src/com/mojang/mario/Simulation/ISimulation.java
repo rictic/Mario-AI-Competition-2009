@@ -1,6 +1,6 @@
-package com.mojang.mario.Simulation;
+package com.mojang.mario.simulation;
 
-import com.mojang.mario.Tools.EvaluationInfo;
+import com.mojang.mario.tools.EvaluationInfo;
 
 /**
  * Created by IntelliJ IDEA.

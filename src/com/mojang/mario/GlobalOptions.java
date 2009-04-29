@@ -1,7 +1,7 @@
 package com.mojang.mario;
 
-import com.mojang.mario.Tools.GameViewer;
-import com.mojang.mario.Simulation.SimulationOptions;
+import com.mojang.mario.tools.GameViewer;
+import com.mojang.mario.simulation.SimulationOptions;
 import com.mojang.mario.level.LevelGenerator;
 
 import java.text.DateFormat;

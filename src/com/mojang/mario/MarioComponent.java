@@ -2,11 +2,11 @@ package com.mojang.mario;
 
 import com.mojang.mario.sprites.Mario;
 import com.mojang.mario.agents.IAgent;
-import com.mojang.mario.agents.Human.CheaterKeyboardAgent;
-import com.mojang.mario.Tools.GameViewer;
-import com.mojang.mario.Tools.EvaluationInfo;
-import com.mojang.mario.Environments.IEnvironment;
-import com.mojang.mario.Environments.EnvCell;
+import com.mojang.mario.agents.human.CheaterKeyboardAgent;
+import com.mojang.mario.tools.GameViewer;
+import com.mojang.mario.tools.EvaluationInfo;
+import com.mojang.mario.environments.IEnvironment;
+import com.mojang.mario.environments.EnvCell;
 
 import javax.swing.*;
 import java.awt.*;

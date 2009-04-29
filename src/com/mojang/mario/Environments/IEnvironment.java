@@ -1,6 +1,4 @@
-package com.mojang.mario.Environments;
-
-import java.awt.*;
+package com.mojang.mario.environments;
 
 /**
  * Created by IntelliJ IDEA.

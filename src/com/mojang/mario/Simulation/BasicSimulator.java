@@ -1,8 +1,8 @@
-package com.mojang.mario.Simulation;
+package com.mojang.mario.simulation;
 
 import com.mojang.mario.MarioComponent;
 import com.mojang.mario.GlobalOptions;
-import com.mojang.mario.Tools.EvaluationInfo;
+import com.mojang.mario.tools.EvaluationInfo;
 
 /**
  * Created by IntelliJ IDEA.

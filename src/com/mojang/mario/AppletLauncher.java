@@ -1,7 +1,7 @@
 package com.mojang.mario;
 
 import com.mojang.mario.agents.IAgent;
-import com.mojang.mario.agents.Human.HumanKeyboardAgent;
+import com.mojang.mario.agents.human.HumanKeyboardAgent;
 
 import javax.swing.JApplet;
 

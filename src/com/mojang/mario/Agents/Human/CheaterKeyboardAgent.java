@@ -1,6 +1,6 @@
-package com.mojang.mario.agents.Human;
+package com.mojang.mario.agents.human;
 
-import com.mojang.mario.Environments.IEnvironment;
+import com.mojang.mario.environments.IEnvironment;
 import com.mojang.mario.sprites.Mario;
 import com.mojang.mario.GlobalOptions;
 import com.mojang.mario.agents.IAgent;
