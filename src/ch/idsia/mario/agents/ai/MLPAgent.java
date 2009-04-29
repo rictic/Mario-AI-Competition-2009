@@ -16,6 +16,9 @@ public class MLPAgent extends RegisterableAgent implements IAgent
 //    MLP mlp = new MLP (10, 5, 6);
     // inputs: the blocks around mario
     // outputs: the individual keys
+
+    
+
     public MLPAgent()
     {
         super("MLPAgent");
