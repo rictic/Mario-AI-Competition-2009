@@ -1,9 +1,9 @@
 package ch.idsia.java.ai.simulation;
 
-import ch.idsia.java.mario.engine.MarioComponent;
-import ch.idsia.java.mario.engine.GlobalOptions;
+import ch.idsia.engine.MarioComponent;
+import ch.idsia.engine.GlobalOptions;
 import ch.idsia.java.ai.agents.IAgent;
-import ch.idsia.java.tools.EvaluationInfo;
+import ch.idsia.tools.EvaluationInfo;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,9 +1,9 @@
 package ch.idsia.java.ai.simulation;
 
 import ch.idsia.java.ai.agents.IAgent;
-import ch.idsia.java.mario.engine.MarioComponent;
-import ch.idsia.java.utils.SmartBool;
-import ch.idsia.java.utils.SmartInt;
+import ch.idsia.engine.MarioComponent;
+import ch.idsia.utils.SmartBool;
+import ch.idsia.utils.SmartInt;
 
 /**
  * Created by IntelliJ IDEA.

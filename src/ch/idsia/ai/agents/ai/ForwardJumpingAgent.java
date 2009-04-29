@@ -3,7 +3,7 @@ package ch.idsia.java.ai.agents.ai;
 import ch.idsia.java.ai.environments.IEnvironment;
 import ch.idsia.java.ai.agents.IAgent;
 import ch.idsia.java.ai.agents.RegisterableAgent;
-import ch.idsia.java.mario.engine.sprites.Mario;
+import ch.idsia.engine.sprites.Mario;
 
 /**
  * Created by IntelliJ IDEA.

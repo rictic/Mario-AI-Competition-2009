@@ -1,6 +1,6 @@
 package ch.idsia.java.ai.simulation;
 
-import ch.idsia.java.tools.EvaluationInfo;
+import ch.idsia.tools.EvaluationInfo;
 
 /**
  * Created by IntelliJ IDEA.
