@@ -24,6 +24,7 @@ public class TCPAgent extends RegisterableAgent implements IAgent
 
     public static void main(String[] args)
     {
+        //TODO: DO this as option
         TCPAgent a = new TCPAgent(4242);
         a.reset();
     }
@@ -36,6 +37,7 @@ public class TCPAgent extends RegisterableAgent implements IAgent
     {
         super("TCPAgent");
         this.port = port;
+        reset();
     }
 
     public void reset()
@@ -67,12 +69,18 @@ public class TCPAgent extends RegisterableAgent implements IAgent
         String tmpData = "" +
                 observation.mayMarioJump() + " " + observation.isMarioOnGround();
         int dataLength = tmpData.length();
+        byte i = 0;
         for (int y = 0; y < levelScene[0].length; ++y)
         {
             for (int x = 0; x < levelScene.length; ++x)
             {
-                tmpData += " " + (levelScene[x][y]);
-                dataLength += ("" + levelScene[x][y]).length() + 1;
+//                tmpData += " " + (levelScene[x][y]);
+//                dataLength += ("" + levelScene[x][y]).length() + 1;
+                dataLength += (" " + i).length();
+                tmpData += " " + i;
+                ++i;
+                if (i > 120)
+                    i = 0;
             }
         }
 
@@ -82,13 +90,14 @@ public class TCPAgent extends RegisterableAgent implements IAgent
                 throw new Exception();
             } catch (Exception e) {
                 System.err.println("KSDF:LSKDF:SLDKFH:SLKDFS:DFKHSD:FK");
+                System.out.println("length" + dataLength + ", " + tmpData.length() + tmpData.split(" ").length );
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         // TODO: add ack, nack
         // TODO: StateEncoderDecoder.Encode.Decode.  zip, do not send mario position. zero instead for better zipping.
         printer.print(tmpData);
         try {
-            Thread.sleep(150);
+            Thread.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -135,7 +144,7 @@ public class TCPAgent extends RegisterableAgent implements IAgent
         {
             e.printStackTrace();
             System.out.println("Communication Error");
-            System.exit(0);
+            reset();
         } catch (InterruptedException e) {
             e.printStackTrace(); 
         }
