@@ -1,6 +1,6 @@
-package com.mojang.mario.Agents;
+package com.mojang.mario.agents;
 
-import com.mojang.mario.Agents.AI.BasicAIAgent;
+import com.mojang.mario.agents.ai.BasicAIAgent;
 
 import java.util.*;
 

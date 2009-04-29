@@ -1,7 +1,5 @@
 package com.mojang.mario.Simulation;
 
-import com.mojang.mario.Agents.IAgent;
-import com.mojang.mario.MarioComponent;
 import com.mojang.mario.Tools.EvaluationInfo;
 
 /**

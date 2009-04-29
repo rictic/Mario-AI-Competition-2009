@@ -2,14 +2,14 @@ package com.mojang.mario.Tools;
 
 import com.mojang.mario.GlobalOptions;
 import com.mojang.mario.MarioComponent;
-import com.mojang.mario.Agents.IAgent;
-import com.mojang.mario.Agents.RegisterableAgent;
-import com.mojang.mario.Agents.TCPAgent;
-import com.mojang.mario.Agents.Human.HumanKeyboardAgent;
-import com.mojang.mario.Agents.AI.ForwardAgent;
-import com.mojang.mario.Agents.AI.RandomAgent;
-import com.mojang.mario.Agents.AI.MLPAgent;
-import com.mojang.mario.Agents.AI.ForwardJumpingAgent;
+import com.mojang.mario.agents.IAgent;
+import com.mojang.mario.agents.RegisterableAgent;
+import com.mojang.mario.agents.TCPAgent;
+import com.mojang.mario.agents.Human.HumanKeyboardAgent;
+import com.mojang.mario.agents.ai.ForwardAgent;
+import com.mojang.mario.agents.ai.RandomAgent;
+import com.mojang.mario.agents.ai.MLPAgent;
+import com.mojang.mario.agents.ai.ForwardJumpingAgent;
 import com.mojang.mario.level.LevelGenerator;
 
 import javax.swing.*;

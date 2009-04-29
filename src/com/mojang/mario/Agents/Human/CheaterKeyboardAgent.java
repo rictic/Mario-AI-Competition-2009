@@ -1,9 +1,9 @@
-package com.mojang.mario.Agents.Human;
+package com.mojang.mario.agents.Human;
 
 import com.mojang.mario.Environments.IEnvironment;
 import com.mojang.mario.sprites.Mario;
 import com.mojang.mario.GlobalOptions;
-import com.mojang.mario.Agents.IAgent;
+import com.mojang.mario.agents.IAgent;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;

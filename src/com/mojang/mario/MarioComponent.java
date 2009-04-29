@@ -1,8 +1,8 @@
 package com.mojang.mario;
 
 import com.mojang.mario.sprites.Mario;
-import com.mojang.mario.Agents.IAgent;
-import com.mojang.mario.Agents.Human.CheaterKeyboardAgent;
+import com.mojang.mario.agents.IAgent;
+import com.mojang.mario.agents.Human.CheaterKeyboardAgent;
 import com.mojang.mario.Tools.GameViewer;
 import com.mojang.mario.Tools.EvaluationInfo;
 import com.mojang.mario.Environments.IEnvironment;

@@ -1,6 +1,6 @@
 package ai;
 
-import com.mojang.mario.Agents.IAgent;
+import com.mojang.mario.agents.IAgent;
 import com.mojang.mario.Environments.IEnvironment;
 
 /**

@@ -1,7 +1,6 @@
 package com.mojang.mario.Tasks;
 
-import com.mojang.mario.Agents.IAgent;
-import com.mojang.mario.Tools.Evaluator;
+import com.mojang.mario.agents.IAgent;
 
 /**
  * Created by IntelliJ IDEA.

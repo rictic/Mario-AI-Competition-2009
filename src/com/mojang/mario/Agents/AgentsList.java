@@ -1,4 +1,4 @@
-package com.mojang.mario.Agents;
+package com.mojang.mario.agents;
 
 /**
  * Created by IntelliJ IDEA.
