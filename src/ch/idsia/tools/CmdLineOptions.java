@@ -1,6 +1,6 @@
 package ch.idsia.tools;
 
-import ch.idsia.java.mario.engine.GlobalOptions;
+import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.utils.ISmart;
 import ch.idsia.utils.SmartBool;
 import ch.idsia.utils.SmartInt;

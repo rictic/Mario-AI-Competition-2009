@@ -1,11 +1,11 @@
-package ch.idsia.engine.sprites;
+package ch.idsia.mario.engine.sprites;
 
 
-import ch.idsia.engine.Scene;
-import ch.idsia.engine.level.*;
-import ch.idsia.engine.GlobalOptions;
-import ch.idsia.engine.LevelScene;
-import ch.idsia.engine.*;
+import ch.idsia.mario.engine.Scene;
+import ch.idsia.mario.engine.level.*;
+import ch.idsia.mario.engine.GlobalOptions;
+import ch.idsia.mario.engine.LevelScene;
+import ch.idsia.mario.engine.*;
 
 
 public class Mario extends Sprite

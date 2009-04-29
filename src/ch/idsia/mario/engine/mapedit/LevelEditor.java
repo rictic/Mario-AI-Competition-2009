@@ -1,4 +1,4 @@
-package ch.idsia.engine.mapedit;
+package ch.idsia.mario.engine.mapedit;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,7 +8,7 @@ import java.io.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
-import ch.idsia.engine.level.*;
+import ch.idsia.mario.engine.level.*;
 
 
 public class LevelEditor extends JFrame implements ActionListener

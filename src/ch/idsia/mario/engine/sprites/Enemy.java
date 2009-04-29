@@ -1,9 +1,9 @@
-package ch.idsia.engine.sprites;
+package ch.idsia.mario.engine.sprites;
 
 import java.awt.Graphics;
 
-import ch.idsia.engine.Art;
-import ch.idsia.engine.LevelScene;
+import ch.idsia.mario.engine.Art;
+import ch.idsia.mario.engine.LevelScene;
 
 
 public class Enemy extends Sprite

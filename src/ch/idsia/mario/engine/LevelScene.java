@@ -1,4 +1,4 @@
-package ch.idsia.engine;
+package ch.idsia.mario.engine;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -8,8 +8,8 @@ import java.io.*;
 import java.text.DecimalFormat;
 import java.util.*;
 
-import ch.idsia.engine.sprites.*;
-import ch.idsia.engine.level.*;
+import ch.idsia.mario.engine.sprites.*;
+import ch.idsia.mario.engine.level.*;
 
 
 public class LevelScene extends Scene implements SpriteContext

@@ -1,6 +1,6 @@
-package ch.idsia.engine;
+package ch.idsia.mario.engine;
 
-import ch.idsia.engine.sprites.Mario;
+import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.human.CheaterKeyboardAgent;
 import ch.idsia.tools.GameViewer;

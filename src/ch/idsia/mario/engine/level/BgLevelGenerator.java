@@ -1,4 +1,4 @@
-package ch.idsia.engine.level;
+package ch.idsia.mario.engine.level;
 
 import java.util.Random;
 

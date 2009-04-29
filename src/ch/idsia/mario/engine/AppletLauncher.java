@@ -1,4 +1,4 @@
-package ch.idsia.engine;
+package ch.idsia.mario.engine;
 
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;

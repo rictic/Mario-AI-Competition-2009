@@ -1,4 +1,4 @@
-package ch.idsia.engine;
+package ch.idsia.mario.engine;
 
 import java.awt.Graphics;
 

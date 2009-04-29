@@ -1,9 +1,9 @@
-package ch.idsia.engine.level;
+package ch.idsia.mario.engine.level;
 
-import ch.idsia.engine.LevelScene;
-import ch.idsia.engine.sprites.Enemy;
-import ch.idsia.engine.sprites.FlowerEnemy;
-import ch.idsia.engine.sprites.Sprite;
+import ch.idsia.mario.engine.LevelScene;
+import ch.idsia.mario.engine.sprites.Enemy;
+import ch.idsia.mario.engine.sprites.FlowerEnemy;
+import ch.idsia.mario.engine.sprites.Sprite;
 
 public class SpriteTemplate
 {

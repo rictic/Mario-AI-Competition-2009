@@ -1,10 +1,10 @@
-package ch.idsia.engine.sprites;
+package ch.idsia.mario.engine.sprites;
 
 import java.awt.Graphics;
 import java.awt.Image;
 
-import ch.idsia.engine.level.SpriteTemplate;
-import ch.idsia.engine.GlobalOptions;
+import ch.idsia.mario.engine.level.SpriteTemplate;
+import ch.idsia.mario.engine.GlobalOptions;
 
 public class Sprite
 {

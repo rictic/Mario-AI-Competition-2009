@@ -1,8 +1,8 @@
-package ch.idsia.engine;
+package ch.idsia.mario.engine;
 
 import java.awt.*;
 import java.util.Random;
-import ch.idsia.engine.level.*;
+import ch.idsia.mario.engine.level.*;
 
 
 public class LevelRenderer

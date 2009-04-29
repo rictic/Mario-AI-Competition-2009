@@ -1,4 +1,4 @@
-package ch.idsia.engine.sprites;
+package ch.idsia.mario.engine.sprites;
 
 public interface SpriteContext
 {

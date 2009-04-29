@@ -1,8 +1,8 @@
-package ch.idsia.engine;
+package ch.idsia.mario.engine;
 
 import ch.idsia.tools.GameViewer;
 import ch.idsia.mario.simulation.SimulationOptions;
-import ch.idsia.engine.level.LevelGenerator;
+import ch.idsia.mario.engine.level.LevelGenerator;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

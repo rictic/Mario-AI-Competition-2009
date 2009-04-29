@@ -1,6 +1,6 @@
-package ch.idsia.engine.level;
+package ch.idsia.mario.engine.level;
 
-import ch.idsia.engine.sprites.Enemy;
+import ch.idsia.mario.engine.sprites.Enemy;
 
 import java.util.Random;
 

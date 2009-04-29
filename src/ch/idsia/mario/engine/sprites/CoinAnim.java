@@ -1,6 +1,6 @@
-package ch.idsia.engine.sprites;
+package ch.idsia.mario.engine.sprites;
 
-import ch.idsia.engine.Art;
+import ch.idsia.mario.engine.Art;
 
 
 public class CoinAnim extends Sprite

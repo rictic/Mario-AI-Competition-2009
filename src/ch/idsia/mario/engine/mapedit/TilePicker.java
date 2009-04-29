@@ -1,4 +1,4 @@
-package ch.idsia.engine.mapedit;
+package ch.idsia.mario.engine.mapedit;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,7 +9,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.*;
 
-import ch.idsia.engine.Art;
+import ch.idsia.mario.engine.Art;
 
 
 public class TilePicker extends JComponent implements MouseListener, MouseMotionListener

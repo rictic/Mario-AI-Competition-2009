@@ -1,7 +1,7 @@
 package ch.idsia.mario.simulation;
 
 import ch.idsia.ai.agents.IAgent;
-import ch.idsia.java.mario.engine.MarioComponent;
+import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.utils.SmartBool;
 import ch.idsia.utils.SmartInt;
 

@@ -8,7 +8,7 @@
  * 
  * This code is public domain. Do whatever you want with it.
  */
-package ch.idsia.engine;
+package ch.idsia.mario.engine;
 
 import java.awt.Graphics;
 import java.awt.Image;
