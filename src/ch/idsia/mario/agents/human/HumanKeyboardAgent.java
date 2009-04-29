@@ -25,14 +25,14 @@ public class HumanKeyboardAgent extends KeyAdapter implements IAgent
 
     public HumanKeyboardAgent()
     {
-        RegisterableAgent.registerAgent(reset());
+        this.reset ();
+        RegisterableAgent.registerAgent(this);
     }
 
-    public IAgent reset()
+    public void reset()
     {
         // Just check you keyboard. Especially arrow buttons and 'A' and 'S'!
         Action = new boolean[IEnvironment.NumberOfActionSlots];
-        return this;
     }
 
     public boolean[] GetAction(IEnvironment observation)

@@ -2,6 +2,7 @@ package ch.idsia.mario.simulation;
 
 import ch.idsia.mario.MarioComponent;
 import ch.idsia.mario.GlobalOptions;
+import ch.idsia.mario.agents.IAgent;
 import ch.idsia.mario.tools.EvaluationInfo;
 
 /**
@@ -26,7 +27,8 @@ public class BasicSimulator implements ISimulation
 
     private MarioComponent prepareMarioComponent()
     {
-        marioComponent.setAgent(simulationOptions.getAgent().reset());
+        IAgent agent = simulationOptions.getAgent();
+        marioComponent.setAgent(agent);
         return marioComponent;
     }
 

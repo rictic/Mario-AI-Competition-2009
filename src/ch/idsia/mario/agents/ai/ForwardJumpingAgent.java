@@ -21,12 +21,11 @@ public class ForwardJumpingAgent extends RegisterableAgent implements IAgent
         reset();
     }
 
-    public IAgent reset()
+    public void reset()
     {
         Action = EmptyAction;
         Action[Mario.KEY_RIGHT] = true;
         Action[Mario.KEY_SPEED] = true;
-        return this;
     }
 
     public boolean[] GetAction(IEnvironment observation)

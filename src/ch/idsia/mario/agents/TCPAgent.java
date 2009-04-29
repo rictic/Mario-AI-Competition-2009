@@ -38,7 +38,7 @@ public class TCPAgent extends RegisterableAgent implements IAgent
         this.port = port;
     }
 
-    public IAgent reset()
+    public void reset()
     {
         try
         {
@@ -58,8 +58,6 @@ public class TCPAgent extends RegisterableAgent implements IAgent
         {
             e.printStackTrace ();
         }
-
-        return this;
     }
 
     private void sendLevelSceneObservation(IEnvironment observation) throws IOException

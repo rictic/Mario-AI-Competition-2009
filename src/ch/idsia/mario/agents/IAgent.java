@@ -15,7 +15,7 @@ public interface IAgent
 
     // clears all dynamic data, such as hidden layers in recurrent networks
     // just implement an empty method for a reactive controller
-    public IAgent reset();
+    public void reset();
 
     public boolean[] GetAction(IEnvironment observation);
 

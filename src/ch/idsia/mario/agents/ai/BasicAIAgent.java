@@ -17,10 +17,9 @@ public class BasicAIAgent implements IAgent
     protected boolean EmptyAction[] = new boolean[IEnvironment.NumberOfActions];
     protected String Name = "Instance of BasicAIAgent. Change this name";
 
-    public IAgent reset()
+    public void reset()
     {
         Action = EmptyAction;
-        return this;
     }
 
     public boolean[] GetAction(IEnvironment observation)

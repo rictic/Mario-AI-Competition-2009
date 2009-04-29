@@ -9,7 +9,7 @@ import ch.idsia.mario.environments.IEnvironment;
  * Date: Apr 28, 2009
  * Time: 2:09:42 PM
  */
-public class SimpleMLPAgent implements IAgent {
+public class SimpleMLPAgent implements IAgent, Evolvable {
 
     private String name = "SimpleMLPAgent";
     final MLP mlp;
@@ -32,9 +32,9 @@ public class SimpleMLPAgent implements IAgent {
         return (Evolvable) new SimpleMLPAgent (mlp.copy ()); 
     }
 
-    public IAgent reset() {
+    public void reset() {
         mlp.reset ();
-        return this;
+        //return this;
     }
 
     public void mutate() {

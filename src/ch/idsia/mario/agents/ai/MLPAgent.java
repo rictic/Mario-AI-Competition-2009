@@ -22,8 +22,7 @@ public class MLPAgent extends RegisterableAgent implements IAgent
         reset();
     }
 
-    public IAgent reset() {
-        return this;
+    public void reset() {
     }
 
     public boolean[] GetAction(IEnvironment observation) {

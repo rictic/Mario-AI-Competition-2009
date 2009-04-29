@@ -22,11 +22,10 @@ public class RandomAgent extends RegisterableAgent implements IAgent
     }
 
     private Random R = null;
-    public IAgent reset()
+    public void reset()
     {
         // Dummy reset, of course, but meet formalities!
         R = new Random();
-        return this;
     }
 
     public boolean[] GetAction(IEnvironment observation)

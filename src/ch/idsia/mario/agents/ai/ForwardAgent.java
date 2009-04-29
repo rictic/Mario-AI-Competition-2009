@@ -26,7 +26,7 @@ public class ForwardAgent extends RegisterableAgent implements IAgent
         reset();
     }
 
-    public IAgent reset()
+    public void reset()
     {
         Action = new boolean[IEnvironment.NumberOfActionSlots];
         Action[Mario.KEY_RIGHT] = true;
@@ -34,7 +34,6 @@ public class ForwardAgent extends RegisterableAgent implements IAgent
         prevPosition = new Point();
         trueJumpCounter = 0;
         trueSpeedCounter = 0;
-        return this;
     }
 
     private boolean DangerOfGap(byte[][] levelScene)

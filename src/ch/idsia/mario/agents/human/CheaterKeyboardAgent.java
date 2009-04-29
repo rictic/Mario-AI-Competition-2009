@@ -25,11 +25,10 @@ public class CheaterKeyboardAgent extends KeyAdapter implements IAgent {
         reset();
     }
 
-    public IAgent reset()
+    public void reset()
     {
         // Just check you keyboard.
         Action = new boolean[IEnvironment.NumberOfActionSlots];
-        return this;
     }
 
     public boolean[] GetAction(IEnvironment observation)
