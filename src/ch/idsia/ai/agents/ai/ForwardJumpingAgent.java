@@ -1,9 +1,9 @@
 package ch.idsia.ai.agents.ai;
 
-import ch.idsia.ai.environments.IEnvironment;
+import ch.idsia.mario.environments.IEnvironment;
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.engine.sprites.Mario;
+import ch.idsia.java.mario.engine.sprites.Mario;
 
 /**
  * Created by IntelliJ IDEA.

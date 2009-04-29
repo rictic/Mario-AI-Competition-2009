@@ -1,6 +1,6 @@
 package ch.idsia.tools;
 
-import ch.idsia.ai.simulation.SimulationOptions;
+import ch.idsia.mario.simulation.SimulationOptions;
 
 /**
  * Created by IntelliJ IDEA.

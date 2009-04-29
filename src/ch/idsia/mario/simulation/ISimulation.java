@@ -1,4 +1,4 @@
-package ch.idsia.ai.simulation;
+package ch.idsia.mario.simulation;
 
 import ch.idsia.tools.EvaluationInfo;
 

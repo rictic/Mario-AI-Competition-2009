@@ -1,7 +1,7 @@
 package ch.idsia.engine;
 
 import ch.idsia.tools.GameViewer;
-import ch.idsia.ai.simulation.SimulationOptions;
+import ch.idsia.mario.simulation.SimulationOptions;
 import ch.idsia.engine.level.LevelGenerator;
 
 import java.text.DateFormat;

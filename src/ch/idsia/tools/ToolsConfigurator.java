@@ -1,7 +1,7 @@
 package ch.idsia.tools;
 
-import ch.idsia.engine.GlobalOptions;
-import ch.idsia.engine.MarioComponent;
+import ch.idsia.java.mario.engine.GlobalOptions;
+import ch.idsia.java.mario.engine.MarioComponent;
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.TCPAgent;
@@ -10,7 +10,7 @@ import ch.idsia.ai.agents.ai.ForwardAgent;
 import ch.idsia.ai.agents.ai.RandomAgent;
 import ch.idsia.ai.agents.ai.MLPAgent;
 import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
-import ch.idsia.engine.level.LevelGenerator;
+import ch.idsia.java.mario.engine.level.LevelGenerator;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;

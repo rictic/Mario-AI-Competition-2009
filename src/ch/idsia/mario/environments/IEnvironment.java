@@ -1,4 +1,4 @@
-package ch.idsia.ai.environments;
+package ch.idsia.mario.environments;
 
 /**
  * Created by IntelliJ IDEA.

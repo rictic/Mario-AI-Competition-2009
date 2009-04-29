@@ -1,6 +1,6 @@
 package ch.idsia.tools;
 
-import ch.idsia.engine.sprites.Mario;
+import ch.idsia.java.mario.engine.sprites.Mario;
 
 import java.text.DecimalFormat;
 

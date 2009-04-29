@@ -1,6 +1,6 @@
 package ch.idsia.ai.agents.ai;
 
-import ch.idsia.ai.environments.IEnvironment;
+import ch.idsia.mario.environments.IEnvironment;
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.RegisterableAgent;
 

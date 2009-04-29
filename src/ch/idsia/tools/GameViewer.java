@@ -1,6 +1,6 @@
 package ch.idsia.tools;
 
-import ch.idsia.engine.GlobalOptions;
+import ch.idsia.java.mario.engine.GlobalOptions;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

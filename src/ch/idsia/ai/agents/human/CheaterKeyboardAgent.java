@@ -1,8 +1,8 @@
 package ch.idsia.ai.agents.human;
 
-import ch.idsia.ai.environments.IEnvironment;
-import ch.idsia.engine.sprites.Mario;
-import ch.idsia.engine.GlobalOptions;
+import ch.idsia.mario.environments.IEnvironment;
+import ch.idsia.java.mario.engine.sprites.Mario;
+import ch.idsia.java.mario.engine.GlobalOptions;
 import ch.idsia.ai.agents.IAgent;
 
 import java.awt.event.KeyEvent;
