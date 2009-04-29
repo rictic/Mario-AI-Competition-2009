@@ -18,7 +18,8 @@ public interface IEnvironment
     // always centered on the agent
     public EnvCell[][] getCompleteObservation();
 
-    public byte[][] getEnemiesObservation(); // usually < 5 and therefore matrix would be Very sparce
+    public byte[][] getEnemiesObservation(); // TODO: think of this:
+    // TODO: usually < 5 and therefore matrix would be Very sparce. Probably should change to list?
 
     public byte[][] getLevelSceneObservation();
 
