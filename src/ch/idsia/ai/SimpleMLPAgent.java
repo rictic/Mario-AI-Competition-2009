@@ -1,5 +1,4 @@
 package ch.idsia.ai;
-
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.environments.IEnvironment;
 
@@ -27,11 +26,11 @@ public class SimpleMLPAgent extends RegisterableAgent implements Evolvable {
     }
 
     public Evolvable getNewInstance() {
-        return (Evolvable) new SimpleMLPAgent(mlp.getNewInstance());
+        return new SimpleMLPAgent(mlp.getNewInstance());
     }
 
     public Evolvable copy() {
-        return (Evolvable) new SimpleMLPAgent (mlp.copy ()); 
+        return new SimpleMLPAgent (mlp.copy ());
     }
 
     public void reset() {
@@ -44,19 +43,29 @@ public class SimpleMLPAgent extends RegisterableAgent implements Evolvable {
     }
 
     public boolean[] GetAction(IEnvironment observation) {
-        double[] inputs = new double[numberOfInputs];
+        double[] inputs;// = new double[numberOfInputs];
         byte[][] scene = observation.getLevelSceneObservation();
-        byte[][] enemies = observation.getEnemiesObservation();
+        //int[][] enemies = observation.getEnemiesObservation();
+        inputs = new double[]{probe(-1, -1, scene), probe(0, -1, scene), probe(1, -1, scene),
+                              probe(-1, 0, scene), probe(0, 0, scene), probe(1, 0, scene),
+                                probe(-1, 1, scene), probe(0, 1, scene), probe(1, 1, scene),
+                                1};
         double[] outputs = mlp.propagate (inputs);
         boolean[] action = new boolean[numberOfOutputs];
         for (int i = 0; i < action.length; i++) {
-            action[i] = outputs[i] > 0;    
+            action[i] = outputs[i] > 0;
         }
         return action;
     }
 
+    private double probe (int x, int y, byte[][] scene) {
+        int realX = x + 11;
+        int realY = y + 11;
+        return (scene[realX][realY] != 0) ? 1 : 0;
+    }
+
     public AGENT_TYPE getType() {
-        return AGENT_TYPE.HUMAN;
+        return AGENT_TYPE.AI;
     }
 
   /*  public String getName() {
@@ -64,6 +73,6 @@ public class SimpleMLPAgent extends RegisterableAgent implements Evolvable {
     }
 
     public void setName(String name) {
-        this.name = name;    
+        this.name = name;
     }             */
 }
