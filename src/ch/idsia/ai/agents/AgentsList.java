@@ -1,4 +1,4 @@
-package ch.idsia.java.ai.agents;
+package ch.idsia.ai.agents;
 
 /**
  * Created by IntelliJ IDEA.
