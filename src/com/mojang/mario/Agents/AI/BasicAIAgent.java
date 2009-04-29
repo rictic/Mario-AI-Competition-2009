@@ -12,6 +12,7 @@ import com.mojang.mario.agents.IAgent;
  */
 public class BasicAIAgent implements IAgent 
 {
+    // Bla bla bla
     protected boolean Action[] = new boolean[IEnvironment.NumberOfActions];
     protected boolean EmptyAction[] = new boolean[IEnvironment.NumberOfActions];
     protected String Name = "Instance of BasicAIAgent. Change this name";
