@@ -1,13 +1,9 @@
-
-__author__="Duke"
+__author__="Sergey Karakovskiy, sergey at idsia dot chosen"
 __date__ ="$Apr 30, 2009 1:46:32 AM$"
-
 import sys
-
 
 import numpy
 import TCP
-
 
 if __name__ == "__main__":
     print numpy.random.randint(34, 39)
