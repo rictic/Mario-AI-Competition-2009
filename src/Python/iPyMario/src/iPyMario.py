@@ -7,7 +7,6 @@ import sys
 
 import numpy
 import TCP
-import python
 
 
 if __name__ == "__main__":
@@ -15,7 +14,6 @@ if __name__ == "__main__":
     print "Hello";
     print TCP.__name__
     print TCP.__author__
-    print python.__author__
 
 
 if __name__ == "__main__":
