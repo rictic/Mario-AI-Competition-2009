@@ -65,6 +65,7 @@ public class GlobalOptions {
         private static boolean echo;
         private static boolean maxFPS;
         private static String agentName;
+        private static Integer serverAgentPort;
 
         public Defaults()
         {
@@ -81,6 +82,7 @@ public class GlobalOptions {
             setPowerRestoration(false);
             setStopSimulationIfWin(false);
             setAgentName("ForwardAgent");
+            setServerAgentPort(4242);
         }
         
         public static boolean isGui() {  return gui; }
@@ -147,5 +149,13 @@ public class GlobalOptions {
             Defaults.agentName = agentName;
         }
 
+        public static Integer getServerAgentPort()
+        {
+            return serverAgentPort;
+        }
+
+        public static void setServerAgentPort(Integer serverAgentPort) {
+            Defaults.serverAgentPort = serverAgentPort;
+        }
     }
 }

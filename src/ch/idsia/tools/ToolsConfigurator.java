@@ -4,13 +4,13 @@ import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.ai.agents.TCPAgent;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.ai.agents.ai.ForwardAgent;
 import ch.idsia.ai.agents.ai.RandomAgent;
 import ch.idsia.ai.agents.ai.MLPAgent;
 import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
 import ch.idsia.mario.engine.level.LevelGenerator;
+import ch.idsia.tools.Network.ServerAgent;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -40,18 +40,10 @@ public class ToolsConfigurator extends JFrame
     public static void main(String[] args)
     {
         cmdLineOptions = new CmdLineOptions(args);
-        // -gui on/off
+        // TODO: more options:
         // -agent wox name, like evolvable
         // -ll digit  range [5:15], increase if succeeds.
-        // -ld digit
-        // -lt digit
-        // -ls digit
-        // -tc on/off tools
-        // -gv on/off game viewer
-        // -et on/off
         // -vb nothing/all/keys
-        // -na digit number of attempts
-        // -vis on/off
         ToolsConfigurator toolsConfigurator = null;
         toolsConfigurator = new ToolsConfigurator(null, null);
         toolsConfigurator.setVisible(cmdLineOptions.isToolsConfigurator());
@@ -76,7 +68,6 @@ public class ToolsConfigurator extends JFrame
         CreateMarioComponentFrame();
         marioComponent.Init();
 
-//        if (cmdLineOptions.isToolsConfigurator())
         toolsConfigurator.setMarioComponent(marioComponent);
 
         toolsConfigurator.setGameViewer(gameViewer);
@@ -105,6 +96,7 @@ public class ToolsConfigurator extends JFrame
         marioComponentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         marioComponentFrame.setLocation(0, 0);
         marioComponentFrame.setVisible(GlobalOptions.VisualizationOn);
+        marioComponentFrame.setAlwaysOnTop(true); //TODO: as cmdLineOption
     }
 
     enum INTERFACE_TYPE {CONSOLE, GUI}
@@ -191,7 +183,7 @@ public class ToolsConfigurator extends JFrame
         new RandomAgent();
         new ForwardJumpingAgent();
         new MLPAgent();
-        new TCPAgent(4242); // TODO: Take port from CmdLineOptions;
+        new ServerAgent(4242); // TODO: Take port from CmdLineOptions;
         Set<String> AgentsNames = RegisterableAgent.getAgentsNames();
         for (String s : AgentsNames)
             ChoiceAgent.addItem(s);

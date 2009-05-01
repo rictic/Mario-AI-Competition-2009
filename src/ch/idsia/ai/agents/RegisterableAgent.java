@@ -17,6 +17,7 @@ public class RegisterableAgent extends BasicAIAgent
 
     public RegisterableAgent(String s)
     {
+        super();
         setName(s);
         registerAgent((IAgent) this);
     }

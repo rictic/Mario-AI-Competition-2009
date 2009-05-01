@@ -5,6 +5,7 @@ import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.human.CheaterKeyboardAgent;
 import ch.idsia.tools.GameViewer;
 import ch.idsia.tools.EvaluationInfo;
+import ch.idsia.tools.Network.ServerAgent;
 import ch.idsia.mario.environments.IEnvironment;
 import ch.idsia.mario.environments.EnvCell;
 
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class MarioComponent extends JComponent implements Runnable, /*KeyListener,*/ FocusListener, IEnvironment
 {
-    private static final long serialVersionUID = 739318775993206607L;
+    private static final long serialVersionUID = 790878775993203817L;
     public static final int TICKS_PER_SECOND = 24;
 
     private boolean running = false;
@@ -32,7 +33,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     int delay;
     Thread animator;
 
-    public void setGameViewer(GameViewer gameViewer) {        this.gameViewer = gameViewer;    }
+    public void setGameViewer(GameViewer gameViewer) {this.gameViewer = gameViewer; }
 
     private GameViewer gameViewer = null;
 
@@ -163,6 +164,13 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
                 scene.render(og, alpha);
             }
 
+            if (agent instanceof ServerAgent &&  !((ServerAgent)agent).isAvailable())
+            {
+                System.err.println("Agent became unavailable. Simulation Stopped");
+                running = false;
+                break;
+            }
+            
             boolean[] action = agent.GetAction(this/*DummyEnvironment*/);
             for (int i = 0; i < IEnvironment.NumberOfActions; ++i)
             if (action[i])
@@ -176,7 +184,8 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             ((LevelScene) scene).mario.cheatKeys = cheatAgent.GetAction(null);
 
             if (GlobalOptions.VisualizationOn) {
-                String msg = GlobalOptions.CurrentAgentStr + ". ";
+//                String msg = GlobalOptions.CurrentAgentStr + ". ";
+                String msg = agent.getName();
                 drawString(og, msg, 7, 41, 0);
                 drawString(og, msg, 6, 40, 2);
                 msg = "Selected Actions: ";

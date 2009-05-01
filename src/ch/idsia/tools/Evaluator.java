@@ -32,7 +32,8 @@ public class Evaluator implements Runnable
         boolean continueCondition;
 
         long startTime = System.currentTimeMillis();
-        consoleHistory.addRecord("Evaluation started at " + GlobalOptions.getDateTime(null));
+        String startMessage = "Evaluation started at " + GlobalOptions.getDateTime(null);
+        consoleHistory.addRecord(startMessage);
         do
         {
             consoleHistory.addRecord("Attempts left: " + evaluatorOptions.maxAttempts);
@@ -48,11 +49,10 @@ public class Evaluator implements Runnable
         while ( --evaluatorOptions.maxAttempts > 0 && continueCondition );
 
         Collections.sort(EvaluationSummary, new EvBasicFitnessComparator());
-
+        consoleHistory.addRecord(startMessage);
         consoleHistory.addRecord("Entire Evaluation Finished with results:");
         for (EvaluationInfo ev : EvaluationSummary)
         {
-//            System.out.println(ev);
             consoleHistory.addRecord(ev.toString());
         }
         long currentTime = System.currentTimeMillis();
@@ -80,11 +80,6 @@ public class Evaluator implements Runnable
     {
         thisThread.start();
     }
-
-//    public void stop()
-//    {
-//        thisThread.stop();
-//    }
 
     public void Init(EvaluatorOptions evaluatorOptions)
     {
@@ -142,76 +137,3 @@ class EvDistanceFitnessComparator implements Comparator
             return 0;
     }
 }
-
-
-//Create MarioComponent
-
-// Create LevelScene
-
-//Visualization
-
-//StartLevel
-
-
-
-//        ForwardAgent fwa = new ForwardAgent();
-//        fwa.reset();
-//        Evaluate(fwa, LevelGenerator.TYPE_OVERGROUND, 1, 0, 320, true, true);
-
-//        marioComponent.startLevel(93004739, 80, LevelGenerator.TYPE_CASTLE);
-////        marioComponent.startLevel(93004739, 5, LevelGenerator.TYPE_OVERGROUND);
-////        marioComponent.start();
-//        marioComponent.run1();
-//        marioComponent.startLevel(93004739*2, 1, LevelGenerator.TYPE_OVERGROUND);
-//        marioComponent.run1();
-
-
-//        marioComponent.startLevel(1, 1, LevelGenerator.TYPE_OVERGROUND);
-//        System.out.println("run TYPE_OVERGROUND finished with result : " + marioComponent.run1());
-
-//        int resultStatus = 0;
-//        do
-//        {
-//            marioComponent.startLevel(1, 1, LevelGenerator.TYPE_OVERGROUND);
-//            resultStatus = marioComponent.run1();
-//            System.out.println("run TYPE_OVERGROUND finished with result : " + resultStatus);
-//        }
-//        while (resultStatus != 1);
-
-//        marioComponent.startLevel(1, 0, LevelGenerator.TYPE_UNDERGROUND);
-//        System.out.println("run TYPE_UNDERGROUND finished with result : " + marioComponent.run1());
-
-//        if (level[x][y] == TILE_LEVEL && data[x][y] != 0 && data[x][y] > -10)
-//
-//        {
-//            Mario.levelString = (worldNumber + 1) + "-";
-//            int difficulty = worldNumber+1;
-//            int type = LevelGenerator.TYPE_OVERGROUND;
-//            if (data[x][y] > 1 && new Random(seed + x * 313211 + y * 534321).nextInt(3) == 0)
-//            {
-//                type = LevelGenerator.TYPE_UNDERGROUND;
-//            }
-//            if (data[x][y] < 0)
-//            {
-//                if (data[x][y] == -2)
-//                {
-//                    Mario.levelString += "X";
-//                    difficulty += 2;
-//                }
-//                else if (data[x][y] == -1)
-//                {
-//                    Mario.levelString += "?";
-//                }
-//                else
-//                {
-//                    Mario.levelString += "#";
-//                    difficulty += 1;
-//                }
-//
-//                type = LevelGenerator.TYPE_CASTLE;
-//            }
-//            else
-//            {
-//                Mario.levelString += data[x][y];
-//            }
-//        }

@@ -27,6 +27,7 @@ public class CmdLineOptions extends EvaluatorOptions
     private SmartBool echo = new SmartBool();
     private SmartBool maxFPS = new SmartBool();
     private SmartType<String> agentName = new SmartType<String>();
+    private SmartInt serverAgentPort = new SmartInt();
 
     HashMap<String, ISmart> ArgsHashMap = new HashMap<String, ISmart>();
 
@@ -48,6 +49,7 @@ public class CmdLineOptions extends EvaluatorOptions
 
         ArgsHashMap.put("-ag", agentName.setValue(GlobalOptions.defaults.getAgentName()));
         ArgsHashMap.put("-agentName", agentName);
+        ArgsHashMap.put("-port", serverAgentPort.setValue(GlobalOptions.defaults.getServerAgentPort()));        
         ArgsHashMap.put("-visual", visualization.setValue(GlobalOptions.VisualizationOn));
         ArgsHashMap.put("-vis", visualization);
         ArgsHashMap.put("-gui", gui.setValue(GlobalOptions.defaults.isGui()));
@@ -79,7 +81,6 @@ public class CmdLineOptions extends EvaluatorOptions
         ArgsHashMap.put("-pr", powerRestoration);
         ArgsHashMap.put("-stopSimulationIfWin", stopSimulationIfWin.setValue(GlobalOptions.defaults.isStopSimulationIfWin()));
         ArgsHashMap.put("-ssiw", stopSimulationIfWin);
-
         
         this.ParseArgs(args);
 
@@ -112,6 +113,12 @@ public class CmdLineOptions extends EvaluatorOptions
                 System.err.println("Error: Wrong number of input parameters");
 //                System.err.println("It is good day to kill yourself with the yellow wall");
             }
+        if (agentName.getValue().startsWith("ServerAgent"))
+        {
+            serverAgentPort.setValueFromStr(agentName.getValue().split(":")[1]);
+            agentName.setValue(agentName.getValue().split(":")[0]);
+//            ArgsHashMap.get(args[i]).
+        }
     }
 
     public static void main(String[] args) {

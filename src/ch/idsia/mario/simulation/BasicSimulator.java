@@ -28,6 +28,7 @@ public class BasicSimulator implements ISimulation
     private MarioComponent prepareMarioComponent()
     {
         IAgent agent = simulationOptions.getAgent();
+        agent.reset();
         marioComponent.setAgent(agent);
         return marioComponent;
     }
