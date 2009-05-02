@@ -87,9 +87,9 @@ public class Evaluator implements Runnable
             bw.newLine();
             bw.write("%% " + this.evaluatorOptions.getAgent().getName());
             bw.newLine();
-            bw.write("Attempts = [1:" + EvaluationSummary.size() + "];");
+            bw.write("% Attempts = [1:" + EvaluationSummary.size() + "];");
             bw.newLine();
-            bw.write("%% BasicFitness ");
+            bw.write("% BasicFitness ");
             bw.newLine();
             bw.write("BasicFitness = [");
             for (EvaluationInfo ev : EvaluationSummary)
