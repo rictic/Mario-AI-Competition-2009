@@ -35,20 +35,30 @@ import java.util.Set;
 public class ToolsConfigurator extends JFrame
 {
     private Evaluator evaluator;
-    private static CmdLineOptions cmdLineOptions = null;
 
     public static void main(String[] args)
     {
-        cmdLineOptions = new CmdLineOptions(args);
+        CmdLineOptions cmdLineOptions = new CmdLineOptions(args);
+        // Create an Agent here
+        new ForwardAgent();
+        new HumanKeyboardAgent();
+        new RandomAgent();
+        new ForwardJumpingAgent();
+        new MLPAgent();
+        new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled()); 
+
         // TODO: more options:
         // -agent wox name, like evolvable
         // -ll digit  range [5:15], increase if succeeds.
         // -vb nothing/all/keys
-        ToolsConfigurator toolsConfigurator = null;
-        toolsConfigurator = new ToolsConfigurator(null, null);
+        // -exit on finish simulating
+        // run 9 windows.
+
+        ToolsConfigurator toolsConfigurator = new ToolsConfigurator(null, null);
         toolsConfigurator.setVisible(cmdLineOptions.isToolsConfigurator());
         if (cmdLineOptions != null)
         {
+            //TODO: ReImplement MVC Concept better
             toolsConfigurator.ChoiceLevelType.select(cmdLineOptions.getLevelType());
             toolsConfigurator.JSpinnerLevelDifficulty.setValue(cmdLineOptions.getLevelDifficulty());
             toolsConfigurator.JSpinnerLevelRandomizationSeed.setValue(cmdLineOptions.getLevelRandSeed());
@@ -59,13 +69,16 @@ public class ToolsConfigurator extends JFrame
             toolsConfigurator.CheckboxPauseWorld.setState(cmdLineOptions.isPauseWorld());
             toolsConfigurator.CheckboxPowerRestoration.setState(cmdLineOptions.isPowerRestoration());
             toolsConfigurator.CheckboxStopSimulationIfWin.setState(cmdLineOptions.isStopSimulationIfWin());
+            toolsConfigurator.CheckboxExitOnFinish.setState(cmdLineOptions.isExitProgramWhenFinished());
+            toolsConfigurator.TextFieldMatLabFileName.setText(cmdLineOptions.getMatlabFileName());
         }
 
         GlobalOptions.CurrentAgentStr = toolsConfigurator.ChoiceAgent.getSelectedItem();
 
         gameViewer = new GameViewer(null, null);
 
-        CreateMarioComponentFrame();
+        CreateMarioComponentFrame(cmdLineOptions.getViewLocation(),
+                                  cmdLineOptions.isViewAlwaysOnTop());
         marioComponent.Init();
 
         toolsConfigurator.setMarioComponent(marioComponent);
@@ -86,7 +99,12 @@ public class ToolsConfigurator extends JFrame
     }
 
     private static JFrame marioComponentFrame = null;
-    private static void CreateMarioComponentFrame()
+    public static void CreateMarioComponentFrame()
+    {
+        CreateMarioComponentFrame(new Point(0, 0), false);
+    }
+
+    private static void CreateMarioComponentFrame(Point location, boolean isAlwaysOnTop)
     {
         if (marioComponentFrame == null)
             marioComponentFrame = new JFrame("Mario Intelligent 2.0");
@@ -94,9 +112,9 @@ public class ToolsConfigurator extends JFrame
         marioComponentFrame.pack();
         marioComponentFrame.setResizable(false);
         marioComponentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        marioComponentFrame.setLocation(0, 0);
+        marioComponentFrame.setLocation(location);
         marioComponentFrame.setVisible(GlobalOptions.VisualizationOn);
-        marioComponentFrame.setAlwaysOnTop(true); //TODO: as cmdLineOption
+        marioComponentFrame.setAlwaysOnTop(isAlwaysOnTop); //TODO: as cmdLineOption
     }
 
     enum INTERFACE_TYPE {CONSOLE, GUI}
@@ -107,7 +125,7 @@ public class ToolsConfigurator extends JFrame
     public Checkbox CheckboxShowGameViewer = new Checkbox("Show Game Viewer", true);
 
     public Label LabelConsole = new Label("Console:");
-    public TextArea TextAreaConsole = new TextArea("Console:"/*, 8,40*/); // Verbose all, keys, events, actions, observations
+    public TextArea TextAreaConsole = new TextArea("Console:"/*, 8,40*/);  // Verbose all, keys, events, actions, observations
     private ConsoleHistory consoleHistory;
     public Checkbox CheckboxShowVizualization = new Checkbox("Enable Visualization", GlobalOptions.VisualizationOn);
     public Checkbox CheckboxMaximizeFPS = new Checkbox("Maximize FPS");
@@ -121,6 +139,8 @@ public class ToolsConfigurator extends JFrame
     public Checkbox CheckboxPowerRestoration = new Checkbox("Power Restoration");
     public JSpinner JSpinnerLevelLength = new JSpinner();
     public JSpinner JSpinnerMaxAttempts = new JSpinner();
+    public Checkbox CheckboxExitOnFinish = new Checkbox("Exit on finish");
+    public TextField TextFieldMatLabFileName = new TextField("FileName of output for Matlab");
     public Choice ChoiceVerbose = new Choice();
     private static final String strPlay        = "->  Play! ->";
     private static final String strSimulate    = "Simulate! ->";
@@ -177,18 +197,9 @@ public class ToolsConfigurator extends JFrame
 
         ChoiceAgent.addItemListener(toolsConfiguratorActions);
 
-        // Create an Agent here
-        new ForwardAgent();
-        new HumanKeyboardAgent();
-        new RandomAgent();
-        new ForwardJumpingAgent();
-        new MLPAgent();
-        new ServerAgent(4242); // TODO: Take port from CmdLineOptions;
         Set<String> AgentsNames = RegisterableAgent.getAgentsNames();
         for (String s : AgentsNames)
             ChoiceAgent.addItem(s);
-
-
 
         //       ChoiceLevelType
         ChoiceLevelType.addItem("Overground");
@@ -231,6 +242,8 @@ public class ToolsConfigurator extends JFrame
         JSpinnerMaxAttempts.setValue(5);
         JSpinnerMaxAttempts.addChangeListener(toolsConfiguratorActions);
 
+        //      CheckboxExitOnFinish
+        CheckboxExitOnFinish.addItemListener(toolsConfiguratorActions);
 
         //      ChoiceVerbose
         ChoiceVerbose.addItem("Nothing");
@@ -293,6 +306,7 @@ public class ToolsConfigurator extends JFrame
         JPanelMiscellaneousOptions.add(new Label("Max # of attemps:"));
         JPanelMiscellaneousOptions.add(JSpinnerMaxAttempts);
         JPanelMiscellaneousOptions.add(CheckboxStopSimulationIfWin);
+        JPanelMiscellaneousOptions.add(CheckboxExitOnFinish);
 
         JPanel JPanelConsole = new JPanel(new FlowLayout());
         JPanelConsole.setBorder(new TitledBorder("Console"));
@@ -346,7 +360,9 @@ public class ToolsConfigurator extends JFrame
         evaluatorOptions.maxAttempts = Integer.parseInt(JSpinnerMaxAttempts.getValue().toString());
         evaluatorOptions.setPauseWorld(CheckboxPauseWorld.getState());
         evaluatorOptions.setPowerRestoration(CheckboxPowerRestoration.getState());
-
+        evaluatorOptions.setExitProgramWhenFinished(CheckboxExitOnFinish.getState());
+        evaluatorOptions.setMatlabFileName(TextFieldMatLabFileName.getText());
+        
         return evaluatorOptions;
     }
 
@@ -399,7 +415,6 @@ public class ToolsConfigurator extends JFrame
 //                b.setLabel("Show");
 //            }
         }
-
 
         public void itemStateChanged(ItemEvent ie)
         {

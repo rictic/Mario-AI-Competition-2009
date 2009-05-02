@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.net.BindException;
 import java.util.Random;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,17 +23,19 @@ public class Server
     public boolean isClientConnected() {return !socket.isClosed();}
 
 
-    enum STATUS {SUCCEED, ERROR_SENDING, ERROR_RECEIVING};
+    enum STATUS {SUCCEED, ERROR_SENDING, ERROR_RECEIVING}
     private int port;
     private int requiredSentDataSize = 1;
     private int requiredReceiveDataSize = 1;
+    private List<Integer> trustedLengths = null; // TODO:SK trustedLengths
 
     private BufferedReader in = null;
     PrintWriter out = null;
     ServerSocket serverSocket = null;
     private Socket socket = null;
 
-    public Server(int port, int requiredSentDataSize, int requiredReceiveDataSize) throws IOException {
+    public Server(int port, int requiredSentDataSize, int requiredReceiveDataSize)
+    {
         this.port = port;
         this.requiredSentDataSize = requiredSentDataSize;
         this.requiredReceiveDataSize = requiredReceiveDataSize;

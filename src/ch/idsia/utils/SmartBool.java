@@ -11,6 +11,11 @@ public class SmartBool implements java.io.Serializable,
                                       Comparable<SmartBool>,
                                         ISmart<Boolean>
 {
+    public SmartBool(boolean b) {
+        this.setValue(b);
+    }
+    public SmartBool(){}
+
     public Boolean getValue() {
         return value;
     }

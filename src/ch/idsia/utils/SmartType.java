@@ -1,5 +1,7 @@
 package ch.idsia.utils;
 
+import java.awt.*;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Sergey Karakovskiy
@@ -9,6 +11,12 @@ package ch.idsia.utils;
  */
 public class SmartType<T> implements ISmart<T> {
     T value;
+
+    public SmartType(T t) {
+        this.setValue(t);
+    }
+
+    public SmartType() {}
 
     public T getValue() {
         return value;
@@ -26,6 +34,8 @@ public class SmartType<T> implements ISmart<T> {
             this.value = (T) value;
         else if (this.value instanceof Integer)
             this.value = (T) new Integer(value);
+        else if (this.value instanceof Point)
+            this.value = (T) value;
         return this;
     }
 }

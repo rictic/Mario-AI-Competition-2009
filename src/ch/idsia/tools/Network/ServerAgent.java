@@ -17,30 +17,35 @@ import java.io.IOException;
 public class ServerAgent extends RegisterableAgent implements IAgent
 {
     Server server = null;
+    private int port;
 
-    public ServerAgent(int port)
+    public ServerAgent(int port, boolean enable)
     {
         super("ServerAgent");
-        try
+        this.port = port;
+        if (enable)
         {
-            this.server = new Server(port, IEnvironment.NumberOfObservationElements, IEnvironment.NumberOfActions);
-            this.Name += server.getClientName();
+            createServer(port);
         }
-        catch (IOException e)
-        {
-            System.out.println("ServerAgent: Error Starting Server for ServerAgent");
-            e.printStackTrace();
-        }
+    }
+
+    // A tiny bit of singletone-like concept. Server is created ones for each egent. Basically we are not going
+    // To create more than one ServerAgent at a run, but this flexibility allows to add this feature with certain ease.
+    private void createServer(int port) {
+        this.server = new Server(port, IEnvironment.NumberOfObservationElements, IEnvironment.NumberOfActions);
+        this.Name += server.getClientName();
     }
 
     public boolean isAvailable()
     {
-        return server.isClientConnected();
+        return (server != null) && server.isClientConnected();
     }
 
     public void reset()
     {
         Action = EmptyAction;
+        if (server == null)
+            this.createServer(port);
     }
 
     private void sendLevelSceneObservation(IEnvironment observation) throws IOException
@@ -63,7 +68,6 @@ public class ServerAgent extends RegisterableAgent implements IAgent
     private boolean[] receiveAction() throws IOException, NullPointerException
     {
         String data = server.recvSafe();
-        System.out.println("action Line: [" + data + "]");
         boolean[] ret = new boolean[IEnvironment.NumberOfActions];
         String s = "[";
         for (int i = 0; i < IEnvironment.NumberOfActions; ++i)
