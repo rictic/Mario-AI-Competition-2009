@@ -35,21 +35,22 @@ public class Evaluator implements Runnable
         long startTime = System.currentTimeMillis();
         String startMessage = "Evaluation started at " + GlobalOptions.getDateTime(null);
         consoleHistory.addRecord(startMessage);
+
         do
         {
             consoleHistory.addRecord("Attempts left: " + evaluatorOptions.maxAttempts);
+            //TODO: SK place in common place for options.
             evaluationInfo = simulator.simulateOneLevel();
             evaluationInfo.levelType = evaluatorOptions.getLevelType();
             evaluationInfo.levelDifficulty = evaluatorOptions.getLevelDifficulty();
             evaluationInfo.levelRandSeed = evaluatorOptions.getLevelRandSeed();
             EvaluationSummary.add(evaluationInfo);
 //            System.out.println("run  finished with result : " + evaluationInfo);
-
             continueCondition = !GlobalOptions.StopSimulationIfWin || !(evaluationInfo.marioStatus == Mario.STATUS_WIN);
         }
         while ( --evaluatorOptions.maxAttempts > 0 && continueCondition );
 
-        String fileName = exportToMatLabFile(evaluatorOptions.getMatlabFileName());
+        String fileName = exportToMatLabFile();
         Collections.sort(EvaluationSummary, new EvBasicFitnessComparator());
 
         consoleHistory.addRecord("Entire Evaluation Finished with results:");
@@ -72,19 +73,19 @@ public class Evaluator implements Runnable
         //TODO: SK
     }
 
-    public String exportToMatLabFile(String fileName)
+    public String exportToMatLabFile()
     {
         //TODO:SK
         //Fitness over the time
         FileOutputStream fos = null;
-
+        String fileName = this.evaluatorOptions.getMatlabFileName() + ".m";
         try {
-            fileName += ".m";
-            fos = new FileOutputStream(fileName);
+
+            fos = new FileOutputStream(fileName);              
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
             int i = 0;
             bw.newLine();
-            bw.write("%% Attempts ");
+            bw.write("%% " + this.evaluatorOptions.getAgent().getName());
             bw.newLine();
             bw.write("Attempts = [1:" + EvaluationSummary.size() + "];");
             bw.newLine();

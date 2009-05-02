@@ -116,7 +116,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     }
 
-    public EvaluationInfo run1() {
+    public EvaluationInfo run1(int currentAttempt, int totalNumberOfAttempts) {
         running = true;
         AdjustFPS();
         EvaluationInfo evaluationInfo = new EvaluationInfo();
@@ -185,7 +185,11 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
             if (GlobalOptions.VisualizationOn) {
 //                String msg = GlobalOptions.CurrentAgentStr + ". ";
-                String msg = agent.getName();
+                String msg = "Attempts: " + currentAttempt + " of " + totalNumberOfAttempts;
+                drawString(og, msg, 7, 31, 0);
+                drawString(og, msg, 6, 30, 1);
+
+                msg = agent.getName();
                 drawString(og, msg, 7, 41, 0);
                 drawString(og, msg, 6, 40, 2);
                 msg = "Selected Actions: ";

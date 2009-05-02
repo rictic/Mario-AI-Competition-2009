@@ -16,6 +16,7 @@ import ch.idsia.utils.SmartInt;
 
 public class SimulationOptions 
 {
+
     protected IAgent agent;
     protected MarioComponent marioComponent = null;
     protected SmartInt levelType = new SmartInt();         //int
@@ -25,9 +26,12 @@ public class SimulationOptions
     protected SmartBool visualization = new SmartBool();     //boolean
     protected SmartBool pauseWorld = new SmartBool();      // boolean
     protected SmartBool powerRestoration = new SmartBool(); //boolean
-
-
     protected SmartBool stopSimulationIfWin = new SmartBool(); //boolean
+
+    //TODO: SK handle this common with all the rest options
+    public int maxAttempts;
+    public static int currentAttempt = 0;
+
 
     public SimulationOptions getBasicSimulatorOptions()
     {
@@ -41,6 +45,7 @@ public class SimulationOptions
         ret.setVisualization(visualization.getValue());
         ret.setPauseWorld(pauseWorld.getValue());
         ret.setPowerRestoration(powerRestoration.getValue());
+        ret.maxAttempts = this.maxAttempts;
         return ret;
     }
 
@@ -107,7 +112,6 @@ public class SimulationOptions
     public Boolean isPauseWorld() {
         return pauseWorld.getValue();
     }
-
 
     public Boolean isPowerRestoration() {
         return powerRestoration.getValue();

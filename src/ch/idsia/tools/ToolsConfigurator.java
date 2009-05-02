@@ -107,7 +107,7 @@ public class ToolsConfigurator extends JFrame
     private static void CreateMarioComponentFrame(Point location, boolean isAlwaysOnTop)
     {
         if (marioComponentFrame == null)
-            marioComponentFrame = new JFrame("Mario Intelligent 2.0");
+            marioComponentFrame = new JFrame(GlobalOptions.CurrentAgentStr + " - Mario Intelligent 2.0");
         marioComponentFrame.setContentPane(marioComponent);
         marioComponentFrame.pack();
         marioComponentFrame.setResizable(false);

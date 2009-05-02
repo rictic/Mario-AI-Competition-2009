@@ -14,7 +14,7 @@ import ch.idsia.utils.SmartType;
  */
 public class EvaluatorOptions extends SimulationOptions
 {
-    public int maxAttempts;
+    
 
     protected SmartBool exitProgramWhenFinished = new SmartBool(false);
     protected SmartType<String> matlabFileName = new SmartType<String>("DefaultMatlabFileName");
