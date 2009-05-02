@@ -293,10 +293,7 @@ public class Mario extends Sprite
             setLarge(true, true);
         if (cheatKeys[KEY_LIFE_UP])
             this.lives++;
-        if (GlobalOptions.pauseWorld)
-            world.paused = true;
-        else
-            world.paused = false;
+        world.paused = GlobalOptions.pauseWorld;
         if (cheatKeys[KEY_WIN])
             win();
 //        if (keys[KEY_DUMP_CURRENT_WORLD])
@@ -308,8 +305,6 @@ public class Mario extends Sprite
 //            } catch (IOException e) {
 //                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //            }
-
-
         canShoot = !keys[KEY_SPEED];
 
         mayJump = (onGround || sliding) && !keys[KEY_JUMP];
