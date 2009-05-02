@@ -30,7 +30,7 @@ public class SimulationOptions
 
     //TODO: SK handle this common with all the rest options
     public int maxAttempts;
-    public static int currentAttempt = 0;
+    public static int currentAttempt = 1;
 
 
     public SimulationOptions getBasicSimulatorOptions()
