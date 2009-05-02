@@ -6,6 +6,7 @@ import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.engine.GlobalOptions;
 
 import java.util.*;
+import java.io.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,8 +49,9 @@ public class Evaluator implements Runnable
         }
         while ( --evaluatorOptions.maxAttempts > 0 && continueCondition );
 
+        String fileName = exportToMatLabFile(evaluatorOptions.getMatlabFileName());
         Collections.sort(EvaluationSummary, new EvBasicFitnessComparator());
-        consoleHistory.addRecord(startMessage);
+
         consoleHistory.addRecord("Entire Evaluation Finished with results:");
         for (EvaluationInfo ev : EvaluationSummary)
         {
@@ -57,8 +59,53 @@ public class Evaluator implements Runnable
         }
         long currentTime = System.currentTimeMillis();
         long elapsed = currentTime - startTime;
+        consoleHistory.addRecord(startMessage);
         consoleHistory.addRecord("Evaluation Finished at " + GlobalOptions.getDateTime(null));
         consoleHistory.addRecord("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed));
+        consoleHistory.addRecord("Exported to " + fileName);
+        if (evaluatorOptions.isExitProgramWhenFinished())
+            System.exit(0);
+    }
+
+    public void getMeanEvaluationSummary()
+    {
+        //TODO: SK
+    }
+
+    public String exportToMatLabFile(String fileName)
+    {
+        //TODO:SK
+        //Fitness over the time
+        FileOutputStream fos = null;
+
+        try {
+            fileName += ".m";
+            fos = new FileOutputStream(fileName);
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+            int i = 0;
+            bw.newLine();
+            bw.write("%% Attempts ");
+            bw.newLine();
+            bw.write("Attempts = [1:" + EvaluationSummary.size() + "];");
+            bw.newLine();
+            bw.write("%% BasicFitness ");
+            bw.newLine();
+            bw.write("BasicFitness = [");
+            for (EvaluationInfo ev : EvaluationSummary)
+                bw.write(String.valueOf(ev.computeBasicFitness()) + " ");
+            bw.write("];");
+            bw.newLine();
+            bw.write("plot(Attempts,BasicFitness, '.')");
+            bw.close();
+            return fileName;
+        }
+        catch (FileNotFoundException e)  {  e.printStackTrace(); return "Null" ;       }
+        catch (IOException e) {     e.printStackTrace();  return "Null";      }
+    }
+
+    public void exportToPyPlot(String fileName)
+    {
+        //TODO:SK
     }
 
     public void reset()

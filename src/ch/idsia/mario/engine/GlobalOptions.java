@@ -66,6 +66,7 @@ public class GlobalOptions {
         private static boolean maxFPS;
         private static String agentName;
         private static Integer serverAgentPort;
+        private static boolean exitProgramWhenFinished;
 
         public Defaults()
         {
@@ -83,6 +84,7 @@ public class GlobalOptions {
             setStopSimulationIfWin(false);
             setAgentName("ForwardAgent");
             setServerAgentPort(4242);
+            setExitProgramWhenFinished(false);
         }
         
         public static boolean isGui() {  return gui; }
@@ -156,6 +158,14 @@ public class GlobalOptions {
 
         public static void setServerAgentPort(Integer serverAgentPort) {
             Defaults.serverAgentPort = serverAgentPort;
+        }
+
+        public static boolean isExitProgramWhenFinished() {
+            return exitProgramWhenFinished;
+        }
+
+        public static void setExitProgramWhenFinished(boolean exitProgramWhenFinished) {
+            Defaults.exitProgramWhenFinished = exitProgramWhenFinished;
         }
     }
 }

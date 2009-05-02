@@ -8,6 +8,7 @@ import ch.idsia.utils.SmartType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,6 +19,9 @@ import java.util.Map;
  */
 public class CmdLineOptions extends EvaluatorOptions
 {
+    HashMap<String, ISmart> ArgsHashMap = new HashMap<String, ISmart>();
+
+    // TODO: SK Move default options to xml, properties, beans, whatever..
     private SmartBool gui = new SmartBool();
     private SmartBool toolsConfigurator = new SmartBool();
     private SmartBool gameViewer = new SmartBool();
@@ -28,8 +32,13 @@ public class CmdLineOptions extends EvaluatorOptions
     private SmartBool maxFPS = new SmartBool();
     private SmartType<String> agentName = new SmartType<String>();
     private SmartInt serverAgentPort = new SmartInt();
+    private SmartBool serverAgentEnabled = new SmartBool(false);
+    private SmartType<Point> viewLocation = new SmartType<Point>(new Point(0,0));
+    private SmartInt viewLocationX = new SmartInt(0);
+    private SmartInt viewLocationY = new SmartInt(0);
 
-    HashMap<String, ISmart> ArgsHashMap = new HashMap<String, ISmart>();
+
+    private SmartBool viewAlwaysOnTop = new SmartBool(false);
 
     public CmdLineOptions(String[] args)
     {
@@ -52,6 +61,8 @@ public class CmdLineOptions extends EvaluatorOptions
         ArgsHashMap.put("-port", serverAgentPort.setValue(GlobalOptions.defaults.getServerAgentPort()));        
         ArgsHashMap.put("-visual", visualization.setValue(GlobalOptions.VisualizationOn));
         ArgsHashMap.put("-vis", visualization);
+        ArgsHashMap.put("-viewAlwaysOnTop", viewAlwaysOnTop);
+        ArgsHashMap.put("-vaot", viewAlwaysOnTop);
         ArgsHashMap.put("-gui", gui.setValue(GlobalOptions.defaults.isGui()));
         ArgsHashMap.put("-levelDifficulty", levelDifficulty.setValue(GlobalOptions.defaults.getLevelDifficulty()));
         ArgsHashMap.put("-ld", levelDifficulty);
@@ -81,12 +92,18 @@ public class CmdLineOptions extends EvaluatorOptions
         ArgsHashMap.put("-pr", powerRestoration);
         ArgsHashMap.put("-stopSimulationIfWin", stopSimulationIfWin.setValue(GlobalOptions.defaults.isStopSimulationIfWin()));
         ArgsHashMap.put("-ssiw", stopSimulationIfWin);
-        
+        ArgsHashMap.put("-exitWhenFinished", exitProgramWhenFinished.setValue(GlobalOptions.defaults.isExitProgramWhenFinished()));
+        ArgsHashMap.put("-ewf", exitProgramWhenFinished);
+        ArgsHashMap.put("-viewLocationX", viewLocationX);
+        ArgsHashMap.put("-viewLocationY", viewLocationY);
+        ArgsHashMap.put("-vlx", viewLocationX);
+        ArgsHashMap.put("-vly", viewLocationY) ;
+        ArgsHashMap.put("-m", matlabFileName);
         this.ParseArgs(args);
 
         if (isEcho())
         {
-            System.out.println("Options set to:");
+            System.out.println("\nOptions have been set to:");
             for (Map.Entry<String,ISmart> el : ArgsHashMap.entrySet())
                 System.out.println(el.getKey() + ": " + el.getValue().getValue());
         }
@@ -115,17 +132,21 @@ public class CmdLineOptions extends EvaluatorOptions
             }
         if (agentName.getValue().startsWith("ServerAgent"))
         {
-            serverAgentPort.setValueFromStr(agentName.getValue().split(":")[1]);
-            agentName.setValue(agentName.getValue().split(":")[0]);
+            if ( agentName.getValue().split(":").length > 1)
+            {
+                serverAgentPort.setValueFromStr(agentName.getValue().split(":")[1]);
+                agentName.setValue(agentName.getValue().split(":")[0]);
+            }
+            serverAgentEnabled.setValue(true);
 //            ArgsHashMap.get(args[i]).
         }
     }
 
-    public static void main(String[] args) {
-        CmdLineOptions cl = new CmdLineOptions(new String[]{"-ll", "42", "sadf", "AA", "-gv", "on", "sd", "lsd", "-echo", "-ll"});
-        System.out.println(cl.getLevelLength());
-        System.out.println(cl.isGameViewer());
-    }
+//    public static void main(String[] args) {
+//        CmdLineOptions cl = new CmdLineOptions(new String[]{"-ll", "42", "sadf", "AA", "-gv", "on", "sd", "lsd", "-echo", "-ll"});
+//        System.out.println(cl.getLevelLength());
+//        System.out.println(cl.isGameViewer());
+//    }
 
     public Boolean isToolsConfigurator() {
         return toolsConfigurator.getValue();
@@ -163,4 +184,26 @@ public class CmdLineOptions extends EvaluatorOptions
         return agentName.getValue();
     }
 
+    public Integer getServerAgentPort() {
+        return serverAgentPort.getValue();
+    }
+
+    public boolean isServerAgentEnabled() {
+        return serverAgentEnabled.getValue();
+    }
+
+    public Point getViewLocation()
+    {
+        viewLocation.setValue(new Point(this.viewLocationX.getValue(), this.viewLocationY.getValue()));
+        return viewLocation.getValue();
+    }
+
+    public boolean isViewAlwaysOnTop() {
+        return viewAlwaysOnTop.getValue();
+    }
+
+
+//    public void setViewLocation(Point viewLocation) {
+//        this.viewLocation.setValue(viewLocation);
+//    }
 }
