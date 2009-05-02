@@ -14,10 +14,11 @@ class Client:
     sock = None
 
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, ownerName):
         """Documentation"""
         self.Host = host
         self.Port = port
+        self.OwnerName = ownerName
         self.connectToDefaultServer()
 
     def __del__(self):
@@ -48,7 +49,7 @@ class Client:
             sys.stderr.write("[CONNECTION ERROR] %s\n" % msg[1])
             sys.exit(2)
 
-        GreatingMessage = "Client: Hello, Mario! I am %s! \r\n" %self.__class__.__name__
+        GreatingMessage = "Client: Dear Server, hello! I am %s! \r\n" % self.OwnerName
         self.sendData(GreatingMessage)
 
 #        self.sock.settimeout(150)
@@ -71,7 +72,7 @@ class Client:
         try:
             return self.sock.recv(self.bufSize)
         except  socket.error, msg:
-            sys.stderr.write("[SOCKET PIPE ERROR WHILE RECEIVING1] %s\n" % msg[1])
+            sys.stderr.write("[SOCKET PIPE ERROR WHILE RECEIVING] %s\n" % msg[1])
             sys.exit(4)
 
 
@@ -80,6 +81,6 @@ class Client:
         try:
             self.sock.send(data)
         except  socket.error, msg:
-            sys.stderr.write("[SOCKET PIPE ERROR WHILE SENDING1] %s\n" % msg[1])
+            sys.stderr.write("[SOCKET PIPE ERROR WHILE SENDING] %s\n" % msg[1])
             sys.exit(3)
 

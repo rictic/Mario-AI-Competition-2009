@@ -5,7 +5,9 @@ __date__ = "$Apr 30, 2009 6:46:04 PM$"
 if __name__ != "__main__":
     print "Importing %s " % __name__;
 
-class ForwardRandomAgent:
+from AI.Agent import Agent
+
+class ForwardRandomAgent(Agent):
     """
     Very simple example of an agent, who does not respect the observations,
     but just generates random forward moves and jumps

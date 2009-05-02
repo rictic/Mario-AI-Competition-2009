@@ -3,12 +3,12 @@ __author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
 __date__ ="$May 1, 2009 2:46:34 AM$"
 
 from Utils.DataAdaptor import parseObservation
-
+from AI.Agent import Agent
 
 if __name__ != "__main__":
     print "Importing %s " % __name__;
 
-class ForwardAgent:
+class ForwardAgent(Agent):
     """ In fact the Python twin of the
         corresponding Java ForwardAgent.
     """
@@ -47,7 +47,7 @@ class ForwardAgent:
 
     def _a2(self):
         """ Interesting, sometimes very useful behaviour which might prevent falling down into a gap!
-        Just uncomment this method and see how it behaves.
+        Just substitue getAction by this method and see how it behaves.
 
         Get observation, (possibly analyse it), sent an action back
         @param obs: observation from the environment

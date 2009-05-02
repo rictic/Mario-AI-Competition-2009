@@ -18,7 +18,7 @@ class TCPClientAgent:
         """Documentation"""
         print "Initializing TCP Agent...";
         self.agent = Agent
-        self.client = Client(host, port)
+        self.client = Client(host, port, self.agent.name)
         self.connected = True
         pass
 
