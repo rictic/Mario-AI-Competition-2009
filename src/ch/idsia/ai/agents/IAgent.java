@@ -11,8 +11,7 @@ import ch.idsia.mario.environments.IEnvironment;
  */
 public interface IAgent
 {
-    public enum AGENT_TYPE {AI, HUMAN, TCP_SERVER
-    }
+    public enum AGENT_TYPE {AI, HUMAN, TCP_SERVER }
 
     // clears all dynamic data, such as hidden layers in recurrent networks
     // just implement an empty method for a reactive controller
