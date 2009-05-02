@@ -75,8 +75,6 @@ public class Evaluator implements Runnable
 
     public String exportToMatLabFile()
     {
-        //TODO:SK
-        //Fitness over the time
         FileOutputStream fos = null;
         String fileName = this.evaluatorOptions.getMatlabFileName() + ".m";
         try {
