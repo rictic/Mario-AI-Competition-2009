@@ -97,8 +97,9 @@ public class CmdLineOptions extends EvaluatorOptions
         ArgsHashMap.put("-viewLocationX", viewLocationX);
         ArgsHashMap.put("-viewLocationY", viewLocationY);
         ArgsHashMap.put("-vlx", viewLocationX);
-        ArgsHashMap.put("-vly", viewLocationY) ;
+        ArgsHashMap.put("-vly", viewLocationY);
         ArgsHashMap.put("-m", matlabFileName);
+
         this.ParseArgs(args);
 
         if (isEcho())
