@@ -1,3 +1,12 @@
 #!/bin/sh
 
-cat iMario1.m iMario2.m iMario3.m iMario4.m iMario5.m iMario6.m >> iMarioResult.m
+I=1
+LIM=6
+OUT=iMarioResult.m
+while [ $I -le $LIM ]
+do
+	echo	processing iMario${I}.m ...
+	cat iMario${I}.m >> ${OUT}
+	I=$(($I+1))
+done
+echo "results saved to ${OUT}" 
