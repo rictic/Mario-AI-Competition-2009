@@ -6,7 +6,9 @@ import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.engine.GlobalOptions;
 
 import java.util.*;
+import java.util.List;
 import java.io.*;
+import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,6 +28,8 @@ public class Evaluator implements Runnable
 
     public List<EvaluationInfo> evaluate()
     {
+        if (consoleHistory == null)
+            consoleHistory = new ConsoleHistory(new TextArea());
         ISimulation simulator = new BasicSimulator(evaluatorOptions.getBasicSimulatorOptions());
         // Simulate One Level
 

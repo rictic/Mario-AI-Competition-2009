@@ -12,10 +12,17 @@ import ch.idsia.ai.tasks.ProgressTask;
  */
 public class Evolve {
 
+    final static int generations = 100;
+    final static int populationSize = 100;
+
     public static void main(String[] args) {
         Evolvable initial = new SimpleMLPAgent ();
         Task task = new ProgressTask();
-        ES es = new ES (task, initial, 100);
+        ES es = new ES (task, initial, populationSize);
+        for (int gen = 0; gen < generations; gen++) {
+            es.nextGeneration();
+            System.out.println("Generation " + gen + " best " + es.getBestFitnesses()[0]);
+        }
     }
 
 }

@@ -34,6 +34,7 @@ public class SimulationOptions
 
 
     public SimulationOptions getBasicSimulatorOptions()
+            // is this just a copy method then? /julian
     {
         SimulationOptions ret = new SimulationOptions();
         ret.setAgent(agent);
