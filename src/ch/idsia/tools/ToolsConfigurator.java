@@ -337,7 +337,7 @@ public class ToolsConfigurator extends JFrame
         if (evaluator == null)
             evaluator = new Evaluator(evaluatorOptions);
         else
-            evaluator.Init(evaluatorOptions);
+            evaluator.init(evaluatorOptions);
         evaluator.setConsole(consoleHistory);
         evaluator.start();
         consoleHistory.addRecord("Play/Simultlation started!");

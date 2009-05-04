@@ -21,10 +21,10 @@ public class Evaluator implements Runnable
     Thread thisThread = null;
     EvaluatorOptions evaluatorOptions;
 
-    private List<EvaluationInfo> EvaluationSummary = new ArrayList<EvaluationInfo>();
+    private List<EvaluationInfo> evaluationSummary = new ArrayList<EvaluationInfo>();
     private ConsoleHistory consoleHistory;
 
-    public void Evaluate()
+    public List<EvaluationInfo> evaluate()
     {
         ISimulation simulator = new BasicSimulator(evaluatorOptions.getBasicSimulatorOptions());
         // Simulate One Level
@@ -44,17 +44,17 @@ public class Evaluator implements Runnable
             evaluationInfo.levelType = evaluatorOptions.getLevelType();
             evaluationInfo.levelDifficulty = evaluatorOptions.getLevelDifficulty();
             evaluationInfo.levelRandSeed = evaluatorOptions.getLevelRandSeed();
-            EvaluationSummary.add(evaluationInfo);
+            evaluationSummary.add(evaluationInfo);
 //            System.out.println("run  finished with result : " + evaluationInfo);
             continueCondition = !GlobalOptions.StopSimulationIfWin || !(evaluationInfo.marioStatus == Mario.STATUS_WIN);
         }
         while ( --evaluatorOptions.maxAttempts > 0 && continueCondition );
 
         String fileName = exportToMatLabFile();
-        Collections.sort(EvaluationSummary, new EvBasicFitnessComparator());
+        Collections.sort(evaluationSummary, new evBasicFitnessComparator());
 
         consoleHistory.addRecord("Entire Evaluation Finished with results:");
-        for (EvaluationInfo ev : EvaluationSummary)
+        for (EvaluationInfo ev : evaluationSummary)
         {
             consoleHistory.addRecord(ev.toString());
         }
@@ -66,6 +66,7 @@ public class Evaluator implements Runnable
         consoleHistory.addRecord("Exported to " + fileName);
         if (evaluatorOptions.isExitProgramWhenFinished())
             System.exit(0);
+        return evaluationSummary;
     }
 
     public void getMeanEvaluationSummary()
@@ -87,12 +88,12 @@ public class Evaluator implements Runnable
             bw.newLine();
             bw.write("% BasicFitness ");            
             bw.newLine();
-            bw.write("Attempts = [1:" + EvaluationSummary.size() + "];");
+            bw.write("Attempts = [1:" + evaluationSummary.size() + "];");
             bw.newLine();
             bw.write("% BasicFitness ");
             bw.newLine();
             bw.write("BasicFitness = [");
-            for (EvaluationInfo ev : EvaluationSummary)
+            for (EvaluationInfo ev : evaluationSummary)
                 bw.write(String.valueOf(ev.computeBasicFitness()) + " ");
             bw.write("];");
             bw.newLine();
@@ -111,17 +112,17 @@ public class Evaluator implements Runnable
 
     public void reset()
     {
-        EvaluationSummary = new ArrayList<EvaluationInfo>();
+        evaluationSummary = new ArrayList<EvaluationInfo>();
     }
 
     public Evaluator(EvaluatorOptions evaluatorOptions)
     {                      
-        Init(evaluatorOptions);
+        init(evaluatorOptions);
     }
 
     public void run()
     {
-        Evaluate();
+        evaluate();
     }
 
     public void start()
@@ -129,7 +130,7 @@ public class Evaluator implements Runnable
         thisThread.start();
     }
 
-    public void Init(EvaluatorOptions evaluatorOptions)
+    public void init(EvaluatorOptions evaluatorOptions)
     {
         Mario.resetStatic();
         this.evaluatorOptions = evaluatorOptions;
@@ -141,7 +142,7 @@ public class Evaluator implements Runnable
     }
 }
 
-class EvBasicFitnessComparator implements Comparator
+class evBasicFitnessComparator implements Comparator
 {
     public int compare(Object o, Object o1)
     {
@@ -156,7 +157,7 @@ class EvBasicFitnessComparator implements Comparator
     }
 }
 
-class EvCoinsFitnessComparator implements Comparator
+class evCoinsFitnessComparator implements Comparator
 {
     public int compare(Object o, Object o1)
     {
@@ -171,7 +172,7 @@ class EvCoinsFitnessComparator implements Comparator
     }
 }
 
-class EvDistanceFitnessComparator implements Comparator
+class evDistanceFitnessComparator implements Comparator
 {
     public int compare(Object o, Object o1)
     {
