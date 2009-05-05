@@ -40,7 +40,7 @@ public class GlobalOptions {
         gameViewer = gv;
     }
 
-    public static void AdjustMarioComponentFPS() { marioComponent.AdjustFPS(); }
+    public static void AdjustMarioComponentFPS() { marioComponent.adjustFPS(); }
 
     public static void gameViewerTick() {gameViewer.tick();    }
 

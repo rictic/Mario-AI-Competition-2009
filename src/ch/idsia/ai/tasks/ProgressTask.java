@@ -5,6 +5,7 @@ import ch.idsia.tools.Evaluator;
 import ch.idsia.tools.EvaluatorOptions;
 import ch.idsia.tools.EvaluationInfo;
 import ch.idsia.mario.engine.level.LevelGenerator;
+import ch.idsia.mario.engine.MarioComponent;
 
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class ProgressTask implements Task {
         options.setPauseWorld(false);
         options.setPowerRestoration(false);
         options.setStopSimulationIfWin(false);
+        MarioComponent marioComponent = new MarioComponent(320, 240, null);
+        marioComponent.init();
+        options.setMarioComponent(marioComponent);
         Evaluator evaluator = new Evaluator (options);
         List<EvaluationInfo> results = evaluator.evaluate ();
         double distanceTravelled = 0;

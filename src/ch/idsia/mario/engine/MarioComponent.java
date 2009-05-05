@@ -47,7 +47,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     public MarioComponent(int width, int height, IAgent agent)
     {
-        AdjustFPS();
+        adjustFPS();
 
 
         this.setFocusable(true);
@@ -70,7 +70,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     }
 
-    public void AdjustFPS()
+    public void adjustFPS()
     {
         int fps = GlobalOptions.FPS;
         delay = (fps > 0) ? (fps >= GlobalOptions.InfiniteFPS) ? 0 : (1000 / fps) : 100;
@@ -85,7 +85,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     {
     }
 
-    public void Init()
+    public void init()
     {
 //        if (GlobalOptions.VisualizationOn)
 //        {
@@ -118,7 +118,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     public EvaluationInfo run1(int currentAttempt, int totalNumberOfAttempts) {
         running = true;
-        AdjustFPS();
+        adjustFPS();
         EvaluationInfo evaluationInfo = new EvaluationInfo();
 
         VolatileImage image = null;

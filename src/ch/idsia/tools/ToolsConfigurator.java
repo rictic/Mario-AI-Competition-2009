@@ -79,7 +79,7 @@ public class ToolsConfigurator extends JFrame
 
         CreateMarioComponentFrame(cmdLineOptions.getViewLocation(),
                                   cmdLineOptions.isViewAlwaysOnTop());
-        marioComponent.Init();
+        marioComponent.init();
 
         toolsConfigurator.setMarioComponent(marioComponent);
 
@@ -383,7 +383,7 @@ public class ToolsConfigurator extends JFrame
                     GlobalOptions.FPS = GlobalOptions.InfiniteFPS;
                     CheckboxMaximizeFPS.setState(true);
                 }
-                marioComponent.AdjustFPS();
+                marioComponent.adjustFPS();
                 consoleHistory.addRecord("FPS set to " + (CheckboxMaximizeFPS.getState() ? "infinity" : GlobalOptions.FPS) );
             }
             else if (ob == downFPS)
@@ -391,7 +391,7 @@ public class ToolsConfigurator extends JFrame
                 if(--GlobalOptions.FPS < 1)
                     GlobalOptions.FPS = 1;
                 CheckboxMaximizeFPS.setState(false);
-                marioComponent.AdjustFPS();
+                marioComponent.adjustFPS();
                 consoleHistory.addRecord("FPS set to " + (CheckboxMaximizeFPS.getState() ? "infinity" : GlobalOptions.FPS) );
             }
             else if (ob == JButtonResetEvaluationSummary)
@@ -434,7 +434,7 @@ public class ToolsConfigurator extends JFrame
             {
                 prevFPS = (GlobalOptions.FPS == GlobalOptions.InfiniteFPS) ? prevFPS : GlobalOptions.FPS;
                 GlobalOptions.FPS = CheckboxMaximizeFPS.getState() ? 100 : prevFPS;
-                marioComponent.AdjustFPS();
+                marioComponent.adjustFPS();
                 consoleHistory.addRecord("FPS set to " + (CheckboxMaximizeFPS.getState() ? "infinity" : GlobalOptions.FPS) );
             }
             else if (ob == CheckboxEnableTimer)
