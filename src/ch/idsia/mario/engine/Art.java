@@ -32,20 +32,23 @@ public class Art
     {
         try
         {
-            mario = cutImage(gc, "mariosheet.png", 32, 32);
-            smallMario = cutImage(gc, "smallmariosheet.png", 16, 16);
-            fireMario = cutImage(gc, "firemariosheet.png", 32, 32);
-            enemies = cutImage(gc, "enemysheet.png", 16, 32);
-            items = cutImage(gc, "itemsheet.png", 16, 16);
-            level = cutImage(gc, "mapsheet.png", 16, 16);
-            map = cutImage(gc, "worldmap.png", 16, 16);
-            particles = cutImage(gc, "particlesheet.png", 8, 8);
-            bg = cutImage(gc, "bgsheet.png", 32, 32);
-            logo = getImage(gc, "logo.gif");
-            titleScreen = getImage(gc, "title.gif");
-            font = cutImage(gc, "font.gif", 8, 8);
-            endScene = cutImage(gc, "endscene.gif", 96, 96);
-            gameOver = cutImage(gc, "gameovergost.gif", 96, 64);
+            final String curDir = System.getProperty("user.dir");
+            final String img = curDir + "/../img/";
+            System.out.println("Image Directory: " + img);
+            mario = cutImage(gc, img + "mariosheet.png", 32, 32);
+            smallMario = cutImage(gc, img + "smallmariosheet.png", 16, 16);
+            fireMario = cutImage(gc, img + "firemariosheet.png", 32, 32);
+            enemies = cutImage(gc, img + "enemysheet.png", 16, 32);
+            items = cutImage(gc, img + "itemsheet.png", 16, 16);
+            level = cutImage(gc, img + "mapsheet.png", 16, 16);
+            map = cutImage(gc, img + "worldmap.png", 16, 16);
+            particles = cutImage(gc, img + "particlesheet.png", 8, 8);
+            bg = cutImage(gc, img + "bgsheet.png", 32, 32);
+            logo = getImage(gc, img + "logo.gif");
+            titleScreen = getImage(gc, img + "title.gif");
+            font = cutImage(gc, img + "font.gif", 8, 8);
+            endScene = cutImage(gc, img + "endscene.gif", 96, 96);
+            gameOver = cutImage(gc, img + "gameovergost.gif", 96, 64);
         }
         catch (Exception e)
         {

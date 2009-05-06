@@ -21,6 +21,7 @@ public class ProgressTask implements Task {
     EvaluatorOptions options = new EvaluatorOptions ();
 
     public double[] evaluate(IAgent controller) {
+        // todo replace with getDefaults ()
         options.setAgent(controller);
         options.setLevelLength(320);
         options.setLevelDifficulty(0);
