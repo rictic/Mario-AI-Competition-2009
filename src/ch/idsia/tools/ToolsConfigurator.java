@@ -94,7 +94,7 @@ public class ToolsConfigurator extends JFrame
 
         if (!cmdLineOptions.isToolsConfigurator())
         {
-            toolsConfigurator.SimulateOrPlay();
+            toolsConfigurator.simulateOrPlay();
         }
     }
 
@@ -329,7 +329,7 @@ public class ToolsConfigurator extends JFrame
         this.pack();
     }
 
-    public void SimulateOrPlay()
+    public void simulateOrPlay()
     {
         //Simulate or Play!
         EvaluatorOptions evaluatorOptions = prepareEvaluatorOptions();
@@ -340,7 +340,7 @@ public class ToolsConfigurator extends JFrame
             evaluator.init(evaluatorOptions);
         evaluator.setConsole(consoleHistory);
         evaluator.start();
-        consoleHistory.addRecord("Play/Simultlation started!");
+        consoleHistory.addRecord("Play/Simulation started!");
     }
 
     private EvaluatorOptions prepareEvaluatorOptions()
@@ -374,7 +374,7 @@ public class ToolsConfigurator extends JFrame
             Object ob = ae.getSource();
             if (ob == JButtonPlaySimulate)
             {
-                SimulateOrPlay();
+                simulateOrPlay();
             }
             else if (ob == upFPS)
             {

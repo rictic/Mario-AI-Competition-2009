@@ -1,6 +1,7 @@
 package ch.idsia.ai.tasks;
 
 import ch.idsia.ai.agents.IAgent;
+import ch.idsia.tools.EvaluatorOptions;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,16 +12,17 @@ import ch.idsia.ai.agents.IAgent;
  */
 public class CoinTask implements Task {
 
+    private EvaluatorOptions options = new EvaluatorOptions ();
 
     public double[] evaluate(IAgent controller) {
         return new double[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void setDifficuly(int difficulty) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void setOptions(EvaluatorOptions options) {
+        this.options = options;
     }
 
-    public void setSeed(int seed) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public EvaluatorOptions getOptions() {
+        return options;
     }
 }

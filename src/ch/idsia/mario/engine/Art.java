@@ -12,6 +12,7 @@ import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 
 public class Art
@@ -30,29 +31,29 @@ public class Art
     public static Image[][] gameOver;
     public static Image logo;
     public static Image titleScreen;
+    final static String curDir = System.getProperty("user.dir");
+    final static String img = curDir + "/../img/";
 
     public static void init(GraphicsConfiguration gc)
     {
         try
         {
-            final String curDir = System.getProperty("user.dir");
-            String img = curDir + "/../img/";
+
             System.out.println("Image Directory: " + img);
-            img = "";
-            mario = cutImage(gc, img + "mariosheet.png", 32, 32);
-            smallMario = cutImage(gc, img + "smallmariosheet.png", 16, 16);
-            fireMario = cutImage(gc, img + "firemariosheet.png", 32, 32);
-            enemies = cutImage(gc, img + "enemysheet.png", 16, 32);
-            items = cutImage(gc, img + "itemsheet.png", 16, 16);
-            level = cutImage(gc, img + "mapsheet.png", 16, 16);
-            map = cutImage(gc, img + "worldmap.png", 16, 16);
-            particles = cutImage(gc, img + "particlesheet.png", 8, 8);
-            bg = cutImage(gc, img + "bgsheet.png", 32, 32);
-            logo = getImage(gc, img + "logo.gif");
-            titleScreen = getImage(gc, img + "title.gif");
-            font = cutImage(gc, img + "font.gif", 8, 8);
-            endScene = cutImage(gc, img + "endscene.gif", 96, 96);
-            gameOver = cutImage(gc, img + "gameovergost.gif", 96, 64);
+            mario = cutImage(gc, "mariosheet.png", 32, 32);
+            smallMario = cutImage(gc, "smallmariosheet.png", 16, 16);
+            fireMario = cutImage(gc, "firemariosheet.png", 32, 32);
+            enemies = cutImage(gc, "enemysheet.png", 16, 32);
+            items = cutImage(gc, "itemsheet.png", 16, 16);
+            level = cutImage(gc, "mapsheet.png", 16, 16);
+            map = cutImage(gc, "worldmap.png", 16, 16);
+            particles = cutImage(gc, "particlesheet.png", 8, 8);
+            bg = cutImage(gc, "bgsheet.png", 32, 32);
+            logo = getImage(gc, "logo.gif");
+            titleScreen = getImage(gc, "title.gif");
+            font = cutImage(gc, "font.gif", 8, 8);
+            endScene = cutImage(gc, "endscene.gif", 96, 96);
+            gameOver = cutImage(gc, "gameovergost.gif", 96, 64);
         }
         catch (Exception e)
         {
@@ -63,12 +64,39 @@ public class Art
 
     private static Image getImage(GraphicsConfiguration gc, String imageName) throws IOException
     {
-        ImageReader pngReader = ImageIO.getImageReadersBySuffix("png").next ();
+
 
         System.out.println("trying to get " + imageName);
-        File file = new File(imageName);
-        System.out.println("File: " + file + ", exists " + file.exists());
-        BufferedImage source = ImageIO.read(file);
+        BufferedImage source = null;
+        try {
+            source = ImageIO.read(Art.class.getResourceAsStream(imageName));
+            System.out.println("source: " + source);
+        }
+        catch (Exception e) {
+            e.printStackTrace ();
+        }
+
+        if (source == null) {
+            System.out.println("Could not read image through getResourceAsStream");
+            imageName = img + imageName;
+            File file = new File(imageName);
+            System.out.println("File: " + file + ", exists " + file.exists() + ", length " + file.length ());
+            source = ImageIO.read(file);
+            System.out.println("source: " + source);
+        }
+        if (source == null) { // still!!
+            System.out.println("Could not read image through ImageIO either!");
+            File file = new File(imageName);
+            ImageInputStream iis = ImageIO.createImageInputStream(file);
+            String suffix = imageName.substring(imageName.length() - 3, imageName.length());
+            System.out.println("suffix: " + suffix);
+            ImageReader reader = ImageIO.getImageReadersBySuffix(suffix).next ();
+            System.out.println("Let's try this reader: " + reader);
+            reader.setInput(iis, true);
+            source = reader.read (0);
+            System.out.println("source: " + source);
+        }
+        //System.out.println("gc: " + gc);
         Image image = gc.createCompatibleImage(source.getWidth(), source.getHeight(), Transparency.BITMASK);
         Graphics2D g = (Graphics2D) image.getGraphics();
         g.setComposite(AlphaComposite.Src);

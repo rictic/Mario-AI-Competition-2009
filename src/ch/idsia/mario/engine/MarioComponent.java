@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MarioComponent extends JComponent implements Runnable, /*KeyListener,*/ FocusListener, IEnvironment
-{
+public class MarioComponent extends JComponent implements Runnable, /*KeyListener,*/ FocusListener, IEnvironment {
     private static final long serialVersionUID = 790878775993203817L;
     public static final int TICKS_PER_SECOND = 24;
 
@@ -33,7 +32,9 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     int delay;
     Thread animator;
 
-    public void setGameViewer(GameViewer gameViewer) {this.gameViewer = gameViewer; }
+    public void setGameViewer(GameViewer gameViewer) {
+        this.gameViewer = gameViewer;
+    }
 
     private GameViewer gameViewer = null;
 
@@ -45,8 +46,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     private Mario mario = null;
     private LevelScene levelScene = null;
 
-    public MarioComponent(int width, int height, IAgent agent)
-    {
+    public MarioComponent(int width, int height, IAgent agent) {
         adjustFPS();
 
 
@@ -65,54 +65,43 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         this.cheatAgent = new CheaterKeyboardAgent();
         this.addKeyListener(cheatAgent);
         this.setAgent(agent);
-        
+
         GlobalOptions.registerMarioComponent(this);
 
     }
 
-    public void adjustFPS()
-    {
+    public void adjustFPS() {
         int fps = GlobalOptions.FPS;
         delay = (fps > 0) ? (fps >= GlobalOptions.InfiniteFPS) ? 0 : (1000 / fps) : 100;
 //        System.out.println("Delay: " + delay);
     }
 
-    public void paint(Graphics g)
-    {
+    public void paint(Graphics g) {
     }
 
-    public void update(Graphics g)
-    {
+    public void update(Graphics g) {
     }
 
-    public void init()
-    {
-//        if (GlobalOptions.VisualizationOn)
-//        {
-//
-            graphicsConfiguration = getGraphicsConfiguration();
+    public void init() {
+        graphicsConfiguration = getGraphicsConfiguration();
+//        if (graphicsConfiguration != null) {
             Art.init(graphicsConfiguration);
 //        }
-
     }
 
-    public void start()
-    {
-        if (!running)
-        {
+    public void start() {
+        if (!running) {
             running = true;
             animator = new Thread(this, "Game Thread");
             animator.start();
         }
     }
 
-    public void stop()
-    {
+    public void stop() {
         running = false;
     }
 
-    public void run()
-    {
+    public void run() {
 
     }
 
@@ -129,8 +118,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         g = getGraphics();
         og = image.getGraphics();
 
-        if (!GlobalOptions.VisualizationOn)
-        {
+        if (!GlobalOptions.VisualizationOn) {
             String msgClick = "Vizualization is not available";
             drawString(og, msgClick, 160 - msgClick.length() * 4, 110, 1);
             drawString(og, msgClick, 160 - msgClick.length() * 4, 110, 7);
@@ -158,26 +146,23 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             float alpha = 0;
 
 //            og.setColor(Color.RED);
-            if (GlobalOptions.VisualizationOn)
-            {
+            if (GlobalOptions.VisualizationOn) {
                 og.fillRect(0, 0, 320, 240);
                 scene.render(og, alpha);
             }
 
-            if (agent instanceof ServerAgent &&  !((ServerAgent)agent).isAvailable())
-            {
+            if (agent instanceof ServerAgent && !((ServerAgent) agent).isAvailable()) {
                 System.err.println("Agent became unavailable. Simulation Stopped");
                 running = false;
                 break;
             }
-            
+
             boolean[] action = agent.GetAction(this/*DummyEnvironment*/);
             for (int i = 0; i < IEnvironment.NumberOfActions; ++i)
-            if (action[i])
-            {
-                ++totalActionsPerfomed;
-                break;
-            }
+                if (action[i]) {
+                    ++totalActionsPerfomed;
+                    break;
+                }
             //Apply Action;
 //            scene.keys = action;
             ((LevelScene) scene).mario.keys = action;
@@ -224,8 +209,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
                 } else {
                     g.drawImage(image, 0, 0, null);
                 }
-            } else
-            {
+            } else {
                 // Win or Die without renderer!! independently.
                 marioStatus = ((LevelScene) scene).mario.getStatus();
                 if (marioStatus != Mario.STATUS_RUNNING)
@@ -248,15 +232,15 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         evaluationInfo.agentType = agent.getClass().getSimpleName();
         evaluationInfo.agentName = agent.getName();
         evaluationInfo.marioStatus = mario.getStatus();
-        evaluationInfo.livesLeft = mario.lives;               
+        evaluationInfo.livesLeft = mario.lives;
         evaluationInfo.lengthOfLevelPassedPhys = mario.x;
         evaluationInfo.lengthOfLevelPassedCells = mario.mapX;
         evaluationInfo.totalLengthOfLevelCells = levelScene.level.getWidthCells();
         evaluationInfo.totalLengthOfLevelPhys = levelScene.level.getWidthPhys();
-        evaluationInfo.timeSpentOnLevel     = levelScene.getStartTime();
-        evaluationInfo.timeLeft     = levelScene.getTimeLeft();
-        evaluationInfo.totalTimeGiven       = levelScene.getTotalTime();
-        evaluationInfo.numberOfGainedCoins  = Mario.coins;
+        evaluationInfo.timeSpentOnLevel = levelScene.getStartTime();
+        evaluationInfo.timeLeft = levelScene.getTimeLeft();
+        evaluationInfo.totalTimeGiven = levelScene.getTotalTime();
+        evaluationInfo.numberOfGainedCoins = Mario.coins;
 //        evaluationInfo.totalNumberOfCoins   = -1 ; // TODO: total Number of coins.
         evaluationInfo.totalActionsPerfomed = totalActionsPerfomed; // Counted during the play/simulation process
         evaluationInfo.totalFramesPerfomed = frame;
@@ -264,11 +248,9 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         return evaluationInfo;
     }
 
-    private void drawString(Graphics g, String text, int x, int y, int c)
-    {
+    private void drawString(Graphics g, String text, int x, int y, int c) {
         char[] ch = text.toCharArray();
-        for (int i = 0; i < ch.length; i++)
-        {
+        for (int i = 0; i < ch.length; i++) {
             g.drawImage(Art.font[ch[i] - 32][c], x + i * 8, y, null);
         }
     }
@@ -283,50 +265,42 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 //        toggleKey(arg0.getKeyCode(), false);
 //    }
 
-    public void startLevel(long seed, int difficulty, int type, int levelLength)
-    {
+    public void startLevel(long seed, int difficulty, int type, int levelLength) {
         scene = new LevelScene(graphicsConfiguration, this, seed, difficulty, type, levelLength);
         levelScene = ((LevelScene) scene);
         scene.init();
     }
 
-    public void levelFailed()
-    {
+    public void levelFailed() {
 //        scene = mapScene;
         Mario.lives--;
         stop();
     }
 
-    public void focusGained(FocusEvent arg0)
-    {
+    public void focusGained(FocusEvent arg0) {
         focused = true;
     }
 
-    public void focusLost(FocusEvent arg0)
-    {
+    public void focusLost(FocusEvent arg0) {
         focused = false;
     }
 
-    public void levelWon()
-    {
+    public void levelWon() {
         stop();
 //        scene = mapScene;
 //        mapScene.levelWon();
     }
 
-    public void toTitle()
-    {
+    public void toTitle() {
 //        Mario.resetStatic();
 //        scene = new TitleScene(this, graphicsConfiguration);
 //        scene.init();
     }
 
-    public List<String> getObservation(boolean Enemies, boolean LevelMap, boolean Complete, int ZLevel)
-    {
+    public List<String> getObservation(boolean Enemies, boolean LevelMap, boolean Complete, int ZLevel) {
         if (scene instanceof LevelScene)
-            return ((LevelScene)scene).LevelSceneAroundMarioASCIIDump(Enemies, LevelMap, Complete, ZLevel);
-        else
-        {
+            return ((LevelScene) scene).LevelSceneAroundMarioASCIIDump(Enemies, LevelMap, Complete, ZLevel);
+        else {
             List<String> ret = new ArrayList<String>();
 //
             return ret;
@@ -343,13 +317,13 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     public byte[][] getEnemiesObservation() {
         if (scene instanceof LevelScene)
-            return ((LevelScene)scene).enemiesObservation(1);
+            return ((LevelScene) scene).enemiesObservation(1);
         return null;
     }
 
     public byte[][] getLevelSceneObservation() {
         if (scene instanceof LevelScene)
-            return ((LevelScene)scene).levelSceneObservation(1);
+            return ((LevelScene) scene).levelSceneObservation(1);
         return null;
     }
 
@@ -369,14 +343,12 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 //        return null;
 //    }
 
-    public void setAgent(IAgent agent)
-    {
+    public void setAgent(IAgent agent) {
         this.agent = agent;
-        if (agent instanceof KeyAdapter)
-        {
+        if (agent instanceof KeyAdapter) {
             if (prevHumanKeyBoardAgent != null)
                 this.removeKeyListener(prevHumanKeyBoardAgent);
-            this.prevHumanKeyBoardAgent = (KeyAdapter)agent;
+            this.prevHumanKeyBoardAgent = (KeyAdapter) agent;
             this.addKeyListener(prevHumanKeyBoardAgent);
         }
     }
