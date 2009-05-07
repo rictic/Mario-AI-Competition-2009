@@ -23,7 +23,7 @@ public class MainRun
 {
     public static void main(String[] args) {
         CmdLineOptions cmdLineOptions = new CmdLineOptions(args);
-        EvaluationOptions evaluationOptions = cmdLineOptions;
+        EvaluationOptions evaluationOptions = cmdLineOptions;  // if none options mentioned, all defalults used.
 
         // Create an Agent here
         new ForwardAgent();
