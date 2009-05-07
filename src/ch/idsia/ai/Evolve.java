@@ -6,9 +6,9 @@ import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.mario.engine.level.LevelGenerator;
 import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.mario.engine.GlobalOptions;
-import ch.idsia.tools.EvaluatorOptions;
 import ch.idsia.tools.GameViewer;
 import ch.idsia.tools.ToolsConfigurator;
+import ch.idsia.tools.EvaluationOptions;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,7 +23,7 @@ public class Evolve {
 
     public static void main(String[] args) {
         //GlobalOptions.VisualizationOn = false;
-        EvaluatorOptions options = new EvaluatorOptions ();
+        EvaluationOptions options = new EvaluationOptions ();
         options.setLevelLength(320);
         options.setLevelDifficulty(0);
         options.setLevelRandSeed(1);

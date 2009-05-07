@@ -43,6 +43,14 @@ public class ProgressTask implements Task {
         return new double[]{distanceTravelled};
     }
 
+    public void setOptions(EvaluationOptions options) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public EvaluationOptions getOptions() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public void setDifficuly(int difficulty) {
         options.setLevelDifficulty(difficulty);
     }

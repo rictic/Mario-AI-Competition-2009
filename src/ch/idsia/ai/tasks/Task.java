@@ -1,7 +1,7 @@
 package ch.idsia.ai.tasks;
 
 import ch.idsia.ai.agents.IAgent;
-import ch.idsia.tools.EvaluatorOptions;
+import ch.idsia.tools.EvaluationOptions;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,8 +14,8 @@ public interface Task {
 
     public double[] evaluate (IAgent controller);
 
-    public void setOptions (EvaluatorOptions options);
+    public void setOptions (EvaluationOptions options);
 
-    public EvaluatorOptions getOptions ();
+    public EvaluationOptions getOptions ();
 
 }

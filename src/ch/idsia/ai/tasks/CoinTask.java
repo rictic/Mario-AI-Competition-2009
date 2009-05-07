@@ -1,7 +1,7 @@
 package ch.idsia.ai.tasks;
 
 import ch.idsia.ai.agents.IAgent;
-import ch.idsia.tools.EvaluatorOptions;
+import ch.idsia.tools.EvaluationOptions;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,17 +12,17 @@ import ch.idsia.tools.EvaluatorOptions;
  */
 public class CoinTask implements Task {
 
-    private EvaluatorOptions options = new EvaluatorOptions ();
+    private EvaluationOptions options = new EvaluationOptions ();
 
     public double[] evaluate(IAgent controller) {
         return new double[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void setOptions(EvaluatorOptions options) {
+    public void setOptions(EvaluationOptions options) {
         this.options = options;
     }
 
-    public EvaluatorOptions getOptions() {
+    public EvaluationOptions getOptions() {
         return options;
     }
 }
