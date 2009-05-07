@@ -24,7 +24,7 @@ public class GlobalOptions {
     public static boolean TimerOn = true;
     public static String CurrentAgentStr = "No Agent";
 
-    public static Defaults defaults = new Defaults();
+//    public static Defaults defaults = new Defaults();
     public static boolean GameVeiwerContinuousUpdatesOn = false;
     public static boolean PowerRestoration;
 
@@ -54,118 +54,123 @@ public class GlobalOptions {
         return dateFormat.format(date);
     }
 
-    public static class Defaults extends SimulationOptions
-    {
-        private static boolean gui;
-        private static boolean toolsConfigurator;
-        private static boolean gameViewer;
-        private static boolean gameViewerContinuousUpdates;
-        private static boolean timer;
-        private static int attemptsNumber;
-        private static boolean echo;
-        private static boolean maxFPS;
-        private static String agentName;
-        private static Integer serverAgentPort;
-        private static boolean exitProgramWhenFinished;
-
-        public Defaults()
-        {
-            setLevelLength(320);
-            setLevelDifficulty(0);
-            setLevelRandSeed(1);
-            setVisualization(true);
-            setLevelType(LevelGenerator.TYPE_OVERGROUND);
-            setGui(false);
-            setAttemptsNumber(1);
-            setEcho(false);
-            setMaxFPS(false);
-            setPauseWorld(false);
-            setPowerRestoration(false);
-            setStopSimulationIfWin(false);
-            setAgentName("ForwardAgent");
-            setServerAgentPort(4242);
-            setExitProgramWhenFinished(false);
-        }
-        
-        public static boolean isGui() {  return gui; }
-
-        public static void setGui(boolean gui) { Defaults.gui = gui;  }
-
-        public static boolean isToolsConfigurator() {return toolsConfigurator; }
-
-        public static void setToolsConfigurator(boolean toolsConfigurator) { Defaults.toolsConfigurator = toolsConfigurator; }
-
-        public static boolean isGameViewer() {
-            return gameViewer;
-        }
-
-        public static void setGameViewer(boolean gameViewer) {
-            Defaults.gameViewer = gameViewer;
-        }
-
-        public static boolean isGameViewerContinuousUpdates() {
-            return gameViewerContinuousUpdates;
-        }
-
-        public static void setGameViewerContinuousUpdates(boolean gameViewerContinuousUpdates) {
-            Defaults.gameViewerContinuousUpdates = gameViewerContinuousUpdates;
-        }
-
-        public static boolean isTimer() {
-            return timer;
-        }
-
-        public static void setTimer(boolean timer) {
-            Defaults.timer = timer;
-        }
-
-        public static int getAttemptsNumber() {
-            return attemptsNumber;
-        }
-
-        public static void setAttemptsNumber(int attemptsNumber) {
-            Defaults.attemptsNumber = attemptsNumber;
-        }
-
-        public static boolean isEcho() {
-            return echo;
-        }
-
-        public static void setEcho(boolean echo) {
-            Defaults.echo = echo;
-        }
-
-        public static boolean isMaxFPS() {
-            return maxFPS;
-        }
-
-        public static void setMaxFPS(boolean maxFPS) {
-            Defaults.maxFPS = maxFPS;
-        }
-
-        public static String getAgentName() {
-            return agentName;
-        }
-
-        public static void setAgentName(String agentName) {
-            Defaults.agentName = agentName;
-        }
-
-        public static Integer getServerAgentPort()
-        {
-            return serverAgentPort;
-        }
-
-        public static void setServerAgentPort(Integer serverAgentPort) {
-            Defaults.serverAgentPort = serverAgentPort;
-        }
-
-        public static boolean isExitProgramWhenFinished() {
-            return exitProgramWhenFinished;
-        }
-
-        public static void setExitProgramWhenFinished(boolean exitProgramWhenFinished) {
-            Defaults.exitProgramWhenFinished = exitProgramWhenFinished;
-        }
-    }
+//    public static class Defaults extends SimulationOptions
+//    {
+//        private static boolean gui;
+//        private static boolean toolsConfigurator;
+//        private static boolean gameViewer;
+//        private static boolean gameViewerContinuousUpdates;
+//        private static boolean timer;
+//        private static int attemptsNumber;
+//        private static boolean echo;
+//        private static boolean maxFPS;
+//        private static String agentName;
+//        private static Integer serverAgentPort;
+//        private static boolean exitProgramWhenFinished;
+//
+//        public static SimulationOptions getDefaults () {
+//            // todo
+//            return null;
+//        }
+//
+//        public Defaults()
+//        {
+//            setLevelLength(320);
+//            setLevelDifficulty(0);
+//            setLevelRandSeed(1);
+//            setVisualization(true);
+//            setLevelType(LevelGenerator.TYPE_OVERGROUND);
+//            setGui(false);
+//            setAttemptsNumber(1);
+//            setEcho(false);
+//            setMaxFPS(false);
+//            setPauseWorld(false);
+//            setPowerRestoration(false);
+//            setStopSimulationIfWin(false);
+//            setAgentName("ForwardAgent");
+//            setServerAgentPort(4242);
+//            setExitProgramWhenFinished(false);
+//        }
+//
+//        public static boolean isGui() {  return gui; }
+//
+//        public static void setGui(boolean gui) { Defaults.gui = gui;  }
+//
+//        public static boolean isToolsConfigurator() {return toolsConfigurator; }
+//
+//        public static void setToolsConfigurator(boolean toolsConfigurator) { Defaults.toolsConfigurator = toolsConfigurator; }
+//
+//        public static boolean isGameViewer() {
+//            return gameViewer;
+//        }
+//
+//        public static void setGameViewer(boolean gameViewer) {
+//            Defaults.gameViewer = gameViewer;
+//        }
+//
+//        public static boolean isGameViewerContinuousUpdates() {
+//            return gameViewerContinuousUpdates;
+//        }
+//
+//        public static void setGameViewerContinuousUpdates(boolean gameViewerContinuousUpdates) {
+//            Defaults.gameViewerContinuousUpdates = gameViewerContinuousUpdates;
+//        }
+//
+//        public static boolean isTimer() {
+//            return timer;
+//        }
+//
+//        public static void setTimer(boolean timer) {
+//            Defaults.timer = timer;
+//        }
+//
+//        public static int getAttemptsNumber() {
+//            return attemptsNumber;
+//        }
+//
+//        public static void setAttemptsNumber(int attemptsNumber) {
+//            Defaults.attemptsNumber = attemptsNumber;
+//        }
+//
+//        public static boolean isEcho() {
+//            return echo;
+//        }
+//
+//        public static void setEcho(boolean echo) {
+//            Defaults.echo = echo;
+//        }
+//
+//        public static boolean isMaxFPS() {
+//            return maxFPS;
+//        }
+//
+//        public static void setMaxFPS(boolean maxFPS) {
+//            Defaults.maxFPS = maxFPS;
+//        }
+//
+//        public static String getAgentName() {
+//            return agentName;
+//        }
+//
+//        public static void setAgentName(String agentName) {
+//            Defaults.agentName = agentName;
+//        }
+//
+//        public static Integer getServerAgentPort()
+//        {
+//            return serverAgentPort;
+//        }
+//
+//        public static void setServerAgentPort(Integer serverAgentPort) {
+//            Defaults.serverAgentPort = serverAgentPort;
+//        }
+//
+//        public static boolean isExitProgramWhenFinished() {
+//            return exitProgramWhenFinished;
+//        }
+//
+//        public static void setExitProgramWhenFinished(boolean exitProgramWhenFinished) {
+//            Defaults.exitProgramWhenFinished = exitProgramWhenFinished;
+//        }
+//    }
 }

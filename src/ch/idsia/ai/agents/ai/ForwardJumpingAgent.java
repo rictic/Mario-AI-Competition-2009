@@ -28,7 +28,7 @@ public class ForwardJumpingAgent extends RegisterableAgent implements IAgent
         Action[Mario.KEY_SPEED] = true;
     }
 
-    public boolean[] GetAction(IEnvironment observation)
+    public boolean[] getAction(IEnvironment observation)
     {
         Action[Mario.KEY_SPEED] = Action[Mario.KEY_JUMP] =  observation.mayMarioJump() || !observation.isMarioOnGround();
         return Action;

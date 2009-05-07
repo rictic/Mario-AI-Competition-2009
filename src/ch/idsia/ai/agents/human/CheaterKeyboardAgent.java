@@ -31,7 +31,7 @@ public class CheaterKeyboardAgent extends KeyAdapter implements IAgent {
         Action = new boolean[IEnvironment.NumberOfActionSlots];
     }
 
-    public boolean[] GetAction(IEnvironment observation)
+    public boolean[] getAction(IEnvironment observation)
     {
         return Action;
     }

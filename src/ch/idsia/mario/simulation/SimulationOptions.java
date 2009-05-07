@@ -2,8 +2,7 @@ package ch.idsia.mario.simulation;
 
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.mario.engine.MarioComponent;
-import ch.idsia.utils.SmartBool;
-import ch.idsia.utils.SmartInt;
+import ch.idsia.utils.ParameterContainer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,39 +13,46 @@ import ch.idsia.utils.SmartInt;
  */
 
 
-public class SimulationOptions 
+public class SimulationOptions extends ParameterContainer
 {
-
     protected IAgent agent;
     protected MarioComponent marioComponent = null;
-    protected SmartInt levelType = new SmartInt();         //int
-    protected SmartInt levelDifficulty = new SmartInt();   //int
-    protected SmartInt levelLength = new SmartInt();       //int
-    protected SmartInt levelRandSeed = new SmartInt();     //int
-    protected SmartBool visualization = new SmartBool();     //boolean
-    protected SmartBool pauseWorld = new SmartBool();      // boolean
-    protected SmartBool powerRestoration = new SmartBool(); //boolean
-    protected SmartBool stopSimulationIfWin = new SmartBool(); //boolean
+    
+//    protected SmartInt levelType = new SmartInt();         //int
+//    protected SmartInt levelDifficulty = new SmartInt();   //int
+//    protected SmartInt levelLength = new SmartInt();       //int
+//    protected SmartInt levelRandSeed = new SmartInt();     //int
+//    protected SmartBool visualization = new SmartBool();     //boolean
+//    protected SmartBool pauseWorld = new SmartBool();      // boolean
+//    protected SmartBool powerRestoration = new SmartBool(); //boolean
+//    protected SmartBool stopSimulationIfWin = new SmartBool(); //boolean
 
     //TODO: SK handle this common with all the rest options
-    public int maxAttempts;
-    public static int currentAttempt = 1;
+//    public int maxAttempts;
+    public static int currentAttempt = -42;
 
 
-    public SimulationOptions getBasicSimulatorOptions()
+    protected SimulationOptions()
+    {
+        super();
+        currentAttempt = 1;
+    }
+
+    // TODO: rename to copy
+    public SimulationOptions getSimulationOptionsCopy()
             // is this just a copy method then? /julian
     {
         SimulationOptions ret = new SimulationOptions();
         ret.setAgent(agent);
-        ret.setLevelDifficulty(levelDifficulty.getValue());
-        ret.setLevelLength(levelLength.getValue());
-        ret.setLevelRandSeed(levelRandSeed.getValue());
-        ret.setLevelType(levelType.getValue());
+        ret.setLevelDifficulty(getLevelDifficulty());
+        ret.setLevelLength(getLevelLength());
+        ret.setLevelRandSeed(getLevelRandSeed());
+        ret.setLevelType(getLevelType());
         ret.setMarioComponent(marioComponent);
-        ret.setVisualization(visualization.getValue());
-        ret.setPauseWorld(pauseWorld.getValue());
-        ret.setPowerRestoration(powerRestoration.getValue());
-        ret.maxAttempts = this.maxAttempts;
+        ret.setVisualization(isVisualization());
+        ret.setPauseWorld(isPauseWorld());
+        ret.setPowerRestoration(isPowerRestoration());
+        ret.setMaxAttempts(getMaxAttempts());
         return ret;
     }
 
@@ -60,74 +66,66 @@ public class SimulationOptions
 
     public MarioComponent getMarioComponent() {
         return marioComponent;
-    }
+    }  
 
     public void setMarioComponent(MarioComponent marioComponent) {
         this.marioComponent = marioComponent;
     }
 
+    // TODO? LEVEL_TYPE enum?
     public int getLevelType() {
-        return levelType.getValue();
-    }
+        return i(getParameterValue("-lt"));      }
 
     public void setLevelType(int levelType) {
-        this.levelType.setValue(levelType);
-    }
+        setParameterValue("-lt", s(levelType));    }
 
     public int getLevelDifficulty() {
-        return levelDifficulty.getValue();
-    }
+        return i(getParameterValue("-ld"));                           }
 
     public void setLevelDifficulty(int levelDifficulty) {
-        this.levelDifficulty.setValue(levelDifficulty);
-    }
+        setParameterValue("-ld", s(levelDifficulty));    }
 
     public int getLevelLength() {
-        return levelLength.getValue();
-    }
+        return i(getParameterValue("-ll"));      }
 
     public void setLevelLength(int levelLength) {
-        this.levelLength.setValue(levelLength);
-    }
+        setParameterValue("-ll", s(levelLength));    }
 
     public int getLevelRandSeed() {
-        return levelRandSeed.getValue();
-    }
+        return i(getParameterValue("-ls"));     }
 
     public void setLevelRandSeed(int levelRandSeed) {
-        this.levelRandSeed.setValue(levelRandSeed);
-    }
+        setParameterValue("-ls", s(levelRandSeed));    }
 
     public boolean isVisualization() {
-        return visualization.getValue();
-    }
+        return b(getParameterValue("-vis"));     }
 
     public void setVisualization(boolean visualization) {
-        this.visualization.setValue(visualization);
-    }
+        setParameterValue("-vis", s(visualization));    }
 
     public void setPauseWorld(boolean pauseWorld) {
-        this.pauseWorld.setValue(pauseWorld);
-    }
+        setParameterValue("-pw", s(pauseWorld));    }
 
     public Boolean isPauseWorld() {
-        return pauseWorld.getValue();
-    }
+        return b(getParameterValue("-pw"));     }
 
     public Boolean isPowerRestoration() {
-        return powerRestoration.getValue();
-    }
+        return b(getParameterValue("-pr"));     }
 
     public void setPowerRestoration(boolean powerRestoration) {
-        this.powerRestoration.setValue(powerRestoration);
-    }
+        setParameterValue("-pr", s(powerRestoration));    }
 
     public Boolean isStopSimulationIfWin() {
-        return stopSimulationIfWin.getValue();
-    }
+        return b(getParameterValue("-ssiw"));     }
 
     public void setStopSimulationIfWin(boolean stopSimulationIfWin) {
-        this.stopSimulationIfWin.setValue(stopSimulationIfWin);
-    }
+        setParameterValue("-ssiw", s(stopSimulationIfWin));    }
+
+    public int getMaxAttempts() {
+        return i(getParameterValue("-an"));     }
+
+    public void setMaxAttempts(int maxAttempts) {
+        setParameterValue("-an", s(maxAttempts));    }
+
 
 }

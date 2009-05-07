@@ -81,7 +81,7 @@ public class ServerAgent extends RegisterableAgent implements IAgent
         return ret;
     }
 
-    public boolean[] GetAction(IEnvironment observation)
+    public boolean[] getAction(IEnvironment observation)
     {
         try
         {

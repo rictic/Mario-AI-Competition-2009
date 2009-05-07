@@ -22,7 +22,6 @@ public class Server
 
     public boolean isClientConnected() {return !socket.isClosed();}
 
-
     enum STATUS {SUCCEED, ERROR_SENDING, ERROR_RECEIVING}
     private int port;
     private int requiredSentDataSize = 1;

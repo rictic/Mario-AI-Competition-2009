@@ -98,7 +98,7 @@ public class EvaluationInfo
         ret += "\n             Total Actions Perfomed : " + totalActionsPerfomed;
         ret += "\n              Total Frames Perfomed : " + totalFramesPerfomed;
         ret += "\n               Simple Basic Fitness : " + df.format(computeBasicFitness());
-        ret += "\nMemo: " + ((Memo == "") ? "Empty" : Memo);
+        ret += "\nMemo: " + ((Memo.equals("")) ? "Empty" : Memo);
         return ret;
     }
 }

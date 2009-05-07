@@ -41,7 +41,6 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     private IAgent agent = null;
     private CheaterKeyboardAgent cheatAgent = null;
 
-    private Scale2x scale2x = new Scale2x(320, 240);
     private KeyAdapter prevHumanKeyBoardAgent;
     private Mario mario = null;
     private LevelScene levelScene = null;
@@ -157,7 +156,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
                 break;
             }
 
-            boolean[] action = agent.GetAction(this/*DummyEnvironment*/);
+            boolean[] action = agent.getAction(this/*DummyEnvironment*/);
             for (int i = 0; i < IEnvironment.NumberOfActions; ++i)
                 if (action[i]) {
                     ++totalActionsPerfomed;
@@ -166,7 +165,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             //Apply Action;
 //            scene.keys = action;
             ((LevelScene) scene).mario.keys = action;
-            ((LevelScene) scene).mario.cheatKeys = cheatAgent.GetAction(null);
+            ((LevelScene) scene).mario.cheatKeys = cheatAgent.getAction(null);
 
             if (GlobalOptions.VisualizationOn) {
 //                String msg = GlobalOptions.CurrentAgentStr + ". ";
@@ -201,11 +200,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
                 drawString(og, "FPS: " + ((GlobalOptions.FPS > 99) ? "\\infty" : GlobalOptions.FPS.toString()), 4, 21, 7);
 
                 if (width != 320 || height != 240) {
-                    if (useScale2x) {
-                        g.drawImage(scale2x.scale(image), 0, 0, null);
-                    } else {
                         g.drawImage(image, 0, 0, 640 * 2, 480 * 2, null);
-                    }
                 } else {
                     g.drawImage(image, 0, 0, null);
                 }

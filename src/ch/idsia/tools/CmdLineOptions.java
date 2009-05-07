@@ -1,14 +1,10 @@
 package ch.idsia.tools;
 
 import ch.idsia.mario.engine.GlobalOptions;
-import ch.idsia.utils.ISmart;
-import ch.idsia.utils.SmartBool;
-import ch.idsia.utils.SmartInt;
-import ch.idsia.utils.SmartType;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.awt.*;
+import java.util.*;
+import java.awt.Point;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,96 +13,84 @@ import java.awt.*;
  * Time: 9:05:20 AM
  * Package: com.mojang.mario.Tools
  */
-public class CmdLineOptions extends EvaluatorOptions
+public class CmdLineOptions extends EvaluationOptions
 {
-    HashMap<String, ISmart> ArgsHashMap = new HashMap<String, ISmart>();
-
     // TODO: SK Move default options to xml, properties, beans, whatever..
-    private SmartBool gui = new SmartBool();
-    private SmartBool toolsConfigurator = new SmartBool();
-    private SmartBool gameViewer = new SmartBool();
-    private SmartBool gameViewerContinuousUpdates = new SmartBool();
-    private SmartBool timer = new SmartBool();
-    private SmartInt attemptsNumber = new SmartInt();
-    private SmartBool echo = new SmartBool();
-    private SmartBool maxFPS = new SmartBool();
-    private SmartType<String> agentName = new SmartType<String>();
-    private SmartInt serverAgentPort = new SmartInt();
-    private SmartBool serverAgentEnabled = new SmartBool(false);
-    private SmartType<Point> viewLocation = new SmartType<Point>(new Point(0,0));
-    private SmartInt viewLocationX = new SmartInt(0);
-    private SmartInt viewLocationY = new SmartInt(0);
-
-
-    private SmartBool viewAlwaysOnTop = new SmartBool(false);
+//    private SmartBool gui = new SmartBool();
+//    private SmartBool toolsConfigurator = new SmartBool();
+//    private SmartBool gameViewer = new SmartBool();
+//    private SmartBool gameViewerContinuousUpdates = new SmartBool();
+//    private SmartBool timer = new SmartBool();
+//    private SmartInt attemptsNumber = new SmartInt();
+//    private SmartBool echo = new SmartBool();
+//    private SmartBool maxFPS = new SmartBool();
+//    private SmartType<String> agentName = new SmartType<String>();
+//    private SmartInt serverAgentPort = new SmartInt();
+//    private SmartBool serverAgentEnabled = new SmartBool(false);
+//    private SmartType<Point> viewLocation = new SmartType<Point>(new Point(0,0));
+//    private SmartInt viewLocationX = new SmartInt(0);
+//    private SmartInt viewLocationY = new SmartInt(0);
+//
+//    private SmartBool viewAlwaysOnTop = new SmartBool(false);
 
     public CmdLineOptions(String[] args)
     {
-        // CmdLineOptions
-        // -gui on/off
+        super();
         // -agent wox name, like evolvable in simplerace
         // -ll digit  range [5:15], increase if succeeds.
-        // -ld digit
-        // -lt digit
-        // -ls digit
-        // -tc on/off tools
-        // -gv on/off game viewer
-        // -et on/off
-        // -vb nothing/all/keys
-        // -na digit number of attempts
-        // -vis on/off
+        //TODO Load From File.
 
-        ArgsHashMap.put("-ag", agentName.setValue(GlobalOptions.defaults.getAgentName()));
-        ArgsHashMap.put("-agentName", agentName);
-        ArgsHashMap.put("-port", serverAgentPort.setValue(GlobalOptions.defaults.getServerAgentPort()));        
-        ArgsHashMap.put("-visual", visualization.setValue(GlobalOptions.VisualizationOn));
-        ArgsHashMap.put("-vis", visualization);
-        ArgsHashMap.put("-viewAlwaysOnTop", viewAlwaysOnTop);
-        ArgsHashMap.put("-vaot", viewAlwaysOnTop);
-        ArgsHashMap.put("-gui", gui.setValue(GlobalOptions.defaults.isGui()));
-        ArgsHashMap.put("-levelDifficulty", levelDifficulty.setValue(GlobalOptions.defaults.getLevelDifficulty()));
-        ArgsHashMap.put("-ld", levelDifficulty);
-        ArgsHashMap.put("-levelLength", levelLength.setValue(GlobalOptions.defaults.getLevelLength()));
-        ArgsHashMap.put("-ll", levelLength);
-        ArgsHashMap.put("-levelType", levelType.setValue(GlobalOptions.defaults.getLevelType()));
-        ArgsHashMap.put("-lt", levelType);
-        ArgsHashMap.put("-levelRandSeed", levelRandSeed.setValue(GlobalOptions.defaults.getLevelRandSeed()));
-        ArgsHashMap.put("-ls", levelRandSeed);
-        ArgsHashMap.put("-toolsConfigurator", toolsConfigurator.setValue(GlobalOptions.defaults.isToolsConfigurator()) );
-        ArgsHashMap.put("-tc", toolsConfigurator);
-        ArgsHashMap.put("-gameViewer", gameViewer.setValue(GlobalOptions.defaults.isGameViewer()));
-        ArgsHashMap.put("-gv", gameViewer);
-        ArgsHashMap.put("-gameViewerContinuousUpdates", gameViewerContinuousUpdates.setValue(GlobalOptions.defaults.isGameViewerContinuousUpdates()));
-        ArgsHashMap.put("-gvc", gameViewerContinuousUpdates);
-        ArgsHashMap.put("-timer", timer.setValue(GlobalOptions.defaults.isTimer()));
-        ArgsHashMap.put("-t", timer);
-//        ArgsHashMap.put("-verbose", GlobalOptions.defaults.getLevelRandSeed());
-        ArgsHashMap.put("-attemptsNumber", attemptsNumber.setValue(GlobalOptions.defaults.getAttemptsNumber()));
-        ArgsHashMap.put("-an", attemptsNumber);
-        ArgsHashMap.put("-echo", echo.setValue(GlobalOptions.defaults.isEcho()));
-        ArgsHashMap.put("-e", echo);
-        ArgsHashMap.put("-maxFPS", maxFPS.setValue(GlobalOptions.defaults.isMaxFPS()));
-        ArgsHashMap.put("-pw", pauseWorld.setValue(GlobalOptions.defaults.isPauseWorld()));
-        ArgsHashMap.put("-pauseWorld", pauseWorld);
-        ArgsHashMap.put("-powerRestoration", powerRestoration.setValue(GlobalOptions.defaults.isPowerRestoration()));
-        ArgsHashMap.put("-pr", powerRestoration);
-        ArgsHashMap.put("-stopSimulationIfWin", stopSimulationIfWin.setValue(GlobalOptions.defaults.isStopSimulationIfWin()));
-        ArgsHashMap.put("-ssiw", stopSimulationIfWin);
-        ArgsHashMap.put("-exitWhenFinished", exitProgramWhenFinished.setValue(GlobalOptions.defaults.isExitProgramWhenFinished()));
-        ArgsHashMap.put("-ewf", exitProgramWhenFinished);
-        ArgsHashMap.put("-viewLocationX", viewLocationX);
-        ArgsHashMap.put("-viewLocationY", viewLocationY);
-        ArgsHashMap.put("-vlx", viewLocationX);
-        ArgsHashMap.put("-vly", viewLocationY);
-        ArgsHashMap.put("-m", matlabFileName);
+//        argsHashMap.put("-ag", agentName.setValue(GlobalOptions.defaults.getAgentName()));
+//        argsHashMap.put("-agentName", agentName);
+//        argsHashMap.put("-port", serverAgentPort.setValue(GlobalOptions.defaults.getServerAgentPort()));
+//        argsHashMap.put("-visual", visualization.setValue(GlobalOptions.VisualizationOn));
+//        argsHashMap.put("-vis", visualization);
+//        argsHashMap.put("-viewAlwaysOnTop", viewAlwaysOnTop);
+//        argsHashMap.put("-vaot", viewAlwaysOnTop);
+//        argsHashMap.put("-gui", gui.setValue(GlobalOptions.defaults.isGui()));
+//        argsHashMap.put("-levelDifficulty", levelDifficulty.setValue(GlobalOptions.defaults.getLevelDifficulty()));
+//        argsHashMap.put("-ld", levelDifficulty);
+//        argsHashMap.put("-levelLength", levelLength.setValue(GlobalOptions.defaults.getLevelLength()));
+//        argsHashMap.put("-ll", levelLength);
+//        argsHashMap.put("-levelType", levelType.setValue(GlobalOptions.defaults.getLevelType()));
+//        argsHashMap.put("-lt", levelType);
+//        argsHashMap.put("-levelRandSeed", levelRandSeed.setValue(GlobalOptions.defaults.getLevelRandSeed()));
+//        argsHashMap.put("-ls", levelRandSeed);
+//        argsHashMap.put("-toolsConfigurator", toolsConfigurator.setValue(GlobalOptions.defaults.isToolsConfigurator()) );
+//        argsHashMap.put("-tc", toolsConfigurator);
+//        argsHashMap.put("-gameViewer", gameViewer.setValue(GlobalOptions.defaults.isGameViewer()));
+//        argsHashMap.put("-gv", gameViewer);
+//        argsHashMap.put("-gameViewerContinuousUpdates", gameViewerContinuousUpdates.setValue(GlobalOptions.defaults.isGameViewerContinuousUpdates()));
+//        argsHashMap.put("-gvc", gameViewerContinuousUpdates);
+//        argsHashMap.put("-timer", timer.setValue(GlobalOptions.defaults.isTimer()));
+//        argsHashMap.put("-t", timer);
+////        argsHashMap.put("-verbose", GlobalOptions.defaults.getVerbose());
+//        argsHashMap.put("-attemptsNumber", attemptsNumber.setValue(GlobalOptions.defaults.getAttemptsNumber()));
+//        argsHashMap.put("-an", attemptsNumber);
+//        argsHashMap.put("-echo", echo.setValue(GlobalOptions.defaults.isEcho()));
+//        argsHashMap.put("-e", echo);
+//        argsHashMap.put("-maxFPS", maxFPS.setValue(GlobalOptions.defaults.isMaxFPS()));
+//        argsHashMap.put("-pw", pauseWorld.setValue(GlobalOptions.defaults.isPauseWorld()));
+//        argsHashMap.put("-pauseWorld", pauseWorld);
+//        argsHashMap.put("-powerRestoration", powerRestoration.setValue(GlobalOptions.defaults.isPowerRestoration()));
+//        argsHashMap.put("-pr", powerRestoration);
+//        argsHashMap.put("-stopSimulationIfWin", stopSimulationIfWin.setValue(GlobalOptions.defaults.isStopSimulationIfWin()));
+//        argsHashMap.put("-ssiw", stopSimulationIfWin);
+//        argsHashMap.put("-exitWhenFinished", exitProgramWhenFinished.setValue(GlobalOptions.defaults.isExitProgramWhenFinished()));
+//        argsHashMap.put("-ewf", exitProgramWhenFinished);
+//        argsHashMap.put("-viewLocationX", viewLocationX);
+//        argsHashMap.put("-viewLocationY", viewLocationY);
+//        argsHashMap.put("-vlx", viewLocationX);
+//        argsHashMap.put("-vly", viewLocationY);
+//        argsHashMap.put("-m", matlabFileName);
 
         this.ParseArgs(args);
 
         if (isEcho())
         {
             System.out.println("\nOptions have been set to:");
-            for (Map.Entry<String,ISmart> el : ArgsHashMap.entrySet())
-                System.out.println(el.getKey() + ": " + el.getValue().getValue());
+            for (Map.Entry<String,String> el : optionsHashMap.entrySet())
+                System.out.println(el.getKey() + ": " + el.getValue());
         }
         GlobalOptions.VisualizationOn = isVisualization();
         GlobalOptions.GameVeiwerContinuousUpdatesOn = isGameViewerContinuousUpdates();
@@ -117,13 +101,10 @@ public class CmdLineOptions extends EvaluatorOptions
     }
 
     public void ParseArgs(String[] args) {
-        int i;
-        for (i = 0; i < args.length - 1; i += 2)
-            try  {((ISmart) ArgsHashMap.get(args[i])).setValueFromStr(args[i + 1]); }
-            catch (NullPointerException e)
+        for (int i = 0; i < args.length - 1; i += 2)
+            try
             {
-                System.err.println("Error: Undefined command line parameter '" + args[i] + " " + args[i+1] + "'");
-                System.err.println("Some defaults might be used instead");
+                setParameterValue(args[i], args[i + 1]);
             }
             catch (ArrayIndexOutOfBoundsException e)
             {
@@ -131,16 +112,6 @@ public class CmdLineOptions extends EvaluatorOptions
                 System.err.println("Error: Wrong number of input parameters");
 //                System.err.println("It is good day to kill yourself with the yellow wall");
             }
-        if (agentName.getValue().startsWith("ServerAgent"))
-        {
-            if ( agentName.getValue().split(":").length > 1)
-            {
-                serverAgentPort.setValueFromStr(agentName.getValue().split(":")[1]);
-                agentName.setValue(agentName.getValue().split(":")[0]);
-            }
-            serverAgentEnabled.setValue(true);
-//            ArgsHashMap.get(args[i]).
-        }
     }
 
 //    public static void main(String[] args) {
@@ -150,61 +121,62 @@ public class CmdLineOptions extends EvaluatorOptions
 //    }
 
     public Boolean isToolsConfigurator() {
-        return toolsConfigurator.getValue();
-    }
+        return b(getParameterValue("-tc"));      }
+//
+//        String value = (optionsHashMap.get("-tc") != null) ? optionsHashMap.get("-tc")  : optionsHashMap.get("-toolsConfigurator");
+//        return (value == null) ? defaultOtionsHashMap.get("-toolsConfigurator").equals("on") : value.equals("on");
+//    }
 
     public Boolean isGameViewer() {
-        return gameViewer.getValue();
-    }
+        return b(getParameterValue("-gv"));      }
+//        String value = (optionsHashMap.get("-gv") != null) ? optionsHashMap.get("-gv")  : optionsHashMap.get("-gameViewer");
+//        return (value != null) && value.equals("on") || defaultOtionsHashMap.get("-gameViewer").equals("on");
+//    }
 
     public Boolean isGameViewerContinuousUpdates() {
-        return gameViewerContinuousUpdates.getValue();
-    }
-
-    public void setGameViewerContinuousUpdates(SmartBool gameViewerContinuousUpdates) {
-        this.gameViewerContinuousUpdates = gameViewerContinuousUpdates;
-    }
+        return b(getParameterValue("-gvc"));      }
 
     public Boolean isTimer() {
-        return timer.getValue();
-    }
+        return b(getParameterValue("-t"));      }
 
     public Integer getAttemptsNumber() {
-        return attemptsNumber.getValue();
-    }
+        return i(getParameterValue("-an"));      }
 
     public Boolean isEcho() {
-        return echo.getValue();
-    }
+        return b(getParameterValue("-echo"));      }
 
     public Boolean isMaxFPS() {
-        return maxFPS.getValue();
-    }
+        return b(getParameterValue("-maxFPS"));      }
 
     public String getAgentName() {
-        return agentName.getValue();
-    }
+        return getParameterValue("-ag");      }
 
     public Integer getServerAgentPort() {
-        return serverAgentPort.getValue();
+        String value = optionsHashMap.get("-port");
+        if (value == null)
+        {
+            if (getAgentName().startsWith("ServerAgent"))
+            {
+                if ( getAgentName().split(":").length > 1)
+                {
+                    return Integer.parseInt(getAgentName().split(":")[1]);
+                }
+            }
+        }
+        return Integer.parseInt(defaultOtionsHashMap.get("-port"));
     }
 
     public boolean isServerAgentEnabled() {
-        return serverAgentEnabled.getValue();
+        return getAgentName().startsWith("ServerAgent");
     }
 
     public Point getViewLocation()
     {
-        viewLocation.setValue(new Point(this.viewLocationX.getValue(), this.viewLocationY.getValue()));
-        return viewLocation.getValue();
+        int x = i(getParameterValue("-vlx"));
+        int y = i(getParameterValue("-vly"));
+        return new Point(x, y);
     }
 
-    public boolean isViewAlwaysOnTop() {
-        return viewAlwaysOnTop.getValue();
-    }
-
-
-//    public void setViewLocation(Point viewLocation) {
-//        this.viewLocation.setValue(viewLocation);
-//    }
+    public Boolean isViewAlwaysOnTop() {
+        return b(getParameterValue("-vaot"));      }
 }

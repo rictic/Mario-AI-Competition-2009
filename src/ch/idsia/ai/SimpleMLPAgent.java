@@ -1,5 +1,6 @@
 package ch.idsia.ai;
 import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.ai.agents.IAgent;
 import ch.idsia.mario.environments.IEnvironment;
 
 /**
@@ -8,7 +9,7 @@ import ch.idsia.mario.environments.IEnvironment;
  * Date: Apr 28, 2009
  * Time: 2:09:42 PM
  */
-public class SimpleMLPAgent extends RegisterableAgent implements Evolvable {
+public class SimpleMLPAgent extends RegisterableAgent implements IAgent, Evolvable {
 
     //private String name = "SimpleMLPAgent";
     final MLP mlp;
@@ -42,7 +43,7 @@ public class SimpleMLPAgent extends RegisterableAgent implements Evolvable {
         mlp.mutate ();
     }
 
-    public boolean[] GetAction(IEnvironment observation) {
+    public boolean[] getAction(IEnvironment observation) {
         double[] inputs;// = new double[numberOfInputs];
         byte[][] scene = observation.getLevelSceneObservation();
         //int[][] enemies = observation.getEnemiesObservation();
@@ -63,16 +64,4 @@ public class SimpleMLPAgent extends RegisterableAgent implements Evolvable {
         int realY = y + 11;
         return (scene[realX][realY] != 0) ? 1 : 0;
     }
-
-    public AGENT_TYPE getType() {
-        return AGENT_TYPE.AI;
-    }
-
-  /*  public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }             */
 }

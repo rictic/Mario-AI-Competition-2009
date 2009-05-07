@@ -28,7 +28,7 @@ public class RandomAgent extends RegisterableAgent implements IAgent
         R = new Random();
     }
 
-    public boolean[] GetAction(IEnvironment observation)
+    public boolean[] getAction(IEnvironment observation)
     {
         boolean[] ret = new boolean[IEnvironment.NumberOfActions];
 

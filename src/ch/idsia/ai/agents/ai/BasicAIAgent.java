@@ -22,7 +22,7 @@ public class BasicAIAgent implements IAgent
         Action = EmptyAction;
     }
 
-    public boolean[] GetAction(IEnvironment observation)
+    public boolean[] getAction(IEnvironment observation)
     {
         return EmptyAction;
     }

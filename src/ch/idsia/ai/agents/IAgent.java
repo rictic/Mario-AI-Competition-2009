@@ -17,7 +17,7 @@ public interface IAgent
     // just implement an empty method for a reactive controller
     public void reset();
 
-    public boolean[] GetAction(IEnvironment observation);
+    public boolean[] getAction(IEnvironment observation);
 
     public AGENT_TYPE getType();
 

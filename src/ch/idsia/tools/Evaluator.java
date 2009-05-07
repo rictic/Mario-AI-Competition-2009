@@ -21,7 +21,7 @@ import java.awt.*;
 public class Evaluator implements Runnable
 {
     Thread thisThread = null;
-    EvaluatorOptions evaluatorOptions;
+    EvaluationOptions evaluationOptions;
 
     private List<EvaluationInfo> evaluationSummary = new ArrayList<EvaluationInfo>();
     private ConsoleHistory consoleHistory;
@@ -30,29 +30,30 @@ public class Evaluator implements Runnable
     {
         if (consoleHistory == null)
             consoleHistory = new ConsoleHistory(new TextArea());
-        ISimulation simulator = new BasicSimulator(evaluatorOptions.getBasicSimulatorOptions());
+        ISimulation simulator = new BasicSimulator(evaluationOptions.getSimulationOptionsCopy());
         // Simulate One Level
 
         EvaluationInfo evaluationInfo;
-        boolean continueCondition;
 
         long startTime = System.currentTimeMillis();
         String startMessage = "Evaluation started at " + GlobalOptions.getDateTime(null);
         consoleHistory.addRecord(startMessage);
 
+        boolean continueCondition;
+        int i = 0;
         do
         {
-            consoleHistory.addRecord("Attempts left: " + evaluatorOptions.maxAttempts);
+            consoleHistory.addRecord("Attempts left: " + (evaluationOptions.getMaxAttempts() - ++i ));
             //TODO: SK place in common place for options.
             evaluationInfo = simulator.simulateOneLevel();
-            evaluationInfo.levelType = evaluatorOptions.getLevelType();
-            evaluationInfo.levelDifficulty = evaluatorOptions.getLevelDifficulty();
-            evaluationInfo.levelRandSeed = evaluatorOptions.getLevelRandSeed();
+            evaluationInfo.levelType = evaluationOptions.getLevelType();
+            evaluationInfo.levelDifficulty = evaluationOptions.getLevelDifficulty();
+            evaluationInfo.levelRandSeed = evaluationOptions.getLevelRandSeed();
             evaluationSummary.add(evaluationInfo);
 //            System.out.println("run  finished with result : " + evaluationInfo);
             continueCondition = !GlobalOptions.StopSimulationIfWin || !(evaluationInfo.marioStatus == Mario.STATUS_WIN);
         }
-        while ( --evaluatorOptions.maxAttempts > 0 && continueCondition );
+        while ( evaluationOptions.getMaxAttempts() > i && continueCondition );
 
         String fileName = exportToMatLabFile();
         Collections.sort(evaluationSummary, new evBasicFitnessComparator());
@@ -68,7 +69,7 @@ public class Evaluator implements Runnable
         consoleHistory.addRecord("Evaluation Finished at " + GlobalOptions.getDateTime(null));
         consoleHistory.addRecord("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed));
         consoleHistory.addRecord("Exported to " + fileName);
-        if (evaluatorOptions.isExitProgramWhenFinished())
+        if (evaluationOptions.isExitProgramWhenFinished())
             System.exit(0);
         return evaluationSummary;
     }
@@ -81,14 +82,14 @@ public class Evaluator implements Runnable
     public String exportToMatLabFile()
     {
         FileOutputStream fos = null;
-        String fileName = this.evaluatorOptions.getMatlabFileName() + ".m";
+        String fileName = this.evaluationOptions.getMatlabFileName() + ".m";
         try {
 
             fos = new FileOutputStream(fileName);              
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
             int i = 0;
             bw.newLine();
-            bw.write("%% " + this.evaluatorOptions.getAgent().getName());
+            bw.write("%% " + this.evaluationOptions.getAgent().getName());
             bw.newLine();
             bw.write("% BasicFitness ");            
             bw.newLine();
@@ -119,9 +120,9 @@ public class Evaluator implements Runnable
         evaluationSummary = new ArrayList<EvaluationInfo>();
     }
 
-    public Evaluator(EvaluatorOptions evaluatorOptions)
+    public Evaluator(EvaluationOptions evaluationOptions)
     {                      
-        init(evaluatorOptions);
+        init(evaluationOptions);
     }
 
     public void run()
@@ -134,10 +135,10 @@ public class Evaluator implements Runnable
         thisThread.start();
     }
 
-    public void init(EvaluatorOptions evaluatorOptions)
+    public void init(EvaluationOptions evaluationOptions)
     {
         Mario.resetStatic();
-        this.evaluatorOptions = evaluatorOptions;
+        this.evaluationOptions = evaluationOptions;
         thisThread = new Thread(this);
     }
 

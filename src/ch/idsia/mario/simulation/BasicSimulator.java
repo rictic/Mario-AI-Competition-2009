@@ -44,6 +44,6 @@ public class BasicSimulator implements ISimulation
         marioComponent.startLevel(simulationOptions.getLevelRandSeed(), simulationOptions.getLevelDifficulty()
                                  , simulationOptions.getLevelType(), simulationOptions.getLevelLength());
         marioComponent.setPaused(simulationOptions.isPauseWorld());
-        return marioComponent.run1(simulationOptions.currentAttempt++, simulationOptions.maxAttempts);
+        return marioComponent.run1(simulationOptions.currentAttempt++, simulationOptions.getMaxAttempts());
     }
 }

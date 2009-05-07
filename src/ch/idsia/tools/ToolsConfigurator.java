@@ -7,8 +7,8 @@ import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.ai.agents.ai.ForwardAgent;
 import ch.idsia.ai.agents.ai.RandomAgent;
-import ch.idsia.ai.agents.ai.MLPAgent;
 import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
+import ch.idsia.ai.SimpleMLPAgent;
 import ch.idsia.mario.engine.level.LevelGenerator;
 import ch.idsia.tools.Network.ServerAgent;
 
@@ -44,10 +44,10 @@ public class ToolsConfigurator extends JFrame
         new HumanKeyboardAgent();
         new RandomAgent();
         new ForwardJumpingAgent();
-        new MLPAgent();
-        new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled()); 
+        new SimpleMLPAgent();
+        new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled());
 
-        // TODO: more options:
+         // TODO: more options:
         // -agent wox name, like evolvable
         // -ll digit  range [5:15], increase if succeeds.
         // -vb nothing/all/keys
@@ -56,22 +56,21 @@ public class ToolsConfigurator extends JFrame
 
         ToolsConfigurator toolsConfigurator = new ToolsConfigurator(null, null);
         toolsConfigurator.setVisible(cmdLineOptions.isToolsConfigurator());
-        if (cmdLineOptions != null)
-        {
-            //TODO: ReImplement MVC Concept better
-            toolsConfigurator.ChoiceLevelType.select(cmdLineOptions.getLevelType());
-            toolsConfigurator.JSpinnerLevelDifficulty.setValue(cmdLineOptions.getLevelDifficulty());
-            toolsConfigurator.JSpinnerLevelRandomizationSeed.setValue(cmdLineOptions.getLevelRandSeed());
-            toolsConfigurator.JSpinnerLevelLength.setValue(cmdLineOptions.getLevelLength());
-            toolsConfigurator.CheckboxShowVizualization.setState(cmdLineOptions.isVisualization());
-            toolsConfigurator.JSpinnerMaxAttempts.setValue(cmdLineOptions.getAttemptsNumber());
-            toolsConfigurator.ChoiceAgent.select(cmdLineOptions.getAgentName());
-            toolsConfigurator.CheckboxPauseWorld.setState(cmdLineOptions.isPauseWorld());
-            toolsConfigurator.CheckboxPowerRestoration.setState(cmdLineOptions.isPowerRestoration());
-            toolsConfigurator.CheckboxStopSimulationIfWin.setState(cmdLineOptions.isStopSimulationIfWin());
-            toolsConfigurator.CheckboxExitOnFinish.setState(cmdLineOptions.isExitProgramWhenFinished());
-            toolsConfigurator.TextFieldMatLabFileName.setText(cmdLineOptions.getMatlabFileName());
-        }
+
+        //TODO: ReImplement MVC Concept better
+        toolsConfigurator.ChoiceLevelType.select(cmdLineOptions.getLevelType());
+        toolsConfigurator.JSpinnerLevelDifficulty.setValue(cmdLineOptions.getLevelDifficulty());
+        toolsConfigurator.JSpinnerLevelRandomizationSeed.setValue(cmdLineOptions.getLevelRandSeed());
+        toolsConfigurator.JSpinnerLevelLength.setValue(cmdLineOptions.getLevelLength());
+        toolsConfigurator.CheckboxShowVizualization.setState(cmdLineOptions.isVisualization());
+        toolsConfigurator.JSpinnerMaxAttempts.setValue(cmdLineOptions.getAttemptsNumber());
+        toolsConfigurator.ChoiceAgent.select(cmdLineOptions.getAgentName());
+        toolsConfigurator.CheckboxMaximizeFPS.setState(cmdLineOptions.isMaxFPS());
+        toolsConfigurator.CheckboxPauseWorld.setState(cmdLineOptions.isPauseWorld());
+        toolsConfigurator.CheckboxPowerRestoration.setState(cmdLineOptions.isPowerRestoration());
+        toolsConfigurator.CheckboxStopSimulationIfWin.setState(cmdLineOptions.isStopSimulationIfWin());
+        toolsConfigurator.CheckboxExitOnFinish.setState(cmdLineOptions.isExitProgramWhenFinished());
+        toolsConfigurator.TextFieldMatLabFileName.setText(cmdLineOptions.getMatlabFileName());
 
         GlobalOptions.CurrentAgentStr = toolsConfigurator.ChoiceAgent.getSelectedItem();
 
@@ -332,38 +331,38 @@ public class ToolsConfigurator extends JFrame
     public void simulateOrPlay()
     {
         //Simulate or Play!
-        EvaluatorOptions evaluatorOptions = prepareEvaluatorOptions();
-        assert(evaluatorOptions != null);
+        EvaluationOptions evaluationOptions = prepareEvaluatorOptions();
+        assert(evaluationOptions != null);
         if (evaluator == null)
-            evaluator = new Evaluator(evaluatorOptions);
+            evaluator = new Evaluator(evaluationOptions);
         else
-            evaluator.init(evaluatorOptions);
+            evaluator.init(evaluationOptions);
         evaluator.setConsole(consoleHistory);
         evaluator.start();
         consoleHistory.addRecord("Play/Simulation started!");
     }
 
-    private EvaluatorOptions prepareEvaluatorOptions()
+    private EvaluationOptions prepareEvaluatorOptions()
     {
-        EvaluatorOptions evaluatorOptions = new EvaluatorOptions();
-        evaluatorOptions.setMarioComponent(marioComponent);
+        EvaluationOptions evaluationOptions = new EvaluationOptions();
+        evaluationOptions.setMarioComponent(marioComponent);
         IAgent agent = RegisterableAgent.getAgentByName(ChoiceAgent.getSelectedItem());
-        evaluatorOptions.setAgent(agent);
+        evaluationOptions.setAgent(agent);
         int type = ChoiceLevelType.getSelectedIndex();
         if (type == 4)
             type = (new Random()).nextInt(4);
-        evaluatorOptions.setLevelType(type);
-        evaluatorOptions.setLevelDifficulty(Integer.parseInt(JSpinnerLevelDifficulty.getValue().toString()));
-        evaluatorOptions.setLevelRandSeed(Integer.parseInt(JSpinnerLevelRandomizationSeed.getValue().toString()));
-        evaluatorOptions.setLevelLength(Integer.parseInt(JSpinnerLevelLength.getValue().toString()));
-        evaluatorOptions.setVisualization(CheckboxShowVizualization.getState());
-        evaluatorOptions.maxAttempts = Integer.parseInt(JSpinnerMaxAttempts.getValue().toString());
-        evaluatorOptions.setPauseWorld(CheckboxPauseWorld.getState());
-        evaluatorOptions.setPowerRestoration(CheckboxPowerRestoration.getState());
-        evaluatorOptions.setExitProgramWhenFinished(CheckboxExitOnFinish.getState());
-        evaluatorOptions.setMatlabFileName(TextFieldMatLabFileName.getText());
+        evaluationOptions.setLevelType(type);
+        evaluationOptions.setLevelDifficulty(Integer.parseInt(JSpinnerLevelDifficulty.getValue().toString()));
+        evaluationOptions.setLevelRandSeed(Integer.parseInt(JSpinnerLevelRandomizationSeed.getValue().toString()));
+        evaluationOptions.setLevelLength(Integer.parseInt(JSpinnerLevelLength.getValue().toString()));
+        evaluationOptions.setVisualization(CheckboxShowVizualization.getState());
+        evaluationOptions.setMaxAttempts(Integer.parseInt(JSpinnerMaxAttempts.getValue().toString()));
+        evaluationOptions.setPauseWorld(CheckboxPauseWorld.getState());
+        evaluationOptions.setPowerRestoration(CheckboxPowerRestoration.getState());
+        evaluationOptions.setExitProgramWhenFinished(CheckboxExitOnFinish.getState());
+        evaluationOptions.setMatlabFileName(TextFieldMatLabFileName.getText());
         
-        return evaluatorOptions;
+        return evaluationOptions;
     }
 
 
@@ -468,17 +467,6 @@ public class ToolsConfigurator extends JFrame
             {
                 consoleHistory.addRecord("Agent chosen: " + (ChoiceAgent.getSelectedItem()));
                 JButtonPlaySimulate.setText(strSimulate);
-//                if (ChoiceAgent.getSelectedIndex() == 0)
-//                {
-//                    GlobalOptions.RandomAgent = false;
-//                    GlobalOptions.HumanKeyboardAgent = true;
-//                    JButtonPlaySimulate.setText(strPlay);
-//                }
-//                else if (ChoiceAgent.getSelectedIndex() == 1)
-//                {
-//                    GlobalOptions.RandomAgent = true;
-//                    GlobalOptions.HumanKeyboardAgent = false;
-//                }
                 GlobalOptions.CurrentAgentStr = ChoiceAgent.getSelectedItem();
             }
             else if (ob == ChoiceLevelType)
@@ -496,7 +484,6 @@ public class ToolsConfigurator extends JFrame
             Object ob = changeEvent.getSource();
             if (ob == JSpinnerLevelRandomizationSeed)
             {
-
                 //Change random seed in Evaluator/ Simulator Options
             }
             else if (ob == JSpinnerLevelDifficulty)
@@ -543,5 +530,5 @@ public class ToolsConfigurator extends JFrame
             textAreaConsole.setText(history);
         System.out.println(record);
     }
-    public String getHistory() {            return history;        }
+    public String getHistory() { return history; }
 }

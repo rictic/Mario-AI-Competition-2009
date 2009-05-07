@@ -50,7 +50,7 @@ public class ForwardAgent extends RegisterableAgent implements IAgent
         return false;
     }
 
-    public boolean[] GetAction(IEnvironment observation)
+    public boolean[] getAction(IEnvironment observation)
     {
         //TODO: Discuss increasing diffuculty for handling the gaps.
         // this Agent requires observation.

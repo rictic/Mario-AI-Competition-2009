@@ -2,9 +2,8 @@ package ch.idsia.ai.tasks;
 
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.tools.Evaluator;
-import ch.idsia.tools.EvaluatorOptions;
+import ch.idsia.tools.EvaluationOptions;
 import ch.idsia.tools.EvaluationInfo;
-import ch.idsia.tools.ToolsConfigurator;
 import ch.idsia.mario.engine.level.LevelGenerator;
 import ch.idsia.mario.engine.MarioComponent;
 
@@ -19,12 +18,21 @@ import java.util.List;
  */
 public class ProgressTask implements Task {
 
-    private EvaluatorOptions options = new EvaluatorOptions ();
+    EvaluationOptions options = new EvaluationOptions();
 
     public double[] evaluate(IAgent controller) {
-        
-        
         options.setAgent(controller);
+        options.setLevelLength(320);
+        options.setLevelDifficulty(0);
+        options.setLevelRandSeed(1);
+        options.setVisualization(true);
+        options.setLevelType(LevelGenerator.TYPE_OVERGROUND);
+        options.setPauseWorld(false);
+        options.setPowerRestoration(false);
+        options.setStopSimulationIfWin(false);
+        MarioComponent marioComponent = new MarioComponent(320, 240, null);
+        marioComponent.init();
+        options.setMarioComponent(marioComponent);
         Evaluator evaluator = new Evaluator (options);
         List<EvaluationInfo> results = evaluator.evaluate ();
         double distanceTravelled = 0;
@@ -35,11 +43,11 @@ public class ProgressTask implements Task {
         return new double[]{distanceTravelled};
     }
 
-    public void setOptions(EvaluatorOptions options) {
-        this.options = options;
+    public void setDifficuly(int difficulty) {
+        options.setLevelDifficulty(difficulty);
     }
 
-    public EvaluatorOptions getOptions() {
-        return options;
+    public void setSeed(int seed) {
+        options.setLevelRandSeed(seed);
     }
 }
