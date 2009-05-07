@@ -38,8 +38,8 @@ public class Art
     {
         try
         {
-
             System.out.println("Image Directory: " + img);
+            System.out.println(curDir);
             mario = cutImage(gc, "mariosheet.png", 32, 32);
             smallMario = cutImage(gc, "smallmariosheet.png", 16, 16);
             fireMario = cutImage(gc, "firemariosheet.png", 32, 32);
@@ -64,8 +64,6 @@ public class Art
 
     private static Image getImage(GraphicsConfiguration gc, String imageName) throws IOException
     {
-
-
         System.out.println("trying to get " + imageName);
         BufferedImage source = null;
         try {
