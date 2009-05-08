@@ -23,7 +23,7 @@ public class Play {
         }
         Task task = new ProgressTask();
         task.setOptions(new CmdLineOptions(args) );
-        System.out.println ("Score: " + task.evaluate ());
+        System.out.println ("Score: " + task.evaluate (controller));
     }
 
 
