@@ -1,9 +1,9 @@
 package ch.idsia.utils;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -143,7 +143,6 @@ public class ParameterContainer
             return;
         else
             defaultOtionsHashMap = new HashMap<String, String>();
-        // todo: add possibilitity loading parameters from (XML?) files.
         defaultOtionsHashMap.put("-ag","ForwardAgent"); //defaultOtionsHashMap.put("-agentName","NoAgent");
         defaultOtionsHashMap.put("-an","5"); //defaultOtionsHashMap.put("-attemptsNumber","5");
         defaultOtionsHashMap.put("-echo","off"); //defaultOtionsHashMap.put("-echo","off");
