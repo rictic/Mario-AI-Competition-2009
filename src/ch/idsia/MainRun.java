@@ -5,10 +5,7 @@ import ch.idsia.ai.agents.ai.ForwardAgent;
 import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
 import ch.idsia.ai.agents.ai.RandomAgent;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
-import ch.idsia.tools.CmdLineOptions;
-import ch.idsia.tools.EvaluationInfo;
-import ch.idsia.tools.EvaluationOptions;
-import ch.idsia.tools.Evaluator;
+import ch.idsia.tools.*;
 import ch.idsia.tools.Network.ServerAgent;
 
 import java.util.List;
@@ -59,9 +56,9 @@ public class MainRun
         createNativeAgents(cmdLineOptions);
 
         Evaluator evaluator = new Evaluator(evaluationOptions);
-        evaluator.verbose("Play/Simulation started!");
+        evaluator.verbose("Play/Simulation started!", LOGGER.VERBOSE_MODE.ALL);
         List<EvaluationInfo> evaluationSummary = evaluator.evaluate();
-        evaluator.verbose("Play/Simulation Finished!");
+        evaluator.verbose("Play/Simulation Finished!", LOGGER.VERBOSE_MODE.ALL);
         if (cmdLineOptions.isExitProgramWhenFinished())
             System.exit(0);
     }

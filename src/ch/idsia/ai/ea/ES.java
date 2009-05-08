@@ -4,6 +4,7 @@ import ch.idsia.ai.EA;
 import ch.idsia.ai.Evolvable;
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.tasks.Task;
+import ch.idsia.tools.LOGGER;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,13 +45,13 @@ public class ES implements EA {
     }
 
     private void evaluate(int which) {
-        System.out.print("which " + which);
+        LOGGER.print("which " + which, LOGGER.VERBOSE_MODE.INFO);
         fitness[which] = 0;
         for (int i = 0; i < evaluationRepetitions; i++) {
             population[which].reset();
             fitness[which] += task.evaluate((IAgent) population[which])[0];
             //Evaluator.evaluateSolo ((Controller) population[which], new BasicTrack(), false);
-            System.out.println(" fitness " + fitness[which]);
+            LOGGER.println(" fitness " + fitness[which], LOGGER.VERBOSE_MODE.INFO);
         }
         fitness[which] = fitness[which] / evaluationRepetitions;
     }

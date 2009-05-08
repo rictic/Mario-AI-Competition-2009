@@ -575,9 +575,9 @@ public class LevelScene extends Scene implements SpriteContext
         drawStringDropShadow(g, " "+df2.format(time), 35, 1, 7);
         if (GlobalOptions.Labels)
         {
-            g.drawString("xCam : " + xCam + "yCam: " + yCam, 50, 40);
-            g.drawString("x : " + mario.x + "y: " + mario.y, 50, 50);
-            g.drawString("xOld : " + mario.xOld + "yOld: " + mario.yOld, 50, 60);
+            g.drawString("xCam: " + xCam + "yCam: " + yCam, 70, 40);
+            g.drawString("x : " + mario.x + "y: " + mario.y, 70, 50);
+            g.drawString("xOld : " + mario.xOld + "yOld: " + mario.yOld, 70, 60);
         }
 
 //        if (mario.keys[Mario.KEY_DUMP_CURRENT_WORLD])

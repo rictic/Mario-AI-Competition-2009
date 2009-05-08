@@ -35,20 +35,20 @@ public class Evaluator implements Runnable
 
         long startTime = System.currentTimeMillis();
         String startMessage = "Evaluation started at " + GlobalOptions.getDateTime(null);
-        LOGGER.addRecord(startMessage, LOGGER.VERBOSE_MODE.INFO);
+        LOGGER.println(startMessage, LOGGER.VERBOSE_MODE.ALL);
 
         boolean continueCondition;
         int i = 0;
         do
         {
-            LOGGER.addRecord("Attempts left: " + (evaluationOptions.getMaxAttempts() - ++i ), LOGGER.VERBOSE_MODE.INFO);
+            LOGGER.println("Attempts left: " + (evaluationOptions.getMaxAttempts() - ++i ), LOGGER.VERBOSE_MODE.ALL);
             evaluationInfo = simulator.simulateOneLevel();
             
             evaluationInfo.levelType = evaluationOptions.getLevelType();
             evaluationInfo.levelDifficulty = evaluationOptions.getLevelDifficulty();
             evaluationInfo.levelRandSeed = evaluationOptions.getLevelRandSeed();
             evaluationSummary.add(evaluationInfo);
-            LOGGER.addRecord("run  finished with result : " + evaluationInfo, LOGGER.VERBOSE_MODE.INFO);
+            LOGGER.println("run  finished with result : " + evaluationInfo, LOGGER.VERBOSE_MODE.ALL);
             continueCondition = !GlobalOptions.StopSimulationIfWin || !(evaluationInfo.marioStatus == Mario.STATUS_WIN);
         }
         while ( evaluationOptions.getMaxAttempts() > i && continueCondition );
@@ -58,26 +58,26 @@ public class Evaluator implements Runnable
            fileName = exportToMatLabFile();
         Collections.sort(evaluationSummary, new evBasicFitnessComparator());
 
-        LOGGER.addRecord("Entire Evaluation Finished with results:", LOGGER.VERBOSE_MODE.INFO);
+        LOGGER.println("Entire Evaluation Finished with results:", LOGGER.VERBOSE_MODE.ALL);
         for (EvaluationInfo ev : evaluationSummary)
         {
-//             LOGGER.addRecord(ev.toString(), LOGGER.VERBOSE_MODE.INFO);
+//             LOGGER.println(ev.toString(), LOGGER.VERBOSE_MODE.ALL);
         }
         long currentTime = System.currentTimeMillis();
         long elapsed = currentTime - startTime;
-         LOGGER.addRecord(startMessage, LOGGER.VERBOSE_MODE.INFO);
-         LOGGER.addRecord("Evaluation Finished at " + GlobalOptions.getDateTime(null), LOGGER.VERBOSE_MODE.INFO);
-         LOGGER.addRecord("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed), LOGGER.VERBOSE_MODE.INFO);
+         LOGGER.println(startMessage, LOGGER.VERBOSE_MODE.ALL);
+         LOGGER.println("Evaluation Finished at " + GlobalOptions.getDateTime(null), LOGGER.VERBOSE_MODE.ALL);
+         LOGGER.println("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed), LOGGER.VERBOSE_MODE.ALL);
         if (!fileName.equals(""))
-            LOGGER.addRecord("Exported to " + fileName, LOGGER.VERBOSE_MODE.INFO);
+            LOGGER.println("Exported to " + fileName, LOGGER.VERBOSE_MODE.ALL);
         if (evaluationOptions.isExitProgramWhenFinished())
             System.exit(0);
         return evaluationSummary;
     }
 
-    public void verbose(String message)
+    public void verbose(String message, LOGGER.VERBOSE_MODE verbose_mode)
     {
-        LOGGER.addRecord(message, LOGGER.VERBOSE_MODE.INFO);
+        LOGGER.println(message, verbose_mode);
     }
 
     public void getMeanEvaluationSummary()

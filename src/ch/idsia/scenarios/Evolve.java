@@ -8,6 +8,7 @@ import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.EvaluationOptions;
+import ch.idsia.tools.LOGGER;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +18,7 @@ import ch.idsia.tools.EvaluationOptions;
  */
 public class Evolve {
 
-    final static int generations = 100;
+    final static int generations = 2;
     final static int populationSize = 100;
 
     public static void main(String[] args) {
@@ -31,10 +32,11 @@ public class Evolve {
         ES es = new ES (task, initial, populationSize);
         for (int gen = 0; gen < generations; gen++) {
            es.nextGeneration();
-           System.out.println("Generation " + gen + " best " + es.getBestFitnesses()[0]);
+            LOGGER.println("Generation " + gen + " best " + es.getBestFitnesses()[0], LOGGER.VERBOSE_MODE.INFO);
            options.setVisualization(true);
-            System.out.println("trying: " + task.evaluate((IAgent)es.getBests()[0])[0]); 
+            LOGGER.println("trying: " + task.evaluate((IAgent)es.getBests()[0])[0], LOGGER.VERBOSE_MODE.INFO);
            options.setVisualization(false);
         }
+        LOGGER.save("log.txt");
     }
 }

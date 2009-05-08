@@ -1,7 +1,7 @@
 package ch.idsia.tools;
 
 import java.awt.*;
-import java.io.PrintStream;
+import java.io.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,9 +13,23 @@ import java.io.PrintStream;
 // TODO: rename to LOG bilk yourself is easier that the system.
 public class LOGGER
 {
-    public enum VERBOSE_MODE {INFO, WARNING, ERROR, NONE}
+    public static void save(String fileName) {
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(fileName);
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+            bw.write(history);
+            bw.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("I/O Error: " + e.getMessage());
+        }
+    }
+
+    public enum VERBOSE_MODE {ALL, INFO, WARNING, ERROR, NONE}
     static TextArea textAreaConsole = null;
-    private static VERBOSE_MODE verbose_mode = VERBOSE_MODE.NONE;
+    private static VERBOSE_MODE verbose_mode = VERBOSE_MODE.INFO;
     public static void setVerboseMode(VERBOSE_MODE verboseMode)
     {
         LOGGER.verbose_mode = verboseMode;
@@ -26,27 +40,35 @@ public class LOGGER
         textAreaConsole = tac;
     }
 
-    private static String history = "console:";
+    private static String history = "console:\n";
 
-    public static void addRecord(String record, VERBOSE_MODE vm)
+    public static void println(String record, VERBOSE_MODE vm)
+    {
+        LOGGER.print(record + "\n", vm);
+    }
+
+
+    public static void print(String record, VERBOSE_MODE vm) {
+        addRecord(record, vm);
+    }
+
+    private static void addRecord(String record, VERBOSE_MODE vm)
     {
         if (verbose_mode == VERBOSE_MODE.NONE)
             return; // Not recommended to use this mode.
         if (vm.compareTo(verbose_mode) >= 0)
         {
             if (vm.compareTo(VERBOSE_MODE.WARNING) >= 0)
-                addRecord(record, System.err);
+                System.err.print(record);
             else
-                addRecord(record, System.out);
+                System.out.print(record);
         }
-    }
 
-    private static void addRecord(String record, PrintStream ps)
-    {
-        history += "\n" + verbose_mode + ": " + record;
+        String r = "\n[:" + vm + ":] " + record;
+        history += r ;
         if (textAreaConsole != null)
             textAreaConsole.setText(history);
-        ps.println(record);
+
     }
     public static String getHistory() { return history; }
 }
