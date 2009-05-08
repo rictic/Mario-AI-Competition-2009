@@ -145,8 +145,6 @@ public class CmdLineOptions extends EvaluationOptions
     public Boolean isEcho() {
         return b(getParameterValue("-echo"));      }
 
-    public Boolean isMaxFPS() {
-        return b(getParameterValue("-maxFPS"));      }
 
     public String getAgentName() {
         return getParameterValue("-ag");      }

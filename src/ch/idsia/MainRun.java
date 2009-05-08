@@ -6,6 +6,7 @@ import ch.idsia.ai.agents.ai.ForwardAgent;
 import ch.idsia.ai.agents.ai.RandomAgent;
 import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
+import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.SimpleMLPAgent;
 
 import java.util.List;
@@ -45,13 +46,15 @@ public class MainRun
             new ForwardJumpingAgent();
             new SimpleMLPAgent();
             new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled());
+
         }
     }
 
     public static void main(String[] args) {
         CmdLineOptions cmdLineOptions = new CmdLineOptions(args);
+        
         EvaluationOptions evaluationOptions = cmdLineOptions;  // if none options mentioned, all defalults are used.
-
+        System.out.println("classpath://filename.txt");
         createNativeAgents(cmdLineOptions);
 
         Evaluator evaluator = new Evaluator(evaluationOptions);

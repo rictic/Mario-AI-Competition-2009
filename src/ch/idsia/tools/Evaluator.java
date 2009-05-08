@@ -8,7 +8,6 @@ import ch.idsia.mario.engine.GlobalOptions;
 import java.util.*;
 import java.util.List;
 import java.io.*;
-import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,20 +54,23 @@ public class Evaluator implements Runnable
         }
         while ( evaluationOptions.getMaxAttempts() > i && continueCondition );
 
-        String fileName = exportToMatLabFile();
+        String fileName = "";
+        if (!this.evaluationOptions.getMatlabFileName().equals(""))
+           fileName = exportToMatLabFile();
         Collections.sort(evaluationSummary, new evBasicFitnessComparator());
 
-        consoleHistory.addRecord("Entire Evaluation Finished with results:");
+        // consoleHistory.addRecord("Entire Evaluation Finished with results:");
         for (EvaluationInfo ev : evaluationSummary)
         {
-            consoleHistory.addRecord(ev.toString());
+            // consoleHistory.addRecord(ev.toString());
         }
         long currentTime = System.currentTimeMillis();
         long elapsed = currentTime - startTime;
-        consoleHistory.addRecord(startMessage);
-        consoleHistory.addRecord("Evaluation Finished at " + GlobalOptions.getDateTime(null));
-        consoleHistory.addRecord("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed));
-        consoleHistory.addRecord("Exported to " + fileName);
+        // consoleHistory.addRecord(startMessage);
+        // consoleHistory.addRecord("Evaluation Finished at " + GlobalOptions.getDateTime(null));
+        // consoleHistory.addRecord("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed));
+//        if (!fileName.equals(""))
+//            consoleHistory.addRecord("Exported to " + fileName);
 //        if (evaluationOptions.isExitProgramWhenFinished())
 //            System.exit(0);
         return evaluationSummary;
@@ -145,7 +147,8 @@ public class Evaluator implements Runnable
     public void init(EvaluationOptions evaluationOptions)
     {
         ToolsConfigurator.CreateMarioComponentFrame(evaluationOptions.getViewLocation(),
-                                                    evaluationOptions.isViewAlwaysOnTop());
+                                                    evaluationOptions.isViewAlwaysOnTop(),
+                                                    evaluationOptions.isVisualization());
         Mario.resetStatic();
         this.evaluationOptions = evaluationOptions;
         thisThread = new Thread(this);

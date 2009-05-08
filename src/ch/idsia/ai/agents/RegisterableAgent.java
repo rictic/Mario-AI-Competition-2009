@@ -29,22 +29,22 @@ public class RegisterableAgent extends BasicAIAgent
     }
 
     public static void registerAgent(String agentWOXName) throws IllegalFormatException {
-        if (agentWOXName.endsWith(".xml"))
+//        if (agentWOXName.endsWith(".xml") || agentWOXName.endsWith(".class"))
             registerAgent(load(agentWOXName));
-        else {
-            try {
-                throw new IllegalArgumentException("Critical Error: Cannot register the agent. Name specified " + agentWOXName +
-                        " is not a valid WOX name. Should end up with '.xml'");
-            }
-            catch(IllegalArgumentException e) {
-                System.err.println(e.getMessage());
-                System.err.println("Exiting...");
-                System.exit (1);
-            }
-        }
+//        else {
+//            try {
+//                throw new IllegalArgumentException("Critical Error: Cannot register the agent. Name specified " + agentWOXName +
+//                        " is not a valid WOX name. Should end up with '.xml'");
+//            }
+//            catch(IllegalArgumentException e) {
+//                System.err.println(e.getMessage());
+//                System.err.println("Exiting...");
+//                System.exit (1);
+//            }
+//        }
     }
 
-    private static IAgent load (String name) {
+    public static IAgent load (String name) {
         IAgent agent;
         try {
             agent = (IAgent) Class.forName (name).newInstance ();

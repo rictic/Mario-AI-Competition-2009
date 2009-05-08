@@ -17,7 +17,7 @@ public class ES implements EA {
     private final double[] fitness;
     private final int elite;
     private final Task task;
-    private final int evaluationRepetitions = 5;
+    private final int evaluationRepetitions = 1;
 
     public ES(Task task, Evolvable initial, int populationSize) {
         this.population = new Evolvable[populationSize];
@@ -41,15 +41,16 @@ public class ES implements EA {
         }
         shuffle();
         sortPopulationByFitness();
-
     }
 
     private void evaluate(int which) {
+        System.out.print("which " + which);
         fitness[which] = 0;
         for (int i = 0; i < evaluationRepetitions; i++) {
             population[which].reset();
             fitness[which] += task.evaluate((IAgent) population[which])[0];
             //Evaluator.evaluateSolo ((Controller) population[which], new BasicTrack(), false);
+            System.out.println(" fitness " + fitness[which]);
         }
         fitness[which] = fitness[which] / evaluationRepetitions;
     }

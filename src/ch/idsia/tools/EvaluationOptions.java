@@ -1,6 +1,7 @@
 package ch.idsia.tools;
 
 import ch.idsia.mario.simulation.SimulationOptions;
+import ch.idsia.mario.engine.GlobalOptions;
 
 import java.awt.*;
 
@@ -37,4 +38,12 @@ public class EvaluationOptions extends SimulationOptions
 
     public Boolean isViewAlwaysOnTop() {
         return b(getParameterValue("-vaot"));      }
+
+    public void setMaxFPS(boolean isMaxFPS ) {
+        setParameterValue("-maxFPS", s(isMaxFPS));
+        GlobalOptions.FPS = (isMaxFPS()) ? GlobalOptions.InfiniteFPS : 24;
+    }
+
+    public Boolean isMaxFPS() {
+        return b(getParameterValue("-maxFPS"));      }
 }

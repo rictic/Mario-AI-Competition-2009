@@ -36,7 +36,7 @@ class Client:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error, msg:
             sys.stderr.write("[SOCKET CREATION ERROR1] %s\n" % msg[1])
-            sys.exit(1)
+            raise
 
         try:
             self.sock.connect((host, port))
@@ -47,7 +47,7 @@ class Client:
 
         except socket.error, msg:
             sys.stderr.write("[CONNECTION ERROR] %s\n" % msg[1])
-            sys.exit(2)
+            raise
 
         GreatingMessage = "Client: Dear Server, hello! I am %s! \r\n" % self.OwnerName
         self.sendData(GreatingMessage)
@@ -73,7 +73,7 @@ class Client:
             return self.sock.recv(self.bufSize)
         except  socket.error, msg:
             sys.stderr.write("[SOCKET PIPE ERROR WHILE RECEIVING] %s\n" % msg[1])
-            sys.exit(4)
+            raise
 
 
     def sendData(self, data):
@@ -82,5 +82,5 @@ class Client:
             self.sock.send(data)
         except  socket.error, msg:
             sys.stderr.write("[SOCKET PIPE ERROR WHILE SENDING] %s\n" % msg[1])
-            sys.exit(3)
+            raise
 

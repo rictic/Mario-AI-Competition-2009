@@ -4,17 +4,16 @@ from Network.Client import Client
 __author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch"
 __date__ = "$Apr 30, 2009 2:17:48 PM$"
 
-class TCPClientAgent:
+class MarioEnvironment(Environment):
     """
     Simple wrapper for any agent to communicate TCPAgent on server side
     Connect to a server, receives observation, gives observation to the aggregated agent,
     takes action from aggregated agent and sends it back to the server.
     """
     client = None
-    agent = None
     connected = False
 
-    def __init__(self, Agent, host, port):
+    def __init__(self, host, port):
         """Documentation"""
         print "Initializing TCP Agent...";
         self.agent = Agent
@@ -22,7 +21,7 @@ class TCPClientAgent:
         self.connected = True
         pass
 
-    def produceAction(self):
+    def produceAction(self, action):
         """sends a string message"""
 #        print "TCPAgent.produceAction: produsing Action..."
         a = self.getAction()
@@ -39,7 +38,7 @@ class TCPClientAgent:
         elif len(data) > 100:
             self.agent.setObservation(data)
 #        print data
-
+        return obs
 
     def getAction(self):
         return self.agent.getAction()

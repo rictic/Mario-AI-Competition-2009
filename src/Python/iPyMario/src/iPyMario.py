@@ -35,6 +35,14 @@ def main():
     else:
         assert  False, "unknown Agent"
 
+    task = MarioTask(difficulty = 4)
+    exp = EpisodicExperiment(actingAgent, task)
+    exp.doEpisodes(10)
+
+    class MarioTask(EpisodicTask):
+
+    MarioEnvironment()
+
     agent = TCPClientAgent(actingAgent, HOST, PORT)
     while True:
         agent.getObservation()
@@ -44,14 +52,12 @@ def main():
 #            sys.exit(1)
         agent.produceAction()
 
-    sys.exit(0)
-
 def usage ():
-    print "python iPyMario.py [-h][-p port][-a AgentName]"
-    sys.exit(0)
+    print "python iPyMario.py [--port port][--agent AgentName]"
+    
 
 if __name__ == "__main__":
     main()
 else:
-    print "This is file to be run rather than imported."
+    print "This is module to be run rather than imported."
 

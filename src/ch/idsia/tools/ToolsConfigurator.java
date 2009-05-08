@@ -102,25 +102,27 @@ public class ToolsConfigurator extends JFrame
     private static JFrame marioComponentFrame = null;
     public static void CreateMarioComponentFrame()
     {
-        CreateMarioComponentFrame(new Point(0, 0), false);
+        CreateMarioComponentFrame(new Point(0, 0), false, true);
     }
 
-    static void CreateMarioComponentFrame(Point location, boolean isAlwaysOnTop)
+    static void CreateMarioComponentFrame(Point location, boolean isAlwaysOnTop, boolean visualization)
     {
 //        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 //        frame.setLocation((screenSize.width-frame.getWidth())/2, (screenSize.height-frame.getHeight())/2);        
         if (marioComponentFrame == null)
             marioComponentFrame = new JFrame(GlobalOptions.CurrentAgentStr + " - Mario Intelligent 2.0");
         if (marioComponent == null)
+        {
             marioComponent = new MarioComponent(320, 240);
-        marioComponentFrame.setContentPane(marioComponent);
-        marioComponent.init();
-        marioComponentFrame.pack();
-        marioComponentFrame.setResizable(false);
-        marioComponentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            marioComponentFrame.setContentPane(marioComponent);
+            marioComponent.init();
+            marioComponentFrame.pack();
+            marioComponentFrame.setResizable(false);
+            marioComponentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            marioComponentFrame.setAlwaysOnTop(isAlwaysOnTop);
+        }
         marioComponentFrame.setLocation(location);
-        marioComponentFrame.setVisible(GlobalOptions.VisualizationOn);
-        marioComponentFrame.setAlwaysOnTop(isAlwaysOnTop);
+        marioComponentFrame.setVisible(visualization);
     }
 
     enum INTERFACE_TYPE {CONSOLE, GUI}
