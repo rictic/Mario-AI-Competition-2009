@@ -1,17 +1,19 @@
 package ch.idsia.mario.engine;
 
-import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.human.CheaterKeyboardAgent;
-import ch.idsia.tools.GameViewer;
-import ch.idsia.tools.EvaluationInfo;
-import ch.idsia.tools.Network.ServerAgent;
-import ch.idsia.mario.environments.IEnvironment;
+import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.EnvCell;
+import ch.idsia.mario.environments.IEnvironment;
+import ch.idsia.tools.EvaluationInfo;
+import ch.idsia.tools.GameViewer;
+import ch.idsia.tools.Network.ServerAgent;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,11 +107,6 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         running = true;
         adjustFPS();
         EvaluationInfo evaluationInfo = new EvaluationInfo();
-        System.out.println("::::VIS" + GlobalOptions.VisualizationOn);
-        System.out.println("::::::::MAX FPS" + GlobalOptions.FPS);
-        System.out.println("::::::::GV" + GlobalOptions.GameVeiwerContinuousUpdatesOn);
-        System.out.println("::::::::GV" + GlobalOptions.GameVeiwerOn);
-        System.out.println("");
 
         VolatileImage image = null;
         Graphics g = null;

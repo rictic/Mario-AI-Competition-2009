@@ -1,18 +1,13 @@
 package ch.idsia.scenarios;
 
-import ch.idsia.ai.ea.ES;
-import ch.idsia.ai.tasks.Task;
-import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.Evolvable;
 import ch.idsia.ai.SimpleMLPAgent;
 import ch.idsia.ai.agents.IAgent;
-import ch.idsia.mario.engine.level.LevelGenerator;
-import ch.idsia.mario.engine.MarioComponent;
-import ch.idsia.mario.engine.GlobalOptions;
-import ch.idsia.tools.GameViewer;
-import ch.idsia.tools.ToolsConfigurator;
-import ch.idsia.tools.EvaluationOptions;
+import ch.idsia.ai.ea.ES;
+import ch.idsia.ai.tasks.ProgressTask;
+import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
+import ch.idsia.tools.EvaluationOptions;
 
 /**
  * Created by IntelliJ IDEA.
@@ -27,7 +22,7 @@ public class Evolve {
 
     public static void main(String[] args) {
         Evolvable initial = new SimpleMLPAgent();
-        EvaluationOptions options = new CmdLineOptions(new String[0]);
+        EvaluationOptions options = new CmdLineOptions(args);
         options.setAgent((IAgent)initial);
         options.setMaxAttempts(1);
         options.setMaxFPS(true);

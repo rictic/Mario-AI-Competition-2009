@@ -1,13 +1,15 @@
 package ch.idsia;
 
-import ch.idsia.tools.*;
-import ch.idsia.tools.Network.ServerAgent;
-import ch.idsia.ai.agents.ai.ForwardAgent;
-import ch.idsia.ai.agents.ai.RandomAgent;
-import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
-import ch.idsia.ai.agents.human.HumanKeyboardAgent;
-import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.SimpleMLPAgent;
+import ch.idsia.ai.agents.ai.ForwardAgent;
+import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
+import ch.idsia.ai.agents.ai.RandomAgent;
+import ch.idsia.ai.agents.human.HumanKeyboardAgent;
+import ch.idsia.tools.CmdLineOptions;
+import ch.idsia.tools.EvaluationInfo;
+import ch.idsia.tools.EvaluationOptions;
+import ch.idsia.tools.Evaluator;
+import ch.idsia.tools.Network.ServerAgent;
 
 import java.util.List;
 
@@ -54,7 +56,6 @@ public class MainRun
         CmdLineOptions cmdLineOptions = new CmdLineOptions(args);
         
         EvaluationOptions evaluationOptions = cmdLineOptions;  // if none options mentioned, all defalults are used.
-        System.out.println("classpath://filename.txt");
         createNativeAgents(cmdLineOptions);
 
         Evaluator evaluator = new Evaluator(evaluationOptions);

@@ -1,27 +1,27 @@
 package ch.idsia.tools;
 
-import ch.idsia.mario.engine.GlobalOptions;
-import ch.idsia.mario.engine.MarioComponent;
+import ch.idsia.ai.SimpleMLPAgent;
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.ai.agents.ai.ForwardAgent;
-import ch.idsia.ai.agents.ai.RandomAgent;
 import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
-import ch.idsia.ai.SimpleMLPAgent;
+import ch.idsia.ai.agents.ai.RandomAgent;
+import ch.idsia.ai.agents.human.HumanKeyboardAgent;
+import ch.idsia.mario.engine.GlobalOptions;
+import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.mario.engine.level.LevelGenerator;
 import ch.idsia.tools.Network.ServerAgent;
 
 import javax.swing.*;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicArrowButton;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Random;
 import java.util.Set;
 
@@ -135,7 +135,6 @@ public class ToolsConfigurator extends JFrame
 
     public Label LabelConsole = new Label("Console:");
     public TextArea TextAreaConsole = new TextArea("Console:"/*, 8,40*/);  // Verbose all, keys, events, actions, observations
-    private ConsoleHistory consoleHistory;
     public Checkbox CheckboxShowVizualization = new Checkbox("Enable Visualization", GlobalOptions.VisualizationOn);
     public Checkbox CheckboxMaximizeFPS = new Checkbox("Maximize FPS");
     public Choice ChoiceAgent = new Choice();
@@ -325,7 +324,7 @@ public class ToolsConfigurator extends JFrame
         JPanelConsole.add(TextAreaConsole);
 
         // IF GUI
-        consoleHistory = new ConsoleHistory(TextAreaConsole);
+        LOGGER.setTextAreaConsole(TextAreaConsole);
 
         ToolsConfiguratorOptionsPanel.add(BorderLayout.WEST, JPanelLevelOptions);
         ToolsConfiguratorOptionsPanel.add(BorderLayout.CENTER, JPanelMiscellaneousOptions);
@@ -347,9 +346,8 @@ public class ToolsConfigurator extends JFrame
             evaluator = new Evaluator(evaluationOptions);
         else
             evaluator.init(evaluationOptions);
-        evaluator.setConsole(consoleHistory);
         evaluator.start();
-        consoleHistory.addRecord("Play/Simulation started!");
+        LOGGER.addRecord("Play/Simulation started!", LOGGER.VERBOSE_MODE.INFO);
     }
 
     private EvaluationOptions prepareEvaluatorOptions()
@@ -392,7 +390,8 @@ public class ToolsConfigurator extends JFrame
                     CheckboxMaximizeFPS.setState(true);
                 }
                 marioComponent.adjustFPS();
-                consoleHistory.addRecord("FPS set to " + (CheckboxMaximizeFPS.getState() ? "infinity" : GlobalOptions.FPS) );
+                LOGGER.addRecord("FPS set to " + (CheckboxMaximizeFPS.getState() ? "infinity" : GlobalOptions.FPS),
+                        LOGGER.VERBOSE_MODE.INFO );
             }
             else if (ob == downFPS)
             {
@@ -400,7 +399,8 @@ public class ToolsConfigurator extends JFrame
                     GlobalOptions.FPS = 1;
                 CheckboxMaximizeFPS.setState(false);
                 marioComponent.adjustFPS();
-                consoleHistory.addRecord("FPS set to " + (CheckboxMaximizeFPS.getState() ? "infinity" : GlobalOptions.FPS) );
+                LOGGER.addRecord("FPS set to " + (CheckboxMaximizeFPS.getState() ? "infinity" : GlobalOptions.FPS),
+                        LOGGER.VERBOSE_MODE.INFO );
             }
             else if (ob == JButtonResetEvaluationSummary)
             {
@@ -429,12 +429,14 @@ public class ToolsConfigurator extends JFrame
             Object ob = ie.getSource();
             if (ob == CheckboxShowGameViewer)
             {
-                consoleHistory.addRecord("Game Viewer " + (CheckboxShowGameViewer.getState() ? "Shown" : "Hidden") );
+                LOGGER.addRecord("Game Viewer " + (CheckboxShowGameViewer.getState() ? "Shown" : "Hidden"),
+                        LOGGER.VERBOSE_MODE.INFO );
                 gameViewer.setVisible(CheckboxShowGameViewer.getState());
             }
             else if (ob == CheckboxShowVizualization)
             {
-                consoleHistory.addRecord("Vizualization " + (CheckboxShowVizualization.getState() ? "On" : "Off") );
+                LOGGER.addRecord("Vizualization " + (CheckboxShowVizualization.getState() ? "On" : "Off"),
+                        LOGGER.VERBOSE_MODE.INFO );
                 GlobalOptions.VisualizationOn = CheckboxShowVizualization.getState();
                 marioComponentFrame.setVisible(GlobalOptions.VisualizationOn);
             }
@@ -443,19 +445,22 @@ public class ToolsConfigurator extends JFrame
                 prevFPS = (GlobalOptions.FPS == GlobalOptions.InfiniteFPS) ? prevFPS : GlobalOptions.FPS;
                 GlobalOptions.FPS = CheckboxMaximizeFPS.getState() ? 100 : prevFPS;
                 marioComponent.adjustFPS();
-                consoleHistory.addRecord("FPS set to " + (CheckboxMaximizeFPS.getState() ? "infinity" : GlobalOptions.FPS) );
+                LOGGER.addRecord("FPS set to " + (CheckboxMaximizeFPS.getState() ? "infinity" : GlobalOptions.FPS),
+                        LOGGER.VERBOSE_MODE.INFO );
             }
             else if (ob == CheckboxEnableTimer)
             {
                 GlobalOptions.TimerOn = CheckboxEnableTimer.getState();
-                consoleHistory.addRecord("Timer " + (GlobalOptions.TimerOn ? "enabled" : "disabled") );
+                LOGGER.addRecord("Timer " + (GlobalOptions.TimerOn ? "enabled" : "disabled"),
+                        LOGGER.VERBOSE_MODE.INFO);
             }
             else if (ob == CheckboxPauseWorld)
             {
                 GlobalOptions.pauseWorld = CheckboxPauseWorld.getState();
 
                 marioComponent.setPaused(GlobalOptions.pauseWorld);
-                consoleHistory.addRecord("World " + (GlobalOptions.pauseWorld ? "paused" : "unpaused") );
+                LOGGER.addRecord("World " + (GlobalOptions.pauseWorld ? "paused" : "unpaused"),
+                        LOGGER.VERBOSE_MODE.INFO);
             }
             else if (ob == CheckboxPauseMario)
             {
@@ -464,17 +469,19 @@ public class ToolsConfigurator extends JFrame
             else if (ob == CheckboxPowerRestoration)
             {
                 GlobalOptions.PowerRestoration = CheckboxPowerRestoration.getState();
-                consoleHistory.addRecord("Mario Power Restoration Turned " + (GlobalOptions.PowerRestoration ? "on" : "off"));
+                LOGGER.addRecord("Mario Power Restoration Turned " + (GlobalOptions.PowerRestoration ? "on" : "off"),
+                        LOGGER.VERBOSE_MODE.INFO);
             }
             else if (ob == CheckboxStopSimulationIfWin)
             {
                 GlobalOptions.StopSimulationIfWin = CheckboxStopSimulationIfWin.getState();
-                consoleHistory.addRecord("Stop simulation if Win Criteria Turned " +
-                        (GlobalOptions.StopSimulationIfWin ? "on" : "off"));
+                LOGGER.addRecord("Stop simulation if Win Criteria Turned " +
+                        (GlobalOptions.StopSimulationIfWin ? "on" : "off"),
+                        LOGGER.VERBOSE_MODE.INFO);
             }
             else if (ob == ChoiceAgent)
             {
-                consoleHistory.addRecord("Agent chosen: " + (ChoiceAgent.getSelectedItem()));
+                LOGGER.addRecord("Agent chosen: " + (ChoiceAgent.getSelectedItem()), LOGGER.VERBOSE_MODE.INFO);
                 JButtonPlaySimulate.setText(strSimulate);
                 GlobalOptions.CurrentAgentStr = ChoiceAgent.getSelectedItem();
             }
@@ -518,7 +525,7 @@ public class ToolsConfigurator extends JFrame
     public void setConsoleText(String text)
     {
         LabelConsole.setText("Console got message:");
-        consoleHistory.addRecord("\nConsole got message:\n" + text);
+        LOGGER.addRecord("\nConsole got message:\n" + text, LOGGER.VERBOSE_MODE.INFO);
 //        TextFieldConsole.setText(text);
     }
 }

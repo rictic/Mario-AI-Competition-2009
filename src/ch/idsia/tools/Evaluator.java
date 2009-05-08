@@ -1,13 +1,15 @@
 package ch.idsia.tools;
 
+import ch.idsia.mario.engine.GlobalOptions;
+import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.simulation.BasicSimulator;
 import ch.idsia.mario.simulation.ISimulation;
-import ch.idsia.mario.engine.sprites.Mario;
-import ch.idsia.mario.engine.GlobalOptions;
 
-import java.util.*;
-import java.util.List;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,12 +25,9 @@ public class Evaluator implements Runnable
     EvaluationOptions evaluationOptions;
 
     private List<EvaluationInfo> evaluationSummary = new ArrayList<EvaluationInfo>();
-    private ConsoleHistory consoleHistory;
 
     public List<EvaluationInfo> evaluate()
     {
-        if (consoleHistory == null)
-            setConsole(new ConsoleHistory(null));
         ISimulation simulator = new BasicSimulator(evaluationOptions.getSimulationOptionsCopy());
         // Simulate One Level
 
@@ -36,20 +35,20 @@ public class Evaluator implements Runnable
 
         long startTime = System.currentTimeMillis();
         String startMessage = "Evaluation started at " + GlobalOptions.getDateTime(null);
-        consoleHistory.addRecord(startMessage);
+        LOGGER.addRecord(startMessage, LOGGER.VERBOSE_MODE.INFO);
 
         boolean continueCondition;
         int i = 0;
         do
         {
-            consoleHistory.addRecord("Attempts left: " + (evaluationOptions.getMaxAttempts() - ++i ));
+            LOGGER.addRecord("Attempts left: " + (evaluationOptions.getMaxAttempts() - ++i ), LOGGER.VERBOSE_MODE.INFO);
             evaluationInfo = simulator.simulateOneLevel();
             
             evaluationInfo.levelType = evaluationOptions.getLevelType();
             evaluationInfo.levelDifficulty = evaluationOptions.getLevelDifficulty();
             evaluationInfo.levelRandSeed = evaluationOptions.getLevelRandSeed();
             evaluationSummary.add(evaluationInfo);
-            System.out.println("run  finished with result : " + evaluationInfo);
+            LOGGER.addRecord("run  finished with result : " + evaluationInfo, LOGGER.VERBOSE_MODE.INFO);
             continueCondition = !GlobalOptions.StopSimulationIfWin || !(evaluationInfo.marioStatus == Mario.STATUS_WIN);
         }
         while ( evaluationOptions.getMaxAttempts() > i && continueCondition );
@@ -59,18 +58,18 @@ public class Evaluator implements Runnable
            fileName = exportToMatLabFile();
         Collections.sort(evaluationSummary, new evBasicFitnessComparator());
 
-         consoleHistory.addRecord("Entire Evaluation Finished with results:");
+        LOGGER.addRecord("Entire Evaluation Finished with results:", LOGGER.VERBOSE_MODE.INFO);
         for (EvaluationInfo ev : evaluationSummary)
         {
-             consoleHistory.addRecord(ev.toString());
+//             LOGGER.addRecord(ev.toString(), LOGGER.VERBOSE_MODE.INFO);
         }
         long currentTime = System.currentTimeMillis();
         long elapsed = currentTime - startTime;
-         consoleHistory.addRecord(startMessage);
-         consoleHistory.addRecord("Evaluation Finished at " + GlobalOptions.getDateTime(null));
-         consoleHistory.addRecord("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed));
+         LOGGER.addRecord(startMessage, LOGGER.VERBOSE_MODE.INFO);
+         LOGGER.addRecord("Evaluation Finished at " + GlobalOptions.getDateTime(null), LOGGER.VERBOSE_MODE.INFO);
+         LOGGER.addRecord("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed), LOGGER.VERBOSE_MODE.INFO);
         if (!fileName.equals(""))
-            consoleHistory.addRecord("Exported to " + fileName);
+            LOGGER.addRecord("Exported to " + fileName, LOGGER.VERBOSE_MODE.INFO);
         if (evaluationOptions.isExitProgramWhenFinished())
             System.exit(0);
         return evaluationSummary;
@@ -78,9 +77,7 @@ public class Evaluator implements Runnable
 
     public void verbose(String message)
     {
-        if (consoleHistory == null)
-            setConsole(new ConsoleHistory(null));
-        consoleHistory.addRecord(message);
+        LOGGER.addRecord(message, LOGGER.VERBOSE_MODE.INFO);
     }
 
     public void getMeanEvaluationSummary()
@@ -152,10 +149,6 @@ public class Evaluator implements Runnable
         Mario.resetStatic();
         this.evaluationOptions = evaluationOptions;
         thisThread = new Thread(this);
-    }
-
-    public void setConsole(ConsoleHistory consoleHistory) {
-        this.consoleHistory = consoleHistory;
     }
 }
 
