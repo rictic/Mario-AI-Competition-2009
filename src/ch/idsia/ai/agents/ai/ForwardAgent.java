@@ -1,11 +1,9 @@
 package ch.idsia.ai.agents.ai;
 
-import ch.idsia.mario.environments.IEnvironment;
-import ch.idsia.mario.engine.sprites.Mario;
-import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.IAgent;
-
-import java.awt.*;
+import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.mario.engine.sprites.Mario;
+import ch.idsia.mario.environments.IEnvironment;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,7 +56,7 @@ public class ForwardAgent extends RegisterableAgent implements IAgent
         assert(observation != null);
         byte[][] levelScene = observation.getLevelSceneObservation();
 
-        if (levelScene[13][11] != 0 || levelScene[12][11] != 0 ||  DangerOfGap(levelScene))
+        if (levelScene[11][13] != 0 || levelScene[11][12] != 0 ||  DangerOfGap(levelScene))
         {
             if (observation.mayMarioJump() || ( !observation.isMarioOnGround() && Action[Mario.KEY_JUMP]))
             {

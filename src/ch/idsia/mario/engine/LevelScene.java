@@ -1,15 +1,17 @@
 package ch.idsia.mario.engine;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.GraphicsConfiguration;
-import java.awt.Image;
-import java.io.*;
-import java.text.DecimalFormat;
-import java.util.*;
-
+import ch.idsia.mario.engine.level.BgLevelGenerator;
+import ch.idsia.mario.engine.level.Level;
+import ch.idsia.mario.engine.level.LevelGenerator;
+import ch.idsia.mario.engine.level.SpriteTemplate;
 import ch.idsia.mario.engine.sprites.*;
-import ch.idsia.mario.engine.level.*;
+
+import java.awt.*;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class LevelScene extends Scene implements SpriteContext
@@ -207,7 +209,7 @@ public class LevelScene extends Scene implements SpriteContext
                 {
                     String tmpData = "";
                     for (int x = 0; x < levelScene.length; ++x)
-                        tmpData += mapElToStr(levelScene[x][y]);
+                        tmpData += mapElToStr(levelScene[y][x]);
                     ret.add(tmpData);
                 }
             }
