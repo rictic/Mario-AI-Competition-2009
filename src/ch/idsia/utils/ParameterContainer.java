@@ -109,7 +109,7 @@ public class ParameterContainer
         {
             if (optionsHashMap.get(param) == null)
             {
-                System.out.println("Default value " + defaultOtionsHashMap.get(param) + " for " + param +
+                System.err.println("InfoWarning: Default value " + defaultOtionsHashMap.get(param) + " for " + param +
                         " used");
                 optionsHashMap.put(param, defaultOtionsHashMap.get(param));
             }
@@ -132,11 +132,6 @@ public class ParameterContainer
         return String.valueOf(i);
     }
 
-//    public String s(boolean i)
-//    {
-//        return String.valueOf(i);
-//    }
-
     public boolean b(String s)
     {
         return "on".equals(s) || Boolean.valueOf(s);
@@ -148,9 +143,10 @@ public class ParameterContainer
             return;
         else
             defaultOtionsHashMap = new HashMap<String, String>();
+        // todo: add possibilitity loading parameters from (XML?) files.
         defaultOtionsHashMap.put("-ag","ForwardAgent"); //defaultOtionsHashMap.put("-agentName","NoAgent");
         defaultOtionsHashMap.put("-an","5"); //defaultOtionsHashMap.put("-attemptsNumber","5");
-        defaultOtionsHashMap.put("-e","off"); //defaultOtionsHashMap.put("-echo","off");
+        defaultOtionsHashMap.put("-echo","off"); //defaultOtionsHashMap.put("-echo","off");
         defaultOtionsHashMap.put("-ewf","on"); //defaultOtionsHashMap.put("-exitWhenFinished","off");
         defaultOtionsHashMap.put("-gv","off"); //defaultOtionsHashMap.put("-gameViewer","off");
         defaultOtionsHashMap.put("-gvc","off"); //defaultOtionsHashMap.put("-gameViewerContinuousUpdates","off");

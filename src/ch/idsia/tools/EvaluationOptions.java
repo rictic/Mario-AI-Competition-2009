@@ -2,6 +2,8 @@ package ch.idsia.tools;
 
 import ch.idsia.mario.simulation.SimulationOptions;
 
+import java.awt.*;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,4 +28,13 @@ public class EvaluationOptions extends SimulationOptions
     public void setMatlabFileName(String matlabFileName) {
         setParameterValue("-m", matlabFileName);    }
 
+    public Point getViewLocation()
+    {
+        int x = i(getParameterValue("-vlx"));
+        int y = i(getParameterValue("-vly"));
+        return new Point(x, y);
+    }
+
+    public Boolean isViewAlwaysOnTop() {
+        return b(getParameterValue("-vaot"));      }
 }

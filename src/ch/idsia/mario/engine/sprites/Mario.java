@@ -22,12 +22,21 @@ public class Mario extends Sprite
     public static void resetStatic()
     {
         large = true;
-        fire = true;
+        fire = false;
         coins = 0;
         lives = 65536;
         levelString = "none";
         numberOfAttempts = 0;
     }
+
+    public static void setMode(MODE mode)
+    {
+        large = (mode == MODE.MODE_LARGE);
+        fire = (mode == MODE.MODE_FIRE);
+    }
+
+
+    public static enum MODE {MODE_SMALL, MODE_LARGE, MODE_FIRE}
 
     public static void resetCoins()
     {

@@ -45,9 +45,8 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     private Mario mario = null;
     private LevelScene levelScene = null;
 
-    public MarioComponent(int width, int height, IAgent agent) {
+    public MarioComponent(int width, int height) {
         adjustFPS();
-
 
         this.setFocusable(true);
         this.setEnabled(true);
@@ -63,10 +62,8 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
         this.cheatAgent = new CheaterKeyboardAgent();
         this.addKeyListener(cheatAgent);
-        this.setAgent(agent);
 
         GlobalOptions.registerMarioComponent(this);
-
     }
 
     public void adjustFPS() {
@@ -139,7 +136,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             // Display the next frame of animation.
 //                repaint();
             scene.tick();
-            if (gameViewer.getContinuousUpdatesState())
+            if (gameViewer != null && gameViewer.getContinuousUpdatesState())
                 gameViewer.tick();
 
             float alpha = 0;

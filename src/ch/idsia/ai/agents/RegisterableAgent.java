@@ -1,8 +1,9 @@
 package ch.idsia.ai.agents;
 
 import ch.idsia.ai.agents.ai.BasicAIAgent;
-
 import java.util.*;
+
+import wox.serial.Easy;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,7 +20,7 @@ public class RegisterableAgent extends BasicAIAgent
     {
         super();
         setName(s);
-        registerAgent((IAgent) this);
+        registerAgent(this);
     }
 
     public static void registerAgent(IAgent agent)
@@ -27,13 +28,52 @@ public class RegisterableAgent extends BasicAIAgent
         AgentsHashMap.put(agent.getName(), agent);
     }
 
+    public static void registerAgent(String agentWOXName) throws IllegalFormatException {
+        if (agentWOXName.endsWith(".xml"))
+            registerAgent(load(agentWOXName));
+        else {
+            try {
+                throw new IllegalArgumentException("Critical Error: Cannot register the agent. Name specified " + agentWOXName +
+                        " is not a valid WOX name. Should end up with '.xml'");
+            }
+            catch(IllegalArgumentException e) {
+                System.err.println(e.getMessage());
+                System.err.println("Exiting...");
+                System.exit (1);
+            }
+        }
+    }
+
+    private static IAgent load (String name) {
+        IAgent agent;
+        try {
+            agent = (IAgent) Class.forName (name).newInstance ();
+        }
+        catch (ClassNotFoundException e) {
+            System.out.println (name + " is not a class name; trying to load a wox definition with that name.");
+            agent = (IAgent) Easy.load (name);
+        }
+        catch (Exception e) {
+            e.printStackTrace ();
+            agent = null;
+            System.exit (1);
+        }
+        return agent;
+    }
+
+
     public static Set<String> getAgentsNames()
     {
         return AgentsHashMap.keySet();
     }
 
-    public static IAgent getAgentByName(String selectedItem)
+    public static IAgent getAgentByName(String agentName)
     {
-        return AgentsHashMap.get(selectedItem);
+        if (AgentsHashMap.get(agentName) == null)
+        {
+
+        }
+
+        return AgentsHashMap.get(agentName);
     }
 }

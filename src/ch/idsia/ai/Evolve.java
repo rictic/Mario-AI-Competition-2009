@@ -5,7 +5,6 @@ import ch.idsia.ai.tasks.Task;
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.mario.engine.level.LevelGenerator;
 import ch.idsia.mario.engine.MarioComponent;
-import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.tools.GameViewer;
 import ch.idsia.tools.ToolsConfigurator;
 import ch.idsia.tools.EvaluationOptions;
@@ -32,12 +31,10 @@ public class Evolve {
         options.setPauseWorld(false);
         options.setPowerRestoration(false);
         options.setStopSimulationIfWin(false);
-        MarioComponent marioComponent = new MarioComponent(320, 240, null);
+        MarioComponent marioComponent = new MarioComponent(320, 240);
         GameViewer gameViewer = new GameViewer (null, null);
         marioComponent.setGameViewer(gameViewer);
         ToolsConfigurator.CreateMarioComponentFrame();
-        marioComponent.init();
-        options.setMarioComponent(marioComponent);
         Evolvable initial = new SimpleMLPAgent ();
         Task task = new ProgressTask();
         task.setOptions(options);
@@ -47,5 +44,4 @@ public class Evolve {
             System.out.println("Generation " + gen + " best " + es.getBestFitnesses()[0]);
         }
     }
-
 }

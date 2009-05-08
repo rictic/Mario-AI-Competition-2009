@@ -169,14 +169,4 @@ public class CmdLineOptions extends EvaluationOptions
     public boolean isServerAgentEnabled() {
         return getAgentName().startsWith("ServerAgent");
     }
-
-    public Point getViewLocation()
-    {
-        int x = i(getParameterValue("-vlx"));
-        int y = i(getParameterValue("-vly"));
-        return new Point(x, y);
-    }
-
-    public Boolean isViewAlwaysOnTop() {
-        return b(getParameterValue("-vaot"));      }
 }

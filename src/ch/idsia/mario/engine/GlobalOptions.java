@@ -19,6 +19,7 @@ public class GlobalOptions {
     public static boolean VisualizationOn = true;
     public static boolean GameVeiwerOn = true;
 
+
     private static MarioComponent marioComponent = null;
     private static GameViewer gameViewer = null;
     public static boolean TimerOn = true;
@@ -34,6 +35,11 @@ public class GlobalOptions {
     {
         marioComponent = mc;
     }
+
+    public static MarioComponent getMarioComponent() {
+        return marioComponent;
+    }
+    
 
     public static void registerGameViewer(GameViewer gv)
     {

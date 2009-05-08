@@ -1,6 +1,7 @@
 package ch.idsia.mario.simulation;
 
 import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.utils.ParameterContainer;
 
@@ -15,8 +16,8 @@ import ch.idsia.utils.ParameterContainer;
 
 public class SimulationOptions extends ParameterContainer
 {
-    protected IAgent agent;
-    protected MarioComponent marioComponent = null;
+//    protected IAgent agent;
+//    protected MarioComponent marioComponent = null;
     
 //    protected SmartInt levelType = new SmartInt();         //int
 //    protected SmartInt levelDifficulty = new SmartInt();   //int
@@ -43,12 +44,12 @@ public class SimulationOptions extends ParameterContainer
             // is this just a copy method then? /julian
     {
         SimulationOptions ret = new SimulationOptions();
-        ret.setAgent(agent);
+        ret.setAgent(getAgent());
         ret.setLevelDifficulty(getLevelDifficulty());
         ret.setLevelLength(getLevelLength());
         ret.setLevelRandSeed(getLevelRandSeed());
         ret.setLevelType(getLevelType());
-        ret.setMarioComponent(marioComponent);
+//        ret.setMarioComponent(marioComponent);
         ret.setVisualization(isVisualization());
         ret.setPauseWorld(isPauseWorld());
         ret.setPowerRestoration(isPowerRestoration());
@@ -57,20 +58,22 @@ public class SimulationOptions extends ParameterContainer
     }
 
     public IAgent getAgent() {
-        return agent;
-    }
+        return RegisterableAgent.getAgentByName((getParameterValue("-ag")));      }
 
     public void setAgent(IAgent agent) {
-        this.agent = agent;
+        // Basically we could store just the name here, it's enough; but this would be confusing and not general, but
+        // we keep following generality and "templates" patterns.
+        setParameterValue("-ag", agent.getName());
+//        this.agent = agent;
     }
 
-    public MarioComponent getMarioComponent() {
-        return marioComponent;
-    }  
-
-    public void setMarioComponent(MarioComponent marioComponent) {
-        this.marioComponent = marioComponent;
-    }
+//    public MarioComponent getMarioComponent() {
+//        return marioComponent;
+//    }
+//
+//    public void setMarioComponent(MarioComponent marioComponent) {
+//        this.marioComponent = marioComponent;
+//    }
 
     // TODO? LEVEL_TYPE enum?
     public int getLevelType() {

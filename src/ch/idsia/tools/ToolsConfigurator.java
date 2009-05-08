@@ -76,9 +76,9 @@ public class ToolsConfigurator extends JFrame
 
         gameViewer = new GameViewer(null, null);
 
-        CreateMarioComponentFrame(cmdLineOptions.getViewLocation(),
-                                  cmdLineOptions.isViewAlwaysOnTop());
-        marioComponent.init();
+//        CreateMarioComponentFrame(cmdLineOptions.getViewLocation(),
+//                                  cmdLineOptions.isViewAlwaysOnTop());
+//        marioComponent.init();
 
         toolsConfigurator.setMarioComponent(marioComponent);
 
@@ -97,23 +97,30 @@ public class ToolsConfigurator extends JFrame
         }
     }
 
+
+
     private static JFrame marioComponentFrame = null;
     public static void CreateMarioComponentFrame()
     {
         CreateMarioComponentFrame(new Point(0, 0), false);
     }
 
-    private static void CreateMarioComponentFrame(Point location, boolean isAlwaysOnTop)
+    static void CreateMarioComponentFrame(Point location, boolean isAlwaysOnTop)
     {
+//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//        frame.setLocation((screenSize.width-frame.getWidth())/2, (screenSize.height-frame.getHeight())/2);        
         if (marioComponentFrame == null)
             marioComponentFrame = new JFrame(GlobalOptions.CurrentAgentStr + " - Mario Intelligent 2.0");
+        if (marioComponent == null)
+            marioComponent = new MarioComponent(320, 240);
         marioComponentFrame.setContentPane(marioComponent);
+        marioComponent.init();
         marioComponentFrame.pack();
         marioComponentFrame.setResizable(false);
         marioComponentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         marioComponentFrame.setLocation(location);
         marioComponentFrame.setVisible(GlobalOptions.VisualizationOn);
-        marioComponentFrame.setAlwaysOnTop(isAlwaysOnTop); //TODO: as cmdLineOption
+        marioComponentFrame.setAlwaysOnTop(isAlwaysOnTop);
     }
 
     enum INTERFACE_TYPE {CONSOLE, GUI}
@@ -162,7 +169,7 @@ public class ToolsConfigurator extends JFrame
     private int prevFPS = 24;
 
     private static GameViewer gameViewer = null; //new GameViewer(null, null);
-    private static MarioComponent marioComponent = new MarioComponent(320, 240, null);
+    private static MarioComponent marioComponent;
 
     public ToolsConfigurator(Point location, Dimension size)
     {
@@ -345,7 +352,6 @@ public class ToolsConfigurator extends JFrame
     private EvaluationOptions prepareEvaluatorOptions()
     {
         EvaluationOptions evaluationOptions = new EvaluationOptions();
-        evaluationOptions.setMarioComponent(marioComponent);
         IAgent agent = RegisterableAgent.getAgentByName(ChoiceAgent.getSelectedItem());
         evaluationOptions.setAgent(agent);
         int type = ChoiceLevelType.getSelectedIndex();
@@ -512,23 +518,4 @@ public class ToolsConfigurator extends JFrame
         consoleHistory.addRecord("\nConsole got message:\n" + text);
 //        TextFieldConsole.setText(text);
     }
-}
- class ConsoleHistory
-{
-    TextArea textAreaConsole = null;
-
-    public ConsoleHistory(TextArea textAreaConsole)
-    {
-        this.textAreaConsole = textAreaConsole;
-    }
-
-    private String history = "console:";
-    public void addRecord(String record)
-    {
-        history += "\n" + record;
-        if (textAreaConsole != null)
-            textAreaConsole.setText(history);
-        System.out.println(record);
-    }
-    public String getHistory() { return history; }
 }

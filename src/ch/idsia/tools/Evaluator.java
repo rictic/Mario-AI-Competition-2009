@@ -29,7 +29,7 @@ public class Evaluator implements Runnable
     public List<EvaluationInfo> evaluate()
     {
         if (consoleHistory == null)
-            consoleHistory = new ConsoleHistory(new TextArea());
+            setConsole(new ConsoleHistory(null));
         ISimulation simulator = new BasicSimulator(evaluationOptions.getSimulationOptionsCopy());
         // Simulate One Level
 
@@ -69,9 +69,16 @@ public class Evaluator implements Runnable
         consoleHistory.addRecord("Evaluation Finished at " + GlobalOptions.getDateTime(null));
         consoleHistory.addRecord("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed));
         consoleHistory.addRecord("Exported to " + fileName);
-        if (evaluationOptions.isExitProgramWhenFinished())
-            System.exit(0);
+//        if (evaluationOptions.isExitProgramWhenFinished())
+//            System.exit(0);
         return evaluationSummary;
+    }
+
+    public void verbose(String message)
+    {
+        if (consoleHistory == null)
+            setConsole(new ConsoleHistory(null));
+        consoleHistory.addRecord(message);
     }
 
     public void getMeanEvaluationSummary()
@@ -137,6 +144,8 @@ public class Evaluator implements Runnable
 
     public void init(EvaluationOptions evaluationOptions)
     {
+        ToolsConfigurator.CreateMarioComponentFrame(evaluationOptions.getViewLocation(),
+                                                    evaluationOptions.isViewAlwaysOnTop());
         Mario.resetStatic();
         this.evaluationOptions = evaluationOptions;
         thisThread = new Thread(this);

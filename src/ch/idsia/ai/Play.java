@@ -5,6 +5,7 @@ import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.ai.tasks.Task;
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.tools.Evaluator;
+import ch.idsia.tools.CmdLineOptions;
 import wox.serial.Easy;
 
 /**
@@ -21,14 +22,15 @@ public class Play {
             controller = load (args[0]);
         }
         Task task = new ProgressTask();
-        System.out.println ("Score: " + task.evaluate (controller));
+        task.setOptions(new CmdLineOptions(args) );
+        System.out.println ("Score: " + task.evaluate ());
     }
 
 
     public static IAgent load (String name) {
         IAgent controller;
         try {
-            controller = (IAgent) (Object) Class.forName (name).newInstance ();
+            controller = (IAgent) Class.forName (name).newInstance ();
         }
         catch (ClassNotFoundException e) {
             System.out.println (name + " is not a class name; trying to load a wox definition with that name.");

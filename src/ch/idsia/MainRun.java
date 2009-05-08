@@ -1,15 +1,14 @@
 package ch.idsia;
 
-import ch.idsia.tools.CmdLineOptions;
-import ch.idsia.tools.GameViewer;
-import ch.idsia.tools.EvaluationOptions;
+import ch.idsia.tools.*;
 import ch.idsia.tools.Network.ServerAgent;
 import ch.idsia.ai.agents.ai.ForwardAgent;
 import ch.idsia.ai.agents.ai.RandomAgent;
 import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.ai.SimpleMLPAgent;
-import ch.idsia.mario.engine.GlobalOptions;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,19 +18,47 @@ import ch.idsia.mario.engine.GlobalOptions;
  * Package: ch.idsia
  */
 
+/*
+For "quick and dirty" plays you can adjust the default parameters in ParameterContainer class, but we strongly encourage
+you to use the API proposed. Because if in the first case you are mostlikely the only person who had become resposible for
+the stability of the entire system, in the second case you can rely on our direct support as soon as possible. And(!)
+If you encounter any trouble with using API proposed, please, e-mail us {sergey, julian} @ idsia . ch immediately. Because if
+anybody encounters any trouble that implies some other person to encounter the same trouble and we cannot effort that.
+Thank you for you kind assistance and productive collaboration!
+Sergey Karakovskiy and Julian Togelius.
+ */
+
 public class MainRun 
 {
+    private static boolean calledBefore = false;
+    public static void createNativeAgents(CmdLineOptions cmdLineOptions)
+    {
+        if (!calledBefore)
+        {
+            // Create an Agent here or mention the set of agents you want to be available for the framework.
+            // All availabe by now are used here. They can be accessed by just setting the commandline property -ag to the name of desired agent.
+
+            calledBefore = true;
+            new ForwardAgent();
+            new HumanKeyboardAgent();
+            new RandomAgent();
+            new ForwardJumpingAgent();
+            new SimpleMLPAgent();
+            new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled());
+        }
+    }
+
     public static void main(String[] args) {
         CmdLineOptions cmdLineOptions = new CmdLineOptions(args);
-        EvaluationOptions evaluationOptions = cmdLineOptions;  // if none options mentioned, all defalults used.
+        EvaluationOptions evaluationOptions = cmdLineOptions;  // if none options mentioned, all defalults are used.
 
-        // Create an Agent here
-        new ForwardAgent();
-        new HumanKeyboardAgent();
-        new RandomAgent();
-        new ForwardJumpingAgent();
-        new SimpleMLPAgent();
-        new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled());
+        createNativeAgents(cmdLineOptions);
 
+        Evaluator evaluator = new Evaluator(evaluationOptions);
+        evaluator.verbose("Play/Simulation started!");
+        List<EvaluationInfo> evaluationSummary = evaluator.evaluate();
+        evaluator.verbose("Play/Simulation Finished!");
+        if (cmdLineOptions.isExitProgramWhenFinished())
+            System.exit(0);
     }
 }

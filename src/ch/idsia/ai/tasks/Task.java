@@ -11,7 +11,6 @@ import ch.idsia.tools.EvaluationOptions;
  * Package: com.mojang.mario.Tasks
  */
 public interface Task {
-
     public double[] evaluate (IAgent controller);
 
     public void setOptions (EvaluationOptions options);
