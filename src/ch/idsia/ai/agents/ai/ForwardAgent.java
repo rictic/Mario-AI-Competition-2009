@@ -39,10 +39,10 @@ public class ForwardAgent extends RegisterableAgent implements IAgent
             boolean f = true;
             for(int y = 12; y < 22; ++y)
             {
-                if  (levelScene[x][y] != 0)
+                if  (levelScene[y][x] != 0)
                     f = false;
             }
-            if (f && levelScene[11][12] != 0)
+            if (f && levelScene[12][11] != 0)
                 return true;
         }
         return false;
