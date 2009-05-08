@@ -145,9 +145,9 @@ public class LevelScene extends Scene implements SpriteContext
         int MarioXInMap = (int)mario.x/16;
         int MarioYInMap = (int)mario.y/16;
 
-        for (int y = MarioYInMap - HalfObsHeight, obsY = 0; y < MarioYInMap + HalfObsHeight; y++, obsY++)
+        for (int y = MarioYInMap - HalfObsHeight, obsX = 0; y < MarioYInMap + HalfObsHeight; y++, obsX++)
         {
-            for (int x = MarioXInMap - HalfObsWidth, obsX = 0; x < MarioXInMap + HalfObsWidth; x++, obsX++)
+            for (int x = MarioXInMap - HalfObsWidth, obsY = 0; x < MarioXInMap + HalfObsWidth; x++, obsY++)
             {
                 if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
                 {
@@ -174,10 +174,10 @@ public class LevelScene extends Scene implements SpriteContext
     }
 
 
-    public List<String> LevelSceneAroundMarioASCIIDump(boolean Enemies, boolean LevelMap, boolean CompleteObservation, int ZLevel){
+    public List<String> LevelSceneAroundMarioASCII(boolean Enemies, boolean LevelMap, boolean CompleteObservation, int ZLevel){
 //        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));//        bw.write("\nTotal world width = " + level.width);
         List<String> ret = new ArrayList<String>();
-        if (level != null)
+        if (level != null && mario != null)
         {
             ret.add("Total world width = " + level.width);
             ret.add("Total world height = " + level.height);
@@ -585,7 +585,7 @@ public class LevelScene extends Scene implements SpriteContext
 //            int y_dump = 0;
 //            g.drawString("GAME VIEWER: ", 320, y_dump += 11 );
 //            g.setColor(Color.GREEN);
-//            for (String s: LevelSceneAroundMarioASCIIDump(true, true, true) )
+//            for (String s: LevelSceneAroundMarioASCII(true, true, true) )
 //
 //                g.drawString(s, (y_dump > 250) ? 0 : 320, y_dump += 11 );
 //        }

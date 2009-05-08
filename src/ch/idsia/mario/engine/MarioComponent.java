@@ -105,6 +105,11 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         running = true;
         adjustFPS();
         EvaluationInfo evaluationInfo = new EvaluationInfo();
+        System.out.println("::::VIS" + GlobalOptions.VisualizationOn);
+        System.out.println("::::::::MAX FPS" + GlobalOptions.FPS);
+        System.out.println("::::::::GV" + GlobalOptions.GameVeiwerContinuousUpdatesOn);
+        System.out.println("::::::::GV" + GlobalOptions.GameVeiwerOn);
+        System.out.println("");
 
         VolatileImage image = null;
         Graphics g = null;
@@ -291,7 +296,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     public List<String> getObservation(boolean Enemies, boolean LevelMap, boolean Complete, int ZLevel) {
         if (scene instanceof LevelScene)
-            return ((LevelScene) scene).LevelSceneAroundMarioASCIIDump(Enemies, LevelMap, Complete, ZLevel);
+            return ((LevelScene) scene).LevelSceneAroundMarioASCII(Enemies, LevelMap, Complete, ZLevel);
         else {
             List<String> ret = new ArrayList<String>();
 //

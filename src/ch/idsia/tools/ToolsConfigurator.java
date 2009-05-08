@@ -35,10 +35,11 @@ import java.util.Set;
 public class ToolsConfigurator extends JFrame
 {
     private Evaluator evaluator;
+    private static CmdLineOptions cmdLineOptions = null;
 
     public static void main(String[] args)
     {
-        CmdLineOptions cmdLineOptions = new CmdLineOptions(args);
+        cmdLineOptions = new CmdLineOptions(args);
         // Create an Agent here
         new ForwardAgent();
         new HumanKeyboardAgent();
@@ -76,8 +77,9 @@ public class ToolsConfigurator extends JFrame
 
         gameViewer = new GameViewer(null, null);
 
-//        CreateMarioComponentFrame(cmdLineOptions.getViewLocation(),
-//                                  cmdLineOptions.isViewAlwaysOnTop());
+        CreateMarioComponentFrame(cmdLineOptions.getViewLocation(),
+                                  cmdLineOptions.isViewAlwaysOnTop(),
+                                  cmdLineOptions.isVisualization());
 //        marioComponent.init();
 
         toolsConfigurator.setMarioComponent(marioComponent);
@@ -110,9 +112,8 @@ public class ToolsConfigurator extends JFrame
 //        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 //        frame.setLocation((screenSize.width-frame.getWidth())/2, (screenSize.height-frame.getHeight())/2);        
         if (marioComponentFrame == null)
-            marioComponentFrame = new JFrame(GlobalOptions.CurrentAgentStr + " - Mario Intelligent 2.0");
-        if (marioComponent == null)
         {
+            marioComponentFrame = new JFrame(GlobalOptions.CurrentAgentStr + " - Mario Intelligent 2.0");
             marioComponent = new MarioComponent(320, 240);
             marioComponentFrame.setContentPane(marioComponent);
             marioComponent.init();
@@ -353,7 +354,7 @@ public class ToolsConfigurator extends JFrame
 
     private EvaluationOptions prepareEvaluatorOptions()
     {
-        EvaluationOptions evaluationOptions = new EvaluationOptions();
+        EvaluationOptions evaluationOptions = cmdLineOptions;
         IAgent agent = RegisterableAgent.getAgentByName(ChoiceAgent.getSelectedItem());
         evaluationOptions.setAgent(agent);
         int type = ChoiceLevelType.getSelectedIndex();

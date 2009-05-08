@@ -43,13 +43,13 @@ public class Evaluator implements Runnable
         do
         {
             consoleHistory.addRecord("Attempts left: " + (evaluationOptions.getMaxAttempts() - ++i ));
-            //TODO: SK place in common place for options.
             evaluationInfo = simulator.simulateOneLevel();
+            
             evaluationInfo.levelType = evaluationOptions.getLevelType();
             evaluationInfo.levelDifficulty = evaluationOptions.getLevelDifficulty();
             evaluationInfo.levelRandSeed = evaluationOptions.getLevelRandSeed();
             evaluationSummary.add(evaluationInfo);
-//            System.out.println("run  finished with result : " + evaluationInfo);
+            System.out.println("run  finished with result : " + evaluationInfo);
             continueCondition = !GlobalOptions.StopSimulationIfWin || !(evaluationInfo.marioStatus == Mario.STATUS_WIN);
         }
         while ( evaluationOptions.getMaxAttempts() > i && continueCondition );
@@ -59,20 +59,20 @@ public class Evaluator implements Runnable
            fileName = exportToMatLabFile();
         Collections.sort(evaluationSummary, new evBasicFitnessComparator());
 
-        // consoleHistory.addRecord("Entire Evaluation Finished with results:");
+         consoleHistory.addRecord("Entire Evaluation Finished with results:");
         for (EvaluationInfo ev : evaluationSummary)
         {
-            // consoleHistory.addRecord(ev.toString());
+             consoleHistory.addRecord(ev.toString());
         }
         long currentTime = System.currentTimeMillis();
         long elapsed = currentTime - startTime;
-        // consoleHistory.addRecord(startMessage);
-        // consoleHistory.addRecord("Evaluation Finished at " + GlobalOptions.getDateTime(null));
-        // consoleHistory.addRecord("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed));
-//        if (!fileName.equals(""))
-//            consoleHistory.addRecord("Exported to " + fileName);
-//        if (evaluationOptions.isExitProgramWhenFinished())
-//            System.exit(0);
+         consoleHistory.addRecord(startMessage);
+         consoleHistory.addRecord("Evaluation Finished at " + GlobalOptions.getDateTime(null));
+         consoleHistory.addRecord("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed));
+        if (!fileName.equals(""))
+            consoleHistory.addRecord("Exported to " + fileName);
+        if (evaluationOptions.isExitProgramWhenFinished())
+            System.exit(0);
         return evaluationSummary;
     }
 

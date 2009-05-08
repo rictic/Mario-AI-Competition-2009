@@ -32,7 +32,6 @@ public class Evolve {
         options.setMaxAttempts(1);
         options.setMaxFPS(true);
         options.setVisualization(false);
-
         Task task = new ProgressTask(options);
         ES es = new ES (task, initial, populationSize);
         for (int gen = 0; gen < generations; gen++) {

@@ -92,7 +92,7 @@ public class GameViewer extends JFrame
             }
         }
 
-    };
+    }
 
     public void tick()
     {
