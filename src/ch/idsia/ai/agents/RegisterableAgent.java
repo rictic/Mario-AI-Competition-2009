@@ -3,9 +3,7 @@ package ch.idsia.ai.agents;
 import ch.idsia.ai.agents.ai.BasicAIAgent;
 import wox.serial.Easy;
 
-import java.util.HashMap;
 import java.util.IllegalFormatException;
-import java.util.LinkedHashMap;
 import java.util.Set;
 
 /**
@@ -17,8 +15,6 @@ import java.util.Set;
  */
 public class RegisterableAgent extends BasicAIAgent
 {
-    static HashMap<String, IAgent> AgentsHashMap = new LinkedHashMap<String, IAgent>();
-
     public RegisterableAgent(String s)
     {
         super();
@@ -28,7 +24,7 @@ public class RegisterableAgent extends BasicAIAgent
 
     public static void registerAgent(IAgent agent)
     {
-        AgentsHashMap.put(agent.getName(), agent);
+        AgentsPool.AgentsHashMap.put(agent.getName(), agent);
     }
 
     public static void registerAgent(String agentWOXName) throws IllegalFormatException {
@@ -66,17 +62,17 @@ public class RegisterableAgent extends BasicAIAgent
 
     public static Set<String> getAgentsNames()
     {
-        return AgentsHashMap.keySet();
+        return AgentsPool.AgentsHashMap.keySet();
     }
 
     public static IAgent getAgentByName(String agentName)
     {
-        if (AgentsHashMap.get(agentName) == null)
+        if (AgentsPool.AgentsHashMap.get(agentName) == null)
         {
             System.err.println("Agent " + agentName + " Not found. Have you created " + agentName + " anywhere? \nExiting...");
             System.exit(2); // TODO: handle this in more general way. tranfer exception higher. System should not just quit.
         }
 
-        return AgentsHashMap.get(agentName);
+        return AgentsPool.AgentsHashMap.get(agentName);
     }
 }

@@ -33,6 +33,4 @@ public class Play {
 
         System.out.println ("Score: " + task.evaluate (controller));
     }
-
-
 }

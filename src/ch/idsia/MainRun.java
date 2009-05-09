@@ -1,9 +1,11 @@
 package ch.idsia;
 
+import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.ai.*;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.tools.*;
 import ch.idsia.tools.Network.ServerAgent;
+import wox.serial.Easy;
 
 import java.util.List;
 
@@ -42,8 +44,12 @@ public class MainRun
             new ForwardJumpingAgent();
             new SimpleMLPAgent();
             new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled());
-            new ScaredAgent();
-            new ScaredSpeedyAgent();
+            IAgent a = new ScaredAgent();
+            System.out.println("name: " + a.getName());
+
+            Easy.save(a, "ScaredAgent.xml");
+
+//            new ScaredSpeedyAgent();
 
         }
     }
