@@ -1,11 +1,6 @@
 package wox.serial;
 
-import ch.idsia.ai.agents.IAgent;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * User: sml
@@ -23,29 +18,19 @@ public class TestObject  {
         }
     }
 
-
-//    public static void f() {
-//        this.AgentsHashMap.
-//    }
-
-    //HashMap<String, IAgent> AgentsHashMap = new LinkedHashMap<String, IAgent>();
-    HashMap<String, String> AgentsHashMap = new LinkedHashMap<String, String>();
-    //    HashMap<String, IAgent> a = new HashMap<String, IAgent>();
-    List<IAgent> l = new ArrayList<IAgent>();
-
     private int x;
-    static int[] xa = {0, 1};
+    int[] xa = {0, 1};
     int[] xb = xa;
     byte[] ba = {99, 12, (byte) 0xFF};
     TestObject to;
     int[][] xxx = {{0,1},{2}};
     int[] ia = {1, 2, 3};
     double[] dd = {4, 5, 6};
-    static Object[] objects;
-    static ArrayList alist;
+    Object[] objects;
+    ArrayList alist;
     // check we can handle null objects
     Object myNull = null;
-    static Inner inner;
+    Inner inner;
 
     // check we can handle Class variables
     // Class myClass = TestObject.class;
