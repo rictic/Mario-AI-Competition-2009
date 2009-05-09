@@ -54,6 +54,7 @@ public class LOGGER
     public static void print(String record, VERBOSE_MODE vm) {
         try
         {
+            // upperbounded by maximum size of the string : 6826363
             addRecord(record, vm);
         }
         catch (OutOfMemoryError e)
@@ -78,7 +79,11 @@ public class LOGGER
 
         String r = "\n[:" + vm + ":] " + record;
         history += r ;
-        System.out.println("history.length() = " + history.length());
+        if (history.length() > 6825400)
+        {
+            save("LOGGERDump" + count++ + ".txt");
+            history = "console:\n";
+        }
         if (textAreaConsole != null)
             textAreaConsole.setText(history);
 

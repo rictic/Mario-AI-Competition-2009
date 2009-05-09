@@ -1,9 +1,12 @@
 package ch.idsia.ai.agents;
 
 import ch.idsia.ai.agents.ai.BasicAIAgent;
-import java.util.*;
-
 import wox.serial.Easy;
+
+import java.util.HashMap;
+import java.util.IllegalFormatException;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,7 +64,6 @@ public class RegisterableAgent extends BasicAIAgent
         return agent;
     }
 
-
     public static Set<String> getAgentsNames()
     {
         return AgentsHashMap.keySet();
@@ -71,7 +73,8 @@ public class RegisterableAgent extends BasicAIAgent
     {
         if (AgentsHashMap.get(agentName) == null)
         {
-
+            
+            // TODO: warning/error message. Forgot to register?
         }
 
         return AgentsHashMap.get(agentName);
