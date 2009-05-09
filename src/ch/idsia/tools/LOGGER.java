@@ -2,6 +2,7 @@ package ch.idsia.tools;
 
 import java.awt.*;
 import java.io.*;
+import java.text.DecimalFormat;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,6 +51,8 @@ public class LOGGER
         LOGGER.print(record + "\n", vm);
     }
 
+    private static DecimalFormat df = new DecimalFormat("000");
+
 
     public static void print(String record, VERBOSE_MODE vm) {
         try
@@ -60,9 +63,13 @@ public class LOGGER
         catch (OutOfMemoryError e)
         {
             System.err.println("OutOfMemory Exception while logging. Application data is not corrupted.");
-            save("LOGGERDump" + count++ + ".txt");
+            save(prepareDumpName());
             history = "console:\n";
         }
+    }
+
+    private static String prepareDumpName() {
+        return "LOGGERDump" + df.format(count++) + ".txt";
     }
 
     private static void addRecord(String record, VERBOSE_MODE vm)
@@ -82,7 +89,7 @@ public class LOGGER
         history += r ;
         if (history.length() > 1048576) // 1024 * 1024, 1 MByte.
         {
-            save("LOGGERDump" + count++ + ".txt");
+            save(prepareDumpName());
             history = "console:\n";
         }
         if (textAreaConsole != null)

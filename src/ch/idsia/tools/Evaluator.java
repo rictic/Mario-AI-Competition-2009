@@ -48,7 +48,8 @@ public class Evaluator implements Runnable
             evaluationInfo.levelDifficulty = evaluationOptions.getLevelDifficulty();
             evaluationInfo.levelRandSeed = evaluationOptions.getLevelRandSeed();
             evaluationSummary.add(evaluationInfo);
-            LOGGER.println("run  finished with result : " + evaluationInfo, LOGGER.VERBOSE_MODE.ALL);
+            LOGGER.VERBOSE_MODE VM = (evaluationInfo.marioStatus == Mario.STATUS_WIN) ? LOGGER.VERBOSE_MODE.INFO : LOGGER.VERBOSE_MODE.ALL;
+            LOGGER.println("run  finished with result : " + evaluationInfo, VM);
             continueCondition = !GlobalOptions.StopSimulationIfWin || !(evaluationInfo.marioStatus == Mario.STATUS_WIN);
         }
         while ( evaluationOptions.getMaxAttempts() > i && continueCondition );

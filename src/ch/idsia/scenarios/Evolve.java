@@ -47,11 +47,7 @@ public class Evolve {
 
         LOGGER.println("Press any key to continue... ", LOGGER.VERBOSE_MODE.INFO);
 
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        try {System.in.read();        } catch (IOException e) {            e.printStackTrace();        }
 
         options.setVisualization(true);
         for (IAgent bestAgent : bestAgents) {
