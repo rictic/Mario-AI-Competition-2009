@@ -1,8 +1,8 @@
 package ch.idsia.scenarios;
 
 import ch.idsia.ai.Evolvable;
-import ch.idsia.ai.SimpleMLPAgent;
 import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.ai.SimpleMLPAgent;
 import ch.idsia.ai.ea.ES;
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;

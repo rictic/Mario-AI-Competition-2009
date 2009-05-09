@@ -1,6 +1,5 @@
 package ch.idsia;
 
-import ch.idsia.ai.SimpleMLPAgent;
 import ch.idsia.ai.agents.ai.*;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.tools.*;

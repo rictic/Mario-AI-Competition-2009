@@ -1,5 +1,7 @@
-package ch.idsia.ai;
+package ch.idsia.ai.agents.ai;
 
+import ch.idsia.ai.Evolvable;
+import ch.idsia.ai.MLP;
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.environments.IEnvironment;

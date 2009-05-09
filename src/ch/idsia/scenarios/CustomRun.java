@@ -1,16 +1,12 @@
 package ch.idsia.scenarios;
 
-import ch.idsia.ai.Evolvable;
-import ch.idsia.ai.SimpleMLPAgent;
 import ch.idsia.ai.agents.IAgent;
-import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.ai.agents.ai.ForwardAgent;
 import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
-import ch.idsia.ai.ea.ES;
-import ch.idsia.ai.tasks.Task;
+import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.ai.tasks.ProgressTask;
+import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
-import ch.idsia.tools.EvaluationOptions;
 
 /**
  * Created by IntelliJ IDEA.
