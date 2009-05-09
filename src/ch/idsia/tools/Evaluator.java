@@ -146,6 +146,8 @@ public class Evaluator implements Runnable
         ToolsConfigurator.CreateMarioComponentFrame(evaluationOptions.getViewLocation(),
                                                     evaluationOptions.isViewAlwaysOnTop(),
                                                     evaluationOptions.isVisualization());
+        
+        GlobalOptions.pauseWorld = evaluationOptions.isPauseWorld();
         Mario.resetStatic();
         this.evaluationOptions = evaluationOptions;
         thisThread = new Thread(this);

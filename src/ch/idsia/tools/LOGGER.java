@@ -59,6 +59,7 @@ public class LOGGER
         }
         catch (OutOfMemoryError e)
         {
+            System.err.println("OutOfMemory Exception while logging. Application data is not corrupted.");
             save("LOGGERDump" + count++ + ".txt");
             history = "console:\n";
         }
@@ -79,7 +80,7 @@ public class LOGGER
 
         String r = "\n[:" + vm + ":] " + record;
         history += r ;
-        if (history.length() > 6825400)
+        if (history.length() > 1048576) // 1024 * 1024, 1 MByte.
         {
             save("LOGGERDump" + count++ + ".txt");
             history = "console:\n";

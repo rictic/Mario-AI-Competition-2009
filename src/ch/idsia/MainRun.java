@@ -55,6 +55,7 @@ public class MainRun
         createNativeAgents(cmdLineOptions);
 
         Evaluator evaluator = new Evaluator(evaluationOptions);
+        // TODO: External Parameter: levelDificulty as an interval [a:b]
         for (int i = 0; i < 15; i++) {
             evaluationOptions.setLevelDifficulty(i);
             evaluator.verbose("Play/Simulation started!", LOGGER.VERBOSE_MODE.ALL);

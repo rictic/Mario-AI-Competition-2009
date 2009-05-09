@@ -73,8 +73,8 @@ public class RegisterableAgent extends BasicAIAgent
     {
         if (AgentsHashMap.get(agentName) == null)
         {
-            
-            // TODO: warning/error message. Forgot to register?
+            System.err.println("Agent " + agentName + " Not found. Have you created " + agentName + " anywhere? \nExiting...");
+            System.exit(2); // TODO: handle this in more general way. tranfer exception higher. System should not just quit.
         }
 
         return AgentsHashMap.get(agentName);
