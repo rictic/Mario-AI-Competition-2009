@@ -32,13 +32,14 @@ public class Evolve {
         options.setMaxAttempts(1);
         options.setMaxFPS(true);
         options.setVisualization(false);
+        options.setPauseWorld(true);
         Task task = new ProgressTask(options);
         ES es = new ES (task, initial, populationSize);
         List<IAgent> bestAgents = new ArrayList<IAgent>(1500);
         for (int gen = 0; gen < generations; gen++) {
            es.nextGeneration();
             LOGGER.println("Generation " + gen + " best " + es.getBestFitnesses()[0], LOGGER.VERBOSE_MODE.INFO);
-           options.setVisualization(false);
+           options.setVisualization(gen % 10 == 0);
             bestAgents.add( (IAgent)es.getBests()[0]) ;
             LOGGER.println("trying: " + task.evaluate((IAgent)es.getBests()[0])[0], LOGGER.VERBOSE_MODE.INFO);
            options.setVisualization(false);
