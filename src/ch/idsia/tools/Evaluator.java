@@ -48,7 +48,11 @@ public class Evaluator implements Runnable
             evaluationInfo.levelDifficulty = evaluationOptions.getLevelDifficulty();
             evaluationInfo.levelRandSeed = evaluationOptions.getLevelRandSeed();
             evaluationSummary.add(evaluationInfo);
-            LOGGER.println("run  finished with result : " + evaluationInfo, LOGGER.VERBOSE_MODE.ALL);
+            for (int j = 0; j < 5000;  j++)
+            {
+             LOGGER.println("Writing to log " + j , LOGGER.VERBOSE_MODE.INFO);
+             LOGGER.println("run  finished with result : " + evaluationInfo, LOGGER.VERBOSE_MODE.ALL);
+            }
             continueCondition = !GlobalOptions.StopSimulationIfWin || !(evaluationInfo.marioStatus == Mario.STATUS_WIN);
         }
         while ( evaluationOptions.getMaxAttempts() > i && continueCondition );
@@ -70,8 +74,8 @@ public class Evaluator implements Runnable
          LOGGER.println("Total Evaluation Duration (HH:mm:ss:ms) " + GlobalOptions.getDateTime(elapsed), LOGGER.VERBOSE_MODE.ALL);
         if (!fileName.equals(""))
             LOGGER.println("Exported to " + fileName, LOGGER.VERBOSE_MODE.ALL);
-        if (evaluationOptions.isExitProgramWhenFinished())
-            System.exit(0);
+//        if (evaluationOptions.isExitProgramWhenFinished())
+//            System.exit(0);
         return evaluationSummary;
     }
 

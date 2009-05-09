@@ -1,12 +1,12 @@
 package ch.idsia.ai.agents.human;
 
-import ch.idsia.mario.environments.IEnvironment;
-import ch.idsia.mario.engine.sprites.Mario;
-import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.ai.agents.IAgent;
+import ch.idsia.mario.engine.GlobalOptions;
+import ch.idsia.mario.engine.sprites.Mario;
+import ch.idsia.mario.environments.IEnvironment;
 
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,6 +60,9 @@ public class CheaterKeyboardAgent extends KeyAdapter implements IAgent {
             case KeyEvent.VK_D:
                 GlobalOptions.gameViewerTick();
                 break;
+            case KeyEvent.VK_V:
+                GlobalOptions.VisualizationOn = !GlobalOptions.VisualizationOn;
+                break;                        
             case KeyEvent.VK_U:
                 Action[Mario.KEY_LIFE_UP] = isPressed;
                 break;

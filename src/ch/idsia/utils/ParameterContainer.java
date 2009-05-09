@@ -154,7 +154,7 @@ public class ParameterContainer
         defaultOtionsHashMap.put("-ls","1"); //defaultOtionsHashMap.put("-levelRandSeed","1");
         defaultOtionsHashMap.put("-lt","0"); //defaultOtionsHashMap.put("-levelType","1");
         defaultOtionsHashMap.put("-maxFPS","on"); //defaultOtionsHashMap.put("-maxFPS","off");
-        defaultOtionsHashMap.put("-m","DefaultMatlabFile"); //defaultOtionsHashMap.put("-matLabFile","DefaultMatlabFile");
+        defaultOtionsHashMap.put("-m",""); //defaultOtionsHashMap.put("-matLabFile","DefaultMatlabFile");
         defaultOtionsHashMap.put("-pw","off"); //defaultOtionsHashMap.put("-pauseWorld","off");
         defaultOtionsHashMap.put("-port","4242"); //defaultOtionsHashMap.put("-port","4242");
         defaultOtionsHashMap.put("-pr","off"); //defaultOtionsHashMap.put("-powerRestoration","off");

@@ -10,6 +10,10 @@ import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.EvaluationOptions;
 import ch.idsia.tools.LOGGER;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: julian
@@ -18,7 +22,7 @@ import ch.idsia.tools.LOGGER;
  */
 public class Evolve {
 
-    final static int generations = 2;
+    final static int generations = 1500;
     final static int populationSize = 100;
 
     public static void main(String[] args) {
@@ -30,13 +34,31 @@ public class Evolve {
         options.setVisualization(false);
         Task task = new ProgressTask(options);
         ES es = new ES (task, initial, populationSize);
+        List<IAgent> bestAgents = new ArrayList<IAgent>(1500);
         for (int gen = 0; gen < generations; gen++) {
            es.nextGeneration();
             LOGGER.println("Generation " + gen + " best " + es.getBestFitnesses()[0], LOGGER.VERBOSE_MODE.INFO);
-           options.setVisualization(true);
+           options.setVisualization(false);
+            bestAgents.add( (IAgent)es.getBests()[0]) ;
             LOGGER.println("trying: " + task.evaluate((IAgent)es.getBests()[0])[0], LOGGER.VERBOSE_MODE.INFO);
            options.setVisualization(false);
         }
+
+        LOGGER.println("Press any key to continue... ", LOGGER.VERBOSE_MODE.INFO);
+
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        options.setVisualization(true);
+        for (IAgent bestAgent : bestAgents) {
+            task.evaluate(bestAgent);
+        }
+
+
         LOGGER.save("log.txt");
+        System.exit(0);
     }
 }

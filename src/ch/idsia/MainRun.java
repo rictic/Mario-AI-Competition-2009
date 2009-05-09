@@ -1,9 +1,7 @@
 package ch.idsia;
 
 import ch.idsia.ai.SimpleMLPAgent;
-import ch.idsia.ai.agents.ai.ForwardAgent;
-import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
-import ch.idsia.ai.agents.ai.RandomAgent;
+import ch.idsia.ai.agents.ai.*;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.tools.*;
 import ch.idsia.tools.Network.ServerAgent;
@@ -24,7 +22,7 @@ you to use the API proposed. Because if in the first case you are mostlikely the
 the stability of the entire system, in the second case you can rely on our direct support as soon as possible. And(!)
 If you encounter any trouble with using API proposed, please, e-mail us {sergey, julian} @ idsia . ch immediately. Because if
 anybody encounters any trouble that implies some other person to encounter the same trouble and we cannot effort that.
-Thank you for you kind assistance and productive collaboration!
+Thank you for your kind assistance and productive collaboration!
 Sergey Karakovskiy and Julian Togelius.
  */
 
@@ -36,8 +34,8 @@ public class MainRun
         if (!calledBefore)
         {
             // Create an Agent here or mention the set of agents you want to be available for the framework.
-            // All availabe by now are used here. They can be accessed by just setting the commandline property -ag to the name of desired agent.
-
+            // All created agents by now are used here.
+            // They can be accessed by just setting the commandline property -ag to the name of desired agent.
             calledBefore = true;
             new ForwardAgent();
             new HumanKeyboardAgent();
@@ -45,6 +43,8 @@ public class MainRun
             new ForwardJumpingAgent();
             new SimpleMLPAgent();
             new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled());
+            new ScaredAgent();
+            new ScaredSpeedyAgent();
 
         }
     }
@@ -56,9 +56,15 @@ public class MainRun
         createNativeAgents(cmdLineOptions);
 
         Evaluator evaluator = new Evaluator(evaluationOptions);
-        evaluator.verbose("Play/Simulation started!", LOGGER.VERBOSE_MODE.ALL);
-        List<EvaluationInfo> evaluationSummary = evaluator.evaluate();
-        evaluator.verbose("Play/Simulation Finished!", LOGGER.VERBOSE_MODE.ALL);
+        for (int i = 0; i < 15; i++) {
+            evaluationOptions.setLevelDifficulty(i);
+            evaluator.verbose("Play/Simulation started!", LOGGER.VERBOSE_MODE.ALL);
+            List<EvaluationInfo> evaluationSummary = evaluator.evaluate();
+            evaluator.verbose("Play/Simulation Finished!", LOGGER.VERBOSE_MODE.ALL);
+            }
+        LOGGER.save("log.txt");
+        System.exit(0);
+
         if (cmdLineOptions.isExitProgramWhenFinished())
             System.exit(0);
     }

@@ -301,10 +301,6 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         }
     }
 
-//    public EnvCell[][] getCompleteObservation() {
-//        return new EnvCell[0][];  //To change body of implemented methods use File | Settings | File Templates.
-//    }
-
     public EnvCell[][] getCompleteObservation() {
         return new EnvCell[0][];  //To change body of implemented methods use File | Settings | File Templates.
     }

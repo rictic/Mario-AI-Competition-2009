@@ -13,6 +13,8 @@ import java.io.*;
 // TODO: rename to LOG bilk yourself is easier that the system.
 public class LOGGER
 {
+    private static int count = 0;
+
     public static void save(String fileName) {
         FileOutputStream fos = null;
         try {
@@ -20,6 +22,7 @@ public class LOGGER
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
             bw.write(history);
             bw.close();
+            System.out.println("\n\nlog file saved to " + fileName);
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + e.getMessage());
         } catch (IOException e) {
@@ -49,13 +52,22 @@ public class LOGGER
 
 
     public static void print(String record, VERBOSE_MODE vm) {
-        addRecord(record, vm);
+        try
+        {
+            addRecord(record, vm);
+        }
+        catch (OutOfMemoryError e)
+        {
+            save("LOGGERDump" + count++ + ".txt");
+            history = "console:\n";
+        }
     }
 
     private static void addRecord(String record, VERBOSE_MODE vm)
     {
         if (verbose_mode == VERBOSE_MODE.NONE)
-            return; // Not recommended to use this mode.
+            return; // Not recommended to use this mode. Nothing would be stored in files as well!
+
         if (vm.compareTo(verbose_mode) >= 0)
         {
             if (vm.compareTo(VERBOSE_MODE.WARNING) >= 0)
@@ -66,6 +78,7 @@ public class LOGGER
 
         String r = "\n[:" + vm + ":] " + record;
         history += r ;
+        System.out.println("history.length() = " + history.length());
         if (textAreaConsole != null)
             textAreaConsole.setText(history);
 

@@ -1,6 +1,7 @@
 package ch.idsia.ai;
-import ch.idsia.ai.agents.RegisterableAgent;
+
 import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.environments.IEnvironment;
 
 /**
@@ -36,7 +37,6 @@ public class SimpleMLPAgent extends RegisterableAgent implements IAgent, Evolvab
 
     public void reset() {
         mlp.reset ();
-        //return this;
     }
 
     public void mutate() {

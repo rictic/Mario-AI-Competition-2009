@@ -1,16 +1,11 @@
 package ch.idsia.tools;
 
-import ch.idsia.ai.SimpleMLPAgent;
+import ch.idsia.MainRun;
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.ai.agents.ai.ForwardAgent;
-import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
-import ch.idsia.ai.agents.ai.RandomAgent;
-import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.mario.engine.level.LevelGenerator;
-import ch.idsia.tools.Network.ServerAgent;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -41,13 +36,7 @@ public class ToolsConfigurator extends JFrame
     {
         cmdLineOptions = new CmdLineOptions(args);
         // Create an Agent here
-        new ForwardAgent();
-        new HumanKeyboardAgent();
-        new RandomAgent();
-        new ForwardJumpingAgent();
-        new SimpleMLPAgent();
-        new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled());
-
+        MainRun.createNativeAgents(cmdLineOptions);
          // TODO: more options:
         // -agent wox name, like evolvable
         // -ll digit  range [5:15], increase if succeeds.

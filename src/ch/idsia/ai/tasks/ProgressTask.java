@@ -24,7 +24,7 @@ public class ProgressTask implements Task {
 
     public double[] evaluate(IAgent controller) {
         double distanceTravelled = 0;
-        controller.reset();
+//        controller.reset();
         Evaluator evaluator = new Evaluator(options);
         List<EvaluationInfo> results = evaluator.evaluate();
         for (EvaluationInfo result : results) {

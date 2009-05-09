@@ -164,15 +164,39 @@ public class LevelScene extends Scene implements SpriteContext
         return ret;
     }
 
-    public byte[][] enemiesObservation(int i) {
-        for (int w = 0; w < level.width; w++)
-            for (int h = 0; h < level.height; h++)
-                level.observation[w][h] = -1;
-        for (Sprite sprite : sprites)
-            if (sprite.mapX >= 0 && sprite.mapX < level.observation.length &&
-                    sprite.mapY >= 0 && sprite.mapY < level.observation[0].length)
-                level.observation[sprite.mapX][sprite.mapY] = sprite.kind;
-        return level.observation;
+    public byte[][] enemiesObservation(int ZLevel) {
+//        // TODO: Move to constants          11
+        int HalfObsWidth = 11;
+        int HalfObsHeight = 11;
+        byte[][] ret = new byte[HalfObsWidth*2][HalfObsHeight*2];
+//        //TODO: Move to constants 16
+//        int MarioXInMap = (int)mario.x/16;
+//        int MarioYInMap = (int)mario.y/16;
+//
+//        for (int w = 0; w < level.width; w++)
+//            for (int h = 0; h < level.height; h++)
+//                level.observation[w][h] = -1;
+//        for (Sprite sprite : sprites)
+//            if (sprite.mapX >= 0 && sprite.mapX < level.observation.length &&
+//                    sprite.mapY >= 0 && sprite.mapY < level.observation[0].length)
+//                level.observation[sprite.mapX][sprite.mapY] = sprite.kind;
+//
+//        for (int y = MarioYInMap - HalfObsHeight, obsX = 0; y < MarioYInMap + HalfObsHeight; y++, obsX++)
+//        {
+//            for (int x = MarioXInMap - HalfObsWidth, obsY = 0; x < MarioXInMap + HalfObsWidth; x++, obsY++)
+//            {
+//                if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
+//                {
+//                    ret[obsX][obsY] = ZLevelMapElementGeneralization(level.map[x][y], ZLevel);
+//                }
+//                else
+//                    ret[obsX][obsY] = 0;
+//                if (x == MarioXInMap && y == MarioYInMap)
+//                    ret[obsX][obsY] = mario.kind;
+//            }
+//        }
+//
+        return ret;
     }
 
 
