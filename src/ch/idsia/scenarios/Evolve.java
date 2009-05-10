@@ -41,16 +41,15 @@ public class Evolve {
         List<IAgent> bestAgents = new ArrayList<IAgent>(1500);
         DecimalFormat df = new DecimalFormat("0000");
 
-        for (int gen = 0; gen < 5; gen++) {
+        for (int gen = 0; gen < generations; gen++) {
            es.nextGeneration();
             LOGGER.println("Generation " + gen + " best " + es.getBestFitnesses()[0], LOGGER.VERBOSE_MODE.INFO);
-//           options.setVisualization(gen+1 % 10 == 0);
+           options.setVisualization(gen+1 % 10 == 0);
             IAgent a = (IAgent) es.getBests()[0];
             a.setName(((IAgent)initial).getName() + df.format(gen));
             RegisterableAgent.registerAgent(a);
             bestAgents.add(a ) ;
             LOGGER.println("trying: " + task.evaluate(a)[0], LOGGER.VERBOSE_MODE.INFO);
-//           options.setVisualization(false);
         }
 
         // TODO: log dir / log dump dir option
