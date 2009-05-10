@@ -4,6 +4,7 @@ import ch.idsia.ai.agents.IAgent;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.IEnvironment;
+import ch.idsia.tools.LOGGER;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -58,10 +59,12 @@ public class CheaterKeyboardAgent extends KeyAdapter implements IAgent {
         switch (keyCode) {
             //Cheats;
             case KeyEvent.VK_D:
-                GlobalOptions.gameViewerTick();
+                if (isPressed)
+                    GlobalOptions.gameViewerTick();
                 break;
             case KeyEvent.VK_V:
-                GlobalOptions.VisualizationOn = !GlobalOptions.VisualizationOn;
+                if (isPressed)
+                    GlobalOptions.VisualizationOn = !GlobalOptions.VisualizationOn;
                 break;                        
             case KeyEvent.VK_U:
                 Action[Mario.KEY_LIFE_UP] = isPressed;
@@ -72,7 +75,7 @@ public class CheaterKeyboardAgent extends KeyAdapter implements IAgent {
             case KeyEvent.VK_P:
                 if (isPressed)
                 {
-                    System.out.println("Paused On/Off");
+                    LOGGER.println("Paused On/Off", LOGGER.VERBOSE_MODE.INFO);
                     GlobalOptions.pauseWorld = !GlobalOptions.pauseWorld;
                     if (GlobalOptions.pauseWorld)
                         Action[Mario.KEY_PAUSE] = true;
@@ -83,32 +86,31 @@ public class CheaterKeyboardAgent extends KeyAdapter implements IAgent {
             case KeyEvent.VK_L:
                 if (isPressed)
                 {
-                    System.out.println("Labels On/Off");
+                    LOGGER.println("Labels On/Off", LOGGER.VERBOSE_MODE.INFO);
                     GlobalOptions.Labels = !GlobalOptions.Labels;
                 }
                 break;
             case KeyEvent.VK_C:
                 if (isPressed)
                 {
-                    System.out.println("Center On/Off");
+                    LOGGER.println("Center On/Off", LOGGER.VERBOSE_MODE.ALL);
                     GlobalOptions.MarioAlwaysInCenter = !GlobalOptions.MarioAlwaysInCenter;
                 }
                 break;
             case 61:
                 if (isPressed)
                 {
-                    System.out.println("FPS increase by 1. Current FPS is " + ++GlobalOptions.FPS);
+                    LOGGER.println("FPS increase by 1. Current FPS is " + ++GlobalOptions.FPS, LOGGER.VERBOSE_MODE.INFO);
                     GlobalOptions.AdjustMarioComponentFPS();
                 }
                 break;
             case 45:
                 if (isPressed)
                 {
-                    System.out.println("FPS decrease . Current FPS is " + --GlobalOptions.FPS);
+                    LOGGER.println("FPS decrease . Current FPS is " + --GlobalOptions.FPS, LOGGER.VERBOSE_MODE.INFO);
                     GlobalOptions.AdjustMarioComponentFPS();
                 }
                 break;
         }
     }
-
 }

@@ -38,7 +38,7 @@ public class MainRun
             // All created agents by now are used here.
             // They can be accessed by just setting the commandline property -ag to the name of desired agent.
             calledBefore = true;
-            new ForwardAgent();
+            ForwardAgent f = new ForwardAgent();
             new HumanKeyboardAgent();
             new RandomAgent();
             new ForwardJumpingAgent();
@@ -47,7 +47,7 @@ public class MainRun
             IAgent a = new ScaredAgent();
             System.out.println("name: " + a.getName());
 
-            Easy.save(a, "ScaredAgent.xml");
+            Easy.save(f, "ForwardAgent.xml");
 
 //            new ScaredSpeedyAgent();
 

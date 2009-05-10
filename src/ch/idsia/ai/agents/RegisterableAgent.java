@@ -24,7 +24,7 @@ public class RegisterableAgent extends BasicAIAgent
 
     public static void registerAgent(IAgent agent)
     {
-        AgentsPool.AgentsHashMap.put(agent.getName(), agent);
+        AgentsPool.put(agent.getName(), agent);
     }
 
     public static void registerAgent(String agentWOXName) throws IllegalFormatException {
@@ -62,17 +62,17 @@ public class RegisterableAgent extends BasicAIAgent
 
     public static Set<String> getAgentsNames()
     {
-        return AgentsPool.AgentsHashMap.keySet();
+        return AgentsPool.agentsHashMap.keySet();
     }
 
     public static IAgent getAgentByName(String agentName)
     {
-        if (AgentsPool.AgentsHashMap.get(agentName) == null)
+        if (AgentsPool.agentsHashMap.get(agentName) == null)
         {
             System.err.println("Agent " + agentName + " Not found. Have you created " + agentName + " anywhere? \nExiting...");
             System.exit(2); // TODO: handle this in more general way. tranfer exception higher. System should not just quit.
         }
 
-        return AgentsPool.AgentsHashMap.get(agentName);
+        return AgentsPool.agentsHashMap.get(agentName);
     }
 }

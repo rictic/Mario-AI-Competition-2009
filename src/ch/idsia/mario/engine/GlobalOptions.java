@@ -1,8 +1,7 @@
 package ch.idsia.mario.engine;
 
 import ch.idsia.tools.GameViewer;
-import ch.idsia.mario.simulation.SimulationOptions;
-import ch.idsia.mario.engine.level.LevelGenerator;
+import ch.idsia.tools.LOGGER;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -48,7 +47,13 @@ public class GlobalOptions {
 
     public static void AdjustMarioComponentFPS() { marioComponent.adjustFPS(); }
 
-    public static void gameViewerTick() {gameViewer.tick();    }
+    public static void gameViewerTick()
+    {
+        if (gameViewer != null)
+            gameViewer.tick();
+        else
+            LOGGER.println("GameViewer is not available. Request for dump ignored.", LOGGER.VERBOSE_MODE.ERROR);
+    }
 
     public static String getDateTime(Long d)
     {
@@ -73,11 +78,6 @@ public class GlobalOptions {
 //        private static String agentName;
 //        private static Integer serverAgentPort;
 //        private static boolean exitProgramWhenFinished;
-//
-//        public static SimulationOptions getDefaults () {
-//            // todo
-//            return null;
-//        }
 //
 //        public Defaults()
 //        {

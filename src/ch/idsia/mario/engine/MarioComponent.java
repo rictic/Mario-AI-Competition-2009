@@ -174,10 +174,10 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
                 msg = agent.getName();
                 drawString(og, msg, 7, 41, 0);
-                drawString(og, msg, 6, 40, 2);
+                drawString(og, msg, 6, 40, 5);
                 msg = "Selected Actions: ";
                 drawString(og, msg, 7, 51, 0);
-                drawString(og, msg, 6, 50, 2);
+                drawString(og, msg, 6, 50, 6);
 
                 msg = "";
                 for (int i = 0; i < IEnvironment.NumberOfActions; ++i)
@@ -188,7 +188,6 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
                 if (!this.hasFocus() && tick / 4 % 2 == 0) {
                     String msgClick = "CLICK TO PLAY";
-
 //                    og.setColor(Color.YELLOW);
 //                    og.drawString(msgClick, 320 + 1, 20 + 1);
                     drawString(og, msgClick, 160 - msgClick.length() * 4, 110, 1);
@@ -222,7 +221,6 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             frame++;
         }
 //=========
-        // TODO: distinguish map coordinates, physical coordinates. done
         evaluationInfo.agentType = agent.getClass().getSimpleName();
         evaluationInfo.agentName = agent.getName();
         evaluationInfo.marioStatus = mario.getStatus();

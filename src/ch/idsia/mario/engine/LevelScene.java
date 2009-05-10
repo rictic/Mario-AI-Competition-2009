@@ -348,7 +348,7 @@ public class LevelScene extends Scene implements SpriteContext
     public void tick()
     {
         if (GlobalOptions.TimerOn)
-            timeLeft--; // TODO: Stop time. Done
+            timeLeft--;
         if (timeLeft==0)
         {
             mario.die();
@@ -797,11 +797,10 @@ public class LevelScene extends Scene implements SpriteContext
         }
     }
 
-    public void update(boolean[] action)
-    {
-        //TODO: Use NumberOfActions or just mario.keys = action;
-        System.arraycopy(action, 0, mario.keys, 0, 6);           
-    }
+//    public void update(boolean[] action)
+//    {
+//        System.arraycopy(action, 0, mario.keys, 0, 6);
+//    }
 
     public int getStartTime() {  return startTime / 15;    }
 

@@ -13,10 +13,8 @@ public interface IEnvironment
     public static final int NumberOfActionSlots = 16;
     public static final int NumberOfActions = 5;
     public static final int NumberOfObservationElements = 486;
-    
-//    public static final int NumberOfKeysToPress = 20;  // TODO: Manage all key presses in one place: Agent or Scene or MarioComponent..
 
-    // always the same dimensionality (e.g. 32 by 15)
+    // always the same dimensionality: 22x22
     // always centered on the agent
     public EnvCell[][] getCompleteObservation();
 

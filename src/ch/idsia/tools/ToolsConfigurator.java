@@ -153,7 +153,6 @@ public class ToolsConfigurator extends JFrame
     // TODO : change agent on the fly. Artificial Contender concept? Human shows how to complete this level? Fir 13:38.
     // TODO Hot Agent PlugAndPlay.
     // TODO: cmdLineOptions : gui, agents,
-// TODO: simulate until succeed.
     // TODO: time per level\    mean time per level
     // TODO: competition
 

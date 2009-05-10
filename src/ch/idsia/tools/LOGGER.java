@@ -11,7 +11,7 @@ import java.text.DecimalFormat;
  * Time: 8:59:20 PM
  * Package: ch.idsia.tools
  */
-// TODO: rename to LOG bilk yourself is easier that the system.
+// TODO: Warning message: bilk yourself is easier that the system.
 public class LOGGER
 {
     private static int count = 0;
@@ -31,7 +31,7 @@ public class LOGGER
         }
     }
 
-    public enum VERBOSE_MODE {ALL, INFO, WARNING, ERROR, NONE}
+    public enum VERBOSE_MODE {ALL, INFO, WARNING, ERROR, TOTAL_SILENCE}
     static TextArea textAreaConsole = null;
     private static VERBOSE_MODE verbose_mode = VERBOSE_MODE.INFO;
     public static void setVerboseMode(VERBOSE_MODE verboseMode)
@@ -74,7 +74,7 @@ public class LOGGER
 
     private static void addRecord(String record, VERBOSE_MODE vm)
     {
-        if (verbose_mode == VERBOSE_MODE.NONE)
+        if (verbose_mode == VERBOSE_MODE.TOTAL_SILENCE)
             return; // Not recommended to use this mode. Nothing would be stored in files as well!
 
         if (vm.compareTo(verbose_mode) >= 0)

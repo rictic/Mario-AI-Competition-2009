@@ -2,7 +2,6 @@ package ch.idsia.mario.simulation;
 
 import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.utils.ParameterContainer;
 
 /**
@@ -39,7 +38,6 @@ public class SimulationOptions extends ParameterContainer
         currentAttempt = 1;
     }
 
-    // TODO: rename to copy
     public SimulationOptions getSimulationOptionsCopy()
             // is this just a copy method then? /julian
     {

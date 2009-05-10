@@ -2,6 +2,7 @@ package ch.idsia.scenarios;
 
 import ch.idsia.ai.Evolvable;
 import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.ai.SimpleMLPAgent;
 import ch.idsia.ai.ea.ES;
 import ch.idsia.ai.tasks.ProgressTask;
@@ -9,8 +10,10 @@ import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.EvaluationOptions;
 import ch.idsia.tools.LOGGER;
+import wox.serial.Easy;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,20 +39,31 @@ public class Evolve {
         Task task = new ProgressTask(options);
         ES es = new ES (task, initial, populationSize);
         List<IAgent> bestAgents = new ArrayList<IAgent>(1500);
-        for (int gen = 0; gen < generations; gen++) {
+        DecimalFormat df = new DecimalFormat("0000");
+
+        for (int gen = 0; gen < 5; gen++) {
            es.nextGeneration();
             LOGGER.println("Generation " + gen + " best " + es.getBestFitnesses()[0], LOGGER.VERBOSE_MODE.INFO);
-           options.setVisualization(gen % 10 == 0);
-            bestAgents.add( (IAgent)es.getBests()[0]) ;
-            LOGGER.println("trying: " + task.evaluate((IAgent)es.getBests()[0])[0], LOGGER.VERBOSE_MODE.INFO);
-           options.setVisualization(false);
+//           options.setVisualization(gen+1 % 10 == 0);
+            IAgent a = (IAgent) es.getBests()[0];
+            a.setName(((IAgent)initial).getName() + df.format(gen));
+            RegisterableAgent.registerAgent(a);
+            bestAgents.add(a ) ;
+            LOGGER.println("trying: " + task.evaluate(a)[0], LOGGER.VERBOSE_MODE.INFO);
+//           options.setVisualization(false);
         }
 
-        LOGGER.println("Press any key to continue... ", LOGGER.VERBOSE_MODE.INFO);
+        // TODO: log dir / log dump dir option
+        LOGGER.println("Saving bests... ", LOGGER.VERBOSE_MODE.INFO);
 
+        options.setVisualization(true); int i = 0;
+        for (IAgent bestAgent : bestAgents) {
+            Easy.save(bestAgent, "bestAgent" +  df.format(i++) + ".xml");
+        }
+
+        LOGGER.println("Saved! Press return key to continue...", LOGGER.VERBOSE_MODE.INFO);
         try {System.in.read();        } catch (IOException e) {            e.printStackTrace();        }
 
-        options.setVisualization(true);
         for (IAgent bestAgent : bestAgents) {
             task.evaluate(bestAgent);
         }

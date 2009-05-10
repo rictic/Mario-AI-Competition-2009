@@ -12,7 +12,7 @@ import ch.idsia.mario.environments.IEnvironment;
  * Date: Apr 28, 2009
  * Time: 2:09:42 PM
  */
-public class SimpleMLPAgent extends RegisterableAgent implements IAgent, Evolvable {
+public class  SimpleMLPAgent extends RegisterableAgent implements IAgent, Evolvable {
 
     //private String name = "SimpleMLPAgent";
     final MLP mlp;
