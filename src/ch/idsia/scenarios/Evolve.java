@@ -28,31 +28,50 @@ public class Evolve {
     final static int generations = 1500;
     final static int populationSize = 100;
 
+
     public static void main(String[] args) {
-        Evolvable initial = new SimpleMLPAgent();
         EvaluationOptions options = new CmdLineOptions(args);
-        options.setAgent((IAgent)initial);
         options.setMaxAttempts(1);
-        options.setMaxFPS(true);
-        options.setVisualization(false);
         options.setPauseWorld(true);
-        Task task = new ProgressTask(options);
-        ES es = new ES (task, initial, populationSize);
-        List<IAgent> bestAgents = new ArrayList<IAgent>(1500);
+        List<IAgent> bestAgents = new ArrayList<IAgent>();
         DecimalFormat df = new DecimalFormat("0000");
+        for (int difficulty = 5; difficulty < 10; difficulty++)
+        {
+            System.out.println("New Evolve phase with difficulty = " + difficulty + " started.");
+            Evolvable initial = new SimpleMLPAgent();
 
-        for (int gen = 0; gen < generations; gen++) {
-           es.nextGeneration();
-            LOGGER.println("Generation " + gen + " best " + es.getBestFitnesses()[0], LOGGER.VERBOSE_MODE.INFO);
-           options.setVisualization(gen+1 % 10 == 0);
-            IAgent a = (IAgent) es.getBests()[0];
-            a.setName(((IAgent)initial).getName() + df.format(gen));
-            RegisterableAgent.registerAgent(a);
-            bestAgents.add(a ) ;
-            LOGGER.println("trying: " + task.evaluate(a)[0], LOGGER.VERBOSE_MODE.INFO);
+            options.setLevelDifficulty(difficulty);
+            options.setAgent((IAgent)initial);
+
+            options.setMaxFPS(true);
+            options.setVisualization(false);
+
+            Task task = new ProgressTask(options);
+            ES es = new ES (task, initial, populationSize);
+
+            for (int gen = 0; gen < generations; gen++)
+            {
+                es.nextGeneration();
+                double bestResult = es.getBestFitnesses()[0];
+//                LOGGER.println("Generation " + gen + " best " + bestResult, LOGGER.VERBOSE_MODE.INFO);
+                System.out.println("Generation " + gen + " best " + bestResult);
+                options.setVisualization(gen % 30 == 0 || bestResult > 4000);
+                options.setMaxFPS(!(gen % 30 == 0 || bestResult > 4000));
+                IAgent a = (IAgent) es.getBests()[0];
+                a.setName(((IAgent)initial).getName() + df.format(gen));
+                RegisterableAgent.registerAgent(a);
+                bestAgents.add(a);
+                double result = task.evaluate(a)[0];
+//                LOGGER.println("trying: " + result, LOGGER.VERBOSE_MODE.INFO);
+                options.setVisualization(false);
+                options.setMaxFPS(true);
+                if (result > 4000)
+                    break; // Go to next difficulty.
+            }
         }
-
         // TODO: log dir / log dump dir option
+        // TODO: reduce number of different
+        // TODO: -fq 30, -ld 1:15, 8 
         LOGGER.println("Saving bests... ", LOGGER.VERBOSE_MODE.INFO);
 
         options.setVisualization(true); int i = 0;
@@ -63,9 +82,9 @@ public class Evolve {
         LOGGER.println("Saved! Press return key to continue...", LOGGER.VERBOSE_MODE.INFO);
         try {System.in.read();        } catch (IOException e) {            e.printStackTrace();        }
 
-        for (IAgent bestAgent : bestAgents) {
-            task.evaluate(bestAgent);
-        }
+//        for (IAgent bestAgent : bestAgents) {
+//            task.evaluate(bestAgent);
+//        }
 
 
         LOGGER.save("log.txt");

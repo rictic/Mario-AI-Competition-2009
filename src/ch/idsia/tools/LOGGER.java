@@ -33,7 +33,7 @@ public class LOGGER
 
     public enum VERBOSE_MODE {ALL, INFO, WARNING, ERROR, TOTAL_SILENCE}
     static TextArea textAreaConsole = null;
-    private static VERBOSE_MODE verbose_mode = VERBOSE_MODE.INFO;
+    private static VERBOSE_MODE verbose_mode = VERBOSE_MODE.TOTAL_SILENCE;
     public static void setVerboseMode(VERBOSE_MODE verboseMode)
     {
         LOGGER.verbose_mode = verboseMode;

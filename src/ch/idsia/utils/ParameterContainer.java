@@ -14,59 +14,65 @@ import java.util.List;
  */
 public class ParameterContainer
 {
-    private static String[] allowed = new String[]{
-            "-ag",
+    protected HashMap<String, String> optionsHashMap = new HashMap<String, String>();
+    private static List<String> allowedOptions = null;
+    protected static HashMap<String, String> defaultOtionsHashMap = null;
+    private String[] allowed = null;
+
+    public ParameterContainer()
+    {
+        if (allowed == null)
+            allowed = new String[]{
+                    "-ag",
 //            "-agentName",
-            "-an",
+                    "-an",
 //            "-attemptsNumber",
 //            "-e",
-            "-echo",
-            "-ewf",
+                    "-echo",
+                    "-ewf",
 //            "-exitWhenFinished",
 //            "-gameViewer",
 //            "-gameViewerContinuousUpdates",
 //            "-gui",
-            "-gv",
-            "-gvc",
-            "-ld",
+                    "-gv",
+                    "-gvc",
+                    "-ld",
 //            "-levelDifficulty",
 //            "-levelLength",
 //            "-levelRandSeed",
 //            "-levelType",
-            "-ll",
-            "-ls",
-            "-lt",
-            "-m",
-            "-maxFPS",
+                    "-ll",
+                    "-ls",
+                    "-lt",
+                    "-m",
+                    "-maxFPS",
 //            "-matLabFile",
 //            "-pauseWorld",
-            "-port",
+                    "-port",
 //            "-powerRestoration",
-            "-pr",
-            "-pw",
-            "-ssiw",
+                    "-pr",
+                    "-pw",
+                    "-ssiw",
 //            "-stopSimulationIfWin",
-            "-t",
-            "-tc",
-            "-timer",
+                    "-t",
+                    "-tc",
+                    "-timer",
 //            "-toolsConfigurator",
-            "-vaot",
+                    "-vaot",
 //            "-viewAlwaysOnTop",
 //            "-viewLocationX",
 //            "-viewLocationY",
-            "-vis",
+                    "-vis",
 //            "-visual",
-            "-vlx",
-            "-vly",
-    };
+                    "-vlx",
+                    "-vly",
+            };
+        if (allowedOptions == null)
+        {
+            allowedOptions = new ArrayList<String>();
+            Collections.addAll(allowedOptions, allowed);
+        }
 
-    protected HashMap<String, String> optionsHashMap = new HashMap<String, String>();
-    private static List<String> allowedOptions = new ArrayList<String>();
-    protected static HashMap<String, String> defaultOtionsHashMap = null;
-
-    public ParameterContainer()
-    {
-        Collections.addAll(allowedOptions, allowed);
         InitDefaults();
     }
 

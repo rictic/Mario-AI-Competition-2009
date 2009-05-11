@@ -62,8 +62,11 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
         setFocusable(true);
 
-        this.cheatAgent = new CheaterKeyboardAgent();
-        this.addKeyListener(cheatAgent);
+        if (this.cheatAgent == null)
+        {
+            this.cheatAgent = new CheaterKeyboardAgent();
+            this.addKeyListener(cheatAgent);
+        }        
 
         GlobalOptions.registerMarioComponent(this);
     }
@@ -293,9 +296,8 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         if (scene instanceof LevelScene)
             return ((LevelScene) scene).LevelSceneAroundMarioASCII(Enemies, LevelMap, Complete, ZLevel);
         else {
-            List<String> ret = new ArrayList<String>();
-//
-            return ret;
+            //
+            return new ArrayList<String>();
         }
     }
 

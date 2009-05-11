@@ -580,8 +580,8 @@ public class LevelScene extends Scene implements SpriteContext
         g.setColor(Color.BLACK);
         layer.renderExit1(g, tick, paused?0:alpha);
 
-        drawStringDropShadow(g, "MARIO LIVES: " + df.format(Mario.lives), 0, 0, 7);
-        drawStringDropShadow(g, "#########", 0, 1, 7);
+        drawStringDropShadow(g, "MARIO: " + df.format(Mario.lives), 0, 0, 7);
+//        drawStringDropShadow(g, "#########", 0, 1, 7);
 
         drawStringDropShadow(g, "COINS", 14, 0, 7);
         drawStringDropShadow(g, " "+df.format(Mario.coins), 14, 1, 7);

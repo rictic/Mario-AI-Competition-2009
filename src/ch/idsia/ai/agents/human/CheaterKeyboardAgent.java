@@ -20,6 +20,7 @@ public class CheaterKeyboardAgent extends KeyAdapter implements IAgent {
     private boolean Action[] = null;
 
     private String Name = "Instance of CheaterKeyboardAgent";
+    private Integer prevFPS = 24;
 
     public CheaterKeyboardAgent()
     {
@@ -108,6 +109,17 @@ public class CheaterKeyboardAgent extends KeyAdapter implements IAgent {
                 if (isPressed)
                 {
                     LOGGER.println("FPS decrease . Current FPS is " + --GlobalOptions.FPS, LOGGER.VERBOSE_MODE.INFO);
+                    GlobalOptions.AdjustMarioComponentFPS();
+                }
+                break;
+            case 56:
+                if (isPressed)
+                {
+                    int temp = prevFPS;
+                    prevFPS = GlobalOptions.FPS;
+                    GlobalOptions.FPS = (GlobalOptions.FPS == GlobalOptions.InfiniteFPS) ? temp : GlobalOptions.InfiniteFPS ;
+                    LOGGER.println("FPS has been changed. Current FPS is " +
+                            ((GlobalOptions.FPS == GlobalOptions.InfiniteFPS) ? "\\infty" : GlobalOptions.FPS), LOGGER.VERBOSE_MODE.INFO);
                     GlobalOptions.AdjustMarioComponentFPS();
                 }
                 break;
