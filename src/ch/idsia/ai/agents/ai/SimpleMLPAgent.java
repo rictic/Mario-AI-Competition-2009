@@ -15,7 +15,7 @@ import ch.idsia.mario.environments.IEnvironment;
 public class  SimpleMLPAgent extends RegisterableAgent implements IAgent, Evolvable {
 
     //private String name = "SimpleMLPAgent";
-    final MLP mlp;
+    private MLP mlp;
     final int numberOfOutputs = 6;
     final int numberOfInputs = 10;
 
