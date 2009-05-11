@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class Evolve {
 
-    final static int generations = 1500;
+    final static int generations = 400; //completely enough. If not succeed within 400 generations, then it drops to suboptimum...
     final static int populationSize = 100;
 
 
@@ -35,7 +35,7 @@ public class Evolve {
         options.setPauseWorld(true);
         List<IAgent> bestAgents = new ArrayList<IAgent>();
         DecimalFormat df = new DecimalFormat("0000");
-        for (int difficulty = 5; difficulty < 10; difficulty++)
+        for (int difficulty = 0; difficulty < 11; difficulty++)
         {
             System.out.println("New Evolve phase with difficulty = " + difficulty + " started.");
             Evolvable initial = new SimpleMLPAgent();
