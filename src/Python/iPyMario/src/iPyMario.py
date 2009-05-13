@@ -7,7 +7,6 @@ from AI.experiments.EpisodicExperiment import EpisodicExperiment
 from AI.tasks.MarioTask import MarioTask
 from Utils.CmdLineOptions import CmdLineOptions
 
-
 def main():
     clo = CmdLineOptions(sys.argv)
     task = MarioTask(MarioEnvironment(clo.getHost(), clo.getPort(), clo.getAgent().name))
