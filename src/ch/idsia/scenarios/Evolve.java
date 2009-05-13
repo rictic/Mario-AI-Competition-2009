@@ -74,7 +74,8 @@ public class Evolve {
         // TODO: -fq 30, -ld 1:15, 8 
         LOGGER.println("Saving bests... ", LOGGER.VERBOSE_MODE.INFO);
 
-        options.setVisualization(true); int i = 0;
+        options.setVisualization(true);
+        int i = 0;
         for (Agent bestAgent : bestAgents) {
             Easy.save(bestAgent, "bestAgent" +  df.format(i++) + ".xml");
         }

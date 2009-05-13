@@ -31,8 +31,8 @@ public class ProgressTask implements Task {
         Evaluator evaluator = new Evaluator(options);
         List<EvaluationInfo> results = evaluator.evaluate();
         for (EvaluationInfo result : results) {
-            if (result.marioStatus == Mario.STATUS_WIN )
-                Easy.save(options.getAgent(), options.getAgent().getName() + ".xml");
+            //if (result.marioStatus == Mario.STATUS_WIN )
+            //    Easy.save(options.getAgent(), options.getAgent().getName() + ".xml");
             distanceTravelled += result.computeDistancePassed();
         }
         distanceTravelled = distanceTravelled / results.size();

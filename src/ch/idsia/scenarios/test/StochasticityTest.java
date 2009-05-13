@@ -19,17 +19,17 @@ public class StochasticityTest {
 
     public static void main(String[] args) {
         Agent controller = RegisterableAgent.load (args[0]);
-        //RegisterableAgent.registerAgent (controller);
+        RegisterableAgent.registerAgent (controller);
         EvaluationOptions options = new CmdLineOptions(new String[0]);
         options.setAgent(controller);
         Task task = new ProgressTask(options);
-        options.setMaxFPS(false);
-        options.setVisualization(true);
+        options.setMaxFPS(true);
+        options.setVisualization(false);      
         options.setMaxAttempts(1);
         options.setMatlabFileName("");
         task.setOptions(options);
         for (int i = 0; i < repetitions; i++) {
-            System.out.println ("Score: " + task.evaluate (controller));
+            System.out.println ("Score: " + task.evaluate (controller)[0]);
         }
     }
 
