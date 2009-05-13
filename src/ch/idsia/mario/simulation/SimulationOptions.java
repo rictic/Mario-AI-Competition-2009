@@ -1,7 +1,6 @@
 package ch.idsia.mario.simulation;
 
-import ch.idsia.ai.agents.IAgent;
-import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.utils.ParameterContainer;
 
 /**
@@ -15,7 +14,7 @@ import ch.idsia.utils.ParameterContainer;
 
 public class SimulationOptions extends ParameterContainer
 {
-//    protected IAgent agent;
+//    protected Agent agent;
 //    protected MarioComponent marioComponent = null;
     
 //    protected SmartInt levelType = new SmartInt();         //int
@@ -55,23 +54,12 @@ public class SimulationOptions extends ParameterContainer
         return ret;
     }
 
-    public IAgent getAgent() {
-        return RegisterableAgent.getAgentByName((getParameterValue("-ag")));      }
+    public Agent getAgent() {
+        return a(getParameterValue("-ag"));      }
 
-    public void setAgent(IAgent agent) {
-        // Basically we could store just the name here, it's enough; but this would be confusing and not general, but
-        // we keep following generality and "templates" patterns.
-        setParameterValue("-ag", agent.getName());
-//        this.agent = agent;
+    public void setAgent(Agent agent) {
+        setParameterValue("-ag", s(agent));
     }
-
-//    public MarioComponent getMarioComponent() {
-//        return marioComponent;
-//    }
-//
-//    public void setMarioComponent(MarioComponent marioComponent) {
-//        this.marioComponent = marioComponent;
-//    }
 
     // TODO? LEVEL_TYPE enum?
     public int getLevelType() {

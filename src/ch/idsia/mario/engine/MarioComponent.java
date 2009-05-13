@@ -1,10 +1,10 @@
 package ch.idsia.mario.engine;
 
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.human.CheaterKeyboardAgent;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.EnvCell;
-import ch.idsia.mario.environments.IEnvironment;
+import ch.idsia.mario.environments.Environment;
 import ch.idsia.tools.EvaluationInfo;
 import ch.idsia.tools.GameViewer;
 import ch.idsia.tools.Network.ServerAgent;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MarioComponent extends JComponent implements Runnable, /*KeyListener,*/ FocusListener, IEnvironment {
+public class MarioComponent extends JComponent implements Runnable, /*KeyListener,*/ FocusListener, Environment {
     private static final long serialVersionUID = 790878775993203817L;
     public static final int TICKS_PER_SECOND = 24;
 
@@ -40,7 +40,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     private GameViewer gameViewer = null;
 
-    private IAgent agent = null;
+    private Agent agent = null;
     private CheaterKeyboardAgent cheatAgent = null;
 
     private KeyAdapter prevHumanKeyBoardAgent;
@@ -56,6 +56,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         this.height = height;
 
         Dimension size = new Dimension(width, height);
+
         setPreferredSize(size);
         setMinimumSize(size);
         setMaximumSize(size);
@@ -159,12 +160,12 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             }
 
             boolean[] action = agent.getAction(this/*DummyEnvironment*/);
-            for (int i = 0; i < IEnvironment.NumberOfActions; ++i)
+            for (int i = 0; i < Environment.numberOfButtons; ++i)
                 if (action[i]) {
                     ++totalActionsPerfomed;
                     break;
                 }
-            //Apply Action;
+            //Apply action;
 //            scene.keys = action;
             ((LevelScene) scene).mario.keys = action;
             ((LevelScene) scene).mario.cheatKeys = cheatAgent.getAction(null);
@@ -183,7 +184,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
                 drawString(og, msg, 6, 50, 6);
 
                 msg = "";
-                for (int i = 0; i < IEnvironment.NumberOfActions; ++i)
+                for (int i = 0; i < Environment.numberOfButtons; ++i)
                     msg += (action[i]) ? scene.keysStr[i] : "      ";
 
                 drawString(og, msg, 6, 70, 1);
@@ -333,7 +334,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 //        return null;
 //    }
 
-    public void setAgent(IAgent agent) {
+    public void setAgent(Agent agent) {
         this.agent = agent;
         if (agent instanceof KeyAdapter) {
             if (prevHumanKeyBoardAgent != null)

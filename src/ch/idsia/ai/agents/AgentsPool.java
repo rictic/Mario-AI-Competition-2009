@@ -12,9 +12,9 @@ import java.util.LinkedHashMap;
  */
 public class AgentsPool
 {
-    public static void put(String name, IAgent agent) {
+    public static void put(String name, Agent agent) {
         agentsHashMap.put(agent.getName(), agent);
     }
     
-    static HashMap<String, IAgent> agentsHashMap = new LinkedHashMap<String, IAgent>();
+    static HashMap<String, Agent> agentsHashMap = new LinkedHashMap<String, Agent>();
 }

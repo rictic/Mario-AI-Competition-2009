@@ -1,11 +1,9 @@
 package ch.idsia;
 
-import ch.idsia.ai.agents.IAgent;
 import ch.idsia.ai.agents.ai.*;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.tools.*;
 import ch.idsia.tools.Network.ServerAgent;
-import wox.serial.Easy;
 
 import java.util.List;
 
@@ -38,19 +36,14 @@ public class MainRun
             // All created agents by now are used here.
             // They can be accessed by just setting the commandline property -ag to the name of desired agent.
             calledBefore = true;
-            ForwardAgent f = new ForwardAgent();
+            new ForwardAgent();
             new HumanKeyboardAgent();
             new RandomAgent();
             new ForwardJumpingAgent();
             new SimpleMLPAgent();
             new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled());
-            IAgent a = new ScaredAgent();
-            System.out.println("name: " + a.getName());
-
-            Easy.save(f, "ForwardAgent.xml");
-
-//            new ScaredSpeedyAgent();
-
+            new ScaredAgent();
+            new ScaredSpeedyAgent();
         }
     }
 
@@ -69,7 +62,6 @@ public class MainRun
             evaluator.verbose("Play/Simulation Finished!", LOGGER.VERBOSE_MODE.ALL);
             }
         LOGGER.save("log.txt");
-        System.exit(0);
 
         if (cmdLineOptions.isExitProgramWhenFinished())
             System.exit(0);

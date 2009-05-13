@@ -17,6 +17,7 @@ VLX=0
 VLY=320
 
 echo "iMarioFramework: Starting ServerAgents..."
+# java -cp .:../../../trunk/lib/jdom.jar ch.idsia.MainRun -ag ServerAgent -vis on -ld 1 -pw on -maxFPS off -an 1 -vlx 400  -vaot on -ewf off
 while [ $I -le $LIM ]
 do
 	# echo $I $PORT $VLX $VLY	$(($I+3))
@@ -45,7 +46,7 @@ echo "iMarioFramework: All data have been gathered..."
 sleep 1
 
 echo "iMarioFramework: producing LaTeX output..."
-matlab -r "func_opts.format = 'latex'; func_opts.imageFormat = 'png'; func_opts.outputDir = 'latex'; publish ('iMarioResult.m', func_opts); exit" -nodesktop -nosplash
+matlab -r "func_opts.format = 'latex'; func_opts.imageFormat = 'png'; func_opts.outputDir = 'latex'; publish ('iMarioResult.m', func_opts); exit" -nodesktop -nosplash > /dev/null
 echo "iMarioFramework: LaTeX output saved to latex/iMarioResult.tex"
 cd latex
 echo "iMarioFramework: producing pdf..."

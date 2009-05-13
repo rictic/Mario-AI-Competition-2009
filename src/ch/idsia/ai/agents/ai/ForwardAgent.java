@@ -1,9 +1,9 @@
 package ch.idsia.ai.agents.ai;
 
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.sprites.Mario;
-import ch.idsia.mario.environments.IEnvironment;
+import ch.idsia.mario.environments.Environment;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +12,7 @@ import ch.idsia.mario.environments.IEnvironment;
  * Time: 4:03:46 AM
  * Package: com.mojang.mario.Agents
  */
-public class ForwardAgent extends RegisterableAgent implements IAgent
+public class ForwardAgent extends RegisterableAgent implements Agent
 {
     int trueJumpCounter = 0;
     int trueSpeedCounter = 0;
@@ -25,9 +25,9 @@ public class ForwardAgent extends RegisterableAgent implements IAgent
 
     public void reset()
     {
-        Action = new boolean[IEnvironment.NumberOfActionSlots];
-        Action[Mario.KEY_RIGHT] = true;
-        Action[Mario.KEY_SPEED] = true;
+        action = new boolean[Environment.numberOfButtons];
+        action[Mario.KEY_RIGHT] = true;
+        action[Mario.KEY_SPEED] = true;
         trueJumpCounter = 0;
         trueSpeedCounter = 0;
     }
@@ -48,7 +48,7 @@ public class ForwardAgent extends RegisterableAgent implements IAgent
         return false;
     }
 
-    public boolean[] getAction(IEnvironment observation)
+    public boolean[] getAction(Environment observation)
     {
         //TODO: Discuss increasing diffuculty for handling the gaps.
         // this Agent requires observation.
@@ -58,35 +58,35 @@ public class ForwardAgent extends RegisterableAgent implements IAgent
 
         if (levelScene[11][13] != 0 || levelScene[11][12] != 0 ||  DangerOfGap(levelScene))
         {
-            if (observation.mayMarioJump() || ( !observation.isMarioOnGround() && Action[Mario.KEY_JUMP]))
+            if (observation.mayMarioJump() || ( !observation.isMarioOnGround() && action[Mario.KEY_JUMP]))
             {
-                Action[Mario.KEY_JUMP] = true;
+                action[Mario.KEY_JUMP] = true;
             }
             ++trueJumpCounter;
 //            System.out.println("trueJumpCounter:" + trueJumpCounter);
         }
         else
         {
-            Action[Mario.KEY_JUMP] = false;
+            action[Mario.KEY_JUMP] = false;
             trueJumpCounter = 0;
         }
 
         if (trueJumpCounter > 16)
         {
             trueJumpCounter = 0;
-            Action[Mario.KEY_JUMP] = false;
+            action[Mario.KEY_JUMP] = false;
         }
 
 
 //        if (++trueSpeedCounter > 10)
 //        {
-//            Action[Mario.KEY_SPEED] = false;
+//            action[Mario.KEY_SPEED] = false;
 //            trueSpeedCounter = 0;
 //        }
 //        else
-//            Action[Mario.KEY_SPEED] = false;
+//            action[Mario.KEY_SPEED] = false;
 
-        Action[Mario.KEY_SPEED] = DangerOfGap(levelScene);
-        return Action;
+        action[Mario.KEY_SPEED] = DangerOfGap(levelScene);
+        return action;
     }
 }

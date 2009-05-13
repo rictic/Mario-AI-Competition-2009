@@ -1,7 +1,7 @@
 package ch.idsia.scenarios;
 
 import ch.idsia.ai.Evolvable;
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.ai.SimpleMLPAgent;
 import ch.idsia.ai.ea.ES;
@@ -33,7 +33,7 @@ public class Evolve {
         EvaluationOptions options = new CmdLineOptions(args);
         options.setMaxAttempts(1);
         options.setPauseWorld(true);
-        List<IAgent> bestAgents = new ArrayList<IAgent>();
+        List<Agent> bestAgents = new ArrayList<Agent>();
         DecimalFormat df = new DecimalFormat("0000");
         for (int difficulty = 0; difficulty < 11; difficulty++)
         {
@@ -41,7 +41,7 @@ public class Evolve {
             Evolvable initial = new SimpleMLPAgent();
 
             options.setLevelDifficulty(difficulty);
-            options.setAgent((IAgent)initial);
+            options.setAgent((Agent)initial);
 
             options.setMaxFPS(true);
             options.setVisualization(false);
@@ -57,8 +57,8 @@ public class Evolve {
                 System.out.println("Generation " + gen + " best " + bestResult);
                 options.setVisualization(gen % 30 == 0 || bestResult > 4000);
                 options.setMaxFPS(!(gen % 30 == 0 || bestResult > 4000));
-                IAgent a = (IAgent) es.getBests()[0];
-                a.setName(((IAgent)initial).getName() + df.format(gen));
+                Agent a = (Agent) es.getBests()[0];
+                a.setName(((Agent)initial).getName() + df.format(gen));
                 RegisterableAgent.registerAgent(a);
                 bestAgents.add(a);
                 double result = task.evaluate(a)[0];
@@ -75,14 +75,14 @@ public class Evolve {
         LOGGER.println("Saving bests... ", LOGGER.VERBOSE_MODE.INFO);
 
         options.setVisualization(true); int i = 0;
-        for (IAgent bestAgent : bestAgents) {
+        for (Agent bestAgent : bestAgents) {
             Easy.save(bestAgent, "bestAgent" +  df.format(i++) + ".xml");
         }
 
         LOGGER.println("Saved! Press return key to continue...", LOGGER.VERBOSE_MODE.INFO);
         try {System.in.read();        } catch (IOException e) {            e.printStackTrace();        }
 
-//        for (IAgent bestAgent : bestAgents) {
+//        for (Agent bestAgent : bestAgents) {
 //            task.evaluate(bestAgent);
 //        }
 

@@ -1,14 +1,14 @@
 package ch.idsia.ai.agents.human;
 
-import ch.idsia.mario.environments.IEnvironment;
-import ch.idsia.mario.engine.sprites.Mario;
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.mario.engine.sprites.Mario;
+import ch.idsia.mario.environments.Environment;
 
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
-import java.util.List;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * Time: 12:19:49 AM
  * Package: com.mojang.mario.Agents
  */
-public class HumanKeyboardAgent extends KeyAdapter implements IAgent
+public class HumanKeyboardAgent extends KeyAdapter implements Agent
 {
     List<boolean[]> history = new ArrayList<boolean[]>();
     private boolean[] Action = null;
@@ -32,10 +32,10 @@ public class HumanKeyboardAgent extends KeyAdapter implements IAgent
     public void reset()
     {
         // Just check you keyboard. Especially arrow buttons and 'A' and 'S'!
-        Action = new boolean[IEnvironment.NumberOfActionSlots];
+        Action = new boolean[Environment.numberOfButtons];
     }
 
-    public boolean[] getAction(IEnvironment observation)
+    public boolean[] getAction(Environment observation)
     {
         return Action;
     }

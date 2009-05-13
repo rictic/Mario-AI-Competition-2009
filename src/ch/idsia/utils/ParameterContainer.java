@@ -1,5 +1,8 @@
 package ch.idsia.utils;
 
+import ch.idsia.ai.agents.Agent;
+import ch.idsia.ai.agents.RegisterableAgent;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -136,6 +139,17 @@ public class ParameterContainer
     public String s(Object i)
     {
         return String.valueOf(i);
+    }
+
+    public String s(Agent a)
+    {   if (RegisterableAgent.getAgentByName(a.getName()) == null)
+            RegisterableAgent.registerAgent(a);
+        return a.getName();
+    }
+
+    public Agent a(String s)
+    {
+        return RegisterableAgent.getAgentByName(s);      
     }
 
     public boolean b(String s)

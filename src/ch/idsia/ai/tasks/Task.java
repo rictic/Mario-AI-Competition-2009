@@ -1,6 +1,6 @@
 package ch.idsia.ai.tasks;
 
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.tools.EvaluationOptions;
 
 /**
@@ -11,7 +11,7 @@ import ch.idsia.tools.EvaluationOptions;
  * Package: com.mojang.mario.Tasks
  */
 public interface Task {
-    public double[] evaluate (IAgent controller);
+    public double[] evaluate (Agent controller);
 
     public void setOptions (EvaluationOptions options);
 

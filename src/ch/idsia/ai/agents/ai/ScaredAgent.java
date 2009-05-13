@@ -1,9 +1,9 @@
 package ch.idsia.ai.agents.ai;
 
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.sprites.Mario;
-import ch.idsia.mario.environments.IEnvironment;
+import ch.idsia.mario.environments.Environment;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +12,7 @@ import ch.idsia.mario.environments.IEnvironment;
  * Time: 9:46:59 AM
  * Package: ch.idsia.ai.agents
  */
-public class ScaredAgent extends RegisterableAgent implements IAgent {
+public class ScaredAgent extends RegisterableAgent implements Agent {
     public ScaredAgent() {
         super("ScaredAgent");
     }
@@ -37,33 +37,33 @@ public class ScaredAgent extends RegisterableAgent implements IAgent {
     }
 
     public void reset() {
-        Action[Mario.KEY_RIGHT] = true;
-        Action[Mario.KEY_SPEED] = false;
+        action[Mario.KEY_RIGHT] = true;
+        action[Mario.KEY_SPEED] = false;
     }
 
-    public boolean[] getAction(IEnvironment observation) {
+    public boolean[] getAction(Environment observation) {
         byte[][] levelScene = observation.getLevelSceneObservation();
         if (/*levelScene[11][13] != 0 ||*/ levelScene[11][12] != 0 ||
            /* levelScene[12][13] == 0 ||*/ levelScene[12][12] == 0 )
         {
-            if (observation.mayMarioJump() || ( !observation.isMarioOnGround() && Action[Mario.KEY_JUMP]))
+            if (observation.mayMarioJump() || ( !observation.isMarioOnGround() && action[Mario.KEY_JUMP]))
             {
-                Action[Mario.KEY_JUMP] = true;
+                action[Mario.KEY_JUMP] = true;
             }
             ++trueJumpCounter;
         }
         else
         {
-            Action[Mario.KEY_JUMP] = false;
+            action[Mario.KEY_JUMP] = false;
             trueJumpCounter = 0;
         }
 
         if (trueJumpCounter > 46)
         {
             trueJumpCounter = 0;
-            Action[Mario.KEY_JUMP] = false;
+            action[Mario.KEY_JUMP] = false;
         }
 
-        return Action;
+        return action;
     }
 }

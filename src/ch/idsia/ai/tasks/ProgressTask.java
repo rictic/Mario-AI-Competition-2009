@@ -1,6 +1,6 @@
 package ch.idsia.ai.tasks;
 
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.tools.EvaluationInfo;
 import ch.idsia.tools.EvaluationOptions;
@@ -24,7 +24,7 @@ public class ProgressTask implements Task {
         setOptions(evaluationOptions);
     }
 
-    public double[] evaluate(IAgent controller) {
+    public double[] evaluate(Agent controller) {
         double distanceTravelled = 0;
 //        controller.reset();
         options.setAgent(controller);

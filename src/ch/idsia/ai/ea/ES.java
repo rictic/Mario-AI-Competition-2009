@@ -2,7 +2,7 @@ package ch.idsia.ai.ea;
 
 import ch.idsia.ai.EA;
 import ch.idsia.ai.Evolvable;
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.tasks.Task;
 
 /**
@@ -47,7 +47,7 @@ public class ES implements EA {
         fitness[which] = 0;
         for (int i = 0; i < evaluationRepetitions; i++) {
             population[which].reset();
-            fitness[which] += task.evaluate((IAgent) population[which])[0];
+            fitness[which] += task.evaluate((Agent) population[which])[0];
             //        LOGGER.print(, LOGGER.VERBOSE_MODE.INFO);
 //            LOGGER.println("which " + which + " fitness " + fitness[which], LOGGER.VERBOSE_MODE.INFO);
         }

@@ -1,9 +1,9 @@
 package ch.idsia.mario.engine;
 
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 
-import javax.swing.JApplet;
+import javax.swing.*;
 
 
 public class AppletLauncher extends JApplet
@@ -29,7 +29,7 @@ public class AppletLauncher extends JApplet
         if (!started)
         {
             started = true;
-            IAgent hka = new HumanKeyboardAgent();
+            Agent hka = new HumanKeyboardAgent();
             hka.reset();            
             mario = new MarioComponent(getWidth(), getHeight());
             setContentPane(mario);

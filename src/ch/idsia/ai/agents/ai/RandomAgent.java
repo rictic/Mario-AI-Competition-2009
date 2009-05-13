@@ -1,8 +1,8 @@
 package ch.idsia.ai.agents.ai;
 
-import ch.idsia.mario.environments.IEnvironment;
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.mario.environments.Environment;
 
 import java.util.Random;
 
@@ -13,7 +13,7 @@ import java.util.Random;
  * Time: 10:37:18 PM
  * Package: com.mojang.mario.Agents
  */
-public class RandomAgent extends RegisterableAgent implements IAgent
+public class RandomAgent extends RegisterableAgent implements Agent
 {
     public RandomAgent()
     {
@@ -28,11 +28,11 @@ public class RandomAgent extends RegisterableAgent implements IAgent
         R = new Random();
     }
 
-    public boolean[] getAction(IEnvironment observation)
+    public boolean[] getAction(Environment observation)
     {
-        boolean[] ret = new boolean[IEnvironment.NumberOfActions];
+        boolean[] ret = new boolean[Environment.numberOfButtons];
 
-        for (int i = 0; i < IEnvironment.NumberOfActions; ++i)
+        for (int i = 0; i < Environment.numberOfButtons; ++i)
         {
             // Here the RandomAgent is encouraged to move more often to the Right and make long Jumps.
             boolean toggleParticularAction = R.nextBoolean();

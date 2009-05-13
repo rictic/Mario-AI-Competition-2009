@@ -1,6 +1,6 @@
 package ch.idsia.ai.agents;
 
-import ch.idsia.mario.environments.IEnvironment;
+import ch.idsia.mario.environments.Environment;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,7 +9,7 @@ import ch.idsia.mario.environments.IEnvironment;
  * Time: 8:46:42 PM
  * Package: com.mojang.mario.Agents
  */
-public interface IAgent
+public interface Agent
 {
     public enum AGENT_TYPE {AI, HUMAN, TCP_SERVER }
 
@@ -17,7 +17,7 @@ public interface IAgent
     // just implement an empty method for a reactive controller
     public void reset();
 
-    public boolean[] getAction(IEnvironment observation);
+    public boolean[] getAction(Environment observation);
 
     public AGENT_TYPE getType();
 

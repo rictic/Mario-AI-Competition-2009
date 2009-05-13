@@ -8,11 +8,11 @@ package ch.idsia.mario.environments;
  * Package: com.mojang.mario.Environments
  */
 
-public interface IEnvironment
+public interface Environment
 {
-    public static final int NumberOfActionSlots = 16;
-    public static final int NumberOfActions = 5;
-    public static final int NumberOfObservationElements = 486;
+//    public static final int NumberOfActionSlots = 16;
+    public static final int numberOfButtons = 5;
+    public static final int numberOfObservationElements = 486;
 
     // always the same dimensionality: 22x22
     // always centered on the agent

@@ -1,7 +1,7 @@
 package ch.idsia.tools;
 
 import ch.idsia.MainRun;
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.MarioComponent;
@@ -341,7 +341,7 @@ public class ToolsConfigurator extends JFrame
     private EvaluationOptions prepareEvaluatorOptions()
     {
         EvaluationOptions evaluationOptions = cmdLineOptions;
-        IAgent agent = RegisterableAgent.getAgentByName(ChoiceAgent.getSelectedItem());
+        Agent agent = RegisterableAgent.getAgentByName(ChoiceAgent.getSelectedItem());
         evaluationOptions.setAgent(agent);
         int type = ChoiceLevelType.getSelectedIndex();
         if (type == 4)

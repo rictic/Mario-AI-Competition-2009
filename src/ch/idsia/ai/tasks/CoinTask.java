@@ -1,6 +1,6 @@
 package ch.idsia.ai.tasks;
 
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.tools.EvaluationOptions;
 
 /**
@@ -14,7 +14,7 @@ public class CoinTask implements Task {
 
     private EvaluationOptions options = new EvaluationOptions ();
 
-    public double[] evaluate(IAgent controller) {
+    public double[] evaluate(Agent controller) {
         return new double[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 

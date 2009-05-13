@@ -22,7 +22,7 @@ public class RegisterableAgent extends BasicAIAgent
         registerAgent(this);
     }
 
-    public static void registerAgent(IAgent agent)
+    public static void registerAgent(Agent agent)
     {
         AgentsPool.put(agent.getName(), agent);
     }
@@ -32,7 +32,7 @@ public class RegisterableAgent extends BasicAIAgent
             registerAgent(load(agentWOXName));
 //        else {
 //            try {
-//                throw new IllegalArgumentException("Critical Error: Cannot register the agent. Name specified " + agentWOXName +
+//                throw new IllegalArgumentException("Critical Error: Cannot register the agent. name specified " + agentWOXName +
 //                        " is not a valid WOX name. Should end up with '.xml'");
 //            }
 //            catch(IllegalArgumentException e) {
@@ -43,14 +43,14 @@ public class RegisterableAgent extends BasicAIAgent
 //        }
     }
 
-    public static IAgent load (String name) {
-        IAgent agent;
+    public static Agent load (String name) {
+        Agent agent;
         try {
-            agent = (IAgent) Class.forName (name).newInstance ();
+            agent = (Agent) Class.forName (name).newInstance ();
         }
         catch (ClassNotFoundException e) {
             System.out.println (name + " is not a class name; trying to load a wox definition with that name.");
-            agent = (IAgent) Easy.load (name);
+            agent = (Agent) Easy.load (name);
         }
         catch (Exception e) {
             e.printStackTrace ();
@@ -65,14 +65,8 @@ public class RegisterableAgent extends BasicAIAgent
         return AgentsPool.agentsHashMap.keySet();
     }
 
-    public static IAgent getAgentByName(String agentName)
+    public static Agent getAgentByName(String agentName)
     {
-        if (AgentsPool.agentsHashMap.get(agentName) == null)
-        {
-            System.err.println("Agent " + agentName + " Not found. Have you created " + agentName + " anywhere? \nExiting...");
-            System.exit(2); // TODO: handle this in more general way. tranfer exception higher. System should not just quit.
-        }
-
         return AgentsPool.agentsHashMap.get(agentName);
     }
 }

@@ -1,11 +1,11 @@
 package ch.idsia.mario.engine.sprites;
 
 
-import ch.idsia.mario.engine.Scene;
-import ch.idsia.mario.engine.level.*;
+import ch.idsia.mario.engine.Art;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.LevelScene;
-import ch.idsia.mario.engine.*;
+import ch.idsia.mario.engine.Scene;
+import ch.idsia.mario.engine.level.Level;
 
 
 public class Mario extends Sprite
@@ -97,8 +97,8 @@ public class Mario extends Sprite
         kind = 95;
         Mario.instance = this;
         this.world = world;
-        keys = Scene.keys;      // SK: in fact, this is already redundant due to using IAgent
-        cheatKeys = Scene.keys; // SK: in fact, this is already redundant due to using IAgent
+        keys = Scene.keys;      // SK: in fact, this is already redundant due to using Agent
+        cheatKeys = Scene.keys; // SK: in fact, this is already redundant due to using Agent
         x = 32;
         y = 0;
 

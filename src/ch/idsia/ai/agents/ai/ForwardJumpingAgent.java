@@ -1,9 +1,9 @@
 package ch.idsia.ai.agents.ai;
 
-import ch.idsia.mario.environments.IEnvironment;
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.sprites.Mario;
+import ch.idsia.mario.environments.Environment;
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,7 +13,7 @@ import ch.idsia.mario.engine.sprites.Mario;
  * Package: com.mojang.mario.Agents
  */
 
-public class ForwardJumpingAgent extends RegisterableAgent implements IAgent
+public class ForwardJumpingAgent extends RegisterableAgent implements Agent
 {
     public ForwardJumpingAgent()
     {
@@ -23,14 +23,14 @@ public class ForwardJumpingAgent extends RegisterableAgent implements IAgent
 
     public void reset()
     {
-        Action = EmptyAction;
-        Action[Mario.KEY_RIGHT] = true;
-        Action[Mario.KEY_SPEED] = true;
+        action = new boolean[Environment.numberOfButtons];
+        action[Mario.KEY_RIGHT] = true;
+        action[Mario.KEY_SPEED] = true;
     }
 
-    public boolean[] getAction(IEnvironment observation)
+    public boolean[] getAction(Environment observation)
     {
-        Action[Mario.KEY_SPEED] = Action[Mario.KEY_JUMP] =  observation.mayMarioJump() || !observation.isMarioOnGround();
-        return Action;
+        action[Mario.KEY_SPEED] = action[Mario.KEY_JUMP] =  observation.mayMarioJump() || !observation.isMarioOnGround();
+        return action;
     }
 }

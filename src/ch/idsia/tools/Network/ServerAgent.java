@@ -1,8 +1,8 @@
 package ch.idsia.tools.Network;
 
-import ch.idsia.mario.environments.IEnvironment;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.mario.environments.Environment;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ import java.io.IOException;
  * Package: ch.idsia.tools.Network
  */
 
-public class ServerAgent extends RegisterableAgent implements IAgent
+public class ServerAgent extends RegisterableAgent implements Agent
 {
     Server server = null;
     private int port;
@@ -32,8 +32,8 @@ public class ServerAgent extends RegisterableAgent implements IAgent
     // A tiny bit of singletone-like concept. Server is created ones for each egent. Basically we are not going
     // To create more than one ServerAgent at a run, but this flexibility allows to add this feature with certain ease.
     private void createServer(int port) {
-        this.server = new Server(port, IEnvironment.NumberOfObservationElements, IEnvironment.NumberOfActions);
-        this.Name += server.getClientName();
+        this.server = new Server(port, Environment.numberOfObservationElements, Environment.numberOfButtons);
+        this.name += server.getClientName();
     }
 
     public boolean isAvailable()
@@ -43,34 +43,34 @@ public class ServerAgent extends RegisterableAgent implements IAgent
 
     public void reset()
     {
-        Action = EmptyAction;
+        action = new boolean[Environment.numberOfButtons];
         if (server == null)
             this.createServer(port);
     }
 
-    private void sendLevelSceneObservation(IEnvironment observation) throws IOException
+    private void sendLevelSceneObservation(Environment observation) throws IOException
     {
         byte[][] levelScene = observation.getLevelSceneObservation();
 
         String tmpData = "" +
                 observation.mayMarioJump() + " " + observation.isMarioOnGround();
-        for (int y = 0; y < levelScene[0].length; ++y)
+        for (int x = 0; x < levelScene.length; ++x)
         {
-            for (int x = 0; x < levelScene.length; ++x)
+            for (int y = 0; y < levelScene.length; ++y)
             {
                 tmpData += " " + (levelScene[x][y]);
             }
         }
         server.sendSafe(tmpData);
-        // TODO: StateEncoderDecoder.Encode.Decode.  zip, do not send mario position. zero instead for better zipping.
+        // TODO: StateEncoderDecoder.Encode.Decode.  zip, gzip do not send mario position. zero instead for better compression.
     }
 
     private boolean[] receiveAction() throws IOException, NullPointerException
     {
         String data = server.recvSafe();
-        boolean[] ret = new boolean[IEnvironment.NumberOfActions];
+        boolean[] ret = new boolean[Environment.numberOfButtons];
         String s = "[";
-        for (int i = 0; i < IEnvironment.NumberOfActions; ++i)
+        for (int i = 0; i < Environment.numberOfButtons; ++i)
         {
             ret[i] = (data.charAt(i) == '1');
             s += data.charAt(i);
@@ -81,13 +81,13 @@ public class ServerAgent extends RegisterableAgent implements IAgent
         return ret;
     }
 
-    public boolean[] getAction(IEnvironment observation)
+    public boolean[] getAction(Environment observation)
     {
         try
         {
             System.out.println("ServerAgent: sending observation...");
             sendLevelSceneObservation(observation);
-            Action = receiveAction();
+            action = receiveAction();
         }
         catch (IOException e)
         {
@@ -95,11 +95,11 @@ public class ServerAgent extends RegisterableAgent implements IAgent
             System.out.println("I/O Communication Error");
             reset();
         }
-        return Action;
+        return action;
     }
 
     public AGENT_TYPE getType()
     {
-        return IAgent.AGENT_TYPE.TCP_SERVER;
+        return Agent.AGENT_TYPE.TCP_SERVER;
     }
 }

@@ -1,7 +1,7 @@
 package ch.idsia.ai.agents.ai;
 
-import ch.idsia.mario.environments.IEnvironment;
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
+import ch.idsia.mario.environments.Environment;
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,29 +10,27 @@ import ch.idsia.ai.agents.IAgent;
  * Time: 12:30:41 AM
  * Package: com.mojang.mario.Agents
  */
-public class BasicAIAgent implements IAgent 
+public class BasicAIAgent implements Agent
 {
-    // Bla bla bla
-    protected boolean Action[] = new boolean[IEnvironment.NumberOfActions];
-    protected boolean EmptyAction[] = new boolean[IEnvironment.NumberOfActions];
-    protected String Name = "Instance of BasicAIAgent. Change this name";
+    protected boolean action[] = new boolean[Environment.numberOfButtons];
+    protected String name = "Instance of BasicAIAgent. Change this name";
 
     public void reset()
     {
-        Action = EmptyAction;
+        action = new boolean[Environment.numberOfButtons];// Empty action
     }
 
-    public boolean[] getAction(IEnvironment observation)
+    public boolean[] getAction(Environment observation)
     {
-        return EmptyAction;
+        return new boolean[Environment.numberOfButtons]; // Empty action
     }
 
     public AGENT_TYPE getType()
     {
-        return IAgent.AGENT_TYPE.AI;
+        return Agent.AGENT_TYPE.AI;
     }
 
-    public String getName() {        return Name;    }
+    public String getName() {        return name;    }
 
-    public void setName(String Name) { this.Name = Name;    }
+    public void setName(String Name) { this.name = Name;    }
 }

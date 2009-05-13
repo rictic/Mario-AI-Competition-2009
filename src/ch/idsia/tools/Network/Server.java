@@ -1,11 +1,14 @@
 package ch.idsia.tools.Network;
 
-import java.io.*;
-import java.net.Socket;
-import java.net.ServerSocket;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.BindException;
-import java.util.Random;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by IntelliJ IDEA.
@@ -129,7 +132,7 @@ public class Server
     {
         String ret = null;
         try {
-            System.out.println("Server.recv() >> Looking forward receiving data");
+            System.out.println("Server.recv() >> Looking forward to receive data");
             ret = in.readLine();
             System.out.println("Server.recv() >> " + ret.length() + " bytes of data received: " + ret);
             return ret;

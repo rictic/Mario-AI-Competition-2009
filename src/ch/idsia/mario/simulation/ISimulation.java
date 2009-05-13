@@ -13,7 +13,7 @@ public interface ISimulation
 {
     public void setSimulationOptions(SimulationOptions simulationOptions);
 
-//    public void setAgent(IAgent agent);
+//    public void setAgent(Agent agent);
 //
 //    public void setLevelType(int levelType);
 //
@@ -21,7 +21,7 @@ public interface ISimulation
 //
 //    public void setLevelLength(int levelLength);
 //
-//    public IAgent getAgent ();
+//    public Agent getAgent ();
 //
 //    public EvaluationInfo simulateOneLevel();
 //

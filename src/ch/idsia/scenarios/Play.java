@@ -1,6 +1,6 @@
 package ch.idsia.scenarios;
 
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.ai.tasks.ProgressTask;
@@ -17,7 +17,7 @@ import ch.idsia.tools.EvaluationOptions;
 public class Play {
 
     public static void main(String[] args) {
-        IAgent controller = new HumanKeyboardAgent();
+        Agent controller = new HumanKeyboardAgent();
         if (args.length > 0) {
             controller = RegisterableAgent.load (args[0]);
             RegisterableAgent.registerAgent (controller);

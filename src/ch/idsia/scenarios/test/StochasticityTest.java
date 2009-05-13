@@ -1,11 +1,11 @@
 package ch.idsia.scenarios.test;
 
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.ai.agents.IAgent;
-import ch.idsia.ai.tasks.Task;
 import ch.idsia.ai.tasks.ProgressTask;
-import ch.idsia.tools.EvaluationOptions;
+import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
+import ch.idsia.tools.EvaluationOptions;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +18,7 @@ public class StochasticityTest {
     final static int repetitions = 10;
 
     public static void main(String[] args) {
-        IAgent controller = RegisterableAgent.load (args[0]);
+        Agent controller = RegisterableAgent.load (args[0]);
         //RegisterableAgent.registerAgent (controller);
         EvaluationOptions options = new CmdLineOptions(new String[0]);
         options.setAgent(controller);

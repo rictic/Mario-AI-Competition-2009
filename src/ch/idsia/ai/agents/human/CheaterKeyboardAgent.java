@@ -1,9 +1,9 @@
 package ch.idsia.ai.agents.human;
 
-import ch.idsia.ai.agents.IAgent;
+import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
-import ch.idsia.mario.environments.IEnvironment;
+import ch.idsia.mario.environments.Environment;
 import ch.idsia.tools.LOGGER;
 
 import java.awt.event.KeyAdapter;
@@ -16,7 +16,7 @@ import java.awt.event.KeyEvent;
  * Time: 3:36:16 AM
  * Package: com.mojang.mario.Agents
  */
-public class CheaterKeyboardAgent extends KeyAdapter implements IAgent {
+public class CheaterKeyboardAgent extends KeyAdapter implements Agent {
     private boolean Action[] = null;
 
     private String Name = "Instance of CheaterKeyboardAgent";
@@ -30,10 +30,10 @@ public class CheaterKeyboardAgent extends KeyAdapter implements IAgent {
     public void reset()
     {
         // Just check you keyboard.
-        Action = new boolean[IEnvironment.NumberOfActionSlots];
+        Action = new boolean[16];
     }
 
-    public boolean[] getAction(IEnvironment observation)
+    public boolean[] getAction(Environment observation)
     {
         return Action;
     }
@@ -76,7 +76,7 @@ public class CheaterKeyboardAgent extends KeyAdapter implements IAgent {
             case KeyEvent.VK_P:
                 if (isPressed)
                 {
-                    LOGGER.println("Paused On/Off", LOGGER.VERBOSE_MODE.INFO);
+                    LOGGER.println("Pause On/Off", LOGGER.VERBOSE_MODE.INFO);
                     GlobalOptions.pauseWorld = !GlobalOptions.pauseWorld;
                     if (GlobalOptions.pauseWorld)
                         Action[Mario.KEY_PAUSE] = true;
