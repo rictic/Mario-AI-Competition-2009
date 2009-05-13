@@ -49,7 +49,7 @@ class Client:
             sys.stderr.write("[CONNECTION ERROR] %s\n" % msg[1])
             raise
 
-        GreatingMessage = "Client: Dear Server, hello! I am %s! \r\n" % self.OwnerName
+        GreatingMessage = "Client: Dear Server, hello! I am %s\r\n" % self.OwnerName
         self.sendData(GreatingMessage)
 
 #        self.sock.settimeout(150)
