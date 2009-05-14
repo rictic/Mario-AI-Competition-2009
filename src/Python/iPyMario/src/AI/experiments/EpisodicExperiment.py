@@ -41,6 +41,7 @@ class EpisodicExperiment(Experiment):
         for i in range(amount):
             while True: # not self.task.isFinished():
                 self.agent.newEpisode()
+                self.task.startNew()
                 obs = self.task.getObservation()
                 if self.task.isFinished():
                     break;
@@ -49,5 +50,5 @@ class EpisodicExperiment(Experiment):
             r = self.task.getReward()
             s = self.task.getStatus()
             print "Episode #%d finished with status %s, fitness %f..." % (i, self.statusStr[s], r)
-            self.agent.grantReward(r)
+            self.agent.giveReward(r)
 

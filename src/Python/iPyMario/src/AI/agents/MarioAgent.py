@@ -12,7 +12,7 @@ class MarioAgent:
     def getAction(self):
         raise "Not implemented"
 
-    def grantReward(self, reward):
+    def giveReward(self, reward):
         pass
     def _getName(self):
         if self._name is None:
