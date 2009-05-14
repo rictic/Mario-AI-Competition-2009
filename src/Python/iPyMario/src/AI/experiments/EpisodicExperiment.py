@@ -42,7 +42,7 @@ class EpisodicExperiment(Experiment):
             while True: # not self.task.isFinished():
                 self.agent.newEpisode()
                 obs = self.task.getObservation()
-                if len(obs) < 3:
+                if self.task.isFinished():
                     break;
                 self.agent.integrateObservation(obs)
                 self.task.performAction(self.agent.produceAction())
