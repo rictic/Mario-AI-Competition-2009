@@ -3,6 +3,7 @@ package ch.idsia.tools.Network;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.environments.Environment;
+import ch.idsia.tools.EvaluationInfo;
 
 import java.io.IOException;
 
@@ -48,11 +49,11 @@ public class ServerAgent extends RegisterableAgent implements Agent
             this.createServer(port);
     }
 
-    private void sendLevelSceneObservation(Environment observation) throws IOException
+    private void sendLevelSceneObservation(Environment observation)
     {
         byte[][] levelScene = observation.getLevelSceneObservation();
 
-        String tmpData = "" +
+        String tmpData = "O " +
                 observation.mayMarioJump() + " " + observation.isMarioOnGround();
         for (int x = 0; x < levelScene.length; ++x)
         {
@@ -63,6 +64,13 @@ public class ServerAgent extends RegisterableAgent implements Agent
         }
         server.sendSafe(tmpData);
         // TODO: StateEncoderDecoder.Encode.Decode.  zip, gzip do not send mario position. zero instead for better compression.
+    }
+
+    public void integrateEvaluationInfo(EvaluationInfo evaluationInfo)
+    {
+        
+        String fitnessStr = "FIT " + evaluationInfo.marioStatus + " " + evaluationInfo.computeDistancePassed();
+        server.sendSafe(fitnessStr);
     }
 
     private boolean[] receiveAction() throws IOException, NullPointerException

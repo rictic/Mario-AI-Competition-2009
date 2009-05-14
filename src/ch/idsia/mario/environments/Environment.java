@@ -12,7 +12,7 @@ public interface Environment
 {
 //    public static final int NumberOfActionSlots = 16;
     public static final int numberOfButtons = 5;
-    public static final int numberOfObservationElements = 486;
+    public static final int numberOfObservationElements = 486 + 1;
 
     // always the same dimensionality: 22x22
     // always centered on the agent

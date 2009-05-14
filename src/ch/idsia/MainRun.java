@@ -55,12 +55,12 @@ public class MainRun
 
         Evaluator evaluator = new Evaluator(evaluationOptions);
         // TODO: External Parameter: levelDificulty as an interval [a:b]
-        for (int i = 0; i < 15; i++) {
-            evaluationOptions.setLevelDifficulty(i);
+//        for (int i = 0; i < 15; i++) {
+//            evaluationOptions.setLevelDifficulty(i);
             evaluator.verbose("Play/Simulation started!", LOGGER.VERBOSE_MODE.ALL);
             List<EvaluationInfo> evaluationSummary = evaluator.evaluate();
             evaluator.verbose("Play/Simulation Finished!", LOGGER.VERBOSE_MODE.ALL);
-            }
+//            }
         LOGGER.save("log.txt");
 
         if (cmdLineOptions.isExitProgramWhenFinished())

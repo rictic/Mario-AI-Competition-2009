@@ -106,19 +106,26 @@ public class Server
 
     public STATUS sendSafe(String message)
     {
-        int len = message.split(" ").length;
-        if (len != this.requiredSentDataSize)
+        if (!message.startsWith("FIT"))
         {
-            try
+            int len = message.split(" ").length;
+            if (len != this.requiredSentDataSize)
             {
-                throw new Exception("Actual data size " + len + "of the sending message" + message +
-                        "does not match required value " + requiredSentDataSize);
+                try
+                {
+                    throw new Exception("Actual data size " + len + "of the sending message" + message +
+                            "does not match required value " + requiredSentDataSize);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    restartServer();
+                    return STATUS.ERROR_SENDING;
+                }
             }
-            catch (Exception e)
+            else
             {
-                e.printStackTrace();
-                restartServer();
-                return STATUS.ERROR_SENDING;
+                this.send(message);
             }
         }
         else
