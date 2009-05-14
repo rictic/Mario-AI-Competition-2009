@@ -5,7 +5,7 @@ __date__ = "$Apr 30, 2009 6:46:04 PM$"
 
 from AI.agents.Agent import Agent
 
-class ForwardRandomAgent(Agent):
+class ForwardRandomAgent(MarioAgent):
     """
     Very simple example of an agent, who does not respect the observations,
     but just generates random forward moves and jumps

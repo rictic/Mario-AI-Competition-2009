@@ -7,7 +7,7 @@ from AI.agents.Agent import Agent
 if __name__ != "__main__":
     print "Importing %s " % __name__;
 
-class ForwardAgent(Agent):
+class ForwardAgent(MarioAgent):
     """ In fact the Python twin of the
         corresponding Java ForwardAgent.
     """
