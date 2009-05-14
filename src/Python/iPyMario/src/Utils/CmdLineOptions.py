@@ -30,7 +30,7 @@ class CmdLineOptions:
             print str(err)
             self.usage()
             sys.exit(2)
-        agentName = ""
+        agentName = "ForwardAgent" # by default.
         for o, a in opts:
             if o == "--port":
                 self.port = int(a)
