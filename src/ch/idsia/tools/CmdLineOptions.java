@@ -2,8 +2,7 @@ package ch.idsia.tools;
 
 import ch.idsia.mario.engine.GlobalOptions;
 
-import java.util.*;
-import java.awt.Point;
+import java.util.Map;
 
 
 /**
@@ -138,9 +137,6 @@ public class CmdLineOptions extends EvaluationOptions
 
     public Boolean isTimer() {
         return b(getParameterValue("-t"));      }
-
-    public Integer getAttemptsNumber() {
-        return i(getParameterValue("-an"));      }
 
     public Boolean isEcho() {
         return b(getParameterValue("-echo"));      }

@@ -115,6 +115,4 @@ public class SimulationOptions extends ParameterContainer
 
     public void setMaxAttempts(int maxAttempts) {
         setParameterValue("-an", s(maxAttempts));    }
-
-
 }
