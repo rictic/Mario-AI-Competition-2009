@@ -14,12 +14,12 @@ class MarioTask(EpisodicTask):
 #        EpisodicTask.reset(self)
 #        pass
 #
-#    finished = False
+    finished = False
     reward = 0
     status = 0
 
-#    def isFinished(self):
-#        return self.finished
+    def isFinished(self):
+        return self.finished
 
     def getObservation(self):
         """Documentation"""
@@ -27,9 +27,12 @@ class MarioTask(EpisodicTask):
         if len(obs) == 2:
             self.reward = obs[1]
             self.status = obs[0]
-#            self.finished = True
+            self.finished = True
         return obs
 
+    def startNew(self):
+        self.finished = False
+        
     def getReward(self):
         """ compute and return the current reward (i.e. corresponding to the last action performed) """
         return self.reward
