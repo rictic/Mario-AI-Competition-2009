@@ -2,7 +2,7 @@ __author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
 __date__ ="$May 13, 2009 1:29:41 AM$"
 
 from AI.environments.TCPEnvironment import TCPEnvironment
-from Utils.DataAdaptor import parseObservation
+from Utils.DataAdaptor import extractObservation
 
 class MarioEnvironment(TCPEnvironment):
     """
@@ -15,8 +15,10 @@ class MarioEnvironment(TCPEnvironment):
 
     def getObservation(self):
         data = self.getSensors()
-        mayMarioJump, isMarioOnGround, levelScene = parseObservation(data)
-        return mayMarioJump, isMarioOnGround, levelScene
+#        print "data: ", data
+        return extractObservation(data)
+
+
 
 
 

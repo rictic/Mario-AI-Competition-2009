@@ -18,7 +18,8 @@ class Task(object):
 
     def getObservation(self):
         """ a filtered mapping to getSample of the underlying environment. """
-        return self.env.getObservation()
+        obs = self.env.getObservation()
+        return obs
 
 
     def getReward(self):

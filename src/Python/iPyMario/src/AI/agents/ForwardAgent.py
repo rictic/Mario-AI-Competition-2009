@@ -100,9 +100,9 @@ class ForwardAgent(Agent):
         @param obs: observation from the environment
         @type obs: by default, this is assumed to be a numpy array of doubles
         """
-        print "M: mayJump: %s, onGround: %s, level[11,12]: %d, level[11,13]: %d, jc: %d" \
-            % (self.mayMarioJump, self.isMarioOnGround, self.levelScene[11,12], \
-            self.levelScene[11,13], self.trueJumpCounter)
+#        print "M: mayJump: %s, onGround: %s, level[11,12]: %d, level[11,13]: %d, jc: %d" \
+#            % (self.mayMarioJump, self.isMarioOnGround, self.levelScene[11,12], \
+#            self.levelScene[11,13], self.trueJumpCounter)
 
         danger = self._dangerOfGap()
         if (self.levelScene[11,12] != 0 or \
@@ -135,12 +135,10 @@ class ForwardAgent(Agent):
 #        print "action: " , self.actionStr
 #        return self.actionStr
 
-    def integrateObservation(self, mayMarioJump, isMarioOnGround, levelScene):
+    def integrateObservation(self, obs):
         """This method stores the observation inside the agent"""
-        self.mayMarioJump, self.isMarioOnGround, self.levelScene = \
-            mayMarioJump, isMarioOnGround, levelScene
-                                    
-        self.printLevelScene()
+        self.mayMarioJump, self.isMarioOnGround, self.levelScene = obs
+#        self.printLevelScene()
 
     def printLevelScene(self):
         ret = ""

@@ -3,7 +3,6 @@ __date__ ="$May 12, 2009 11:46:44 PM$"
 
 from Task import Task
 
-
 class EpisodicTask(Task):
     """
     Documentation

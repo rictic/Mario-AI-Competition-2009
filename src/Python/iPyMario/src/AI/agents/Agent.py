@@ -29,3 +29,7 @@ class Agent:
     def __repr__(self):
         """ The default representation of a named object is its name. """
         return "<%s '%s'>" % (self.__class__.__name__, self.name)
+    def newEpisode(self):
+        pass
+
+

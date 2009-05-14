@@ -28,6 +28,7 @@ class EpisodicExperiment(Experiment):
     Documentation
     """
 
+    statusStr = ("Loss...", "Win!")
     agent = None
     task = None
 
@@ -38,12 +39,15 @@ class EpisodicExperiment(Experiment):
 
     def doEpisodes(self, amount):
         for i in range(amount):
-            while not self.task.isFinished():
-                j, g, l = self.task.getObservation()
-                self.agent.integrateObservation(j, g, l)
-                a = self.agent.produceAction()
-                self.task.performAction(a)
-                r = self.task.getReward()
-                self.agent.grantReward(r)
-#        if not agent.isConnected():
-            print "Task is no longer available. Finishing episode %d..." % i
+            while True: # not self.task.isFinished():
+                self.agent.newEpisode()
+                obs = self.task.getObservation()
+                if len(obs) < 3:
+                    break;
+                self.agent.integrateObservation(obs)
+                self.task.performAction(self.agent.produceAction())
+            r = self.task.getReward()
+            s = self.task.getStatus()
+            print "Episode #%d finished with status %s, fitness %f..." % (i, self.statusStr[s], r)
+            self.agent.grantReward(r)
+

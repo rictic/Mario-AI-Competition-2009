@@ -32,7 +32,7 @@ class TCPEnvironment(Environment):
         if data == "-ciao":
             self.connected = False
             self.disconnet()
-        elif len(data) > 100:
+        elif len(data) > 5:
         #        print data
             return data
         pass
