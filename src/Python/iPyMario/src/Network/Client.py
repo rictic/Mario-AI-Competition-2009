@@ -32,12 +32,14 @@ class Client:
     def connectToServer(self, host, port):
         """connects to a server"""
         try:
-            print "Client: Trying to connect to %s : %s" % (host, port)
+            print "Client: Trying to connect to %s:%s" % (host, port)
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error, msg:
             sys.stderr.write("[SOCKET CREATION ERROR1] %s\n" % msg[1])
             raise
 
+#        self.sock.settimeout(5)
+        print "Timeout set to 5"
         try:
             self.sock.connect((host, port))
             print "Client: Connection to %s:%s succeeded!" % (host, port)
@@ -51,8 +53,7 @@ class Client:
 
         GreatingMessage = "Client: Dear Server, hello! I am %s\r\n" % self.OwnerName
         self.sendData(GreatingMessage)
-
-#        self.sock.settimeout(150)
+        
 
 
 
@@ -72,7 +73,7 @@ class Client:
         try:
             return self.sock.recv(self.bufSize)
         except  socket.error, msg:
-            sys.stderr.write("[SOCKET PIPE ERROR WHILE RECEIVING] %s\n" % msg[1])
+            sys.stderr.write("[SOCKET PIPE ERROR WHILE RECEIVING] %s\n.Possible reason: socket closed due to time out and/or requested server is currently busy" % msg[1])
             raise
 
 

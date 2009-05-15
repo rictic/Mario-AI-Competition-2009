@@ -19,7 +19,7 @@ class CmdLineOptions:
 
     agent = None
     host = "localhost"
-    port = 4242
+    port = 4252
 
 
     def __init__(self, argv):
@@ -31,6 +31,7 @@ class CmdLineOptions:
             self.usage()
             sys.exit(2)
         agentName = "ForwardAgent" # by default.
+
         for o, a in opts:
             if o == "--port":
                 self.port = int(a)
@@ -46,7 +47,7 @@ class CmdLineOptions:
         else:
             assert  False, "unknown Agent"
 
-    def usage ():
+    def usage():
         print "python iPyMario.py [--port port][--agent AgentName]"
 
     def getHost(self):

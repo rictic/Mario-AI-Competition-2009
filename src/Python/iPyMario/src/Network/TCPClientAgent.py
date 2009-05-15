@@ -15,8 +15,8 @@ __date__ = "$Apr 30, 2009 2:17:48 PM$"
 #
 #    def __init__(self, host, port):
 #        """Documentation"""
-#        print "Initializing TCP Agent...";
-#        self.agent = Agent
+#        print "Initializing TCP MarioAgent...";
+#        self.agent = MarioAgent
 #        self.client = Client(host, port, self.agent.name)
 #        self.connected = True
 #        pass

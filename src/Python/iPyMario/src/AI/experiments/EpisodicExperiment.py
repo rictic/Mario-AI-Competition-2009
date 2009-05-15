@@ -39,14 +39,14 @@ class EpisodicExperiment(Experiment):
 
     def doEpisodes(self, amount):
         for i in range(amount):
-            while True: # not self.task.isFinished():
-                self.agent.newEpisode()
-                self.task.startNew()
+            self.agent.newEpisode()
+            self.task.startNew()
+            while not self.task.isFinished():
                 obs = self.task.getObservation()
-                if self.task.isFinished():
-                    break;
-                self.agent.integrateObservation(obs)
-                self.task.performAction(self.agent.produceAction())
+                if len(obs) == 3:
+                    self.agent.integrateObservation(obs)
+                    self.task.performAction(self.agent.produceAction())
+                
             r = self.task.getReward()
             s = self.task.getStatus()
             print "Episode #%d finished with status %s, fitness %f..." % (i, self.statusStr[s], r)
