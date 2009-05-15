@@ -18,7 +18,7 @@ class CmdLineOptions:
 
     agent = None
     host = "localhost"
-    port = 4252
+    port = 4242
 
 
     def __init__(self, argv):
