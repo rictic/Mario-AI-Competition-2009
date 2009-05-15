@@ -5,7 +5,7 @@ import numpy
     
 def extractObservation(data):
     """
-    parse the array of strings and return array 22 by 22 of doubles
+     parse the array of strings and return array 22 by 22 of doubles
     """
     obsLength = 487
     levelScene = numpy.empty(shape = (22,22), dtype = numpy.int)
