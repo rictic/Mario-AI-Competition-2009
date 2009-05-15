@@ -94,9 +94,9 @@ public class Server
 
     private void send(String message)
     {
-        System.out.println("Sedning message: " + message);
+//        System.out.println("Sedning message: " + message);
         out.print(message);
-        System.out.println("Server: " + message.length() + " bytes of data had been sent");
+//        System.out.println("Server: " + message.length() + " bytes of data had been sent");
         if (out.checkError())
         {
             System.err.println("Server.send() : Error detected while sending");
@@ -139,9 +139,14 @@ public class Server
     {
         String ret = null;
         try {
-            System.out.println("Server.recv() >> Looking forward to receive data");
+//            System.out.println("Server.recv() >> Looking forward to receive data");
             ret = in.readLine();
-            System.out.println("Server.recv() >> " + ret.length() + " bytes of data received: " + ret);
+            if (ret == null)
+            {
+                throw new NullPointerException();
+            }
+
+//            System.out.println("Server.recv() >> " + ret.length() + " bytes of data received: " + ret);
             return ret;
         }
         catch (NullPointerException e)

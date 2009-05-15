@@ -138,6 +138,9 @@ public class CmdLineOptions extends EvaluationOptions
     public Boolean isTimer() {
         return b(getParameterValue("-t"));      }
 
+//    public Integer getAttemptsNumber() {
+//        return i(getParameterValue("-an"));      }
+
     public Boolean isEcho() {
         return b(getParameterValue("-echo"));      }
 
@@ -151,6 +154,7 @@ public class CmdLineOptions extends EvaluationOptions
         {
             if (getAgentName().startsWith("ServerAgent"))
             {
+                setMaxAttempts(-1);
                 if ( getAgentName().split(":").length > 1)
                 {
                     return Integer.parseInt(getAgentName().split(":")[1]);

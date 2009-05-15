@@ -43,7 +43,7 @@ public class Evaluator implements Runnable
         {
             LOGGER.println("Attempts left: " + (evaluationOptions.getMaxAttempts() - ++i ), LOGGER.VERBOSE_MODE.ALL);
             evaluationInfo = simulator.simulateOneLevel();
-            
+                                                        
             evaluationInfo.levelType = evaluationOptions.getLevelType();
             evaluationInfo.levelDifficulty = evaluationOptions.getLevelDifficulty();
             evaluationInfo.levelRandSeed = evaluationOptions.getLevelRandSeed();
@@ -52,7 +52,7 @@ public class Evaluator implements Runnable
             LOGGER.println("run  finished with result : " + evaluationInfo, VM);
             continueCondition = !GlobalOptions.StopSimulationIfWin || !(evaluationInfo.marioStatus == Mario.STATUS_WIN);
         }
-        while ( evaluationOptions.getMaxAttempts() > i && continueCondition );
+        while ((evaluationOptions.getMaxAttempts() > i || evaluationOptions.getMaxAttempts() == -1 ) && continueCondition);
 
         String fileName = "";
         if (!this.evaluationOptions.getMatlabFileName().equals(""))
@@ -149,7 +149,6 @@ public class Evaluator implements Runnable
                                                     evaluationOptions.isVisualization());
         
         GlobalOptions.pauseWorld = evaluationOptions.isPauseWorld();
-        Mario.resetStatic();
         this.evaluationOptions = evaluationOptions;
         thisThread = new Thread(this);
     }

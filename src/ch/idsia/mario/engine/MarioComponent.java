@@ -160,25 +160,36 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             }
 
             boolean[] action = agent.getAction(this/*DummyEnvironment*/);
-            for (int i = 0; i < Environment.numberOfButtons; ++i)
-                if (action[i]) {
-                    ++totalActionsPerfomed;
-                    break;
-                }
+            if (action != null)
+            {
+                for (int i = 0; i < Environment.numberOfButtons; ++i)
+                    if (action[i])
+                    {
+                        ++totalActionsPerfomed;
+                        break;
+                    }
+            }
+            else
+            {
+                System.err.println("Null Actoin received. Skipping simulation...");
+                stop();
+            }
+
+
             //Apply action;
 //            scene.keys = action;
             ((LevelScene) scene).mario.keys = action;
             ((LevelScene) scene).mario.cheatKeys = cheatAgent.getAction(null);
 
             if (GlobalOptions.VisualizationOn) {
-//                String msg = GlobalOptions.CurrentAgentStr + ". ";
-                String msg = "Attempts: " + currentAttempt + " of " + totalNumberOfAttempts;
+                String msg = "Attempts: " + currentAttempt + " of " + ((totalNumberOfAttempts == -1) ? "\\infty" : totalNumberOfAttempts);
                 drawString(og, msg, 7, 31, 0);
                 drawString(og, msg, 6, 30, 1);
 
                 msg = agent.getName();
                 drawString(og, msg, 7, 41, 0);
                 drawString(og, msg, 6, 40, 5);
+
                 msg = "Selected Actions: ";
                 drawString(og, msg, 7, 51, 0);
                 drawString(og, msg, 6, 50, 6);
@@ -240,7 +251,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 //        evaluationInfo.totalNumberOfCoins   = -1 ; // TODO: total Number of coins.
         evaluationInfo.totalActionsPerfomed = totalActionsPerfomed; // Counted during the play/simulation process
         evaluationInfo.totalFramesPerfomed = frame;
-        evaluationInfo.Memo = "Number of attempt: " + Mario.numberOfAttempts;
+//        evaluationInfo.Memo = "Number of attempt: " + Mario.numberOfAttempts;
         if (agent instanceof ServerAgent)
             ((ServerAgent)agent).integrateEvaluationInfo(evaluationInfo);
         return evaluationInfo;

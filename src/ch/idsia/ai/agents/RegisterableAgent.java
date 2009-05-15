@@ -67,6 +67,10 @@ public class RegisterableAgent extends BasicAIAgent
 
     public static Agent getAgentByName(String agentName)
     {
-        return AgentsPool.agentsHashMap.get(agentName);
+        // There is only one case possible;
+        Agent ret = AgentsPool.agentsHashMap.get(agentName);
+        if (ret == null)
+            ret = AgentsPool.agentsHashMap.get(agentName.split(":")[0]); 
+        return ret;
     }
 }

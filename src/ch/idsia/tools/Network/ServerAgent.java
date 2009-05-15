@@ -75,7 +75,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
 
     private boolean[] receiveAction() throws IOException, NullPointerException
     {
-        String data = server.recvSafe();
+        String data = server.recvSafe();        
         boolean[] ret = new boolean[Environment.numberOfButtons];
         String s = "[";
         for (int i = 0; i < Environment.numberOfButtons; ++i)
@@ -85,7 +85,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
         }
         s += "]";
 
-        System.out.println("ServerAgent: action received :" + s);
+//        System.out.println("ServerAgent: action received :" + s);
         return ret;
     }
 
@@ -93,7 +93,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
     {
         try
         {
-            System.out.println("ServerAgent: sending observation...");
+//            System.out.println("ServerAgent: sending observation...");
             sendLevelSceneObservation(observation);
             action = receiveAction();
         }

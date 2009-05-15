@@ -14,19 +14,19 @@ public class Mario extends Sprite
     public static boolean fire = false;
     public static int coins = 0;
     public static int lives = 1024;
-    public static int numberOfAttempts = 0;
-    public static String levelString = "none";
+//    public static int numberOfAttempts = 0;
+//    public static String levelString = "none";
     private int status = STATUS_RUNNING;
     private final int FractionalPowerUpTime = 0;
 
-    public static void resetStatic()
+    public static void resetStatic(int marioMode)
     {
-        large = true;
-        fire = false;
+        large = marioMode > 0;
+        fire = marioMode == 2;
         coins = 0;
-        lives = 65536;
-        levelString = "none";
-        numberOfAttempts = 0;
+//        lives = 65536;
+//        levelString = "none";
+//        numberOfAttempts = 0;
     }
 
     public static void setMode(MODE mode)
@@ -41,7 +41,7 @@ public class Mario extends Sprite
     public static void resetCoins()
     {
         coins = 0;
-        ++numberOfAttempts;
+//        ++numberOfAttempts;
     }
 
     public static final int KEY_LEFT = 0;

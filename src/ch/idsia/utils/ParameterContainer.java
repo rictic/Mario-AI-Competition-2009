@@ -69,6 +69,7 @@ public class ParameterContainer
 //            "-visual",
                     "-vlx",
                     "-vly",
+                    "-mm"
             };
         if (allowedOptions == null)
         {
@@ -185,6 +186,7 @@ public class ParameterContainer
         defaultOtionsHashMap.put("-vlx","0"); //defaultOtionsHashMap.put("-viewLocationX","0");
         defaultOtionsHashMap.put("-vly","0"); //defaultOtionsHashMap.put("-viewLocationY","0");
         defaultOtionsHashMap.put("-vis","on"); //defaultOtionsHashMap.put("-visual","on");
+        defaultOtionsHashMap.put("-mm","2"); 
     }
 
     public static String getDefaultParameterValue(String param)

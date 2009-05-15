@@ -51,6 +51,7 @@ public class SimulationOptions extends ParameterContainer
         ret.setPauseWorld(isPauseWorld());
         ret.setPowerRestoration(isPowerRestoration());
         ret.setMaxAttempts(getMaxAttempts());
+        ret.setMarioMode(getMarioMode());
         return ret;
     }
 
@@ -115,4 +116,12 @@ public class SimulationOptions extends ParameterContainer
 
     public void setMaxAttempts(int maxAttempts) {
         setParameterValue("-an", s(maxAttempts));    }
+
+    public int getMarioMode() {
+        return i(getParameterValue("-mm"));
+    }
+
+    private void setMarioMode(int marioMode) {
+        setParameterValue("-mm", s(marioMode));
+    }    
 }
