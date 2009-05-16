@@ -48,6 +48,7 @@ public class ParameterContainer
                     "-ls",
                     "-lt",
                     "-m",
+                    "-mm",
                     "-maxFPS",
 //            "-matLabFile",
 //            "-pauseWorld",
@@ -55,6 +56,7 @@ public class ParameterContainer
 //            "-powerRestoration",
                     "-pr",
                     "-pw",
+                    "-server",
                     "-ssiw",
 //            "-stopSimulationIfWin",
                     "-t",
@@ -69,7 +71,8 @@ public class ParameterContainer
 //            "-visual",
                     "-vlx",
                     "-vly",
-                    "-mm"
+                    "-ze",
+                    "-zm"
             };
         if (allowedOptions == null)
         {
@@ -176,17 +179,20 @@ public class ParameterContainer
         defaultOtionsHashMap.put("-lt","0"); //defaultOtionsHashMap.put("-levelType","1");
         defaultOtionsHashMap.put("-maxFPS","on"); //defaultOtionsHashMap.put("-maxFPS","off");
         defaultOtionsHashMap.put("-m",""); //defaultOtionsHashMap.put("-matLabFile","DefaultMatlabFile");
+        defaultOtionsHashMap.put("-mm","2");
         defaultOtionsHashMap.put("-pw","off"); //defaultOtionsHashMap.put("-pauseWorld","off");
         defaultOtionsHashMap.put("-port","4242"); //defaultOtionsHashMap.put("-port","4242");
         defaultOtionsHashMap.put("-pr","off"); //defaultOtionsHashMap.put("-powerRestoration","off");
         defaultOtionsHashMap.put("-ssiw","off"); //defaultOtionsHashMap.put("-stopSimulationIfWin","off");
+        defaultOtionsHashMap.put("-server","off");
         defaultOtionsHashMap.put("-t","on"); //defaultOtionsHashMap.put("-timer","on");
         defaultOtionsHashMap.put("-tc","off"); //defaultOtionsHashMap.put("-toolsConfigurator","off");
         defaultOtionsHashMap.put("-vaot","off"); //defaultOtionsHashMap.put("-viewAlwaysOnTop","off");
         defaultOtionsHashMap.put("-vlx","0"); //defaultOtionsHashMap.put("-viewLocationX","0");
         defaultOtionsHashMap.put("-vly","0"); //defaultOtionsHashMap.put("-viewLocationY","0");
         defaultOtionsHashMap.put("-vis","on"); //defaultOtionsHashMap.put("-visual","on");
-        defaultOtionsHashMap.put("-mm","2"); 
+        defaultOtionsHashMap.put("-zm","1");
+        defaultOtionsHashMap.put("-ze","0"); 
     }
 
     public static String getDefaultParameterValue(String param)

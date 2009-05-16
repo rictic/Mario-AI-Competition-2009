@@ -83,7 +83,7 @@ public class CmdLineOptions extends EvaluationOptions
 //        argsHashMap.put("-vly", viewLocationY);
 //        argsHashMap.put("-m", matlabFileName);
 
-        this.ParseArgs(args);
+        this.setUpOptions(args);
 
         if (isEcho())
         {
@@ -97,20 +97,6 @@ public class CmdLineOptions extends EvaluationOptions
         GlobalOptions.pauseWorld = isPauseWorld();
         GlobalOptions.PowerRestoration = isPowerRestoration();
         GlobalOptions.StopSimulationIfWin = isStopSimulationIfWin();
-    }
-
-    public void ParseArgs(String[] args) {
-        for (int i = 0; i < args.length - 1; i += 2)
-            try
-            {
-                setParameterValue(args[i], args[i + 1]);
-            }
-            catch (ArrayIndexOutOfBoundsException e)
-            {
-                // Basically we can push the red button to explaud the computer, since this case cannot' never happen.
-                System.err.println("Error: Wrong number of input parameters");
-//                System.err.println("It is good day to kill yourself with the yellow wall");
-            }
     }
 
 //    public static void main(String[] args) {
@@ -145,26 +131,4 @@ public class CmdLineOptions extends EvaluationOptions
         return b(getParameterValue("-echo"));      }
 
 
-    public String getAgentName() {
-        return getParameterValue("-ag");      }
-
-    public Integer getServerAgentPort() {
-        String value = optionsHashMap.get("-port");
-        if (value == null)
-        {
-            if (getAgentName().startsWith("ServerAgent"))
-            {
-                setMaxAttempts(-1);
-                if ( getAgentName().split(":").length > 1)
-                {
-                    return Integer.parseInt(getAgentName().split(":")[1]);
-                }
-            }
-        }
-        return Integer.parseInt(defaultOtionsHashMap.get("-port"));
-    }
-
-    public boolean isServerAgentEnabled() {
-        return getAgentName().startsWith("ServerAgent");
-    }
 }

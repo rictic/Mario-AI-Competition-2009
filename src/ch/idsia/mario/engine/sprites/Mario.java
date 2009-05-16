@@ -94,7 +94,7 @@ public class Mario extends Sprite
 
     public Mario(LevelScene world)
     {
-        kind = 95;
+        kind = KIND_MARIO;
         Mario.instance = this;
         this.world = world;
         keys = Scene.keys;      // SK: in fact, this is already redundant due to using Agent
@@ -644,7 +644,7 @@ public class Mario extends Sprite
         xDeathPos = (int) x;
         yDeathPos = (int) y;
         world.paused = true;
-        deathTime = 1;
+        deathTime = 25;
         status = Mario.STATUS_DEAD;
     }
 

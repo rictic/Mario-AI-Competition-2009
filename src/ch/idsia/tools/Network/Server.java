@@ -21,9 +21,13 @@ import java.util.Random;
 public class Server 
 {
     private String clientName = "<>";
-//    public static final int defaultPort = 4242;
+    private boolean running = false;
 
     public boolean isClientConnected() {return !socket.isClosed();}
+
+    public boolean isRunning() {
+        return running;
+    }
 
     enum STATUS {SUCCEED, ERROR_SENDING, ERROR_RECEIVING}
     private int port;
@@ -50,6 +54,7 @@ public class Server
         {
             System.out.println("Server: Binding Server to listern port " + port);
             serverSocket = new ServerSocket(this.port);
+            running= true;
             System.out.println ("Server: Waiting for a client to connect on port " + this.port);
             socket = serverSocket.accept ();
             System.out.println ("Server: We have a connection from " + socket.getInetAddress ());
@@ -77,14 +82,14 @@ public class Server
         return 0;
     }
 
-    private void restartServer()
+    public void restartServer()
     {
         shutDownServer();
         System.out.println("Server will be restarted at port " + this.port );
         reset();
     }
 
-    public void reset() {
+    private void reset() {
         int status;
         do {
             status = this.resetSafe();
@@ -94,7 +99,7 @@ public class Server
 
     private void send(String message)
     {
-//        System.out.println("Sedning message: " + message);
+//        System.out.println("Server.send() >> Sedning message: " + message);
         out.print(message);
 //        System.out.println("Server: " + message.length() + " bytes of data had been sent");
         if (out.checkError())
@@ -145,8 +150,6 @@ public class Server
             {
                 throw new NullPointerException();
             }
-
-//            System.out.println("Server.recv() >> " + ret.length() + " bytes of data received: " + ret);
             return ret;
         }
         catch (NullPointerException e)
@@ -160,6 +163,11 @@ public class Server
 //            restartServer();
             return "";
         }
+    }
+
+    public String recvUnSafe()
+    {
+        return this.recv();
     }
 
     public String recvSafe()
@@ -200,6 +208,7 @@ public class Server
             out.close();
             serverSocket.close();
             socket.close();
+            running = false;
             System.out.println("Server: Server has been shutted down properly...");
         } catch (NullPointerException e) {
             System.err.println("Error Shutting Down: server is not created.");

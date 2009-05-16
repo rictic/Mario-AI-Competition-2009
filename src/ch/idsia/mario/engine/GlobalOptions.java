@@ -22,9 +22,8 @@ public class GlobalOptions {
     private static MarioComponent marioComponent = null;
     private static GameViewer gameViewer = null;
     public static boolean TimerOn = true;
-    public static String CurrentAgentStr = "No Agent";
 
-//    public static Defaults defaults = new Defaults();
+    //    public static Defaults defaults = new Defaults();
     public static boolean GameVeiwerContinuousUpdatesOn = false;
     public static boolean PowerRestoration;
 

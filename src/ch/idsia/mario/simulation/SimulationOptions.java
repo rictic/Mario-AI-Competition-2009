@@ -123,5 +123,13 @@ public class SimulationOptions extends ParameterContainer
 
     private void setMarioMode(int marioMode) {
         setParameterValue("-mm", s(marioMode));
-    }    
+    }
+
+    public int getZLevelMap() {
+        return i(getParameterValue("-zm"));
+    }
+
+    public int getZLevelEnemies() {
+        return i(getParameterValue("-ze"));
+    }
 }

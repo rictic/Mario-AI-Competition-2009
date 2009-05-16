@@ -5,6 +5,7 @@ import ch.idsia.mario.engine.level.Level;
 import ch.idsia.mario.engine.level.LevelGenerator;
 import ch.idsia.mario.engine.level.SpriteTemplate;
 import ch.idsia.mario.engine.sprites.*;
+import ch.idsia.mario.environments.Environment;
 
 import java.awt.*;
 import java.io.DataInputStream;
@@ -65,8 +66,20 @@ public class LevelScene extends Scene implements SpriteContext
         String s = "";
         if  (el == 0)
             s = "##";
-        s += (el == mario.kind) ? "M" : el;
+        s += (el == mario.kind) ? "MM" : el;
         while (s.length() < 4)
+            s += "#";
+        return s + " ";
+    }
+
+    private String enemyToStr(int el)
+    {
+        String s = "";
+        if  (el == 0)
+            s = "";
+//        s += (el == mario.kind) ? "-m" : el;
+        s += el;
+        while (s.length() < 2)
             s += "#";
         return s + " ";
     }
@@ -83,6 +96,8 @@ public class LevelScene extends Scene implements SpriteContext
                     case(-108):
                     case(-107):
                     case(-106):
+                    case(14): // Particle
+                    case(15): // Sparcle, irrelevant
                         return 0;
                     case(-128):
                     case(-127):
@@ -128,28 +143,91 @@ public class LevelScene extends Scene implements SpriteContext
                     case(-74):
                         return -11; // half-border, can jump through from bottom and can stand on
                     case(10): case(11): case(26): case(27):
-                        return 20; // flower
+                        return 20; // flower pot
                 }
                 return el;
             case(2):
-                return (el == 0) ? el : -20;
+                switch(el)
+                {
+                    case(-108):
+                    case(-107):
+                    case(-106):
+                    case(14): // Particle
+                    case(15): // Sparcle, irrelevant
+                        return 0;
+                }
+                return (el == 0 || el == Sprite.KIND_FIREBALL) ? el : -2;
+        }
+        return el; //TODO: Throw unknown ZLevel exception
+    }
+
+
+    private byte ZLevelEnemyGeneralization(byte el, int ZLevel)
+    {
+        switch (ZLevel)
+        {
+            case(0):
+                switch(el)
+                {
+                    case(Sprite.KIND_PARTICLE):
+                    case(Sprite.KIND_SPARCLE):
+                        return Sprite.KIND_NONE;
+                }
+                return el;
+            case(1):
+                switch(el)
+                {
+                    case(Sprite.KIND_COIN_ANIM):
+                    case(Sprite.KIND_PARTICLE):
+                    case(Sprite.KIND_SPARCLE):
+                        return Sprite.KIND_NONE;
+                    case(Sprite.KIND_BULLET_BILL):
+                    case(Sprite.KIND_GOOMBA):
+                    case(Sprite.KIND_GOOMBA_WINGED):
+                    case(Sprite.KIND_GREEN_KOOPA):
+                    case(Sprite.KIND_GREEN_KOOPA_WINGED):
+                    case(Sprite.KIND_RED_KOOPA):
+                    case(Sprite.KIND_RED_KOOPA_WINGED):
+                        return Sprite.KIND_GOOMBA;
+                    case(Sprite.KIND_SPIKY):
+                    case(Sprite.KIND_ENEMY_FLOWER):
+                        return Sprite.KIND_SPIKY;
+                }
+                return el;
+            case(2):
+                switch(el)
+                {
+                    case(Sprite.KIND_COIN_ANIM):
+                    case(Sprite.KIND_PARTICLE):
+                    case(Sprite.KIND_SPARCLE):
+                    case(Sprite.KIND_FIREBALL):
+                        return Sprite.KIND_NONE;
+                    case(Sprite.KIND_BULLET_BILL):
+                    case(Sprite.KIND_GOOMBA):
+                    case(Sprite.KIND_GOOMBA_WINGED):
+                    case(Sprite.KIND_GREEN_KOOPA):
+                    case(Sprite.KIND_GREEN_KOOPA_WINGED):
+                    case(Sprite.KIND_RED_KOOPA):
+                    case(Sprite.KIND_RED_KOOPA_WINGED):
+                    case(Sprite.KIND_SPIKY):
+                    case(Sprite.KIND_ENEMY_FLOWER):
+                        return Sprite.KIND_SPIKY;
+                }
+                return (el == 0 || el == Sprite.KIND_FIREBALL) ? el : -2;
         }
         return el; //TODO: Throw unknown ZLevel exception
     }
 
     public byte[][] levelSceneObservation(int ZLevel)
     {
-        // TODO: Move to constants          11
-        int HalfObsWidth = 11;
-        int HalfObsHeight = 11;
-        byte[][] ret = new byte[HalfObsWidth*2][HalfObsHeight*2];
+        byte[][] ret = new byte[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
         //TODO: Move to constants 16
         int MarioXInMap = (int)mario.x/16;
         int MarioYInMap = (int)mario.y/16;
 
-        for (int y = MarioYInMap - HalfObsHeight, obsX = 0; y < MarioYInMap + HalfObsHeight; y++, obsX++)
+        for (int y = MarioYInMap - Environment.HalfObsHeight, obsX = 0; y < MarioYInMap + Environment.HalfObsHeight; y++, obsX++)
         {
-            for (int x = MarioXInMap - HalfObsWidth, obsY = 0; x < MarioXInMap + HalfObsWidth; x++, obsY++)
+            for (int x = MarioXInMap - Environment.HalfObsWidth, obsY = 0; x < MarioXInMap + Environment.HalfObsWidth; x++, obsY++)
             {
                 if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
                 {
@@ -164,38 +242,79 @@ public class LevelScene extends Scene implements SpriteContext
         return ret;
     }
 
-    public byte[][] enemiesObservation(int ZLevel) {
-//        // TODO: Move to constants          11
-        int HalfObsWidth = 11;
-        int HalfObsHeight = 11;
-        byte[][] ret = new byte[HalfObsWidth*2][HalfObsHeight*2];
-//        //TODO: Move to constants 16
-//        int MarioXInMap = (int)mario.x/16;
-//        int MarioYInMap = (int)mario.y/16;
-//
-//        for (int w = 0; w < level.width; w++)
-//            for (int h = 0; h < level.height; h++)
-//                level.observation[w][h] = -1;
-//        for (Sprite sprite : sprites)
-//            if (sprite.mapX >= 0 && sprite.mapX < level.observation.length &&
-//                    sprite.mapY >= 0 && sprite.mapY < level.observation[0].length)
-//                level.observation[sprite.mapX][sprite.mapY] = sprite.kind;
-//
-//        for (int y = MarioYInMap - HalfObsHeight, obsX = 0; y < MarioYInMap + HalfObsHeight; y++, obsX++)
-//        {
-//            for (int x = MarioXInMap - HalfObsWidth, obsY = 0; x < MarioXInMap + HalfObsWidth; x++, obsY++)
-//            {
-//                if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
-//                {
-//                    ret[obsX][obsY] = ZLevelMapElementGeneralization(level.map[x][y], ZLevel);
-//                }
-//                else
-//                    ret[obsX][obsY] = 0;
-//                if (x == MarioXInMap && y == MarioYInMap)
-//                    ret[obsX][obsY] = mario.kind;
-//            }
-//        }
-//
+    public byte[][] enemiesObservation(int ZLevel)
+    {
+        byte[][] ret = new byte[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
+        //TODO: Move to constants 16
+        int MarioXInMap = (int)mario.x/16;
+        int MarioYInMap = (int)mario.y/16;
+
+        for (int w = 0; w < ret.length; w++)
+            for (int h = 0; h < ret[0].length; h++)
+                ret[w][h] = -1;
+        ret[Environment.HalfObsWidth][Environment.HalfObsHeight] = mario.kind;
+        for (Sprite sprite : sprites)
+        {
+            if (sprite.kind == mario.kind)
+                continue;
+            if (sprite.mapX >= 0 &&
+                sprite.mapX > MarioXInMap - Environment.HalfObsWidth &&
+                sprite.mapX < MarioXInMap + Environment.HalfObsWidth &&
+                sprite.mapY >= 0 &&
+                sprite.mapY > MarioYInMap - Environment.HalfObsHeight &&
+                sprite.mapY < MarioYInMap + Environment.HalfObsHeight )
+            {
+                int obsX = sprite.mapY - MarioYInMap + Environment.HalfObsHeight;
+                int obsY = sprite.mapX - MarioXInMap + Environment.HalfObsWidth;
+                ret[obsX][obsY] = ZLevelEnemyGeneralization(sprite.kind, ZLevel);
+            }
+        }
+        return ret;
+    }
+
+    public byte[][] completeObservation(int ZLevelEnemies, int ZLeveMap)
+    {
+        byte[][] ret = new byte[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
+        //TODO: Move to constants 16
+        int MarioXInMap = (int)mario.x/16;
+        int MarioYInMap = (int)mario.y/16;
+
+        for (int y = MarioYInMap - Environment.HalfObsHeight, obsX = 0; y < MarioYInMap + Environment.HalfObsHeight; y++, obsX++)
+        {
+            for (int x = MarioXInMap - Environment.HalfObsWidth, obsY = 0; x < MarioXInMap + Environment.HalfObsWidth; x++, obsY++)
+            {
+                if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
+                {
+                    ret[obsX][obsY] = ZLevelMapElementGeneralization(level.map[x][y], ZLevelEnemies);
+                }
+                else
+                    ret[obsX][obsY] = 0;
+                if (x == MarioXInMap && y == MarioYInMap)
+                    ret[obsX][obsY] = mario.kind;
+            }
+        }
+
+//        for (int w = 0; w < ret.length; w++)
+//            for (int h = 0; h < ret[0].length; h++)
+//                ret[w][h] = -1;
+//        ret[Environment.HalfObsWidth][Environment.HalfObsHeight] = mario.kind;
+        for (Sprite sprite : sprites)
+        {
+            if (sprite.kind == mario.kind)
+                continue;
+            if (sprite.mapX >= 0 &&
+                sprite.mapX > MarioXInMap - Environment.HalfObsWidth &&
+                sprite.mapX < MarioXInMap + Environment.HalfObsWidth &&
+                sprite.mapY >= 0 &&
+                sprite.mapY > MarioYInMap - Environment.HalfObsHeight &&
+                sprite.mapY < MarioYInMap + Environment.HalfObsHeight )
+            {
+                int obsX = sprite.mapY - MarioYInMap + Environment.HalfObsHeight;
+                int obsY = sprite.mapX - MarioXInMap + Environment.HalfObsWidth;
+                ret[obsX][obsY] = ZLevelEnemyGeneralization(sprite.kind, ZLevelEnemies);
+            }
+        }
+
         return ret;
     }
 
@@ -208,8 +327,8 @@ public class LevelScene extends Scene implements SpriteContext
             ret.add("Total world width = " + level.width);
             ret.add("Total world height = " + level.height);
             ret.add("Physical Mario Position (x,y): (" + mario.x + "," + mario.y + ")");
-            int ObservationWidth = 21;
-            ret.add("Mario Observation Width " + ObservationWidth);
+            ret.add("Mario Observation Width " + Environment.HalfObsWidth*2);
+            ret.add("Mario Observation Height " + Environment.HalfObsHeight*2);
             ret.add("X Exit Position: " + level.xExit);
             int MarioXInMap = (int)mario.x/16;
             int MarioYInMap = (int)mario.y/16;
@@ -219,21 +338,11 @@ public class LevelScene extends Scene implements SpriteContext
             if (LevelMap)
             {
                 ret.add("~ZLevel: Z" + ZLevel + " map:\n");
-//                for (int y = 0; y < level.height; y++)
-//                {
-//                    String tmpData = "";
-//                    for (int x = MarioXInMap - ObservationWidth/2; x < MarioXInMap + ObservationWidth/2 +1; x++)
-//                    {
-//                        if (x >=0 && x <= level.xExit)
-//                            tmpData += mapElToStr(ZLevelMapElementGeneralization(level.map[x][y], ZLevel));
-//                    }
-//                    ret.add(tmpData);
-//                }
-                for (int y = 0; y < levelScene[0].length; ++y)
+                for (int x = 0; x < levelScene.length; ++x)
                 {
                     String tmpData = "";
-                    for (int x = 0; x < levelScene.length; ++x)
-                        tmpData += mapElToStr(levelScene[y][x]);
+                    for (int y = 0; y < levelScene[0].length; ++y)
+                        tmpData += mapElToStr(levelScene[x][y]);
                     ret.add(tmpData);
                 }
             }
@@ -241,20 +350,19 @@ public class LevelScene extends Scene implements SpriteContext
             byte[][] enemiesObservation = null;
             if (Enemies || CompleteObservation)
             {
-                enemiesObservation = enemiesObservation(1);
+                enemiesObservation = enemiesObservation(ZLevel);
             }
 
             if (Enemies)
             {
-
                 ret.add("~ZLevel: Z" + ZLevel + " Enemies Observation:\n");
-                for (int y = 0; y < level.height; y++)
+                for (int x = 0; x < enemiesObservation.length; x++)
                 {
                     String tmpData = "";
-                    for (int x = MarioXInMap - 10; x < MarioXInMap + 10 + 1; x++)
+                    for (int y = 0; y < enemiesObservation[0].length; y++)
                     {
-                        if (x >=0 && x <= level.xExit)
-                            tmpData += enemiesObservation[x][y] + " ";
+//                        if (x >=0 && x <= level.xExit)
+                            tmpData += enemyToStr(enemiesObservation[x][y]);
                     }
                     ret.add(tmpData);
                 }
@@ -262,22 +370,29 @@ public class LevelScene extends Scene implements SpriteContext
 
             if (CompleteObservation)
             {
-                ret.add("~ZLevel: Z" +  ZLevel + "===========\nAll objects: (LevelMap[x,y], Sprite[x,y])==/* Mario ~> M! */=====\n");
-                for (int y = 0; y < level.height; y++)
+                ret.add("~ZLevel: Z" +  ZLevel + "===========\nAll objects: (LevelScene[x,y], Sprite[x,y])==/* Mario ~> MM */=====\n");
+                for (int x = 0; x < levelScene.length; ++x)
                 {
                     String tmpData = "";
-                    for (int x = MarioXInMap - 10; x < MarioXInMap + 10 + 1; x++)
-                    {
-                        if (x >=0 && x < level.width)
-                            tmpData += "(" + mapElToStr(ZLevelMapElementGeneralization(level.map[x][y], ZLevel)) + "," +
-                                    (((MarioXInMap == x) && (MarioYInMap == y) ? "M!" : level.observation[x][y]) + ")");
-                    }
+                    for (int y = 0; y < levelScene[0].length; ++y)
+                        tmpData += "(" + levelScene[x][y] + "," + enemiesObservation[x][y] + ")";
                     ret.add(tmpData);
                 }
+
+                byte[][] completeObservation = completeObservation(ZLevel, 1);
+                ret.add("~ZLevel: Z" +  ZLevel + "===========\nAll objects: (LevelScene[x,y], Sprite[x,y])==/* Mario ~> MM */=====\n");
+                for (int x = 0; x < levelScene.length; ++x)
+                {
+                    String tmpData = "";
+                    for (int y = 0; y < levelScene[0].length; ++y)
+                        tmpData += mapElToStr(completeObservation[x][y]);
+                    ret.add(tmpData);
+                }
+
             }
         }
         else
-            ret.add("level is not available");
+            ret.add("~level is not available");
         return ret;
     }
 
@@ -640,17 +755,17 @@ public class LevelScene extends Scene implements SpriteContext
 
         if (mario.deathTime > 0)
         {
-            float t = mario.deathTime + alpha;
-            t = t * t * 0.4f;
-
-            if (t > 1800)
-            {
+//            float t = mario.deathTime + alpha;
+//            t = t * t * 0.4f;
+//
+//            if (t > 1800)
+//            {
                 renderer.levelFailed();
                 //              replayer = new Replayer(recorder.getBytes());
 //                init();
-            }
+//            }
 
-            renderBlackout(g, (int) (mario.xDeathPos - xCam), (int) (mario.yDeathPos - yCam), (int) (320 - t));
+//            renderBlackout(g, (int) (mario.xDeathPos - xCam), (int) (mario.yDeathPos - yCam), (int) (320 - t));
         }
     }
 

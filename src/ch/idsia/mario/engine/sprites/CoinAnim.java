@@ -5,11 +5,11 @@ import ch.idsia.mario.engine.Art;
 
 public class CoinAnim extends Sprite
 {
-    private int life = 10;
+    private int life = 16;
 
     public CoinAnim(int xTile, int yTile)
     {
-        kind = 81;
+        kind = KIND_COIN_ANIM;
         sheet = Art.level;
         wPic = hPic = 16;
 

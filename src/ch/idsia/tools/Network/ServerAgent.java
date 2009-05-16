@@ -30,6 +30,13 @@ public class ServerAgent extends RegisterableAgent implements Agent
         }
     }
 
+    public ServerAgent(Server server)
+    {
+        super("ServerAgent");
+        this.server = server;
+        this.name += server.getClientName();
+    }
+
     // A tiny bit of singletone-like concept. Server is created ones for each egent. Basically we are not going
     // To create more than one ServerAgent at a run, but this flexibility allows to add this feature with certain ease.
     private void createServer(int port) {
@@ -51,15 +58,16 @@ public class ServerAgent extends RegisterableAgent implements Agent
 
     private void sendLevelSceneObservation(Environment observation)
     {
-        byte[][] levelScene = observation.getLevelSceneObservation();
+//        byte[][] levelScene = observation.getLevelSceneObservation();
+        byte[][] completeObs = observation.getCompleteObservation();
 
         String tmpData = "O " +
                 observation.mayMarioJump() + " " + observation.isMarioOnGround();
-        for (int x = 0; x < levelScene.length; ++x)
+        for (int x = 0; x < completeObs.length; ++x)
         {
-            for (int y = 0; y < levelScene.length; ++y)
+            for (int y = 0; y < completeObs.length; ++y)
             {
-                tmpData += " " + (levelScene[x][y]);
+                tmpData += " " + (completeObs[x][y]);
             }
         }
         server.sendSafe(tmpData);
@@ -75,7 +83,9 @@ public class ServerAgent extends RegisterableAgent implements Agent
 
     private boolean[] receiveAction() throws IOException, NullPointerException
     {
-        String data = server.recvSafe();        
+        String data = server.recvSafe();
+//        if (data.equals("reset"))
+//            return null;
         boolean[] ret = new boolean[Environment.numberOfButtons];
         String s = "[";
         for (int i = 0; i < Environment.numberOfButtons; ++i)
@@ -85,7 +95,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
         }
         s += "]";
 
-//        System.out.println("ServerAgent: action received :" + s);
+        System.out.println("ServerAgent: action received :" + s);
         return ret;
     }
 
@@ -93,7 +103,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
     {
         try
         {
-//            System.out.println("ServerAgent: sending observation...");
+            System.out.println("ServerAgent: sending observation...");
             sendLevelSceneObservation(observation);
             action = receiveAction();
         }

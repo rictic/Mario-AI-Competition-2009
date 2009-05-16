@@ -62,13 +62,11 @@ public class ToolsConfigurator extends JFrame
         toolsConfigurator.CheckboxExitOnFinish.setState(cmdLineOptions.isExitProgramWhenFinished());
         toolsConfigurator.TextFieldMatLabFileName.setText(cmdLineOptions.getMatlabFileName());
 
-        GlobalOptions.CurrentAgentStr = toolsConfigurator.ChoiceAgent.getSelectedItem();
+
 
         gameViewer = new GameViewer(null, null);
 
-        CreateMarioComponentFrame(cmdLineOptions.getViewLocation(),
-                                  cmdLineOptions.isViewAlwaysOnTop(),
-                                  cmdLineOptions.isVisualization());
+        CreateMarioComponentFrame(cmdLineOptions);
 //        marioComponent.init();
 
         toolsConfigurator.setMarioComponent(marioComponent);
@@ -93,26 +91,27 @@ public class ToolsConfigurator extends JFrame
     private static JFrame marioComponentFrame = null;
     public static void CreateMarioComponentFrame()
     {
-        CreateMarioComponentFrame(new Point(0, 0), false, true);
+        CreateMarioComponentFrame(new EvaluationOptions());
     }
 
-    static void CreateMarioComponentFrame(Point location, boolean isAlwaysOnTop, boolean visualization)
+    static void CreateMarioComponentFrame(EvaluationOptions evaluationOptions)
     {
 //        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 //        frame.setLocation((screenSize.width-frame.getWidth())/2, (screenSize.height-frame.getHeight())/2);        
         if (marioComponentFrame == null)
         {
-            marioComponentFrame = new JFrame(GlobalOptions.CurrentAgentStr + " - Mario Intelligent 2.0");
+            marioComponentFrame = new JFrame(/*evaluationOptions.getAgentName() +*/ "Mario Intelligent 2.0");
             marioComponent = new MarioComponent(320, 240);
             marioComponentFrame.setContentPane(marioComponent);
             marioComponent.init();
             marioComponentFrame.pack();
             marioComponentFrame.setResizable(false);
             marioComponentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            marioComponentFrame.setAlwaysOnTop(isAlwaysOnTop);
         }
-        marioComponentFrame.setLocation(location);
-        marioComponentFrame.setVisible(visualization);
+//        marioComponentFrame.setTitle(evaluationOptions.getAgent().getName() + " - Mario Intelligent 2.0");
+        marioComponentFrame.setAlwaysOnTop(evaluationOptions.isViewAlwaysOnTop());
+        marioComponentFrame.setLocation(evaluationOptions.getViewLocation());
+        marioComponentFrame.setVisible(evaluationOptions.isVisualization());
     }
 
     enum INTERFACE_TYPE {CONSOLE, GUI}
@@ -471,7 +470,6 @@ public class ToolsConfigurator extends JFrame
             {
                 LOGGER.println("Agent chosen: " + (ChoiceAgent.getSelectedItem()), LOGGER.VERBOSE_MODE.INFO);
                 JButtonPlaySimulate.setText(strSimulate);
-                GlobalOptions.CurrentAgentStr = ChoiceAgent.getSelectedItem();
             }
             else if (ob == ChoiceLevelType)
             {

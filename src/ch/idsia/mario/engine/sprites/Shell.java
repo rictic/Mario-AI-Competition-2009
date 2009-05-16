@@ -28,7 +28,7 @@ public class Shell extends Sprite
 
     public Shell(LevelScene world, float x, float y, int type)
     {
-        kind = 93;
+        kind = KIND_SHELL;
         sheet = Art.enemies;
 
         this.x = x;

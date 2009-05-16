@@ -3,7 +3,6 @@ package ch.idsia;
 import ch.idsia.ai.agents.ai.*;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.tools.*;
-import ch.idsia.tools.Network.ServerAgent;
 
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class MainRun
             new RandomAgent();
             new ForwardJumpingAgent();
             new SimpleMLPAgent();
-            new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled());
+//            new ServerAgent(cmdLineOptions.getServerAgentPort(), cmdLineOptions.isServerAgentEnabled());
             new ScaredAgent();
             new ScaredSpeedyAgent();
         }

@@ -11,7 +11,7 @@ java -jar iMario.jar -m iMario3 -ag RandomAgent -vlx 660 -vly 0 -an ${ATTEMPTS} 
 
 
 I=1
-LIM=1
+LIM=3
 PORT=4242
 VLX=0
 VLY=320

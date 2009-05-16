@@ -13,10 +13,12 @@ public interface Environment
 //    public static final int NumberOfActionSlots = 16;
     public static final int numberOfButtons = 5;
     public static final int numberOfObservationElements = 486 + 1;
+    public static final int HalfObsWidth = 11;
+    public static final int HalfObsHeight = 11;
 
     // always the same dimensionality: 22x22
     // always centered on the agent
-    public EnvCell[][] getCompleteObservation();
+    public byte[][] getCompleteObservation();
 
     public byte[][] getEnemiesObservation(); // TODO: think of this:
     // TODO: usually < 5 and therefore matrix would be Very sparce. Probably should change to list?

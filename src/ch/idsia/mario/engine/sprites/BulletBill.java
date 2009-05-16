@@ -21,7 +21,7 @@ public class BulletBill extends Sprite
 
     public BulletBill(LevelScene world, float x, float y, int dir)
     {
-        kind = 80;     //added by SK
+        kind = KIND_BULLET_BILL;     //added by SK
         sheet = Art.enemies;
 
         this.x = x;

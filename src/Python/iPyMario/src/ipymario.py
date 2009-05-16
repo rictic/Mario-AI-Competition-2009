@@ -7,6 +7,13 @@ from ai.experiments.episodicexperiment import EpisodicExperiment
 from ai.tasks.mariotask import MarioTask
 from utils.cmdlineoptions import CmdLineOptions
 
+#from pybrain.... episodic import EpisodicExperiment
+
+
+#TODO: reset sends: vis, diff=, lt=, ll=, rs=, mariomode, time limit, pw,
+# with creatures, without creatures HIGH.
+# send creatures.
+
 def main():
     clo = CmdLineOptions(sys.argv)
     task = MarioTask(MarioEnvironment(clo.getHost(), clo.getPort(), clo.getAgent().name))

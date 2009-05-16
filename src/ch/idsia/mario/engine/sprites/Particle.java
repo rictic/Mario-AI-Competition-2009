@@ -13,7 +13,7 @@ public class Particle extends Sprite
 
     public Particle(int x, int y, float xa, float ya, int xPic, int yPic)
     {
-        kind = 92;
+        kind = KIND_PARTICLE;
         sheet = Art.particles;
         this.x = x;
         this.y = y;

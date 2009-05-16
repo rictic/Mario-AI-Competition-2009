@@ -1,7 +1,7 @@
 package ch.idsia.tools;
 
-import ch.idsia.mario.simulation.SimulationOptions;
 import ch.idsia.mario.engine.GlobalOptions;
+import ch.idsia.mario.simulation.SimulationOptions;
 
 import java.awt.*;
 
@@ -16,6 +16,20 @@ import java.awt.*;
 public class EvaluationOptions extends SimulationOptions
 {
     public EvaluationOptions() {        super();    }
+
+    public void setUpOptions(String[] args) {
+        for (int i = 0; i < args.length - 1; i += 2)
+            try
+            {
+                setParameterValue(args[i], args[i + 1]);
+            }
+            catch (ArrayIndexOutOfBoundsException e)
+            {
+                // Basically we can push the red button to explaud the computer, since this case cannot' never happen.
+                System.err.println("Error: Wrong number of input parameters");
+//                System.err.println("It is good day to kill yourself with the yellow wall");
+            }
+    }    
 
     public Boolean isExitProgramWhenFinished()    {
         return b(getParameterValue("-ewf"));    }
@@ -46,4 +60,31 @@ public class EvaluationOptions extends SimulationOptions
 
     public Boolean isMaxFPS() {
         return b(getParameterValue("-maxFPS"));      }
+
+    public String getAgentName() {
+        return getParameterValue("-ag");      }
+
+    public Integer getServerAgentPort() {
+        setMaxAttempts(-1);
+        String value = optionsHashMap.get("-port");
+        if (value == null)
+        {
+            if (getAgentName().startsWith("ServerAgent"))
+            {
+                if ( getAgentName().split(":").length > 1)
+                {
+                    return Integer.parseInt(getAgentName().split(":")[1]);
+                }
+            }
+        }
+        return Integer.parseInt(defaultOtionsHashMap.get("-port"));
+    }
+
+    public boolean isServerAgentEnabled() {
+        return getAgentName().startsWith("ServerAgent");
+    }
+
+    public boolean isServerMode() {
+        return b(getParameterValue("-server"));
+    }
 }

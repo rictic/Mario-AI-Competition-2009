@@ -1,9 +1,9 @@
 package ch.idsia.mario.engine.sprites;
 
-import java.awt.Graphics;
-
 import ch.idsia.mario.engine.Art;
 import ch.idsia.mario.engine.LevelScene;
+
+import java.awt.*;
 
 
 public class Enemy extends Sprite
@@ -42,7 +42,25 @@ public class Enemy extends Sprite
 
     public Enemy(LevelScene world, int x, int y, int dir, int type, boolean winged, int mapX, int mapY)
     {
-        kind = (byte)(82 + type);
+        byte k = KIND_UNDEF;
+        switch (type)
+        {
+            case ENEMY_RED_KOOPA:
+                k = (byte) (4 + ((winged) ? 1 : 0));
+                break;
+            case ENEMY_GREEN_KOOPA:
+                k = (byte) (6 + ((winged) ? 1 : 0));
+                break;
+            case ENEMY_GOOMBA:
+                k = (byte) (2 + ((winged) ? 1 : 0));
+                break;
+            case ENEMY_FLOWER:
+                k = (byte) (11);
+                break;
+            case ENEMY_SPIKY:
+                k = (byte) (9 + ((winged) ? 1 : 0));
+        }
+        kind = k;
         this.type = type;
         sheet = Art.enemies;
         this.winged = winged;

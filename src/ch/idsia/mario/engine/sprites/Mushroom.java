@@ -27,7 +27,7 @@ public class Mushroom extends Sprite
 
     public Mushroom(LevelScene world, int x, int y)
     {
-        kind = 91;
+        kind = KIND_MUSHROOM;
         sheet = Art.items;
 
         this.x = x;

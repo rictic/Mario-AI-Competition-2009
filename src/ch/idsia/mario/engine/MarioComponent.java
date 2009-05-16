@@ -3,7 +3,6 @@ package ch.idsia.mario.engine;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.human.CheaterKeyboardAgent;
 import ch.idsia.mario.engine.sprites.Mario;
-import ch.idsia.mario.environments.EnvCell;
 import ch.idsia.mario.environments.Environment;
 import ch.idsia.tools.EvaluationInfo;
 import ch.idsia.tools.GameViewer;
@@ -33,6 +32,9 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     int frame;
     int delay;
     Thread animator;
+
+    private int ZLevelEnemies;
+    private int ZLevelMap;
 
     public void setGameViewer(GameViewer gameViewer) {
         this.gameViewer = gameViewer;
@@ -107,7 +109,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     }
 
-    public EvaluationInfo run1(int currentAttempt, int totalNumberOfAttempts) {
+    public EvaluationInfo run1(int currentAttempt, int totalNumberOfAttempts, int zMap, int zEnemies) {
         running = true;
         adjustFPS();
         EvaluationInfo evaluationInfo = new EvaluationInfo();
@@ -171,7 +173,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             }
             else
             {
-                System.err.println("Null Actoin received. Skipping simulation...");
+                System.err.println("Null Action received. Skipping simulation...");
                 stop();
             }
 
@@ -182,7 +184,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             ((LevelScene) scene).mario.cheatKeys = cheatAgent.getAction(null);
 
             if (GlobalOptions.VisualizationOn) {
-                String msg = "Attempts: " + currentAttempt + " of " + ((totalNumberOfAttempts == -1) ? "\\infty" : totalNumberOfAttempts);
+                String msg = "Attempt: " + currentAttempt + " of " + ((totalNumberOfAttempts == -1) ? "\\infty" : totalNumberOfAttempts);
                 drawString(og, msg, 7, 31, 0);
                 drawString(og, msg, 6, 30, 1);
 
@@ -195,9 +197,13 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
                 drawString(og, msg, 6, 50, 6);
 
                 msg = "";
-                for (int i = 0; i < Environment.numberOfButtons; ++i)
-                    msg += (action[i]) ? scene.keysStr[i] : "      ";
-
+                if (action != null)
+                {
+                    for (int i = 0; i < Environment.numberOfButtons; ++i)
+                        msg += (action[i]) ? scene.keysStr[i] : "      ";
+                }
+                else
+                    msg = "NULL";                    
                 drawString(og, msg, 6, 70, 1);
 
 
@@ -315,19 +321,21 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         }
     }
 
-    public EnvCell[][] getCompleteObservation() {
-        return new EnvCell[0][];  //To change body of implemented methods use File | Settings | File Templates.
+    public byte[][] getCompleteObservation() {
+        if (scene instanceof LevelScene)
+            return ((LevelScene) scene).completeObservation(ZLevelEnemies, ZLevelMap);
+        return null;
     }
 
     public byte[][] getEnemiesObservation() {
         if (scene instanceof LevelScene)
-            return ((LevelScene) scene).enemiesObservation(1);
+            return ((LevelScene) scene).enemiesObservation(ZLevelEnemies);
         return null;
     }
 
     public byte[][] getLevelSceneObservation() {
         if (scene instanceof LevelScene)
-            return ((LevelScene) scene).levelSceneObservation(1);
+            return ((LevelScene) scene).levelSceneObservation(ZLevelMap);
         return null;
     }
 
@@ -359,5 +367,13 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     public void setPaused(boolean paused) {
         levelScene.paused = paused;
+    }
+
+    public void setZLevelEnemies(int ZLevelEnemies) {
+        this.ZLevelEnemies = ZLevelEnemies;
+    }
+
+    public void setZLevelMap(int ZLevelMap) {
+        this.ZLevelMap = ZLevelMap;
     }
 }

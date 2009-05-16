@@ -1,6 +1,5 @@
 package ch.idsia.scenarios;
 
-import ch.idsia.ai.agents.ai.ForwardJumpingAgent;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.Evaluator;
 
@@ -16,7 +15,28 @@ public class CustomRun
 {
     public static void main(String[] args) {
         CmdLineOptions options = new CmdLineOptions(args);
-        options.setAgent(new ForwardJumpingAgent());
+
+        // SeRVer
+//        if (options.isServerMode() )
+//        {
+//            String message = "-ld 5"; // receive from server;
+//            CmdLineOptions opts = new CmdLineOptions(message.split(" "));
+//            options.setAgent(new ForwardJumpingAgent());
+//            Evaluator evaluator = new Evaluator(options);
+//            evaluator.evaluate();
+//
+//            while (server.isRunning())
+//            {
+//                options = parse(server.receive());
+//                evaluator.init(opts);
+//                evaluator.evaluate();
+//
+//
+//            }
+//        }
+
+        //
+//        options.setAgent(new ForwardJumpingAgent());
         Evaluator evaluator = new Evaluator(options);
         evaluator.evaluate();                
     }

@@ -17,7 +17,7 @@ public class FireFlower extends Sprite
 
     public FireFlower(LevelScene world, int x, int y)
     {
-        kind = 88;
+        kind = KIND_FIRE_FLOWER;
         sheet = Art.items;
 
         this.x = x;

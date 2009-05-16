@@ -26,7 +26,7 @@ public class Fireball extends Sprite
 
     public Fireball(LevelScene world, float x, float y, int facing)
     {
-        kind = 87;
+        kind = KIND_FIREBALL;
         sheet = Art.particles;
 
         this.x = x;

@@ -1,15 +1,37 @@
 package ch.idsia.mario.engine.sprites;
 
-import java.awt.Graphics;
-import java.awt.Image;
-
-import ch.idsia.mario.engine.level.SpriteTemplate;
 import ch.idsia.mario.engine.GlobalOptions;
+import ch.idsia.mario.engine.level.SpriteTemplate;
+
+import java.awt.*;
 
 public class Sprite
 {
+    public static final int KIND_NONE = -1;
+    public static final int KIND_MARIO = 1;
+    public static final int KIND_GOOMBA = 2;
+    public static final int KIND_GOOMBA_WINGED = 3;
+    public static final int KIND_RED_KOOPA = 4;
+    public static final int KIND_RED_KOOPA_WINGED = 5;
+    public static final int KIND_GREEN_KOOPA = 6;
+    public static final int KIND_GREEN_KOOPA_WINGED = 7;
+    public static final int KIND_BULLET_BILL = 8;
+    public static final int KIND_SPIKY = 9;
+    public static final int KIND_SPIKY_WINGED = 10;
+    public static final int KIND_ENEMY_FLOWER = 11;
+    public static final int KIND_FLOWER_ENEMY = 12;
+    public static final int KIND_SHELL = 13;
+    public static final int KIND_PARTICLE = 14;
+    public static final int KIND_SPARCLE = 15;
+    public static final int KIND_COIN_ANIM = 20;
+    public static final int KIND_FIRE_FLOWER = 21;
+    public static final int KIND_MUSHROOM = 22;
+    public static final int KIND_FIREBALL = 25;
+
+    public static final int KIND_UNDEF = -42;
+
     public static SpriteContext spriteContext;
-    public byte kind = 120; //SK: undefined, if this is shown!
+    public byte kind = KIND_UNDEF;
     
     public float xOld, yOld, x, y, xa, ya;
     public int mapX, mapY;
