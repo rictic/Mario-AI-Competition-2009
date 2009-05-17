@@ -49,8 +49,7 @@ public class BasicSimulator implements ISimulation
                                  , simulationOptions.getLevelType(), simulationOptions.getLevelLength());
         marioComponent.setPaused(simulationOptions.isPauseWorld());
         return marioComponent.run1(simulationOptions.currentAttempt++,
-                simulationOptions.getMaxAttempts(),
-                simulationOptions.getZLevelMap(), 
-                simulationOptions.getZLevelEnemies());
+                simulationOptions.getMaxAttempts()
+        );
     }
 }
