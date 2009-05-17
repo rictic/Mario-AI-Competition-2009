@@ -1,7 +1,7 @@
 __author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
 __date__ ="$May 13, 2009 1:29:41 AM$"
 
-from ai.environments.tcpenvironment import TCPEnvironment
+from tcpenvironment import TCPEnvironment
 from utils.dataadaptor import extractObservation
 
 class MarioEnvironment(TCPEnvironment):
@@ -17,12 +17,4 @@ class MarioEnvironment(TCPEnvironment):
         data = self.getSensors()
 #        print "data: ", data
         return extractObservation(data)
-    
-        
-        
-    
-
-
-
-
-
+11

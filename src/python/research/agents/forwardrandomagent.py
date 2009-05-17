@@ -2,7 +2,7 @@ import random
 __author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch"
 __date__ = "$Apr 30, 2009 6:46:04 PM$"
 
-from ai.agents.marioagent import MarioAgent
+from marioagent import MarioAgent
 
 class ForwardRandomAgent(MarioAgent):
     """
