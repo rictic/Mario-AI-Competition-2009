@@ -6,7 +6,7 @@ import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 import ch.idsia.tools.EvaluationInfo;
 import ch.idsia.tools.GameViewer;
-import ch.idsia.tools.Network.ServerAgent;
+import ch.idsia.tools.network.ServerAgent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +27,6 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     private GraphicsConfiguration graphicsConfiguration;
     private Scene scene;
     private boolean focused = false;
-    private boolean useScale2x = false;
 
     int frame;
     int delay;
@@ -109,7 +108,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     }
 
-    public EvaluationInfo run1(int currentAttempt, int totalNumberOfAttempts, int zMap, int zEnemies) {
+    public EvaluationInfo run1(int currentAttempt, int totalNumberOfAttempts) {
         running = true;
         adjustFPS();
         EvaluationInfo evaluationInfo = new EvaluationInfo();
@@ -258,7 +257,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         evaluationInfo.totalActionsPerfomed = totalActionsPerfomed; // Counted during the play/simulation process
         evaluationInfo.totalFramesPerfomed = frame;
 //        evaluationInfo.Memo = "Number of attempt: " + Mario.numberOfAttempts;
-        if (agent instanceof ServerAgent)
+        if (agent instanceof ServerAgent && mario.keys != null /*this will happen if client quits unexpectedly in case of Server mode*/)
             ((ServerAgent)agent).integrateEvaluationInfo(evaluationInfo);
         return evaluationInfo;
     }

@@ -5,8 +5,8 @@ import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 import ch.idsia.mario.simulation.BasicSimulator;
 import ch.idsia.mario.simulation.ISimulation;
-import ch.idsia.tools.Network.Server;
-import ch.idsia.tools.Network.ServerAgent;
+import ch.idsia.tools.network.Server;
+import ch.idsia.tools.network.ServerAgent;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -35,7 +35,6 @@ public class Evaluator implements Runnable
         evaluationOptions.setAgent(new ServerAgent(server));
 
         ISimulation simulator = new BasicSimulator(evaluationOptions.getSimulationOptionsCopy());
-        int i = 0;
         while (server.isRunning())
         {
             String resetData = server.recvUnSafe();
@@ -73,10 +72,10 @@ public class Evaluator implements Runnable
                 Collections.sort(evaluationSummary, new evBasicFitnessComparator());
 
                 LOGGER.println("Entire Evaluation Finished with results:", LOGGER.VERBOSE_MODE.ALL);
-                for (EvaluationInfo ev : evaluationSummary)
-                {
-//             LOGGER.println(ev.toString(), LOGGER.VERBOSE_MODE.ALL);
-                }
+//                for (EvaluationInfo ev : evaluationSummary)
+//                {
+//                    LOGGER.println(ev.toString(), LOGGER.VERBOSE_MODE.ALL);
+//                }
                 long currentTime = System.currentTimeMillis();
                 long elapsed = currentTime - startTime;
                 LOGGER.println(startMessage, LOGGER.VERBOSE_MODE.ALL);
@@ -136,10 +135,10 @@ public class Evaluator implements Runnable
         Collections.sort(evaluationSummary, new evBasicFitnessComparator());
 
         LOGGER.println("Entire Evaluation Finished with results:", LOGGER.VERBOSE_MODE.ALL);
-        for (EvaluationInfo ev : evaluationSummary)
-        {
+//        for (EvaluationInfo ev : evaluationSummary)
+//        {
 //             LOGGER.println(ev.toString(), LOGGER.VERBOSE_MODE.ALL);
-        }
+//        }
         long currentTime = System.currentTimeMillis();
         long elapsed = currentTime - startTime;
          LOGGER.println(startMessage, LOGGER.VERBOSE_MODE.ALL);
@@ -162,13 +161,12 @@ public class Evaluator implements Runnable
 
     public String exportToMatLabFile()
     {
-        FileOutputStream fos = null;
+        FileOutputStream fos;
         String fileName = this.evaluationOptions.getMatlabFileName() + ".m";
         try {
 
             fos = new FileOutputStream(fileName);              
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
-            int i = 0;
             bw.newLine();
             bw.write("%% " + this.evaluationOptions.getAgent().getName());
             bw.newLine();

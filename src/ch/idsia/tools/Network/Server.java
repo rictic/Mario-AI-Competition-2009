@@ -1,4 +1,4 @@
-package ch.idsia.tools.Network;
+package ch.idsia.tools.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -193,9 +193,10 @@ public class Server
             return message;
         }
 
-        message = "";
-        for (int i = 0; i < this.requiredReceiveDataSize; ++i)  message += "1";
-        return message;
+//        message = "";
+//        for (int i = 0; i < this.requiredReceiveDataSize; ++i)  message += "1";
+//        return message;
+        return null;
     }
 
 

@@ -91,12 +91,8 @@ public class CmdLineOptions extends EvaluationOptions
             for (Map.Entry<String,String> el : optionsHashMap.entrySet())
                 System.out.println(el.getKey() + ": " + el.getValue());
         }
-        GlobalOptions.VisualizationOn = isVisualization();
-        GlobalOptions.GameVeiwerContinuousUpdatesOn = isGameViewerContinuousUpdates();
-        GlobalOptions.FPS = (isMaxFPS()) ? GlobalOptions.InfiniteFPS : 24;
-        GlobalOptions.pauseWorld = isPauseWorld();
-        GlobalOptions.PowerRestoration = isPowerRestoration();
-        GlobalOptions.StopSimulationIfWin = isStopSimulationIfWin();
+        GlobalOptions.GameVeiwerContinuousUpdatesOn = isGameViewerContinuousUpdates();        
+
     }
 
 //    public static void main(String[] args) {

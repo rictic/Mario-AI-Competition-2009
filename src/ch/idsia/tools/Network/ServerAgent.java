@@ -1,4 +1,4 @@
-package ch.idsia.tools.Network;
+package ch.idsia.tools.network;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
@@ -84,18 +84,18 @@ public class ServerAgent extends RegisterableAgent implements Agent
     private boolean[] receiveAction() throws IOException, NullPointerException
     {
         String data = server.recvSafe();
-//        if (data.equals("reset"))
-//            return null;
+        if (data == null)
+            return null;
         boolean[] ret = new boolean[Environment.numberOfButtons];
-        String s = "[";
+//        String s = "[";
         for (int i = 0; i < Environment.numberOfButtons; ++i)
         {
             ret[i] = (data.charAt(i) == '1');
-            s += data.charAt(i);
+//            s += data.charAt(i);
         }
-        s += "]";
+//        s += "]";
 
-        System.out.println("ServerAgent: action received :" + s);
+//        System.out.println("ServerAgent: action received :" + s);
         return ret;
     }
 
@@ -103,7 +103,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
     {
         try
         {
-            System.out.println("ServerAgent: sending observation...");
+//            System.out.println("ServerAgent: sending observation...");
             sendLevelSceneObservation(observation);
             action = receiveAction();
         }
