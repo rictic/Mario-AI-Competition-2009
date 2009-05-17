@@ -1,6 +1,6 @@
 import numpy
-__author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
-__date__ ="$May 1, 2009 2:46:34 AM$"
+__author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch"
+__date__ = "$May 1, 2009 2:46:34 AM$"
 
 from marioagent import MarioAgent
 
@@ -23,6 +23,8 @@ class ForwardAgent(MarioAgent):
 
     def reset(self):
         self.isEpisodeOver = False
+        self.trueJumpCounter = 0;
+        self.trueSpeedCounter = 0;
         
     def __init__(self):
         """Constructor"""
@@ -34,12 +36,12 @@ class ForwardAgent(MarioAgent):
         pass
 
     def _dangerOfGap(self):
-        for x in range(9,13):
+        for x in range(9, 13):
             f = True
-            for y in range(12,22):
-                if  (self.levelScene[y,x] != 0):
+            for y in range(12, 22):
+                if  (self.levelScene[y, x] != 0):
                     f = False
-            if (f and self.levelScene[12,11] != 0):
+            if (f and self.levelScene[12, 11] != 0):
                 return True
         return False
 
@@ -54,23 +56,23 @@ class ForwardAgent(MarioAgent):
         """
         if (self.mayMarioJump):
                     print "m: %d, %s, %s, 12: %d, 13: %d, j: %d" \
-            % (self.levelScene[11,11], self.mayMarioJump, self.isMarioOnGround, \
-            self.levelScene[11,12], self.levelScene[11,12], self.trueJumpCounter)
+            % (self.levelScene[11, 11], self.mayMarioJump, self.isMarioOnGround, \
+            self.levelScene[11, 12], self.levelScene[11, 12], self.trueJumpCounter)
         else:
             if self.levelScene == None:
                 print "Bad news....."
             print "m: %d, 12: %d, 13: %d, j: %d" \
-                % (self.levelScene[11,11], \
-                self.levelScene[11,12], self.levelScene[11,12], self.trueJumpCounter)
+                % (self.levelScene[11, 11], \
+                self.levelScene[11, 12], self.levelScene[11, 12], self.trueJumpCounter)
 
         a = numpy.zeros(5, int)
         a[1] = 1
 
         danger = self._dangerOfGap()
-        if (self.levelScene[11,12] != 0 or \
-            self.levelScene[11,13] != 0 or danger):
+        if (self.levelScene[11, 12] != 0 or \
+            self.levelScene[11, 13] != 0 or danger):
             if (self.mayMarioJump or \
-                ( not self.isMarioOnGround and a[self.KEY_JUMP] == 1)):
+                (not self.isMarioOnGround and a[self.KEY_JUMP] == 1)):
                 a[self.KEY_JUMP] = 1
             self.trueJumpCounter += 1
         else:
@@ -107,10 +109,10 @@ class ForwardAgent(MarioAgent):
 #            return numpy.ones(5, int)
 
         danger = self._dangerOfGap()
-        if (self.levelScene[11,12] != 0 or \
-            self.levelScene[11,13] != 0 or danger):
+        if (self.levelScene[11, 12] != 0 or \
+            self.levelScene[11, 13] != 0 or danger):
             if (self.mayMarioJump or \
-                ( not self.isMarioOnGround and self.action[self.KEY_JUMP] == 1)):
+                (not self.isMarioOnGround and self.action[self.KEY_JUMP] == 1)):
                 self.action[self.KEY_JUMP] = 1
             self.trueJumpCounter += 1
         else:

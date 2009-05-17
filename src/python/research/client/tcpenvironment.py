@@ -1,5 +1,5 @@
-__author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
-__date__ ="$May 13, 2009 1:25:30 AM$"
+__author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch"
+__date__ = "$May 13, 2009 1:25:30 AM$"
 
 from client import Client
 from pybrain.rl.environments.environment import Environment
@@ -39,7 +39,6 @@ class TCPEnvironment(Environment):
 
     def performAction(self, action):
         """takes a numpy array of ints and sends as a string to server"""
-    #        print "TCPAgent.produceAction: produsing Action..."
         actionStr = ""
         for i in range(5):
             if action[i] == 1:
@@ -50,9 +49,4 @@ class TCPEnvironment(Environment):
                 raise "something very dangerous happen...."
         actionStr += "\r\n"
         self.client.sendData(actionStr)
-        #        print "Action %s produced" % a
         pass
-
-    def reset(self):
-        self.client.sendData("reset -ld 5 -lt 0 -pw on -zm 1 -mm 2 -vaot on\r\n")
-        
