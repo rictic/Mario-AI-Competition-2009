@@ -1,8 +1,8 @@
 __author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
 __date__ ="$May 13, 2009 1:25:30 AM$"
 
-from network.client import Client
-from ai.environments.environment import Environment
+from client import Client
+from environment import Environment
 
 class TCPEnvironment(Environment):
     """

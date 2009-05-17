@@ -1,8 +1,8 @@
 import sys
 
 import getopt
-from ai.agents.forwardagent import ForwardAgent
-from ai.agents.forwardrandomagent import ForwardRandomAgent
+from agents.forwardagent import ForwardAgent
+from agents.forwardrandomagent import ForwardRandomAgent
 __author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
 __date__ ="$May 13, 2009 3:44:46 AM$"
 

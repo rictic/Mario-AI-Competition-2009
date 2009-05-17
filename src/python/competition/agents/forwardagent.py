@@ -2,7 +2,7 @@ import numpy
 __author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
 __date__ ="$May 1, 2009 2:46:34 AM$"
 
-from ai.agents.marioagent import MarioAgent
+from marioagent import MarioAgent
 
 if __name__ != "__main__":
     print "Importing %s " % __name__;
