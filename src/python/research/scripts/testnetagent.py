@@ -2,7 +2,7 @@ __author__ = "Tom Schaul"
 
 from pybrain.rl.experiments.episodic import EpisodicExperiment
 from tasks.mariotask import MarioTask
-from agents.networkagent import MLPMarioAgent
+from agents.networkagent import MLPMarioAgent, SimpleMLPMarioAgent
 
 
 def combinedScore(agent, task = None):
@@ -22,12 +22,12 @@ def combinedScore(agent, task = None):
     return res
     
 def main():
-    agent1 = MLPMarioAgent()
+    agent1 = SimpleMLPMarioAgent(2)
     print agent1.name
     f = combinedScore(agent1)
     print "\nTotal:", f
     
-    agent2 = MLPMarioAgent()
+    agent2 = MLPMarioAgent(4)
     print agent2.name
     f = combinedScore(agent2)
     print "\nTotal:", f
