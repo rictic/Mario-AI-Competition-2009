@@ -33,8 +33,7 @@ class ForwardAgent(MarioAgent):
         self.action = numpy.zeros(5, int)
         self.action[1] = 1
         self.actionStr = ""
-        pass
-
+        
     def _dangerOfGap(self):
         for x in range(9, 13):
             f = True
