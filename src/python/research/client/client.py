@@ -8,8 +8,6 @@ class Client:
     Basic TCP Client. Can connect to arbitrary TCP Server
     """
 
-    Host = 'localhost'
-    Port = 4224
     bufSize = 4096
     sock = None
 
@@ -22,7 +20,7 @@ class Client:
         self.connectToDefaultServer()
 
     def __del__(self):
-        self.disconnet()
+        self.disconnect()
 
 
     def connectToDefaultServer(self):
@@ -58,7 +56,7 @@ class Client:
         """Print to standard output the current connection data"""
         print "Client: %s Connection Info: \r\nHost = %s, port = %d" % (self, self.Host, self.Port)
 
-    def disconnet(self):
+    def disconnect(self):
         """disconnects from the server"""
         print "Client is about to close the connection"
         self.disconnected = True

@@ -3,18 +3,19 @@ __date__ = "$May 13, 2009 1:25:30 AM$"
 
 from client import Client
 from pybrain.rl.environments.environment import Environment
+from pybrain.utilities import setAllArgs
 
 class TCPEnvironment(Environment):
     """
     Documentation
     """
 
-    client = None
     host = None
     port = None
 
-    def __init__(self, host, port, agentName):
+    def __init__(self, host = 'localhost', port = 4242, agentName = "UnnamedClient", **otherargs):
         """General TCP Environment"""
+        setAllArgs(self, otherargs)
         self.host = host
         self.port = port
         self.client = Client(host, port, agentName)
@@ -30,8 +31,8 @@ class TCPEnvironment(Environment):
         data = self.client.recvData()
         #        print "Data received: ", data
         if data == "-ciao":
-            self.connected = False
-            self.disconnet()
+            self.client.disconnect()
+            self.connected = False            
         elif len(data) > 5:
         #        print data
             return data

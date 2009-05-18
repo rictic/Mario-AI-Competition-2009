@@ -6,12 +6,24 @@ from client.marioenvironment import MarioEnvironment
 from pybrain.rl.experiments.episodic import EpisodicExperiment
 from tasks.mariotask import MarioTask
 from utils.cmdlineoptions import CmdLineOptions
+from agents.forwardagent import ForwardAgent
 
 def main():
-    clo = CmdLineOptions(sys.argv)
-    task = MarioTask(MarioEnvironment(clo.getHost(), clo.getPort(), clo.getAgent().name))
-    exp = EpisodicExperiment(task, clo.getAgent())
-    exp.doEpisodes(3)
+    task = MarioTask(initMarioMode = 1)
+    agent = ForwardAgent()
+    exp = EpisodicExperiment(task, agent)
+    print 'Task Ready'
+    exp.doEpisodes(1)
+    print 'mm 1:', task.reward
+    
+    task.env.initMarioMode = 2
+    exp.doEpisodes(1)
+    print 'mm 2:', task.reward
+    
+    task.env.initMarioMode = 0
+    exp.doEpisodes(1)
+    print 'mm 0:', task.reward
+    
     print "finished"
 
 if __name__ == "__main__":

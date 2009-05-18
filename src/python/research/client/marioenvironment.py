@@ -5,13 +5,17 @@ from tcpenvironment import TCPEnvironment
 from utils.dataadaptor import extractObservation
 
 class MarioEnvironment(TCPEnvironment):
-    """
-    Deals with Mario specific data
-    """
+    """ An Environment class, wrapping access to the MarioServer, 
+    and allowing interactions to a level. """
 
-    levelScene = None
-    mayMarioJump = False
-    isMarioOnGround = False
+    # Level settings
+    levelDifficulty = 5
+    levelType = 2
+    creaturesEnabled = True
+    initMarioMode = 2
+    
+    # Other settings
+    visualization = True
 
     def getSensors(self):
         data = TCPEnvironment.getSensors(self)
@@ -19,4 +23,15 @@ class MarioEnvironment(TCPEnvironment):
         return extractObservation(data)
 
     def reset(self):
-        self.client.sendData("reset -ld 5 -lt 2 -pw off -zm 1 -mm 2 -vaot on -vis on -maxFPS off\r\n")
+        argstring = "-ld %d -lt %d -vis %d -mm %d " % (self.levelDifficulty,
+                                                            self.levelType,
+                                                            self.visualization,
+                                                            self.initMarioMode,
+                                                            )
+        if self.creaturesEnabled:
+            argstring += "-pw off "
+        else:
+            argstring += "-pw on "
+        argstring += "-zm 1 -vaot on -maxFPS off "
+        print argstring
+        self.client.sendData("reset "+argstring+"\r\n")
