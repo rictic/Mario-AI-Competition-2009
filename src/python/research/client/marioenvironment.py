@@ -1,4 +1,4 @@
-__author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch"
+__author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch; Tom Schaul"
 __date__ = "$May 13, 2009 1:29:41 AM$"
 
 from tcpenvironment import TCPEnvironment
@@ -17,6 +17,7 @@ class MarioEnvironment(TCPEnvironment):
     
     # Other settings
     visualization = True
+    otherServerArgs = ""
 
     def getSensors(self):
         data = TCPEnvironment.getSensors(self)
@@ -37,4 +38,4 @@ class MarioEnvironment(TCPEnvironment):
             argstring += "-vis on "
         else:
             argstring += "-vis off "
-        self.client.sendData("reset "+argstring+"\r\n")
+        self.client.sendData("reset "+argstring+self.otherServerArgs+"\r\n")

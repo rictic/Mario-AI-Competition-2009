@@ -9,11 +9,8 @@ class Client:
     """
 
     bufSize = 4096
-    sock = None
-
-
+    
     def __init__(self, host, port, ownerName):
-        """Documentation"""
         self.Host = host
         self.Port = port
         self.OwnerName = ownerName
@@ -21,7 +18,6 @@ class Client:
 
     def __del__(self):
         self.disconnect()
-
 
     def connectToDefaultServer(self):
             """connect to a server using defind by constructor host and port"""
@@ -49,8 +45,8 @@ class Client:
             sys.stderr.write("[CONNECTION ERROR] %s\n" % msg[1])
             raise
 
-        GreatingMessage = "Client: Dear Server, hello! I am %s\r\n" % self.OwnerName
-        self.sendData(GreatingMessage)
+        GreetingMessage = "Client: Dear Server, hello! I am %s\r\n" % self.OwnerName
+        self.sendData(GreetingMessage)
 
     def printConnectionData(self):
         """Print to standard output the current connection data"""
@@ -72,7 +68,6 @@ class Client:
             sys.stderr.write("[SOCKET PIPE ERROR WHILE RECEIVING] %s\n.Possible reason: socket closed due to time out and/or requested server is currently busy" % msg[1])
             raise
 
-
     def sendData(self, data):
         """send arbitrary string to server"""
         try:
@@ -80,4 +75,3 @@ class Client:
         except  socket.error, msg:
             sys.stderr.write("[SOCKET PIPE ERROR WHILE SENDING] %s\n" % msg[1])
             raise
-

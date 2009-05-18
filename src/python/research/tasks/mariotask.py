@@ -1,4 +1,4 @@
-__author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch"
+__author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch; Tom Schaul"
 __date__ = "$May 7, 2009 12:47:18 PM$"
 
 from pybrain.rl.tasks.episodic import EpisodicTask

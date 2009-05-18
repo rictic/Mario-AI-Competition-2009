@@ -1,3 +1,4 @@
+__author__ = "Tom Schaul"
 
 from pybrain.rl.experiments.episodic import EpisodicExperiment
 from tasks.mariotask import MarioTask
