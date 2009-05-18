@@ -15,7 +15,7 @@ import ch.idsia.tools.Evaluator;
 public class CustomRun
 {
     public static void main(String[] args) {
-        new ForwardAgent();
+        new ForwardAgent(); // default agent to be evalutated. It is registered automatically in system.
         CmdLineOptions options = new CmdLineOptions(args);
         Evaluator evaluator = new Evaluator(options);
         evaluator.evaluate();                
