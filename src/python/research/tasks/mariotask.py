@@ -24,7 +24,6 @@ class MarioTask(EpisodicTask):
         return self.finished
 
     def getObservation(self):
-        """Documentation"""
         obs = EpisodicTask.getObservation(self)
         if len(obs) == 2:
             self.reward = obs[1]
