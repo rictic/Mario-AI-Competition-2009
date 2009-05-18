@@ -1,5 +1,6 @@
 package ch.idsia.scenarios;
 
+import ch.idsia.ai.agents.ai.ForwardAgent;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.Evaluator;
 
@@ -14,7 +15,7 @@ import ch.idsia.tools.Evaluator;
 public class CustomRun
 {
     public static void main(String[] args) {
-//        new ForwardAgent();
+        new ForwardAgent();
         CmdLineOptions options = new CmdLineOptions(args);
         Evaluator evaluator = new Evaluator(options);
         evaluator.evaluate();                
