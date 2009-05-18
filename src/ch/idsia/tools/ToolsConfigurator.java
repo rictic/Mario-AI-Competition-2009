@@ -1,11 +1,11 @@
 package ch.idsia.tools;
 
-import ch.idsia.MainRun;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.mario.engine.level.LevelGenerator;
+import ch.idsia.scenarios.MainRun;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

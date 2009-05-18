@@ -1,8 +1,11 @@
-package ch.idsia;
+package ch.idsia.scenarios;
 
 import ch.idsia.ai.agents.ai.*;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
-import ch.idsia.tools.*;
+import ch.idsia.tools.CmdLineOptions;
+import ch.idsia.tools.EvaluationInfo;
+import ch.idsia.tools.EvaluationOptions;
+import ch.idsia.tools.Evaluator;
 
 import java.util.List;
 
@@ -26,6 +29,18 @@ Sergey Karakovskiy and Julian Togelius.
 
 public class MainRun 
 {
+    public static void main(String[] args) {
+        CmdLineOptions cmdLineOptions = new CmdLineOptions(args);
+        EvaluationOptions evaluationOptions = cmdLineOptions;  // if none options mentioned, all defalults are used.
+        createNativeAgents(cmdLineOptions);
+        Evaluator evaluator = new Evaluator(evaluationOptions);
+        List<EvaluationInfo> evaluationSummary = evaluator.evaluate();
+//        LOGGER.save("log.txt");
+
+        if (cmdLineOptions.isExitProgramWhenFinished())
+            System.exit(0);
+    }
+
     private static boolean calledBefore = false;
     public static void createNativeAgents(CmdLineOptions cmdLineOptions)
     {
@@ -46,23 +61,4 @@ public class MainRun
         }
     }
 
-    public static void main(String[] args) {
-        CmdLineOptions cmdLineOptions = new CmdLineOptions(args);
-        
-        EvaluationOptions evaluationOptions = cmdLineOptions;  // if none options mentioned, all defalults are used.
-        createNativeAgents(cmdLineOptions);
-
-        Evaluator evaluator = new Evaluator(evaluationOptions);
-        // TODO: External Parameter: levelDificulty as an interval [a:b]
-//        for (int i = 0; i < 15; i++) {
-//            evaluationOptions.setLevelDifficulty(i);
-            evaluator.verbose("Play/Simulation started!", LOGGER.VERBOSE_MODE.ALL);
-            List<EvaluationInfo> evaluationSummary = evaluator.evaluate();
-            evaluator.verbose("Play/Simulation Finished!", LOGGER.VERBOSE_MODE.ALL);
-//            }
-        LOGGER.save("log.txt");
-
-        if (cmdLineOptions.isExitProgramWhenFinished())
-            System.exit(0);
-    }
 }

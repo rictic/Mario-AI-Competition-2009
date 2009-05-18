@@ -17,7 +17,7 @@ VLX=0
 VLY=320
 
 echo "iMarioFramework: Starting ServerAgents..."
-# java -cp .:../../../trunk/lib/jdom.jar ch.idsia.MainRun -ag ServerAgent -vis on -ld 1 -pw on -maxFPS off -an 1 -vlx 400  -vaot on -ewf off
+# java -cp .:../../../trunk/lib/jdom.jar ch.idsia.scenarios.MainRun -ag ServerAgent -vis on -ld 1 -pw on -maxFPS off -an 1 -vlx 400  -vaot on -ewf off
 while [ $I -le $LIM ]
 do
 	# echo $I $PORT $VLX $VLY	$(($I+3))
