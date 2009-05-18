@@ -51,7 +51,7 @@ public class LevelScene extends Scene implements SpriteContext
     private int levelDifficulty;
     private int levelLength;
 
-    public LevelScene(GraphicsConfiguration graphicsConfiguration, MarioComponent renderer, long seed, int levelDifficulty, int type, int levelLength)
+    public LevelScene(GraphicsConfiguration graphicsConfiguration, MarioComponent renderer, long seed, int levelDifficulty, int type, int levelLength, int timeLimit)
     {
         this.graphicsConfiguration = graphicsConfiguration;
         this.levelSeed = seed;
@@ -59,6 +59,7 @@ public class LevelScene extends Scene implements SpriteContext
         this.levelDifficulty = levelDifficulty;
         this.levelType = type;
         this.levelLength = levelLength;
+        this.setTotalTime(timeLimit);
     }
 
     private String mapElToStr(int el)

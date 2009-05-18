@@ -61,7 +61,7 @@ public class ParameterContainer
 //            "-stopSimulationIfWin",
                     "-t",
                     "-tc",
-                    "-timer",
+                    "-tl",
 //            "-toolsConfigurator",
                     "-vaot",
 //            "-viewAlwaysOnTop",
@@ -186,6 +186,7 @@ public class ParameterContainer
         defaultOtionsHashMap.put("-ssiw","off"); //defaultOtionsHashMap.put("-stopSimulationIfWin","off");
         defaultOtionsHashMap.put("-server","off");
         defaultOtionsHashMap.put("-t","on"); //defaultOtionsHashMap.put("-timer","on");
+        defaultOtionsHashMap.put("-tl","200"); //defaultOtionsHashMap.put("-timer","on");        
         defaultOtionsHashMap.put("-tc","off"); //defaultOtionsHashMap.put("-toolsConfigurator","off");
         defaultOtionsHashMap.put("-vaot","off"); //defaultOtionsHashMap.put("-viewAlwaysOnTop","off");
         defaultOtionsHashMap.put("-vlx","0"); //defaultOtionsHashMap.put("-viewLocationX","0");

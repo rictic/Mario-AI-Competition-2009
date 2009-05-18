@@ -132,4 +132,8 @@ public class SimulationOptions extends ParameterContainer
     public int getZLevelEnemies() {
         return i(getParameterValue("-ze"));
     }
+
+    public int getTimeLimit() {
+        return i(getParameterValue("-tl"));
+    }
 }
