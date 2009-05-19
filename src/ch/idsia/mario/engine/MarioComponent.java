@@ -6,7 +6,7 @@ import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 import ch.idsia.tools.EvaluationInfo;
 import ch.idsia.tools.GameViewer;
-import ch.idsia.tools.network.ServerAgent;
+import ch.idsia.tools.tcp.ServerAgent;
 
 import javax.swing.*;
 import java.awt.*;

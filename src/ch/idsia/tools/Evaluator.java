@@ -5,8 +5,8 @@ import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 import ch.idsia.mario.simulation.BasicSimulator;
 import ch.idsia.mario.simulation.ISimulation;
-import ch.idsia.tools.network.Server;
-import ch.idsia.tools.network.ServerAgent;
+import ch.idsia.tools.tcp.Server;
+import ch.idsia.tools.tcp.ServerAgent;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -37,6 +37,7 @@ public class Evaluator implements Runnable
         ISimulation simulator = new BasicSimulator(evaluationOptions.getSimulationOptionsCopy());
         while (server.isRunning())
         {
+            
             String resetData = server.recvUnSafe();
             if (resetData.startsWith("ciao"))
             {
