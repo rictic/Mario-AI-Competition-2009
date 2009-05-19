@@ -22,6 +22,7 @@ public class Server
 {
     private String clientName = "<>";
     private boolean running = false;
+    private String messageCache = "";
 
     public boolean isClientConnected() {return !socket.isClosed();}
 
@@ -167,15 +168,31 @@ public class Server
 
     public String recvUnSafe()
     {
-        return this.recv();
+        if ("".equals(messageCache))
+        {
+            return this.recv();
+        }
+        else
+        {   String tmp = messageCache;
+            messageCache = "";
+            return tmp;
+        }
     }
 
     public String recvSafe()
     {
         String message = recv();
         int len = message.length();
-        if (len != this.requiredReceiveDataSize)
+        if (message.startsWith("reset"))
         {
+            messageCache = message;
+            return message;
+        }
+
+        if (len == this.requiredReceiveDataSize)
+        {
+            return message;
+        } else {
             try
             {
                 throw new Exception("Server.recvSafe: Actual data size " + len +
@@ -188,11 +205,6 @@ public class Server
                 restartServer();
             }
         }
-        else
-        {
-            return message;
-        }
-
 //        message = "";
 //        for (int i = 0; i < this.requiredReceiveDataSize; ++i)  message += "1";
 //        return message;

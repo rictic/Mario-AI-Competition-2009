@@ -245,8 +245,9 @@ class evCoinsFitnessComparator implements Comparator
 {
     public int compare(Object o, Object o1)
     {
-        double ei1Fitness = ((EvaluationInfo)(o)).computeCoinsFitness();
-        double ei2Fitness = ((EvaluationInfo)(o1)).computeCoinsFitness();
+        int ei1Fitness = ((EvaluationInfo)(o)).numberOfGainedCoins;
+
+        int ei2Fitness = ((EvaluationInfo)(o1)).numberOfGainedCoins;
         if (ei1Fitness < ei2Fitness)
             return 1;
         else if (ei1Fitness > ei2Fitness)

@@ -81,15 +81,19 @@ public class ServerAgent extends RegisterableAgent implements Agent
 
     public void integrateEvaluationInfo(EvaluationInfo evaluationInfo)
     {
-        
-        String fitnessStr = "FIT " + evaluationInfo.marioStatus + " " + evaluationInfo.computeDistancePassed();
+        String fitnessStr = "FIT " +
+                evaluationInfo.marioStatus + " " +
+                evaluationInfo.computeDistancePassed() + " " +
+                evaluationInfo.timeLeft + " " +
+                evaluationInfo.marioMode + " " +
+                evaluationInfo.numberOfGainedCoins + " ";
         server.sendSafe(fitnessStr);
     }
 
     private boolean[] receiveAction() throws IOException, NullPointerException
     {
         String data = server.recvSafe();
-        if (data == null)
+        if (data == null || data.startsWith("reset"))
             return null;
         boolean[] ret = new boolean[Environment.numberOfButtons];
 //        String s = "[";

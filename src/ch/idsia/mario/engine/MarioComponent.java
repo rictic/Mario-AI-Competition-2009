@@ -256,6 +256,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 //        evaluationInfo.totalNumberOfCoins   = -1 ; // TODO: total Number of coins.
         evaluationInfo.totalActionsPerfomed = totalActionsPerfomed; // Counted during the play/simulation process
         evaluationInfo.totalFramesPerfomed = frame;
+        evaluationInfo.marioMode = mario.getMode();
 //        evaluationInfo.Memo = "Number of attempt: " + Mario.numberOfAttempts;
         if (agent instanceof ServerAgent && mario.keys != null /*this will happen if client quits unexpectedly in case of Server mode*/)
             ((ServerAgent)agent).integrateEvaluationInfo(evaluationInfo);

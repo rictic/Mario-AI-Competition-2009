@@ -36,6 +36,7 @@ public class EvaluationInfo
     public String agentType = "undefined";
     public int levelDifficulty = MagicNumberUndef;
     public int levelRandSeed = MagicNumberUndef;
+    public int marioMode = MagicNumberUndef;
 
     public double computeBasicFitness()
     {
@@ -43,11 +44,6 @@ public class EvaluationInfo
         // neglect totalLengthOfLevelCells;
         // neglect totalNumberOfCoins;
         return lengthOfLevelPassedPhys - timeSpentOnLevel + numberOfGainedCoins + marioStatus*5000;
-    }
-
-    public double computeCoinsFitness()
-    {
-        return numberOfGainedCoins;
     }
 
     public double computeDistancePassed()

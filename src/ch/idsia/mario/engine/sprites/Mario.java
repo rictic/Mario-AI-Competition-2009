@@ -35,6 +35,10 @@ public class Mario extends Sprite
         fire = (mode == MODE.MODE_FIRE);
     }
 
+    public int getMode()
+    {
+        return ((large) ? 1 : 0) + ((fire) ? 1 : 0);
+    }
 
     public static enum MODE {MODE_SMALL, MODE_LARGE, MODE_FIRE}
 
