@@ -27,20 +27,9 @@ public class RegisterableAgent extends BasicAIAgent
         AgentsPool.put(agent.getName(), agent);
     }
 
-    public static void registerAgent(String agentWOXName) throws IllegalFormatException {
-//        if (agentWOXName.endsWith(".xml") || agentWOXName.endsWith(".class"))
-            registerAgent(load(agentWOXName));
-//        else {
-//            try {
-//                throw new IllegalArgumentException("Critical Error: Cannot register the agent. name specified " + agentWOXName +
-//                        " is not a valid WOX name. Should end up with '.xml'");
-//            }
-//            catch(IllegalArgumentException e) {
-//                System.err.println(e.getMessage());
-//                System.err.println("Exiting...");
-//                System.exit (1);
-//            }
-//        }
+    public static void registerAgent(String agentWOXName) throws IllegalFormatException
+    {
+        registerAgent(load(agentWOXName));
     }
 
     public static Agent load (String name) {

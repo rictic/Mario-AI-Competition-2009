@@ -24,6 +24,4 @@ public interface Agent
     public String getName();
 
     public void setName(String name);
-
-//    public void register();
 }

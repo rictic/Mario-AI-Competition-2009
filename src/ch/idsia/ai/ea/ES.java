@@ -48,7 +48,6 @@ public class ES implements EA {
         for (int i = 0; i < evaluationRepetitions; i++) {
             population[which].reset();
             fitness[which] += task.evaluate((Agent) population[which])[0];
-            //        LOGGER.print(, LOGGER.VERBOSE_MODE.INFO);
 //            LOGGER.println("which " + which + " fitness " + fitness[which], LOGGER.VERBOSE_MODE.INFO);
         }
         fitness[which] = fitness[which] / evaluationRepetitions;

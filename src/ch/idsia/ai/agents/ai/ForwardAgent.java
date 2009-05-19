@@ -63,7 +63,6 @@ public class ForwardAgent extends RegisterableAgent implements Agent
                 action[Mario.KEY_JUMP] = true;
             }
             ++trueJumpCounter;
-//            System.out.println("trueJumpCounter:" + trueJumpCounter);
         }
         else
         {
@@ -76,15 +75,6 @@ public class ForwardAgent extends RegisterableAgent implements Agent
             trueJumpCounter = 0;
             action[Mario.KEY_JUMP] = false;
         }
-
-
-//        if (++trueSpeedCounter > 10)
-//        {
-//            action[Mario.KEY_SPEED] = false;
-//            trueSpeedCounter = 0;
-//        }
-//        else
-//            action[Mario.KEY_SPEED] = false;
 
         action[Mario.KEY_SPEED] = DangerOfGap(levelScene);
         return action;
