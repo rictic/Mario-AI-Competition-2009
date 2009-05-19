@@ -1,7 +1,7 @@
 import sys
 import socket
-__author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
-__date__ ="$May 1, 2009 9:02:32 AM$"
+__author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch"
+__date__ = "$May 1, 2009 9:02:32 AM$"
 
 class Client:
     """
@@ -32,7 +32,7 @@ class Client:
             sys.stderr.write("[SOCKET CREATION ERROR1] %s\n" % msg[1])
             raise
 
-#        self.sock.settimeout(5)
+        self.sock.settimeout(5)
         print "Timeout set to 5"
         try:
             self.sock.connect((host, port))

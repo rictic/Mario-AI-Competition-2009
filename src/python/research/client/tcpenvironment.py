@@ -20,11 +20,11 @@ class TCPEnvironment(Environment):
         return self.connected
 
     def getSensors(self):
-        """ receives and observation"""
+        """ receives an observation via tcp connection"""
         #        print "Looking forward to receive data"
         data = self.client.recvData()
         #        print "Data received: ", data
-        if data == "-ciao":
+        if data == "ciao":
             self.client.disconnect()
             self.connected = False            
         elif len(data) > 5:
