@@ -8,6 +8,7 @@ class MarioEnvironment(TCPEnvironment):
     """ An Environment class, wrapping access to the MarioServer, 
     and allowing interactions to a level. """
 
+
     # Level settings
     levelDifficulty = 5
     levelType = 2
@@ -19,6 +20,7 @@ class MarioEnvironment(TCPEnvironment):
     # Other settings
     visualization = True
     otherServerArgs = ""
+    numberOfFitnessValues = 5
 
     def getSensors(self):
         data = TCPEnvironment.getSensors(self)

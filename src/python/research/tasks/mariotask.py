@@ -3,6 +3,7 @@ __date__ = "$May 7, 2009 12:47:18 PM$"
 
 from pybrain.rl.tasks.episodic import EpisodicTask
 from client.marioenvironment import MarioEnvironment
+from time import sleep
 
 if __name__ != "__main__":
     print "Loading %s ..." % __name__;
@@ -16,17 +17,19 @@ class MarioTask(EpisodicTask):
     
     def reset(self):
         EpisodicTask.reset(self)
-#        EpisodicTask.reset(self)
+    #        sleep(3)
+    #        EpisodicTask.reset(self)
+    #        sleep(3)
         self.finished = False
         self.reward = 0
-        self.status = 0        
+        self.status = 0       
 
     def isFinished(self):
         return self.finished
 
     def getObservation(self):
         obs = EpisodicTask.getObservation(self)
-        if len(obs) == 2:
+        if len(obs) == MarioEnvironment.numberOfFitnessValues:
             self.reward = obs[1]
             self.status = obs[0]
             self.finished = True
