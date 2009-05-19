@@ -9,11 +9,11 @@ def combinedScore(agent, task = None):
     """ Let the agent act on a number of levels of increasing difficulty. 
     Return the combined score."""
     if task == None:
-        task = MarioTask()
+        task = MarioTask(agent.name)
     exp = EpisodicExperiment(task, agent)
     res = 0
-    for difficulty in range(1):
-        for seed in range(3):
+    for difficulty in range(12):
+        for seed in range(15):
             task.env.levelSeed = seed
             task.env.levelDifficulty = difficulty  
             exp.doEpisodes(1)
