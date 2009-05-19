@@ -1,5 +1,6 @@
 package ch.idsia.tools;
 
+import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.GlobalOptions;
 
 import java.util.Map;
@@ -84,6 +85,13 @@ public class CmdLineOptions extends EvaluationOptions
 //        argsHashMap.put("-m", matlabFileName);
 
         this.setUpOptions(args);
+//        System.out.println("args = " + args.length);
+        if (args.length == 1)
+//        {
+            RegisterableAgent.registerAgent(args[0]);
+//            System.out.println("length 1");
+//        }
+
 
         if (isEcho())
         {

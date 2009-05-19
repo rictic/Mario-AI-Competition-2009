@@ -54,7 +54,7 @@ public class ForwardAgent extends RegisterableAgent implements Agent
         // this Agent requires observation.
 
         assert(observation != null);
-        byte[][] levelScene = observation.getLevelSceneObservation();
+        byte[][] levelScene = observation.getCompleteObservation();
 
         if (levelScene[11][13] != 0 || levelScene[11][12] != 0 ||  DangerOfGap(levelScene))
         {

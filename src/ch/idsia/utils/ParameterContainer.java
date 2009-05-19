@@ -2,6 +2,7 @@ package ch.idsia.utils;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -146,7 +147,8 @@ public class ParameterContainer
     }
 
     public String s(Agent a)
-    {   if (RegisterableAgent.getAgentByName(a.getName()) == null)
+    {   
+        if (RegisterableAgent.getAgentByName(a.getName()) == null)
             RegisterableAgent.registerAgent(a);
         return a.getName();
     }
@@ -166,34 +168,37 @@ public class ParameterContainer
         if (defaultOtionsHashMap != null)
             return;
         else
+        {
             defaultOtionsHashMap = new HashMap<String, String>();
-        defaultOtionsHashMap.put("-ag","ForwardAgent"); //defaultOtionsHashMap.put("-agentName","NoAgent");
-        defaultOtionsHashMap.put("-an","5"); //defaultOtionsHashMap.put("-attemptsNumber","5");
-        defaultOtionsHashMap.put("-echo","off"); //defaultOtionsHashMap.put("-echo","off");
-        defaultOtionsHashMap.put("-ewf","on"); //defaultOtionsHashMap.put("-exitWhenFinished","off");
-        defaultOtionsHashMap.put("-gv","off"); //defaultOtionsHashMap.put("-gameViewer","off");
-        defaultOtionsHashMap.put("-gvc","off"); //defaultOtionsHashMap.put("-gameViewerContinuousUpdates","off");
-        defaultOtionsHashMap.put("-ld","0"); //defaultOtionsHashMap.put("-levelDifficulty","0");
-        defaultOtionsHashMap.put("-ll","320"); //defaultOtionsHashMap.put("-levelLength","320");
-        defaultOtionsHashMap.put("-ls","1"); //defaultOtionsHashMap.put("-levelRandSeed","1");
-        defaultOtionsHashMap.put("-lt","0"); //defaultOtionsHashMap.put("-levelType","1");
-        defaultOtionsHashMap.put("-maxFPS","on"); //defaultOtionsHashMap.put("-maxFPS","off");
-        defaultOtionsHashMap.put("-m",""); //defaultOtionsHashMap.put("-matLabFile","DefaultMatlabFile");
-        defaultOtionsHashMap.put("-mm","2");
-        defaultOtionsHashMap.put("-pw","off"); //defaultOtionsHashMap.put("-pauseWorld","off");
-        defaultOtionsHashMap.put("-port","4242"); //defaultOtionsHashMap.put("-port","4242");
-        defaultOtionsHashMap.put("-pr","off"); //defaultOtionsHashMap.put("-powerRestoration","off");
-        defaultOtionsHashMap.put("-ssiw","off"); //defaultOtionsHashMap.put("-stopSimulationIfWin","off");
-        defaultOtionsHashMap.put("-server","off");
-        defaultOtionsHashMap.put("-t","on"); //defaultOtionsHashMap.put("-timer","on");
-        defaultOtionsHashMap.put("-tl","200"); //defaultOtionsHashMap.put("-timer","on");        
-        defaultOtionsHashMap.put("-tc","off"); //defaultOtionsHashMap.put("-toolsConfigurator","off");
-        defaultOtionsHashMap.put("-vaot","off"); //defaultOtionsHashMap.put("-viewAlwaysOnTop","off");
-        defaultOtionsHashMap.put("-vlx","0"); //defaultOtionsHashMap.put("-viewLocationX","0");
-        defaultOtionsHashMap.put("-vly","0"); //defaultOtionsHashMap.put("-viewLocationY","0");
-        defaultOtionsHashMap.put("-vis","on"); //defaultOtionsHashMap.put("-visual","on");
-        defaultOtionsHashMap.put("-zm","1");
-        defaultOtionsHashMap.put("-ze","0"); 
+            new HumanKeyboardAgent();
+            defaultOtionsHashMap.put("-ag","HumanKeyboardAgent"); //defaultOtionsHashMap.put("-agentName","NoAgent");
+            defaultOtionsHashMap.put("-an","1"); //defaultOtionsHashMap.put("-attemptsNumber","5");
+            defaultOtionsHashMap.put("-echo","off"); //defaultOtionsHashMap.put("-echo","off");
+            defaultOtionsHashMap.put("-ewf","on"); //defaultOtionsHashMap.put("-exitWhenFinished","off");
+            defaultOtionsHashMap.put("-gv","off"); //defaultOtionsHashMap.put("-gameViewer","off");
+            defaultOtionsHashMap.put("-gvc","off"); //defaultOtionsHashMap.put("-gameViewerContinuousUpdates","off");
+            defaultOtionsHashMap.put("-ld","0"); //defaultOtionsHashMap.put("-levelDifficulty","0");
+            defaultOtionsHashMap.put("-ll","320"); //defaultOtionsHashMap.put("-levelLength","320");
+            defaultOtionsHashMap.put("-ls","1"); //defaultOtionsHashMap.put("-levelRandSeed","1");
+            defaultOtionsHashMap.put("-lt","0"); //defaultOtionsHashMap.put("-levelType","1");
+            defaultOtionsHashMap.put("-maxFPS","off"); //defaultOtionsHashMap.put("-maxFPS","off");
+            defaultOtionsHashMap.put("-m",""); //defaultOtionsHashMap.put("-matLabFile","DefaultMatlabFile");
+            defaultOtionsHashMap.put("-mm","2");
+            defaultOtionsHashMap.put("-pw","off"); //defaultOtionsHashMap.put("-pauseWorld","off");
+            defaultOtionsHashMap.put("-port","4242"); //defaultOtionsHashMap.put("-port","4242");
+            defaultOtionsHashMap.put("-pr","off"); //defaultOtionsHashMap.put("-powerRestoration","off");
+            defaultOtionsHashMap.put("-ssiw","off"); //defaultOtionsHashMap.put("-stopSimulationIfWin","off");
+            defaultOtionsHashMap.put("-server","off");
+            defaultOtionsHashMap.put("-t","on"); //defaultOtionsHashMap.put("-timer","on");
+            defaultOtionsHashMap.put("-tl","200"); //defaultOtionsHashMap.put("-timer","on");
+            defaultOtionsHashMap.put("-tc","off"); //defaultOtionsHashMap.put("-toolsConfigurator","off");
+            defaultOtionsHashMap.put("-vaot","off"); //defaultOtionsHashMap.put("-viewAlwaysOnTop","off");
+            defaultOtionsHashMap.put("-vlx","0"); //defaultOtionsHashMap.put("-viewLocationX","0");
+            defaultOtionsHashMap.put("-vly","0"); //defaultOtionsHashMap.put("-viewLocationY","0");
+            defaultOtionsHashMap.put("-vis","on"); //defaultOtionsHashMap.put("-visual","on");
+            defaultOtionsHashMap.put("-zm","1");
+            defaultOtionsHashMap.put("-ze","0");
+        }
     }
 
     public static String getDefaultParameterValue(String param)
