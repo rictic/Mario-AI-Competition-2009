@@ -7,7 +7,7 @@ from pybrain.utilities import setAllArgs
 
 class TCPEnvironment(Environment):
 
-    def __init__(self, agentName, host = 'localhost', port = 4242, **otherargs):
+    def __init__(self, agentName = "UnnamedClient", host = 'localhost', port = 4242, **otherargs):
         """General TCP Environment"""
         setAllArgs(self, otherargs)
         self.host = host

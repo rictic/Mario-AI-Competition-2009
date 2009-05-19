@@ -1,13 +1,13 @@
-__author__="Sergey Karakovskiy, sergey at idsia dot ch; Tom Schaul"
-__date__ ="$Apr 30, 2009 1:46:32 AM$"
+__author__ = "Sergey Karakovskiy, sergey at idsia dot ch; Tom Schaul"
+__date__ = "$Apr 30, 2009 1:46:32 AM$"
 
 from pybrain.rl.experiments.episodic import EpisodicExperiment
 from tasks.mariotask import MarioTask
 from agents.forwardagent import ForwardAgent
 
 def main():
-    task = MarioTask(initMarioMode = 1)
     agent = ForwardAgent()
+    task = MarioTask(initMarioMode = 1)
     exp = EpisodicExperiment(task, agent)
     print 'Task Ready'
     exp.doEpisodes(1)
