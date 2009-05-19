@@ -34,14 +34,19 @@ public class ServerAgent extends RegisterableAgent implements Agent
     {
         super("ServerAgent");
         this.server = server;
-        this.name += server.getClientName();
     }
+
+    public String getName()
+    {
+        return this.name + ((server == null) ? "" : server.getClientName());
+    }
+
 
     // A tiny bit of singletone-like concept. Server is created ones for each egent. Basically we are not going
     // To create more than one ServerAgent at a run, but this flexibility allows to add this feature with certain ease.
     private void createServer(int port) {
         this.server = new Server(port, Environment.numberOfObservationElements, Environment.numberOfButtons);
-        this.name += server.getClientName();
+//        this.name += server.getClientName();
     }
 
     public boolean isAvailable()
