@@ -16,6 +16,7 @@ class MarioTask(EpisodicTask):
     
     def reset(self):
         EpisodicTask.reset(self)
+#        EpisodicTask.reset(self)
         self.finished = False
         self.reward = 0
         self.status = 0        

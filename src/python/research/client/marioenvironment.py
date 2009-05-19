@@ -14,7 +14,7 @@ class MarioEnvironment(TCPEnvironment):
     creaturesEnabled = True
     initMarioMode = 2
     levelSeed = 1
-    timeLimit = 42
+    timeLimit = 100
     
     # Other settings
     visualization = True
@@ -40,4 +40,7 @@ class MarioEnvironment(TCPEnvironment):
             argstring += "-vis on "
         else:
             argstring += "-vis off "
-        self.client.sendData("reset " + argstring + self.otherServerArgs + "\r\n")
+        self.client.sendData("reset -maxFPS on " + argstring + self.otherServerArgs + "\r\n")
+#        self.client.sendData("reset -maxFPS on " + argstring + self.otherServerArgs + "\r\n")
+#        self.client.sendData("reset -maxFPS on " + argstring + self.otherServerArgs + "\r\n")
+

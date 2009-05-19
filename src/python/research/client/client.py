@@ -32,7 +32,7 @@ class Client:
             sys.stderr.write("[SOCKET CREATION ERROR1] %s\n" % msg[1])
             raise
 
-        self.sock.settimeout(5)
+#        self.sock.settimeout(2)
         print "Timeout set to 5"
         try:
             self.sock.connect((host, port))

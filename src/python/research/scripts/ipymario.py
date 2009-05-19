@@ -7,10 +7,10 @@ from agents.forwardagent import ForwardAgent
 
 def main():
     agent = ForwardAgent()
-    task = MarioTask(initMarioMode = 1)
+    task = MarioTask(agent.name, initMarioMode = 1)
     exp = EpisodicExperiment(task, agent)
     print 'Task Ready'
-    exp.doEpisodes(1)
+    exp.doEpisodes(3)
     print 'mm 1:', task.reward
     
     task.env.initMarioMode = 2
