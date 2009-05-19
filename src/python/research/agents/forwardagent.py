@@ -48,10 +48,6 @@ class ForwardAgent(MarioAgent):
     def _a2(self):
         """ Interesting, sometimes very useful behaviour which might prevent falling down into a gap!
         Just substitue getAction by this method and see how it behaves.
-
-        Get observation, (possibly analyse it), sent an action back
-        @param obs: observation from the environment
-        @type obs: by default, this is assumed to be a numpy array of doubles
         """
         if (self.mayMarioJump):
                     print "m: %d, %s, %s, 12: %d, 13: %d, j: %d" \
