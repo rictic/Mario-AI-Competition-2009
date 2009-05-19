@@ -1,11 +1,9 @@
 package ch.idsia.ai.tasks;
 
 import ch.idsia.ai.agents.Agent;
-import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.tools.EvaluationInfo;
 import ch.idsia.tools.EvaluationOptions;
 import ch.idsia.tools.Evaluator;
-import wox.serial.Easy;
 
 import java.util.List;
 
@@ -14,7 +12,7 @@ import java.util.List;
  * User: Sergey Karakovskiy
  * Date: Apr 8, 2009
  * Time: 11:26:43 AM
- * Package: com.mojang.mario.Tasks
+ * Package: ch.idsia.ai.tasks
  */
 public class ProgressTask implements Task {
 

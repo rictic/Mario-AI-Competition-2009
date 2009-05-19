@@ -10,7 +10,7 @@ import ch.idsia.mario.environments.Environment;
  * User: Sergey Karakovskiy
  * Date: Apr 8, 2009
  * Time: 4:03:46 AM
- * Package: com.mojang.mario.Agents
+ * Package: ch.idsia.ai.agents.ai;
  */
 public class ForwardAgent extends RegisterableAgent implements Agent
 {

@@ -11,7 +11,7 @@ import java.util.Map;
  * User: Sergey Karakovskiy
  * Date: Apr 25, 2009
  * Time: 9:05:20 AM
- * Package: com.mojang.mario.Tools
+ * Package: .Tools
  */
 public class CmdLineOptions extends EvaluationOptions
 {

@@ -19,7 +19,7 @@ import java.util.List;
  * User: Sergey Karakovskiy
  * Date: Apr 6, 2009
  * Time: 8:12:18 PM
- * Package: com.mojang.mario.Tools
+ * Package: .Tools
  */
 
 public class Evaluator implements Runnable

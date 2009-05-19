@@ -3,20 +3,20 @@ package ch.idsia.tools;
 import ch.idsia.mario.engine.GlobalOptions;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * Created by IntelliJ IDEA.
  * User: Sergey Karakovskiy
  * Date: Mar 29, 2009
  * Time: 3:34:13 PM
- * Package: com.mojang.mario.Tools
+ * Package: .Tools
  */
 public class GameViewer extends JFrame
 {

@@ -8,7 +8,7 @@ import ch.idsia.utils.ParameterContainer;
  * User: Sergey Karakovskiy
  * Date: Apr 12, 2009
  * Time: 9:55:56 PM
- * Package: com.mojang.mario.Simulation
+ * Package: .Simulation
  */
 
 

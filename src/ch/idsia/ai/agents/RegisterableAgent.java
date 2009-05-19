@@ -11,7 +11,7 @@ import java.util.Set;
  * User: Sergey Karakovskiy
  * Date: Apr 11, 2009
  * Time: 10:47:47 AM
- * Package: com.mojang.mario.Agents
+ package ch.idsia.ai.agents;
  */
 public class RegisterableAgent extends BasicAIAgent
 {

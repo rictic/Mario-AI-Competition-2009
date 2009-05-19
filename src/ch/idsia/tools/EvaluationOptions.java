@@ -11,7 +11,7 @@ import java.awt.*;
  * User: Sergey Karakovskiy
  * Date: Apr 12, 2009
  * Time: 7:49:07 PM
- * Package: com.mojang.mario.Tools
+ * Package: .Tools
  */
 public class EvaluationOptions extends SimulationOptions
 {

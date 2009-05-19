@@ -7,7 +7,7 @@ import ch.idsia.mario.environments.Environment;
  * User: Sergey Karakovskiy
  * Date: Mar 28, 2009
  * Time: 8:46:42 PM
- * Package: com.mojang.mario.Agents
+ package ch.idsia.ai.agents;
  */
 public interface Agent
 {

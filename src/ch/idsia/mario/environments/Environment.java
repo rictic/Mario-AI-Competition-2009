@@ -5,7 +5,7 @@ package ch.idsia.mario.environments;
  * User: Sergey Karakovskiy
  * Date: Mar 28, 2009
  * Time: 8:51:57 PM
- * Package: com.mojang.mario.Environments
+ * Package: .Environments
  */
 
 public interface Environment

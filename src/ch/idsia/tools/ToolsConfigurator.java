@@ -25,7 +25,7 @@ import java.util.Set;
  * User: Sergey Karakovskiy
  * Date: Mar 29, 2009
  * Time: 6:27:25 PM
- * Package: com.mojang.mario.Tools
+ * Package: .Tools
  */
 public class ToolsConfigurator extends JFrame
 {

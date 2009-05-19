@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
  * User: Sergey Karakovskiy
  * Date: Apr 12, 2009
  * Time: 12:44:51 AM
- * Package: com.mojang.mario.Tools
+ * Package: .Tools
  */
 public class EvaluationInfo
 {

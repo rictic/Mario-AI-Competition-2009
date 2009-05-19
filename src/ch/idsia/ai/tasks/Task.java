@@ -8,7 +8,7 @@ import ch.idsia.tools.EvaluationOptions;
  * User: Sergey Karakovskiy
  * Date: Apr 8, 2009
  * Time: 11:20:41 AM
- * Package: com.mojang.mario.Tasks
+ * Package: ch.idsia.ai.tasks
  */
 public interface Task {
     public double[] evaluate (Agent controller);

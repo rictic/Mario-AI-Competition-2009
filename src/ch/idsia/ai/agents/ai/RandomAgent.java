@@ -11,7 +11,7 @@ import java.util.Random;
  * User: Sergey Karakovskiy
  * Date: Mar 28, 2009
  * Time: 10:37:18 PM
- * Package: com.mojang.mario.Agents
+ * Package: ch.idsia.ai.agents.ai;
  */
 public class RandomAgent extends RegisterableAgent implements Agent
 {

@@ -11,7 +11,7 @@ import ch.idsia.tools.EvaluationInfo;
  * User: Sergey Karakovskiy
  * Date: Apr 7, 2009
  * Time: 2:27:48 PM
- * Package: com.mojang.mario.Simulation
+ * Package: .Simulation
  */
 
 public class BasicSimulator implements ISimulation

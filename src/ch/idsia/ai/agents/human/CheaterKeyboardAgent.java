@@ -14,7 +14,7 @@ import java.awt.event.KeyEvent;
  * User: Sergey Karakovskiy
  * Date: Apr 8, 2009
  * Time: 3:36:16 AM
- * Package: com.mojang.mario.Agents
+ * Package: ch.idsia.ai.agents.ai;
  */
 public class CheaterKeyboardAgent extends KeyAdapter implements Agent {
     private boolean Action[] = null;
@@ -78,10 +78,7 @@ public class CheaterKeyboardAgent extends KeyAdapter implements Agent {
                 {
                     LOGGER.println("Pause On/Off", LOGGER.VERBOSE_MODE.INFO);
                     GlobalOptions.pauseWorld = !GlobalOptions.pauseWorld;
-                    if (GlobalOptions.pauseWorld)
-                        Action[Mario.KEY_PAUSE] = true;
-                    else
-                        Action[Mario.KEY_PAUSE] = false;
+                    Action[Mario.KEY_PAUSE] = GlobalOptions.pauseWorld;
                 }
                 break;
             case KeyEvent.VK_L:
