@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class Evolve {
 
-    final static int generations = 400; //completely enough. If not succeed within 400 generations, then it drops to suboptimum...
+    final static int generations = 100;
     final static int populationSize = 100;
 
 
@@ -49,14 +49,13 @@ public class Evolve {
             Task task = new ProgressTask(options);
             ES es = new ES (task, initial, populationSize);
 
-            for (int gen = 0; gen < generations; gen++)
-            {
+            for (int gen = 0; gen < generations; gen++) {
                 es.nextGeneration();
                 double bestResult = es.getBestFitnesses()[0];
 //                LOGGER.println("Generation " + gen + " best " + bestResult, LOGGER.VERBOSE_MODE.INFO);
                 System.out.println("Generation " + gen + " best " + bestResult);
-                options.setVisualization(gen % 30 == 0 || bestResult > 4000);
-                options.setMaxFPS(!(gen % 30 == 0 || bestResult > 4000));
+                options.setVisualization(gen % 5 == 0 || bestResult > 4000);
+                options.setMaxFPS(true);
                 Agent a = (Agent) es.getBests()[0];
                 a.setName(((Agent)initial).getName() + df.format(gen));
                 RegisterableAgent.registerAgent(a);
@@ -65,14 +64,15 @@ public class Evolve {
 //                LOGGER.println("trying: " + result, LOGGER.VERBOSE_MODE.INFO);
                 options.setVisualization(false);
                 options.setMaxFPS(true);
+                Easy.save (es.getBests()[0], "evolved.xml");
                 if (result > 4000)
                     break; // Go to next difficulty.
             }
         }
-        // TODO: log dir / log dump dir option
+        /*// TODO: log dir / log dump dir option
         // TODO: reduce number of different
         // TODO: -fq 30, -ld 1:15, 8 
-        LOGGER.println("Saving bests... ", LOGGER.VERBOSE_MODE.INFO);
+        //LOGGER.println("Saving bests... ", LOGGER.VERBOSE_MODE.INFO);
 
         options.setVisualization(true);
         int i = 0;
@@ -88,7 +88,7 @@ public class Evolve {
 //        }
 
 
-        LOGGER.save("log.txt");
+        LOGGER.save("log.txt");*/
         System.exit(0);
     }
 }
