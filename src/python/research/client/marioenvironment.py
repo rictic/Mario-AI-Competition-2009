@@ -14,6 +14,7 @@ class MarioEnvironment(TCPEnvironment):
     creaturesEnabled = True
     initMarioMode = 2
     levelSeed = 1
+    timeLimit = 42
     
     # Other settings
     visualization = True
@@ -25,10 +26,11 @@ class MarioEnvironment(TCPEnvironment):
         return extractObservation(data)
 
     def reset(self):
-        argstring = "-ld %d -lt %d -mm %d -ls %d " % (self.levelDifficulty,
+        argstring = "-ld %d -lt %d -mm %d -ls %d -tl %d " % (self.levelDifficulty,
                                                             self.levelType,
                                                             self.initMarioMode,
                                                             self.levelSeed,
+                                                            self.timeLimit
                                                             )
         if self.creaturesEnabled:
             argstring += "-pw off "
@@ -38,4 +40,4 @@ class MarioEnvironment(TCPEnvironment):
             argstring += "-vis on "
         else:
             argstring += "-vis off "
-        self.client.sendData("reset "+argstring+self.otherServerArgs+"\r\n")
+        self.client.sendData("reset " + argstring + self.otherServerArgs + "\r\n")
