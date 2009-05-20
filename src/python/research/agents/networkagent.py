@@ -1,9 +1,8 @@
-from pybrain.structure.modules.sigmoidlayer import SigmoidLayer
-from pybrain.utilities import fListToString
 __author__ = "Tom Schaul"
 
+from pybrain.structure.modules.sigmoidlayer import SigmoidLayer
 from agents.marioagent import MarioAgent
-from scipy import zeros, array, ravel, rand
+from scipy import zeros, ravel, rand
 from pybrain.tools.shortcuts import buildNetwork
 
 
