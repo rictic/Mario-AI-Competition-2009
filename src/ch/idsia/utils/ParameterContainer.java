@@ -123,8 +123,8 @@ public class ParameterContainer
         {
             if (optionsHashMap.get(param) == null)
             {
-                System.err.println("InfoWarning: Default value '" + defaultOtionsHashMap.get(param) + "' for " + param +
-                        " used");
+                //System.err.println("InfoWarning: Default value '" + defaultOtionsHashMap.get(param) + "' for " + param +
+                //        " used");
                 optionsHashMap.put(param, defaultOtionsHashMap.get(param));
             }
             return optionsHashMap.get(param);

@@ -22,16 +22,16 @@ public class LargerMLPAgent implements Agent, Evolvable {
         mlp = new MLP (numberOfInputs, 6, numberOfOutputs);
     }
 
-    public LargerMLPAgent (MLP mlp) {
+    private LargerMLPAgent (MLP mlp) {
         this.mlp = mlp;
     }
 
     public Evolvable getNewInstance() {
-        return new SimpleMLPAgent(mlp.getNewInstance());
+        return new LargerMLPAgent(mlp.getNewInstance());
     }
 
     public Evolvable copy() {
-        return new SimpleMLPAgent (mlp.copy ());
+        return new LargerMLPAgent (mlp.copy ());
     }
 
     public void reset() {

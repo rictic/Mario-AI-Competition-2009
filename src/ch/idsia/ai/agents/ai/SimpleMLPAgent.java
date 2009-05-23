@@ -22,7 +22,7 @@ public class  SimpleMLPAgent extends RegisterableAgent implements Agent, Evolvab
         mlp = new MLP (numberOfInputs, 6, numberOfOutputs);
     }
 
-    public SimpleMLPAgent (MLP mlp) {
+    private SimpleMLPAgent (MLP mlp) {
         super ("SimpleMLPAgent");
         this.mlp = mlp;
     }
