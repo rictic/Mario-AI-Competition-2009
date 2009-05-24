@@ -46,7 +46,7 @@ public class EvolveIncrementally {
             task.setNumberOfSeeds(3);
             task.setStartingSeed(0);
             ES es = new ES (task, initial, populationSize);
-
+            System.out.println("Evolving " + initial + " with task " + task);
             for (int gen = 0; gen < generations; gen++) {
                 es.nextGeneration();
                 double bestResult = es.getBestFitnesses()[0];

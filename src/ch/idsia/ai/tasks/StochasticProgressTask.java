@@ -10,28 +10,27 @@ import java.util.List;
 /**
  * Created by IntelliJ IDEA.
  * User: julian
- * Date: May 23, 2009
- * Time: 11:37:47 PM
+ * Date: May 24, 2009
+ * Time: 11:21:12 PM
  */
-public class MultiSeedProgressTask implements Task {
+public class StochasticProgressTask implements Task {
 
     private EvaluationOptions options;
     private int startingSeed = 0;
     private int numberOfSeeds = 3;
 
-    public MultiSeedProgressTask(EvaluationOptions evaluationOptions) {
+    public StochasticProgressTask(EvaluationOptions evaluationOptions) {
         setOptions(evaluationOptions);
     }
 
     public double[] evaluate(Agent controller) {
         double distanceTravelled = 0;
-
+        controller.reset();
         options.setAgent(controller);
         for (int i = 0; i < numberOfSeeds; i++) {
-            controller.reset();
             options.setLevelRandSeed(startingSeed + i);
             Evaluator evaluator = new Evaluator(options);
-            List<EvaluationInfo> results = evaluator.evaluate();     
+            List<EvaluationInfo> results = evaluator.evaluate();
             EvaluationInfo result = results.get(0);
             distanceTravelled += result.computeDistancePassed();
         }
@@ -54,4 +53,5 @@ public class MultiSeedProgressTask implements Task {
     public EvaluationOptions getOptions() {
         return options;
     }
+
 }
