@@ -83,7 +83,7 @@ public class EvaluationOptions extends SimulationOptions
                 }
             }
         }
-        return Integer.parseInt(defaultOtionsHashMap.get("-port"));
+        return Integer.parseInt(defaultOptionsHashMap.get("-port"));
     }
 
     public boolean isServerAgentEnabled() {

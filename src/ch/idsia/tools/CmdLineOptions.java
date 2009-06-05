@@ -113,13 +113,13 @@ public class CmdLineOptions extends EvaluationOptions
         return b(getParameterValue("-tc"));      }
 //
 //        String value = (optionsHashMap.get("-tc") != null) ? optionsHashMap.get("-tc")  : optionsHashMap.get("-toolsConfigurator");
-//        return (value == null) ? defaultOtionsHashMap.get("-toolsConfigurator").equals("on") : value.equals("on");
+//        return (value == null) ? defaultOptionsHashMap.get("-toolsConfigurator").equals("on") : value.equals("on");
 //    }
 
     public Boolean isGameViewer() {
         return b(getParameterValue("-gv"));      }
 //        String value = (optionsHashMap.get("-gv") != null) ? optionsHashMap.get("-gv")  : optionsHashMap.get("-gameViewer");
-//        return (value != null) && value.equals("on") || defaultOtionsHashMap.get("-gameViewer").equals("on");
+//        return (value != null) && value.equals("on") || defaultOptionsHashMap.get("-gameViewer").equals("on");
 //    }
 
     public Boolean isGameViewerContinuousUpdates() {

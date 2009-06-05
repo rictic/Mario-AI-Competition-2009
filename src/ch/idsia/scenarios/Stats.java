@@ -29,14 +29,14 @@ public class Stats {
         testConfig (controller, options, startingSeed, 3, false);
         testConfig (controller, options, startingSeed, 5, true);
         testConfig (controller, options, startingSeed, 5, false);
-        testConfig (controller, options, startingSeed, 8, true);
-        testConfig (controller, options, startingSeed, 8, false);
+        //testConfig (controller, options, startingSeed, 8, true);
+        //testConfig (controller, options, startingSeed, 8, false);
         testConfig (controller, options, startingSeed, 10, true);
         testConfig (controller, options, startingSeed, 10, false);
-        testConfig (controller, options, startingSeed, 15, true);
-        testConfig (controller, options, startingSeed, 15, false);
-        testConfig (controller, options, startingSeed, 20, true);
-        testConfig (controller, options, startingSeed, 20, false);
+        //testConfig (controller, options, startingSeed, 15, true);
+        //testConfig (controller, options, startingSeed, 15, false);
+        //testConfig (controller, options, startingSeed, 20, true);
+        //testConfig (controller, options, startingSeed, 20, false);
 
         System.exit(0);
 
