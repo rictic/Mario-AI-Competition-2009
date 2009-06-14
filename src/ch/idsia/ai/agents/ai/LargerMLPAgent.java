@@ -45,13 +45,18 @@ public class LargerMLPAgent implements Agent, Evolvable {
     public boolean[] getAction(Environment observation) {
         double[] inputs;// = new double[numberOfInputs];
         byte[][] scene = observation.getLevelSceneObservation();
-        //int[][] enemies = observation.getEnemiesObservation();
+        byte[][] enemies = observation.getEnemiesObservation();
         inputs = new double[numberOfInputs];
         inputs[1] = 1;
         int which = 1;
         for (int i = -2; i < 3; i++) {
             for (int j = -2; j < 3; j++) {
                 inputs[which++] = probe(i, j, scene);
+            }
+        }
+        for (int i = -2; i < 3; i++) {
+            for (int j = -2; j < 3; j++) {
+                inputs[which++] = probe(i, j, enemies);
             }
         }
         double[] outputs = mlp.propagate (inputs);
