@@ -32,9 +32,9 @@ public class EvolveIncrementally {
         options.setPauseWorld(true);
         Evolvable initial = new SimpleMLPAgent();
         if (args.length > 0) {
-            initial = (Evolvable) RegisterableAgent.load (args[0]);
-            RegisterableAgent.registerAgent ((Agent) initial);
+            initial = (Evolvable) RegisterableAgent.load (args[0]);            
         }
+        RegisterableAgent.registerAgent ((Agent) initial);
         for (int difficulty = 0; difficulty < 11; difficulty++)
         {
             System.out.println("New EvolveIncrementally phase with difficulty = " + difficulty + " started.");

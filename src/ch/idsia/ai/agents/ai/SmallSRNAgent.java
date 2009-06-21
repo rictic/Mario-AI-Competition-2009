@@ -1,46 +1,48 @@
 package ch.idsia.ai.agents.ai;
 
-import ch.idsia.ai.Evolvable;
-import ch.idsia.ai.MLP;
-import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.ai.agents.Agent;
+import ch.idsia.ai.Evolvable;
+import ch.idsia.ai.SRN;
 import ch.idsia.mario.environments.Environment;
 
 /**
  * Created by IntelliJ IDEA.
  * User: julian
- * Date: Apr 28, 2009
- * Time: 2:09:42 PM
+ * Date: Jun 16, 2009
+ * Time: 5:26:58 PM
  */
-public class  MLPAgent implements Agent, Evolvable {
+public class SmallSRNAgent extends RegisterableAgent implements Agent, Evolvable {
 
-    private MLP mlp;
-    private String name;
+    private SRN srn;
     final int numberOfOutputs = 6;
     final int numberOfInputs = 21;
+    static private final String name = "SmallSRNAgent";
 
-    public MLPAgent () {
-        mlp = new MLP (numberOfInputs, 6, numberOfOutputs);
+    public SmallSRNAgent() {
+        super (name);
+        srn = new SRN (numberOfInputs, 6, numberOfOutputs);
     }
 
-    private MLPAgent (MLP mlp) {
-        this.mlp = mlp;
+    private SmallSRNAgent(SRN srn) {
+        super (name);
+        this.srn = srn;
     }
 
     public Evolvable getNewInstance() {
-        return new MLPAgent(mlp.getNewInstance());
+        return new SmallSRNAgent(srn.getNewInstance());
     }
 
     public Evolvable copy() {
-        return new MLPAgent (mlp.copy ());
+        return new SmallSRNAgent(srn.copy ());
     }
 
     public void reset() {
-        mlp.reset ();
+        srn.reset ();
     }
 
     public void mutate() {
-        mlp.mutate ();
+        srn.mutate ();
     }
 
     public boolean[] getAction(Environment observation) {
@@ -54,7 +56,7 @@ public class  MLPAgent implements Agent, Evolvable {
                                 probe(-1, 1, enemies), probe(0, 1, enemies), probe(1, 1, enemies),
                                 observation.isMarioOnGround() ? 1 : 0, observation.mayMarioJump() ? 1 : 0,
                                 1};
-        double[] outputs = mlp.propagate (inputs);
+        double[] outputs = srn.propagate (inputs);
         boolean[] action = new boolean[numberOfOutputs];
         for (int i = 0; i < action.length; i++) {
             action[i] = outputs[i] > 0;
@@ -71,7 +73,6 @@ public class  MLPAgent implements Agent, Evolvable {
     }
 
     public void setName(String name) {
-        this.name = name;
     }
 
     private double probe (int x, int y, byte[][] scene) {

@@ -61,7 +61,7 @@ public class MLP implements FA<double[], double[]>, Evolvable {
     public MLP copy() {
         MLP copy = new MLP(copy(firstConnectionLayer), copy(secondConnectionLayer),
                 hiddenNeurons.length, outputs.length);
-        copy.setMutationMagnitude(0.1);
+        copy.setMutationMagnitude(mutationMagnitude);
         return copy;
     }
 

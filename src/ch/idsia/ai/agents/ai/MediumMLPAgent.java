@@ -1,6 +1,7 @@
 package ch.idsia.ai.agents.ai;
 
 import ch.idsia.ai.agents.Agent;
+import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.Evolvable;
 import ch.idsia.ai.MLP;
 import ch.idsia.mario.environments.Environment;
@@ -11,27 +12,29 @@ import ch.idsia.mario.environments.Environment;
  * Date: May 13, 2009
  * Time: 11:11:33 AM
  */
-public class LargerMLPAgent implements Agent, Evolvable {
+public class MediumMLPAgent extends RegisterableAgent implements Agent, Evolvable {
 
-    private String name = "LargerMLPAgent";
+    private static final String name = "MediumMLPAgent";
     private MLP mlp;
     final int numberOfOutputs = Environment.numberOfButtons;
-    final int numberOfInputs = 26;
+    final int numberOfInputs = 53;
 
-    public LargerMLPAgent () {
+    public MediumMLPAgent() {
+        super (name);
         mlp = new MLP (numberOfInputs, 6, numberOfOutputs);
     }
 
-    private LargerMLPAgent (MLP mlp) {
+    private MediumMLPAgent(MLP mlp) {
+        super (name);
         this.mlp = mlp;
     }
 
     public Evolvable getNewInstance() {
-        return new LargerMLPAgent(mlp.getNewInstance());
+        return new MediumMLPAgent(mlp.getNewInstance());
     }
 
     public Evolvable copy() {
-        return new LargerMLPAgent (mlp.copy ());
+        return new MediumMLPAgent(mlp.copy ());
     }
 
     public void reset() {
@@ -43,10 +46,9 @@ public class LargerMLPAgent implements Agent, Evolvable {
     }
 
     public boolean[] getAction(Environment observation) {
-        double[] inputs;// = new double[numberOfInputs];
         byte[][] scene = observation.getLevelSceneObservation();
         byte[][] enemies = observation.getEnemiesObservation();
-        inputs = new double[numberOfInputs];
+        double[] inputs = new double[numberOfInputs];
         inputs[1] = 1;
         int which = 1;
         for (int i = -2; i < 3; i++) {
@@ -76,7 +78,6 @@ public class LargerMLPAgent implements Agent, Evolvable {
     }
 
     public void setName(String name) {
-        this.name = name;
     }
 
     private double probe (int x, int y, byte[][] scene) {

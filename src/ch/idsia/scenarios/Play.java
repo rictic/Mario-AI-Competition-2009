@@ -29,6 +29,8 @@ public class Play {
         options.setVisualization(true);
         options.setMaxAttempts(1);
         options.setMatlabFileName("");
+        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
+        options.setLevelDifficulty(3);
         task.setOptions(options);
 
         System.out.println ("Score: " + task.evaluate (controller));
