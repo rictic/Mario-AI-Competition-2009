@@ -43,6 +43,4 @@ class MarioEnvironment(TCPEnvironment):
         else:
             argstring += "-vis off "
         self.client.sendData("reset -maxFPS on " + argstring + self.otherServerArgs + "\r\n")
-#        self.client.sendData("reset -maxFPS on " + argstring + self.otherServerArgs + "\r\n")
-#        self.client.sendData("reset -maxFPS on " + argstring + self.otherServerArgs + "\r\n")
 

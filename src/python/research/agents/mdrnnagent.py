@@ -70,22 +70,16 @@ class MdrnnAgent(ModuleMarioAgent):
     
     def __init__(self, **args):
         self.setArgs(**args)
-        net = MarioMdrnnNetwork((22,22), hsize = self.hidden)
+        assert self.useSpecialInfo == False
+        net = MarioMdrnnNetwork((self.inGridSize,self.inGridSize), 
+                                outputs = self.usedActions,
+                                hsize = self.hidden)
         fnet = net.convertToFastNetwork()
         if fnet != None:
             net = fnet
         ModuleMarioAgent.__init__(self, net)
     
-class SimpleMdrnnAgent(SimpleModuleAgent, MdrnnAgent):
+class SimpleMdrnnAgent(MdrnnAgent, SimpleModuleAgent):
     """ Like parent class, but simplifying inputs to a 7x7 array, and outputs to 
     only 3 actions (right, jump, speed/shoot). """
-    
-    def __init__(self, **args):
-        self.setArgs(**args)
-        net = MarioMdrnnNetwork((7,7), outputs = 3, hsize = self.hidden)
-        SimpleModuleAgent.__init__(self, net)
-        fnet = net.convertToFastNetwork()
-        if fnet != None:
-            net = fnet
-        SimpleModuleAgent.__init__(self, net)
     
