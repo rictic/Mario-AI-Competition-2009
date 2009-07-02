@@ -23,31 +23,34 @@ public class Stats {
         options.setMaxFPS(true);
         System.out.println("Testing controller " + controller + " with starting seed " + startingSeed);
 
-        testConfig (controller, options, startingSeed, 0, true);
-        testConfig (controller, options, startingSeed, 0, false);
-        testConfig (controller, options, startingSeed, 3, true);
-        testConfig (controller, options, startingSeed, 3, false);
-        testConfig (controller, options, startingSeed, 5, true);
-        testConfig (controller, options, startingSeed, 5, false);
+        double competitionScore = 0;
+
+        competitionScore += testConfig (controller, options, startingSeed, 0, true);
+        competitionScore += testConfig (controller, options, startingSeed, 0, false);
+        competitionScore += testConfig (controller, options, startingSeed, 3, true);
+        competitionScore += testConfig (controller, options, startingSeed, 3, false);
+        competitionScore += testConfig (controller, options, startingSeed, 5, true);
+        competitionScore += testConfig (controller, options, startingSeed, 5, false);
         //testConfig (controller, options, startingSeed, 8, true);
         //testConfig (controller, options, startingSeed, 8, false);
-        testConfig (controller, options, startingSeed, 10, true);
-        testConfig (controller, options, startingSeed, 10, false);
+        competitionScore += testConfig (controller, options, startingSeed, 10, true);
+        competitionScore += testConfig (controller, options, startingSeed, 10, false);
         //testConfig (controller, options, startingSeed, 15, true);
         //testConfig (controller, options, startingSeed, 15, false);
         //testConfig (controller, options, startingSeed, 20, true);
         //testConfig (controller, options, startingSeed, 20, false);
-
+        System.out.println("Competition score: " + competitionScore);
         System.exit(0);
 
     }
 
-    public static void testConfig (Agent controller, EvaluationOptions options, int seed, int level, boolean paused) {
+    public static double testConfig (Agent controller, EvaluationOptions options, int seed, int level, boolean paused) {
         options.setLevelDifficulty(level);
         options.setPauseWorld(paused);
         StatisticalSummary ss = test (controller, options, seed);
         System.out.printf("Level %d %s %.4f (%.4f) (min %.4f max %.4f)\n", level, paused ? "paused" : "unpaused",
                 ss.mean(), ss.sd(), ss.min(), ss.max());
+        return ss.mean();
     }
 
 

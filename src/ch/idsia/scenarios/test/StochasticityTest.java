@@ -22,6 +22,7 @@ public class StochasticityTest {
         RegisterableAgent.registerAgent (controller);
         EvaluationOptions options = new CmdLineOptions(new String[0]);
         options.setAgent(controller);
+        options.setPauseWorld (false);
         Task task = new ProgressTask(options);
         options.setMaxFPS(true);
         options.setVisualization(false);      
