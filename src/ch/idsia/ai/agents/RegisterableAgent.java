@@ -15,6 +15,8 @@ import java.util.Set;
  */
 public class RegisterableAgent extends BasicAIAgent
 {
+    private static Agent currentAgent = null;
+
     public RegisterableAgent(String s)
     {
         super();
@@ -25,6 +27,10 @@ public class RegisterableAgent extends BasicAIAgent
     public static void registerAgent(Agent agent)
     {
         AgentsPool.put(agent.getName(), agent);
+    }
+
+    public static void setAgent(Agent agent) {
+        currentAgent = agent;
     }
 
     public static void registerAgent(String agentWOXName) throws IllegalFormatException
@@ -62,4 +68,10 @@ public class RegisterableAgent extends BasicAIAgent
             ret = AgentsPool.agentsHashMap.get(agentName.split(":")[0]); 
         return ret;
     }
+
+    public static Agent getAgent()
+    {
+        return currentAgent;
+    }
+
 }

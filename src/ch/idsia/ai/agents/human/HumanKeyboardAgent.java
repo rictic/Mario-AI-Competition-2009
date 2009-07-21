@@ -37,6 +37,7 @@ public class HumanKeyboardAgent extends KeyAdapter implements Agent
 
     public boolean[] getAction(Environment observation)
     {
+        float[] enemiesPos = observation.getEnemiesFloatPos();
         return Action;
     }
 
@@ -66,9 +67,6 @@ public class HumanKeyboardAgent extends KeyAdapter implements Agent
                 break;
             case KeyEvent.VK_RIGHT:
                 Action[Mario.KEY_RIGHT] = isPressed;
-                break;
-            case KeyEvent.VK_UP:
-                Action[Mario.KEY_UP] = isPressed;
                 break;
             case KeyEvent.VK_DOWN:
                 Action[Mario.KEY_DOWN] = isPressed;

@@ -75,6 +75,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
                 tmpData += " " + (completeObs[x][y]);
             }
         }
+//        tmpData = "O 0 10 101 0 1 0 10 10 1 0 10 0 1 010 1 01";
         server.sendSafe(tmpData);
         // TODO: StateEncoderDecoder.Encode.Decode.  zip, gzip do not send mario position. zero instead for better compression.
     }

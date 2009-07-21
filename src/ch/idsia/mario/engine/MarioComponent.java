@@ -314,12 +314,27 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     public List<String> getObservation(boolean Enemies, boolean LevelMap, boolean Complete, int ZLevel) {
         if (scene instanceof LevelScene)
-            return ((LevelScene) scene).LevelSceneAroundMarioASCII(Enemies, LevelMap, Complete, ZLevel);
+            return ((LevelScene) scene).LevelSceneAroundMarioASCII(Enemies, LevelMap, Complete, ZLevel, 1);
         else {
             //
             return new ArrayList<String>();
         }
     }
+
+//    public String getBitmapEnemiesObservation()
+//    {
+//        if (scene instanceof LevelScene)
+//            return ((LevelScene) scene).LevelSceneAroundMarioASCII(Enemies, LevelMap, Complete, ZLevel, 1);
+//        else {
+//            //
+//            return new ArrayList<String>();
+//        }
+//    }
+
+//    public String getBitmapLevelObservation()
+//    {
+//
+//    }
 
     public byte[][] getCompleteObservation() {
         if (scene instanceof LevelScene)
@@ -376,4 +391,18 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     public void setZLevelMap(int ZLevelMap) {
         this.ZLevelMap = ZLevelMap;
     }
+
+    public float[] getMarioFloatPos()
+    {
+        return new float[]{this.mario.x, this.mario.y};
+    }
+
+    public float[] getEnemiesFloatPos()
+    {
+        if (scene instanceof LevelScene)
+            return ((LevelScene) scene).enemiesFloatPos();
+        return null;
+    }
+
+
 }

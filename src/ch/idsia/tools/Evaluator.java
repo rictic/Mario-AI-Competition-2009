@@ -37,7 +37,6 @@ public class Evaluator implements Runnable
         ISimulation simulator = new BasicSimulator(evaluationOptions.getSimulationOptionsCopy());
         while (server.isRunning())
         {
-            
             String resetData = server.recvUnSafe();
             if (resetData.startsWith("ciao"))
             {

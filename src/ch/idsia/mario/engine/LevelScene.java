@@ -273,6 +273,38 @@ public class LevelScene extends Scene implements SpriteContext
         return ret;
     }
 
+    public float[] enemiesFloatPos()
+    {
+        float[] ret = new float[sprites.size()*2 - 2];
+
+        List<Float> poses = new ArrayList<Float>();
+        int i = 0;
+        for (Sprite sprite : sprites)
+        {
+            // check if is an influenceable creature
+            //todo: FIRE FLOWER -- GREATER!
+            if (sprite.kind >= Sprite.KIND_GOOMBA && sprite.kind <= Sprite.KIND_MUSHROOM)
+            {
+                ret[i] = sprite.x;
+                ret[i+1] = sprite.y;
+                i += 2;
+            }
+            continue;
+        }
+
+        if (i > 0)
+        {
+            System.out.print("Enemies Poses:" );
+            for (int j = 0; j < i/2; ++j)
+            {
+                System.out.print("               " + ret[j] + " " + ret[j + 1] + "\n");
+            }
+
+        }
+
+        return ret;
+    }
+
     public byte[][] completeObservation(int ZLevelEnemies, int ZLeveMap)
     {
         byte[][] ret = new byte[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
@@ -320,7 +352,59 @@ public class LevelScene extends Scene implements SpriteContext
     }
 
 
-    public List<String> LevelSceneAroundMarioASCII(boolean Enemies, boolean LevelMap, boolean CompleteObservation, int ZLevel){
+
+
+//    public String bitmapLevelObservation()
+//    {
+//        String ret = new String("");
+//        char block = 0;
+//        int bitCounter = 0;
+////        for (int y = MarioYInMap - Environment.HalfObsHeight, obsX = 0; y < MarioYInMap + Environment.HalfObsHeight; y++, obsX++)
+////        {
+////            for (int x = MarioXInMap - Environment.HalfObsWidth, obsY = 0; x < MarioXInMap + Environment.HalfObsWidth; x++, obsY++)
+////            {
+////                if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
+////                {
+////                    ret[obsX][obsY] = ZLevelMapElementGeneralization(level.map[x][y], ZLevel);
+////                }
+////                else
+////                    ret[obsX][obsY] = 0;
+////                if (x == MarioXInMap && y == MarioYInMap)
+////                    ret[obsX][obsY] = mario.kind;
+//
+//
+//                int temp = ZLevelMapElementGeneralization(level.map[x][y], ZLevel);
+//                ++bitCounter;
+//                if (temp != 0)
+//                {
+//                    block ^= pow(2, bitCounter);
+//                }
+//                if (bitCounter > 7)
+//                {
+//                    // update a symbol and store the current one
+//                    ret += block;
+//                    block = 0;
+//                }
+//            }
+//        }
+//
+//        for (int i = 0; i < 8; ++i)
+//        {
+//            if ()
+//        }
+//        return ret;
+//    }
+
+//    private char pow(int base, int power) {
+//        for (int i = 0; i < base; ++i)
+//        {
+//
+//        }
+//    }
+
+    public List<String> LevelSceneAroundMarioASCII(boolean Enemies, boolean LevelMap,
+                                                   boolean CompleteObservation,
+                                                   int ZLevelMap, int ZLevelCreatures){
 //        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));//        bw.write("\nTotal world width = " + level.width);
         List<String> ret = new ArrayList<String>();
         if (level != null && mario != null)
@@ -335,10 +419,10 @@ public class LevelScene extends Scene implements SpriteContext
             int MarioYInMap = (int)mario.y/16;
             ret.add("Calibrated Mario Position (x,y): (" + MarioXInMap + "," + MarioYInMap + ")\n");
 
-            byte[][] levelScene = levelSceneObservation(ZLevel);
+            byte[][] levelScene = levelSceneObservation(ZLevelMap);
             if (LevelMap)
             {
-                ret.add("~ZLevel: Z" + ZLevel + " map:\n");
+                ret.add("~ZLevel: Z" + ZLevelMap + " map:\n");
                 for (int x = 0; x < levelScene.length; ++x)
                 {
                     String tmpData = "";
@@ -351,12 +435,12 @@ public class LevelScene extends Scene implements SpriteContext
             byte[][] enemiesObservation = null;
             if (Enemies || CompleteObservation)
             {
-                enemiesObservation = enemiesObservation(ZLevel);
+                enemiesObservation = enemiesObservation(ZLevelCreatures);
             }
 
             if (Enemies)
             {
-                ret.add("~ZLevel: Z" + ZLevel + " Enemies Observation:\n");
+                ret.add("~ZLevel: Z" + ZLevelMap + " Enemies Observation:\n");
                 for (int x = 0; x < enemiesObservation.length; x++)
                 {
                     String tmpData = "";
@@ -371,7 +455,7 @@ public class LevelScene extends Scene implements SpriteContext
 
             if (CompleteObservation)
             {
-                ret.add("~ZLevel: Z" +  ZLevel + "===========\nAll objects: (LevelScene[x,y], Sprite[x,y])==/* Mario ~> MM */=====\n");
+                ret.add("~ZLevel: Z" + ZLevelMap + "===========\nAll objects: (LevelScene[x,y], Sprite[x,y])==/* Mario ~> MM */=====\n");
                 for (int x = 0; x < levelScene.length; ++x)
                 {
                     String tmpData = "";
@@ -380,8 +464,8 @@ public class LevelScene extends Scene implements SpriteContext
                     ret.add(tmpData);
                 }
 
-                byte[][] completeObservation = completeObservation(ZLevel, 1);
-                ret.add("~ZLevel: Z" +  ZLevel + "===========\nAll objects: (LevelScene[x,y], Sprite[x,y])==/* Mario ~> MM */=====\n");
+                byte[][] completeObservation = completeObservation(ZLevelMap, ZLevelCreatures);
+                ret.add("~ZLevel: Z" + ZLevelMap + "===========\nAll objects: (LevelScene[x,y], Sprite[x,y])==/* Mario ~> MM */=====\n");
                 for (int x = 0; x < levelScene.length; ++x)
                 {
                     String tmpData = "";
@@ -401,7 +485,7 @@ public class LevelScene extends Scene implements SpriteContext
     {
         try
         {
-            Level.loadBehaviors(new DataInputStream(LevelScene.class.getResourceAsStream("tiles.dat")));
+            Level.loadBehaviors(new DataInputStream(LevelScene.class.getResourceAsStream("resources/tiles.dat")));
         }
         catch (IOException e)
         {

@@ -55,6 +55,8 @@ public class ForwardAgent extends RegisterableAgent implements Agent
 
         assert(observation != null);
         byte[][] levelScene = observation.getCompleteObservation();
+        float[] marioPos = observation.getMarioFloatPos();
+        float[] enemiesPos = observation.getEnemiesFloatPos();
 
         if (levelScene[11][13] != 0 || levelScene[11][12] != 0 ||  DangerOfGap(levelScene))
         {
