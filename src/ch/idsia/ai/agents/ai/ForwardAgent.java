@@ -4,6 +4,7 @@ import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
+import ch.idsia.utils.MathX;
 
 /**
  * Created by IntelliJ IDEA.
@@ -64,7 +65,7 @@ public class ForwardAgent extends RegisterableAgent implements Agent
                     col = 0;
                 }
 
-//                if ((pow(2,j) & cur_char) != 0)
+                if ((MathX.pow(2,j) & cur_char) != 0)
                 {
 
                     try{
@@ -76,7 +77,7 @@ public class ForwardAgent extends RegisterableAgent implements Agent
                         System.out.println("col = " + col);
                     }
                 }
-//                else
+                else
                 {
                     dstate[row][col] = 0; //TODO: Simplify in one line of code.
                 }
