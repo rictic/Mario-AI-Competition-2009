@@ -48,6 +48,46 @@ public class ForwardAgent extends RegisterableAgent implements Agent
         return false;
     }
 
+    private byte[][] decode(String estate)
+    {
+        byte[][] dstate = new byte[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
+        int row = 0;
+        int col = 0;
+        for (int i = 0; i < estate.length(); ++i)
+        {
+            char cur_char = estate.charAt(i);
+            for (int j = 0; j < 8; ++j)
+            {
+                if (col > Environment.HalfObsHeight*2 - 1)
+                {
+                    ++row;
+                    col = 0;
+                }
+
+//                if ((pow(2,j) & cur_char) != 0)
+                {
+
+                    try{
+                        dstate[row][col] = 1;
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println("row = " + row);
+                        System.out.println("col = " + col);
+                    }
+                }
+//                else
+                {
+                    dstate[row][col] = 0; //TODO: Simplify in one line of code.
+                }
+            }
+            ++col;
+        }
+
+        return dstate;
+    }
+
+
     public boolean[] getAction(Environment observation)
     {
         //TODO: Discuss increasing diffuculty for handling the gaps.
@@ -57,6 +97,8 @@ public class ForwardAgent extends RegisterableAgent implements Agent
         byte[][] levelScene = observation.getCompleteObservation();
         float[] marioPos = observation.getMarioFloatPos();
         float[] enemiesPos = observation.getEnemiesFloatPos();
+        String encodedState = observation.getBitmapLevelObservation();
+        byte[][] levelSceneFromBitmap = decode(encodedState);
 
         if (levelScene[11][13] != 0 || levelScene[11][12] != 0 ||  DangerOfGap(levelScene))
         {

@@ -29,6 +29,10 @@ public interface Environment
 
     public float[] getEnemiesFloatPos();
 
+    public String getBitmapEnemiesObservation();
+
+    public String getBitmapLevelObservation();
+
     public boolean isMarioOnGround();
     public boolean mayMarioJump();
 //    public Point getMarioPosition();

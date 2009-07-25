@@ -6,6 +6,7 @@ import ch.idsia.mario.engine.level.LevelGenerator;
 import ch.idsia.mario.engine.level.SpriteTemplate;
 import ch.idsia.mario.engine.sprites.*;
 import ch.idsia.mario.environments.Environment;
+import ch.idsia.utils.MathX;
 
 import java.awt.*;
 import java.io.DataInputStream;
@@ -352,55 +353,63 @@ public class LevelScene extends Scene implements SpriteContext
     }
 
 
+    private String encode(byte[][] state)
+    {
+        String estate = "";
+        
+        return estate;
+    }
 
 
-//    public String bitmapLevelObservation()
-//    {
-//        String ret = new String("");
-//        char block = 0;
-//        int bitCounter = 0;
-////        for (int y = MarioYInMap - Environment.HalfObsHeight, obsX = 0; y < MarioYInMap + Environment.HalfObsHeight; y++, obsX++)
-////        {
-////            for (int x = MarioXInMap - Environment.HalfObsWidth, obsY = 0; x < MarioXInMap + Environment.HalfObsWidth; x++, obsY++)
-////            {
-////                if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
-////                {
-////                    ret[obsX][obsY] = ZLevelMapElementGeneralization(level.map[x][y], ZLevel);
-////                }
-////                else
-////                    ret[obsX][obsY] = 0;
-////                if (x == MarioXInMap && y == MarioYInMap)
-////                    ret[obsX][obsY] = mario.kind;
-//
-//
-//                int temp = ZLevelMapElementGeneralization(level.map[x][y], ZLevel);
-//                ++bitCounter;
-//                if (temp != 0)
-//                {
-//                    block ^= pow(2, bitCounter);
-//                }
-//                if (bitCounter > 7)
-//                {
-//                    // update a symbol and store the current one
-//                    ret += block;
-//                    block = 0;
-//                }
-//            }
-//        }
-//
-//        for (int i = 0; i < 8; ++i)
-//        {
-//            if ()
-//        }
-//        return ret;
-//    }
+    public String bitmapLevelObservation(int ZLevel)
+    {
+        String ret = new String("");
+        int MarioXInMap = (int)mario.x/16;
+        int MarioYInMap = (int)mario.y/16;
 
-//    private char pow(int base, int power) {
-//        for (int i = 0; i < base; ++i)
-//        {
-//
-//        }
-//    }
+        char block = 0;
+        char bitCounter = 0;
+        int totalBits = 0;
+        for (int y = MarioYInMap - Environment.HalfObsHeight, obsX = 0; y < MarioYInMap + Environment.HalfObsHeight; y++, obsX++)
+        {
+            for (int x = MarioXInMap - Environment.HalfObsWidth, obsY = 0; x < MarioXInMap + Environment.HalfObsWidth; x++, obsY++)
+            {
+                ++totalBits;
+                ++bitCounter;
+                if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
+                {
+                    int temp = ZLevelMapElementGeneralization(level.map[x][y], ZLevel);
+
+                    if (temp != 0)
+                    {
+                        block |= MathX.pow(2, bitCounter);
+                    }
+                }
+                if (bitCounter > 7)
+                {
+                    // update a symbol and store the current one
+                    ret += block;
+                    block = 0;
+                    bitCounter = 0;
+                }
+            }
+            if (block != 0)
+            {
+                System.out.println("block = " + block);
+                show(block);
+            }
+        }
+
+        System.out.println("totalBits = " + totalBits);
+        System.out.println("ret = " + ret);
+        return ret;
+    }
+
+    private void show(char el) {
+        for (int i = 0;i < 8; ++i)
+            System.out.print((el & MathX.pow(2,i) ) + " ");
+        System.out.println("");
+    }
 
     public List<String> LevelSceneAroundMarioASCII(boolean Enemies, boolean LevelMap,
                                                    boolean CompleteObservation,

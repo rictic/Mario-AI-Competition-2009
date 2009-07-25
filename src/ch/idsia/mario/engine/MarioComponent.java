@@ -321,20 +321,25 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         }
     }
 
-//    public String getBitmapEnemiesObservation()
-//    {
-//        if (scene instanceof LevelScene)
-//            return ((LevelScene) scene).LevelSceneAroundMarioASCII(Enemies, LevelMap, Complete, ZLevel, 1);
-//        else {
-//            //
-//            return new ArrayList<String>();
-//        }
-//    }
+    public String getBitmapEnemiesObservation()
+    {
+        if (scene instanceof LevelScene)
+            return ((LevelScene) scene).bitmapLevelObservation(1);
+        else {
+            //
+            return new String();
+        }                
+    }
 
-//    public String getBitmapLevelObservation()
-//    {
-//
-//    }
+    public String getBitmapLevelObservation()
+    {
+        if (scene instanceof LevelScene)
+            return ((LevelScene) scene).bitmapLevelObservation(1);
+        else {
+            //
+            return null;
+        }
+    }
 
     public byte[][] getCompleteObservation() {
         if (scene instanceof LevelScene)
