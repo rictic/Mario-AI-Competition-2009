@@ -24,7 +24,7 @@ public class LargeSRNAgent extends RegisterableAgent implements Agent, Evolvable
         srn = new SRN (numberOfInputs, 10, numberOfOutputs);
     }
 
-    private LargeSRNAgent(SRN srn) {
+    public LargeSRNAgent(SRN srn) {
         super (name);
         this.srn = srn;
     }

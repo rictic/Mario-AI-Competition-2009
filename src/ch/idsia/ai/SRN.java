@@ -33,7 +33,7 @@ public class SRN implements FA<double[], double[]>, Evolvable {
         mutate();
     }
 
-    private SRN(double[][] firstConnectionLayer, double[][] recurrentConnectionLayer,
+    public SRN(double[][] firstConnectionLayer, double[][] recurrentConnectionLayer,
                  double[][] secondConnectionLayer, int numberOfHidden,
                  int numberOfOutputs) {
         this.firstConnectionLayer = firstConnectionLayer;
