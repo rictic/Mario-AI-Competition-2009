@@ -28,6 +28,10 @@ public class EvaluateJLink {
     }
 
     public double evaluateLargeSRN (double[][] inputs, double[][] recurrent, double[][] output, int level) {
+        System.out.println(inputs.length+" "+inputs[0].length);
+        System.out.println(recurrent.length+" "+recurrent[0].length);
+        System.out.println(output.length+" "+output[0].length);
+
         // 98 * 6
         // 6*6
         // 6*6
@@ -47,7 +51,7 @@ public class EvaluateJLink {
         System.out.print("Testing SRN " + srn + "... ");
         double score = result.computeDistancePassed();
         System.out.println("score: " +score);
-        return 0;
+        return score;
     }
 
 }
