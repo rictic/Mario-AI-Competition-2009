@@ -28,13 +28,9 @@ public class EvaluateJLink {
     }
 
     public double evaluateLargeSRN (double[][] inputs, double[][] recurrent, double[][] output, int level) {
-        System.out.println(inputs.length+" "+inputs[0].length);
-        System.out.println(recurrent.length+" "+recurrent[0].length);
-        System.out.println(output.length+" "+output[0].length);
-
-        // 98 * 6
-        // 6*6
-        // 6*6
+        // System.out.println(inputs.length+" "+inputs[0].length);
+        // System.out.println(recurrent.length+" "+recurrent[0].length);
+        // System.out.println(output.length+" "+output[0].length);
         SRN srn = new SRN (inputs, recurrent, output, recurrent.length, output[0].length);
         Agent agent = new LargeSRNAgent(srn);
         EvaluationOptions options = new CmdLineOptions(new String[0]);
@@ -48,9 +44,9 @@ public class EvaluateJLink {
         options.setAgent(agent);
         Evaluator evaluator = new Evaluator (options);
         EvaluationInfo result = evaluator.evaluate().get(0);
-        System.out.print("Testing SRN " + srn + "... ");
+        System.out.print(".");
         double score = result.computeDistancePassed();
-        System.out.println("score: " +score);
+        // System.out.println("score: " +score);
         return score;
     }
 
