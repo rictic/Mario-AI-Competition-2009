@@ -5,7 +5,6 @@ package ch.idsia.scenarios.test;
  * User: koutnij
  * Date: Jul 27, 2009
  * Time: 4:34:37 PM
- * To change this template use File | Settings | File Templates.
  */
 public class EvaluateJLink {
 
@@ -24,6 +23,7 @@ public class EvaluateJLink {
         // 98 * 6
         // 6*6
         // 6*6
+        
         return 0;
     }
 

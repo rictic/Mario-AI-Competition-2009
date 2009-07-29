@@ -49,8 +49,8 @@ public class MediumSRNAgent extends RegisterableAgent implements Agent, Evolvabl
         byte[][] scene = observation.getLevelSceneObservation();
         byte[][] enemies = observation.getEnemiesObservation();
         double[] inputs = new double[numberOfInputs];
-        inputs[1] = 1;
-        int which = 1;
+
+        int which = 0;
         for (int i = -2; i < 3; i++) {
             for (int j = -2; j < 3; j++) {
                 inputs[which++] = probe(i, j, scene);
@@ -61,6 +61,9 @@ public class MediumSRNAgent extends RegisterableAgent implements Agent, Evolvabl
                 inputs[which++] = probe(i, j, enemies);
             }
         }
+        inputs[inputs.length - 3] = observation.isMarioOnGround() ? 1 : 0;
+        inputs[inputs.length - 2] = observation.mayMarioJump() ? 1 : 0;
+        inputs[inputs.length - 1] = 1;
         double[] outputs = srn.propagate (inputs);
         boolean[] action = new boolean[numberOfOutputs];
         for (int i = 0; i < action.length; i++) {
