@@ -20,7 +20,7 @@ public class SRNAgent implements Agent, Evolvable {
     final int numberOfInputs = 21;
 
     public SRNAgent () {
-        srn = new SRN (numberOfInputs, 6, numberOfOutputs);
+        srn = new SRN (numberOfInputs, 10, numberOfOutputs);
     }
 
     private SRNAgent (SRN srn) {

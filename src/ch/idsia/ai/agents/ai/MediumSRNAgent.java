@@ -21,7 +21,7 @@ public class MediumSRNAgent extends RegisterableAgent implements Agent, Evolvabl
 
     public MediumSRNAgent() {
         super (name);
-        srn = new SRN (numberOfInputs, 6, numberOfOutputs);
+        srn = new SRN (numberOfInputs, 10, numberOfOutputs);
     }
 
     private MediumSRNAgent(SRN srn) {

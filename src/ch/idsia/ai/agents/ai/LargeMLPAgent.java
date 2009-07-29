@@ -21,7 +21,7 @@ public class LargeMLPAgent extends RegisterableAgent implements Agent, Evolvable
 
     public LargeMLPAgent() {
         super (name);
-        mlp = new MLP (numberOfInputs, 6, numberOfOutputs);
+        mlp = new MLP (numberOfInputs, 10, numberOfOutputs);
     }
 
     private LargeMLPAgent(MLP mlp) {

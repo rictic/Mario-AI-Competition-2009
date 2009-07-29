@@ -20,7 +20,7 @@ public class  SimpleMLPAgent implements Agent, Evolvable {
     final int numberOfInputs = 10;
 
     public SimpleMLPAgent () {
-        mlp = new MLP (numberOfInputs, 6, numberOfOutputs);
+        mlp = new MLP (numberOfInputs, 10, numberOfOutputs);
     }
 
     private SimpleMLPAgent (MLP mlp) {

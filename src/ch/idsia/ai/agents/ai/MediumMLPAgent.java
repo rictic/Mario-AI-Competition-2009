@@ -21,7 +21,7 @@ public class MediumMLPAgent extends RegisterableAgent implements Agent, Evolvabl
 
     public MediumMLPAgent() {
         super (name);
-        mlp = new MLP (numberOfInputs, 6, numberOfOutputs);
+        mlp = new MLP (numberOfInputs, 10, numberOfOutputs);
     }
 
     private MediumMLPAgent(MLP mlp) {

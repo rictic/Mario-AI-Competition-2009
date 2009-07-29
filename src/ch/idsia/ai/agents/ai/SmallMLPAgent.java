@@ -21,7 +21,7 @@ public class SmallMLPAgent extends RegisterableAgent implements Agent, Evolvable
 
     public SmallMLPAgent() {
         super (name);
-        mlp = new MLP (numberOfInputs, 6, numberOfOutputs);
+        mlp = new MLP (numberOfInputs, 10, numberOfOutputs);
     }
 
     private SmallMLPAgent(MLP mlp) {

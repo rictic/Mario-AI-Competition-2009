@@ -21,7 +21,7 @@ public class SmallSRNAgent extends RegisterableAgent implements Agent, Evolvable
 
     public SmallSRNAgent() {
         super (name);
-        srn = new SRN (numberOfInputs, 6, numberOfOutputs);
+        srn = new SRN (numberOfInputs, 10, numberOfOutputs);
     }
 
     private SmallSRNAgent(SRN srn) {
