@@ -60,6 +60,10 @@ class MarioMdrnnNetwork(MultiDimensionalRNN):
                                                               outSliceTo = self.hsize*(index+1)))
                         index += 1
  
+        # special inputs
+        self.addInputModule(LinearLayer(2, name = 'specialin'))
+        self.addConnection(FullConnection(self['specialin'], o))
+ 
         self.sortModules()
         
 
@@ -70,10 +74,12 @@ class MdrnnAgent(ModuleMarioAgent):
     
     def __init__(self, **args):
         self.setArgs(**args)
-        assert self.useSpecialInfo == False
         net = MarioMdrnnNetwork((self.inGridSize,self.inGridSize), 
                                 outputs = self.usedActions,
-                                hsize = self.hidden)
+                                hsize = self.hidden,
+                                symmetricdimensions = False,
+                                symmetricdirections = False,
+                                )
         fnet = net.convertToFastNetwork()
         if fnet != None:
             net = fnet

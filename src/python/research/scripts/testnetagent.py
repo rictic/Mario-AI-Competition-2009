@@ -26,7 +26,7 @@ def combinedScore(agent, task = None):
     
 def main():
     #agent1 = SimpleMLPMarioAgent(2)
-    #agent2 = MLPMarioAgent(4)
+    #agent1 = MLPMarioAgent(4)
     #agent1 = MdrnnAgent()
     agent1 = SimpleMdrnnAgent()
     print agent1.name

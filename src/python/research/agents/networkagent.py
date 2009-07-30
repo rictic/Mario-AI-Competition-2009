@@ -2,7 +2,7 @@ __author__ = "Tom Schaul"
 
 from pybrain.structure.modules.sigmoidlayer import SigmoidLayer
 from agents.marioagent import MarioAgent
-from scipy import zeros, ravel, rand, logical_not
+from scipy import zeros, ravel, rand
 from pybrain.tools.shortcuts import buildNetwork
 
 
