@@ -15,9 +15,16 @@ public class Stats {
     public static void main(String[] args) {
 
         Agent controller = RegisterableAgent.load (args[0]);
+        final int startingSeed = Integer.parseInt (args[1]);
+        doStats (startingSeed, controller);
+        System.exit(0);
+
+    }
+
+    public static void doStats (int startingSeed, Agent controller) {
         RegisterableAgent.registerAgent (controller);
         EvaluationOptions options = new CmdLineOptions(new String[0]);
-        final int startingSeed = Integer.parseInt (args[1]);
+
         options.setMaxAttempts(1);
         options.setVisualization(false);
         options.setMaxFPS(true);
@@ -40,8 +47,6 @@ public class Stats {
         //testConfig (controller, options, startingSeed, 20, true);
         //testConfig (controller, options, startingSeed, 20, false);
         System.out.println("Competition score: " + competitionScore);
-        System.exit(0);
-
     }
 
     public static double testConfig (Agent controller, EvaluationOptions options, int seed, int level, boolean paused) {
