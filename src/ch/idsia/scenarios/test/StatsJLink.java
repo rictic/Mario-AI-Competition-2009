@@ -3,6 +3,7 @@ package ch.idsia.scenarios.test;
 import ch.idsia.ai.SRN;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.ai.LargeSRNAgent;
+import ch.idsia.scenarios.Stats;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +19,7 @@ public class StatsJLink {
         // 6*6
         SRN srn = new SRN (inputs, recurrent, output, recurrent.length, output[0].length);
         Agent agent = new LargeSRNAgent(srn);
-
+        Stats.doStats(agent, 0);
     }
 
 }

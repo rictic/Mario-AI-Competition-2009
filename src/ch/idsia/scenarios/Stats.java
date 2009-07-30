@@ -16,12 +16,12 @@ public class Stats {
 
         Agent controller = RegisterableAgent.load (args[0]);
         final int startingSeed = Integer.parseInt (args[1]);
-        doStats (startingSeed, controller);
+        doStats (controller, startingSeed);
         System.exit(0);
 
     }
 
-    public static void doStats (int startingSeed, Agent controller) {
+    public static void doStats (Agent controller, int startingSeed) {
         RegisterableAgent.registerAgent (controller);
         EvaluationOptions options = new CmdLineOptions(new String[0]);
 
