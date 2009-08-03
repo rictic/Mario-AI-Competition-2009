@@ -11,10 +11,12 @@ import ch.idsia.tools.EvaluationInfo;
 /**
  * Created by IntelliJ IDEA.
  * User: koutnij
- * Date: Jul 27, 2009
- * Time: 4:34:37 PM
+ * Date: Jul 30, 2009
+ * Time: 4:54:13 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class EvaluateJLink {
+public class PlayJLink {
+
 
 
     /** returns {in, rec, out} array. Just to make math and java codes fully independent. */
@@ -27,7 +29,7 @@ public class EvaluateJLink {
         return 7;
     }
 
-    public double evaluateLargeSRN (double[][] inputs, double[][] recurrent, double[][] output, int level, int seed) {
+    public double evaluateLargeSRN (double[][] inputs, double[][] recurrent, double[][] output, int level,int seed) {
         // System.out.println(inputs.length+" "+inputs[0].length);
         // System.out.println(recurrent.length+" "+recurrent[0].length);
         // System.out.println(output.length+" "+output[0].length);
@@ -37,8 +39,8 @@ public class EvaluateJLink {
         final int startingSeed = 0;
         options.setLevelRandSeed(seed);
         options.setMaxAttempts(1);
-        options.setVisualization(false);
-        options.setMaxFPS(true);
+        options.setVisualization(true);
+        options.setMaxFPS(false);
         options.setLevelDifficulty(level);
         options.setPauseWorld(false);
         agent.reset();
