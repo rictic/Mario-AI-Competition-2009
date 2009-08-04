@@ -17,7 +17,7 @@ def extractObservation(data):
         marioMode = int(data[4])
         coins = int(data[5])
 #        print "S: %s, F: %s " % (data[1], data[2])
-        print "status %s, dist %s, timeleft %s, mmode %s, coins %s" % (status, distance, timeLeft, marioMode, coins) 
+        #print "status %s, dist %s, timeleft %s, mmode %s, coins %s" % (status, distance, timeLeft, marioMode, coins) 
         return status, distance, timeLeft, marioMode, coins
     elif(data[0] == 'O'):
         mayMarioJump = (data[1] == 'true')
@@ -31,7 +31,3 @@ def extractObservation(data):
         return (mayMarioJump, isMarioOnGround, levelScene)
     else:
         raise "Wrong format or corrupted observation..."
-
-
-if __name__ != "__main__":
-    print "Module DataAdaptor loaded.";

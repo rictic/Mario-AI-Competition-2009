@@ -11,7 +11,7 @@ class MarioEnvironment(TCPEnvironment):
 
     # Level settings
     levelDifficulty = 5
-    levelType = 2
+    levelType = 0
     creaturesEnabled = True
     initMarioMode = 2
     levelSeed = 1

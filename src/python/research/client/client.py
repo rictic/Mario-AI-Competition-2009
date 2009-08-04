@@ -10,6 +10,8 @@ class Client:
 
     bufSize = 4096
     
+    verbose = False
+    
     def __init__(self, host, port, ownerName):
         self.Host = host
         self.Port = port
@@ -26,20 +28,24 @@ class Client:
     def connectToServer(self, host, port):
         """connects to a server"""
         try:
-            print "Client: Trying to connect to %s:%s" % (host, port)
+            if self.verbose:        
+                print "Client: Trying to connect to %s:%s" % (host, port)
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error, msg:
             sys.stderr.write("[SOCKET CREATION ERROR1] %s\n" % msg[1])
             raise
 
 #        self.sock.settimeout(2)
-        print "Timeout set to 5"
+        if self.verbose:        
+            print "Timeout set to 5"
         try:
             self.sock.connect((host, port))
-            print "Client: Connection to %s:%s succeeded!" % (host, port)
-            print "Client: Looking forward to receive greeting message..."
+            if self.verbose:        
+                print "Client: Connection to %s:%s succeeded!" % (host, port)
+                print "Client: Looking forward to receive greeting message..."
             data = self.recvData()
-            print "Client: Greeting received: %s" % data
+            if self.verbose:        
+                print "Client: Greeting received: %s" % data
 
         except socket.error, msg:
             sys.stderr.write("[CONNECTION ERROR] %s\n" % msg[1])
@@ -50,15 +56,18 @@ class Client:
 
     def printConnectionData(self):
         """Print to standard output the current connection data"""
-        print "Client: %s Connection Info: \r\nHost = %s, port = %d" % (self, self.Host, self.Port)
+        if self.verbose:        
+            print "Client: %s Connection Info: \r\nHost = %s, port = %d" % (self, self.Host, self.Port)
 
     def disconnect(self):
         """disconnects from the server"""
-        print "Client is about to close the connection"
+        if self.verbose:        
+            print "Client is about to close the connection"
         self.disconnected = True
         self.sock.send("ciao\r\n")
         self.sock.close()
-        print "Connection closed"
+        if self.verbose:        
+            print "Connection closed"
 
     def recvData(self):
         """receive arbitrary data from server"""

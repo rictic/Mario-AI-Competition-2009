@@ -1,3 +1,4 @@
+from pybrain.tests.helpers import sortedProfiling
 __author__ = "Tom Schaul"
 
 from pybrain.rl.experiments.episodic import EpisodicExperiment
@@ -28,6 +29,7 @@ def main():
     #agent1 = SimpleMLPMarioAgent(2)
     #agent1 = MLPMarioAgent(4)
     #agent1 = MdrnnAgent()
+    
     agent1 = SimpleMdrnnAgent()
     print agent1.name
     NetworkWriter.writeToFile(agent1.module, "../temp/MarioNetwork-"+agent1.name+".xml")
@@ -37,5 +39,6 @@ def main():
     
     
 if __name__ == "__main__":
-    main()
+    sortedProfiling('main()')
+    #main()
 

@@ -13,7 +13,7 @@ def main():
     print agent.name
     NetworkWriter.writeToFile(agent.module, "../temp/MarioNetwork-"+agent.name+".xml")
     
-    task = MarioTask(agent.name, timeLimit = 20)
+    task = MarioTask(agent.name, timeLimit = 200)
     exp = EpisodicExperiment(task, agent)
     res = 0
     cumul = 0

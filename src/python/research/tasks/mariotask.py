@@ -5,8 +5,6 @@ from pybrain.rl.tasks.episodic import EpisodicTask
 from client.marioenvironment import MarioEnvironment
 from time import sleep
 
-if __name__ != "__main__":
-    print "Loading %s ..." % __name__;
 
 class MarioTask(EpisodicTask):
     """Encapsulates Mario specific options and transfers them to EpisodicTask"""
