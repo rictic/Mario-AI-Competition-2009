@@ -21,8 +21,8 @@ public class Sprite
     public static final int KIND_ENEMY_FLOWER = 11;
     public static final int KIND_FLOWER_ENEMY = 12;
     public static final int KIND_SHELL = 13;
-    public static final int KIND_FIRE_FLOWER = 14;
-    public static final int KIND_MUSHROOM = 15;    
+    public static final int KIND_MUSHROOM = 14;
+    public static final int KIND_FIRE_FLOWER = 15;    
     public static final int KIND_PARTICLE = 21;
     public static final int KIND_SPARCLE = 22;
     public static final int KIND_COIN_ANIM = 20;

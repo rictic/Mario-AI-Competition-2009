@@ -59,6 +59,7 @@ public class GameViewer extends JFrame
             g.drawString("Current GAME STATE: ", 320, y_dump += 11 );
             g.setColor(Color.GREEN);
             if (toolsConfigurator.getMarioComponent() != null)
+            {
                 for (String s: toolsConfigurator.getMarioComponent().getObservation(
                         ShowEnemiesObservation.getState(),
                         ShowLevelMapObservation.getState(),
@@ -68,6 +69,9 @@ public class GameViewer extends JFrame
                     g.setColor((s.charAt(0) == '~') ? Color.YELLOW : Color.GREEN);
                     g.drawString(s, 0, y_dump += 11);
                 }
+
+            }
+
         }
         
         public void run()

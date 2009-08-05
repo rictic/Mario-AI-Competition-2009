@@ -283,7 +283,6 @@ public class LevelScene extends Scene implements SpriteContext
         for (Sprite sprite : sprites)
         {
             // check if is an influenceable creature
-            //todo: FIRE FLOWER -- GREATER!
             if (sprite.kind >= Sprite.KIND_GOOMBA && sprite.kind <= Sprite.KIND_MUSHROOM)
             {
                 ret[i] = sprite.x;
@@ -353,57 +352,110 @@ public class LevelScene extends Scene implements SpriteContext
     }
 
 
-    private String encode(byte[][] state)
+    private String encode(byte[][] state, Generalizer generalize)
     {
         String estate = "";
-        
+
         return estate;
     }
 
 
+    // Encode
+
     public String bitmapLevelObservation(int ZLevel)
     {
-        String ret = new String("");
+        String ret = "";
         int MarioXInMap = (int)mario.x/16;
         int MarioYInMap = (int)mario.y/16;
 
         char block = 0;
         char bitCounter = 0;
         int totalBits = 0;
+        int totalBytes = 0;
         for (int y = MarioYInMap - Environment.HalfObsHeight, obsX = 0; y < MarioYInMap + Environment.HalfObsHeight; y++, obsX++)
         {
             for (int x = MarioXInMap - Environment.HalfObsWidth, obsY = 0; x < MarioXInMap + Environment.HalfObsWidth; x++, obsY++)
             {
                 ++totalBits;
-                ++bitCounter;
-                if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
-                {
-                    int temp = ZLevelMapElementGeneralization(level.map[x][y], ZLevel);
-
-                    if (temp != 0)
-                    {
-                        block |= MathX.pow(2, bitCounter);
-                    }
-                }
                 if (bitCounter > 7)
                 {
                     // update a symbol and store the current one
                     ret += block;
+                    ++totalBytes;
                     block = 0;
                     bitCounter = 0;
                 }
+                if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
+                {
+                    int temp = ZLevelMapElementGeneralization(level.map[x][y], ZLevel);
+                    if (temp != 0)
+                        block |= MathX.pow(2, bitCounter);
+                }
+                ++bitCounter;
             }
             if (block != 0)
             {
                 System.out.println("block = " + block);
                 show(block);
             }
+
         }
 
+        if (bitCounter > 0)
+            ret += block;
+
         System.out.println("totalBits = " + totalBits);
+        System.out.println("totalBytes = " + totalBytes);
         System.out.println("ret = " + ret);
         return ret;
     }
+
+    public String bitmapEnemiesObservation(int ZLevel)
+    {
+        String ret = "";
+        byte[][] enemiesObservation = enemiesObservation(ZLevel);
+        int MarioXInMap = (int)mario.x/16;
+        int MarioYInMap = (int)mario.y/16;
+
+        char block = 0;
+        char bitCounter = 0;
+        int totalBits = 0;
+        int totalBytes = 0;
+        for (int i = 0; i < enemiesObservation.length; ++i)
+        {
+            for (int j = 0; j < enemiesObservation[0].length; ++j)
+            {
+                ++totalBits;
+                if (bitCounter > 7)
+                {
+                    // update a symbol and store the current one
+                    ret += block;
+                    ++totalBytes;
+                    block = 0;
+                    bitCounter = 0;
+                }
+                int temp = enemiesObservation[i][j] ;
+                if (temp != -1)
+                    block |= MathX.pow(2, bitCounter);
+                ++bitCounter;
+            }
+            if (block != 0)
+            {
+                System.out.println("block = " + block);
+                show(block);
+            }
+
+        }
+
+        if (bitCounter > 0)
+            ret += block;
+
+        System.out.println("totalBits = " + totalBits);
+        System.out.println("totalBytes = " + totalBytes);
+        System.out.println("ret = " + ret);
+        return ret;
+    }
+
 
     private void show(char el) {
         for (int i = 0;i < 8; ++i)

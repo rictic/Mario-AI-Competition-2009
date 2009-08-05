@@ -324,7 +324,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     public String getBitmapEnemiesObservation()
     {
         if (scene instanceof LevelScene)
-            return ((LevelScene) scene).bitmapLevelObservation(1);
+            return ((LevelScene) scene).bitmapEnemiesObservation(1);
         else {
             //
             return new String();

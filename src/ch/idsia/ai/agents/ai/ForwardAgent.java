@@ -52,13 +52,18 @@ public class ForwardAgent extends RegisterableAgent implements Agent
     private byte[][] decode(String estate)
     {
         byte[][] dstate = new byte[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
+        for (int i = 0; i < dstate.length; ++i)
+            for (int j = 0; j < dstate[0].length; ++j)
+                dstate[i][j] = 2;
         int row = 0;
         int col = 0;
+        int totalBitsDecoded = 0;
         for (int i = 0; i < estate.length(); ++i)
         {
             char cur_char = estate.charAt(i);
             for (int j = 0; j < 8; ++j)
             {
+                totalBitsDecoded++;
                 if (col > Environment.HalfObsHeight*2 - 1)
                 {
                     ++row;
@@ -81,10 +86,13 @@ public class ForwardAgent extends RegisterableAgent implements Agent
                 {
                     dstate[row][col] = 0; //TODO: Simplify in one line of code.
                 }
+                ++col;
+                if (totalBitsDecoded == 484)
+                    break;
             }
-            ++col;
         }
 
+        System.out.println("\ntotalBitsDecoded = " + totalBitsDecoded);
         return dstate;
     }
 
@@ -100,8 +108,52 @@ public class ForwardAgent extends RegisterableAgent implements Agent
         float[] enemiesPos = observation.getEnemiesFloatPos();
         String encodedState = observation.getBitmapLevelObservation();
         byte[][] levelSceneFromBitmap = decode(encodedState);
+        encodedState = observation.getBitmapEnemiesObservation();
+        byte[][] enemiesFromBitmap = decode(encodedState);
 
-        if (levelScene[11][13] != 0 || levelScene[11][12] != 0 ||  DangerOfGap(levelScene))
+        System.out.println("\nEnemies BIMAP:");
+        for (int i = 0; i < enemiesFromBitmap.length; ++i)
+        {
+            for (int j = 0; j < enemiesFromBitmap[0].length; ++j)
+            {
+                if (enemiesFromBitmap[i][j] != 0)
+//                    System.out.print( "1 ");
+                    System.out.print(enemiesFromBitmap[i][j] + " ");
+                else
+                    System.out.print( "  ");
+            }
+            System.out.println("");
+        }
+
+        System.out.println("\nBItmaP:");
+        for (int i = 0; i < levelSceneFromBitmap.length; ++i)
+        {
+            for (int j = 0; j < levelSceneFromBitmap[0].length; ++j)
+            {
+                if (levelSceneFromBitmap[i][j] != 0)
+//                    System.out.print( "1 ");
+                    System.out.print(levelSceneFromBitmap[i][j] + " ");
+                else
+                    System.out.print( "  ");
+            }
+            System.out.println("");
+        }
+
+        System.out.println("\nLEVELScene:");
+        for (int i = 0; i < levelScene.length; ++i)
+        {
+            for (int j = 0; j < levelScene[0].length; ++j)
+            {
+                if (levelScene[i][j] != 0)
+                    System.out.print( "1 ");
+                else
+                    System.out.print( "  ");
+            }
+            System.out.println("");
+        }
+
+        
+        if (levelSceneFromBitmap[11][13] != 0 || levelSceneFromBitmap[11][12] != 0 ||  DangerOfGap(levelSceneFromBitmap))
         {
             if (observation.mayMarioJump() || ( !observation.isMarioOnGround() && action[Mario.KEY_JUMP]))
             {
@@ -121,7 +173,31 @@ public class ForwardAgent extends RegisterableAgent implements Agent
             action[Mario.KEY_JUMP] = false;
         }
 
-        action[Mario.KEY_SPEED] = DangerOfGap(levelScene);
+        action[Mario.KEY_SPEED] = DangerOfGap(levelSceneFromBitmap);
         return action;
+
+
+//        if (levelScene[11][13] != 0 || levelScene[11][12] != 0 ||  DangerOfGap(levelScene))
+//        {
+//            if (observation.mayMarioJump() || ( !observation.isMarioOnGround() && action[Mario.KEY_JUMP]))
+//            {
+//                action[Mario.KEY_JUMP] = true;
+//            }
+//            ++trueJumpCounter;
+//        }
+//        else
+//        {
+//            action[Mario.KEY_JUMP] = false;
+//            trueJumpCounter = 0;
+//        }
+//
+//        if (trueJumpCounter > 16)
+//        {
+//            trueJumpCounter = 0;
+//            action[Mario.KEY_JUMP] = false;
+//        }
+//
+//        action[Mario.KEY_SPEED] = DangerOfGap(levelScene);
+//        return action;
     }
 }
