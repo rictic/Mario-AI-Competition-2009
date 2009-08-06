@@ -13,6 +13,13 @@
     <tstamp/>
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${build}"/>
+    <copy todir="${build}/ch/idsia/mario/engine/resources">
+      <fileset dir="${src}/ch/idsia/mario/engine/resources">
+        <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+                  
+                  
   </target>
 
   <target name="compile" depends="init"
@@ -26,20 +33,10 @@
       </classpath>
     </javac>
   </target>
-
-  <target name="dist" depends="compile"
-        description="generate the distribution" >
-    <!-- Create the distribution directory -->
-    <mkdir dir="${dist}/lib"/>
-
-    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/MyProject-${DSTAMP}.jar" basedir="${build}"/>
-  </target>
-
   <target name="play" depends="compile"
         description="tests Mario whether it works" >
     <!-- Create the distribution directory -->
-    <java classname="ch.idsia.scenarios.Play" dir="${build}">
+    <java classname="ch.idsia.scenarios.Play" dir="${build}" failonerror="false" fork="true">
       <classpath>
          <fileset dir="${lib}">
            <include name="**/*.jar" />
