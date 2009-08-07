@@ -78,8 +78,8 @@ public class ForwardAgent extends RegisterableAgent implements Agent
                     }
                     catch (Exception e)
                     {
-                        System.out.println("row = " + row);
-                        System.out.println("col = " + col);
+                     //   System.out.println("row = " + row);
+                     //   System.out.println("col = " + col);
                     }
                 }
                 else
@@ -92,7 +92,7 @@ public class ForwardAgent extends RegisterableAgent implements Agent
             }
         }
 
-        System.out.println("\ntotalBitsDecoded = " + totalBitsDecoded);
+        //System.out.println("\ntotalBitsDecoded = " + totalBitsDecoded);
         return dstate;
     }
 
@@ -110,7 +110,7 @@ public class ForwardAgent extends RegisterableAgent implements Agent
         byte[][] levelSceneFromBitmap = decode(encodedState);
         encodedState = observation.getBitmapEnemiesObservation();
         byte[][] enemiesFromBitmap = decode(encodedState);
-
+        /*
         System.out.println("\nEnemies BIMAP:");
         for (int i = 0; i < enemiesFromBitmap.length; ++i)
         {
@@ -151,7 +151,7 @@ public class ForwardAgent extends RegisterableAgent implements Agent
             }
             System.out.println("");
         }
-
+        */
         
         if (levelSceneFromBitmap[11][13] != 0 || levelSceneFromBitmap[11][12] != 0 ||  DangerOfGap(levelSceneFromBitmap))
         {

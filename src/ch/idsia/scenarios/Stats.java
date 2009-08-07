@@ -17,7 +17,7 @@ public class Stats {
         Agent controller = RegisterableAgent.load (args[0]);
         final int startingSeed = Integer.parseInt (args[1]);
         doStats (controller, startingSeed);
-        System.exit(0);
+        //System.exit(0);
 
     }
 

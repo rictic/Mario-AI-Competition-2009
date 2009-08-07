@@ -20,8 +20,7 @@ public interface Environment
     // always centered on the agent
     public byte[][] getCompleteObservation();
 
-    public byte[][] getEnemiesObservation(); // TODO: think of this:
-    // TODO: usually < 5 and therefore matrix would be Very sparce. Probably should change to list?
+    public byte[][] getEnemiesObservation();
 
     public byte[][] getLevelSceneObservation();
 

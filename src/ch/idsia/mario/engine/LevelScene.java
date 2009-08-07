@@ -294,11 +294,11 @@ public class LevelScene extends Scene implements SpriteContext
 
         if (i > 0)
         {
-            System.out.print("Enemies Poses:" );
+           /* System.out.print("Enemies Poses:" );
             for (int j = 0; j < i/2; ++j)
             {
                 System.out.print("               " + ret[j] + " " + ret[j + 1] + "\n");
-            }
+            }  */
 
         }
 
@@ -395,7 +395,7 @@ public class LevelScene extends Scene implements SpriteContext
             }
             if (block != 0)
             {
-                System.out.println("block = " + block);
+               // System.out.println("block = " + block);
                 show(block);
             }
 
@@ -404,9 +404,9 @@ public class LevelScene extends Scene implements SpriteContext
         if (bitCounter > 0)
             ret += block;
 
-        System.out.println("totalBits = " + totalBits);
-        System.out.println("totalBytes = " + totalBytes);
-        System.out.println("ret = " + ret);
+        //System.out.println("totalBits = " + totalBits);
+        //System.out.println("totalBytes = " + totalBytes);
+        //System.out.println("ret = " + ret);
         return ret;
     }
 
@@ -441,7 +441,7 @@ public class LevelScene extends Scene implements SpriteContext
             }
             if (block != 0)
             {
-                System.out.println("block = " + block);
+              //  System.out.println("block = " + block);
                 show(block);
             }
 
@@ -450,17 +450,17 @@ public class LevelScene extends Scene implements SpriteContext
         if (bitCounter > 0)
             ret += block;
 
-        System.out.println("totalBits = " + totalBits);
-        System.out.println("totalBytes = " + totalBytes);
-        System.out.println("ret = " + ret);
+        //System.out.println("totalBits = " + totalBits);
+        //System.out.println("totalBytes = " + totalBytes);
+        //System.out.println("ret = " + ret);
         return ret;
     }
 
 
     private void show(char el) {
-        for (int i = 0;i < 8; ++i)
-            System.out.print((el & MathX.pow(2,i) ) + " ");
-        System.out.println("");
+     //   for (int i = 0;i < 8; ++i)
+     //       System.out.print((el & MathX.pow(2,i) ) + " ");
+     //   System.out.println("");
     }
 
     public List<String> LevelSceneAroundMarioASCII(boolean Enemies, boolean LevelMap,

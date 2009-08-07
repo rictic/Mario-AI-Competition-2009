@@ -33,6 +33,6 @@ public class Play {
         options.setLevelDifficulty(3);
         task.setOptions(options);
 
-        System.out.println ("Score: " + task.evaluate (controller));
+        System.out.println ("Score: " + task.evaluate (controller)[0]);
     }
 }
