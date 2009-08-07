@@ -9,8 +9,6 @@ def decode(estate):
     """
     decodes the encoded state estate, which is a string of 61 chars
     """
-    levelScene = numpy.empty(shape = (22, 22), dtype = numpy.int)
-    enemies = numpy.empty(shape = (22, 22), dtype = numpy.int)
     dstate = numpy.empty(shape = (22, 22), dtype = numpy.int)
     for i in range(22):
         for j in range(22):
@@ -26,7 +24,7 @@ def decode(estate):
                 row += 1
                 col = 0
             if (powsof2[j] & ord(cur_char) != 0):
-                    dstate[row, col] = 1
+                dstate[row, col] = 1
             else:
                 dstate[row, col] = 0
             col += 1
@@ -64,11 +62,15 @@ def extractObservation(data):
         return (mayMarioJump, isMarioOnGround, levelScene)
     elif(data[0][0] == 'E'): #Encoded observation, fastTCP mode, have to be decoded
 #        assert len(data) == eobsLength
-        print "E",
         mayMarioJump = (data[0][1] == '1')
         isMarioOnGround = (data[0][2] == '1')
         levelScene = decode(data[0][3:64])
-        enemies = decode(data[0][64:])
+        for i in range(22):
+            for j in range(22):
+                print levelScene[i, j], ' ',
+            print 
+        
+#        enemies = decode(data[0][64:])
         return (mayMarioJump, isMarioOnGround, levelScene)
     else:
         raise "Wrong format or corrupted observation..."
