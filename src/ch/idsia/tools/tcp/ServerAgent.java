@@ -19,6 +19,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
 {
     Server server = null;
     private int port;
+    private TCP_MODE tcpMode;
 
     public ServerAgent(int port, boolean enable)
     {
@@ -61,9 +62,10 @@ public class ServerAgent extends RegisterableAgent implements Agent
             this.createServer(port);
     }
 
-    private void sendLevelSceneObservation(Environment observation)
+    private void sendCompleteObservation(Environment observation)
     {
 //        byte[][] levelScene = observation.getLevelSceneObservation();
+        // MERGED
         byte[][] completeObs = observation.getCompleteObservation();
 
         String tmpData = "O " +
@@ -76,8 +78,31 @@ public class ServerAgent extends RegisterableAgent implements Agent
             }
         }
 //        tmpData = "O 0 10 101 0 1 0 10 10 1 0 10 0 1 010 1 01";
+
         server.sendSafe(tmpData);
         // TODO: StateEncoderDecoder.Encode.Decode.  zip, gzip do not send mario position. zero instead for better compression.
+    }
+
+    private void sendObservation(Environment observation)
+    {
+        if (this.tcpMode == TCP_MODE.SIMPLE_TCP)
+        {
+            this.sendCompleteObservation(observation);
+        }
+        else if (this.tcpMode == TCP_MODE.FAST_TCP)
+        {
+            this.sendBitmapObservation(observation);
+        }
+    }
+
+    private void sendBitmapObservation(Environment observation)
+    {
+        String tmpData =  "E " +
+                          observation.mayMarioJump() + " " +
+                          observation.isMarioOnGround() +
+                          observation.getBitmapLevelObservation() +
+                          observation.getBitmapEnemiesObservation();
+        server.sendSafe(tmpData);
     }
 
     public void integrateEvaluationInfo(EvaluationInfo evaluationInfo)
@@ -114,7 +139,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
         try
         {
 //            System.out.println("ServerAgent: sending observation...");
-            sendLevelSceneObservation(observation);
+            sendCompleteObservation(observation);
             action = receiveAction();
         }
         catch (IOException e)
