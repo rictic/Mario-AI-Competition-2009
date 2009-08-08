@@ -30,10 +30,12 @@ public class Play {
         options.setVisualization(true);
         options.setMaxAttempts(1);
         options.setMatlabFileName("");
-        options.setLevelRandSeed(1);//(int) (Math.random () * Integer.MAX_VALUE));
+        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
         options.setLevelDifficulty(10);
         task.setOptions(options);
 
-        System.out.println ("Score: " + ArrayUtils.toString(task.evaluate(controller)));
+        System.out.println("Score: " + ArrayUtils.toString(task.evaluate(controller)));
+        System.out.println("Seed: " + options.getLevelRandSeed());
+        System.out.println("Difficulty: " + options.getLevelDifficulty());
     }
 }

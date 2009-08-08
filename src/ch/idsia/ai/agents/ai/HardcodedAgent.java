@@ -126,6 +126,7 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	private final static int EMPTY = 0;
 	private final static int COIN = 34;
 	private final static int SOLID = -10;
+	private final static int CANNON = 46;
 	private final static int PLATFORM = -11;
 	private final static int PIPE = 20;
 	private final static int COIN_QUESTIONMARK_BOX = 21;
@@ -133,12 +134,15 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	private final static int COIN_BRICK = 17;
 	private final static int ITEM_BRICK = 18;
 	private final static int BRICK = 16;
-
+	private final static int EDGE_BRICK = -12;
+	
 	private final static int MARIO = 1;
 	private String asciiLevel(byte levelSquare) {
 		switch(levelSquare) {
 			case EMPTY: return " ";
 			case COIN: return "O";
+			case CANNON: 
+			case EDGE_BRICK:
 			case SOLID: return "X";
 			case PLATFORM: return "-";
 			case PIPE: return "P";
@@ -154,12 +158,28 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	
 	private final static int BLANK = -1;
 	private final static int GOOMBA = 2;
+	private final static int WINGED_GOOMBA = 3;
+	private final static int RED_KOOPA_TROOPA = 4;
+	private final static int GREEN_KOOPA_TROOPA = 6;
+	private final static int GREEN_PARA_TROOPA = 7;
+	private final static int BULLET_BILL = 8;
+	private final static int PIRANHAPLANT = 12;
+	private final static int TROOPA_SHELL = 13;
+	private final static int SPIKEY = 9;
 	private final static int FIREFLOWER = 15;
 	private final static int FIREBALL = 25;
 	private String asciiEnemy(byte enemySquare) {
 		switch(enemySquare) {
 			case MARIO: return "M";
 			case GOOMBA: return "G";
+			case RED_KOOPA_TROOPA:
+			case GREEN_KOOPA_TROOPA: return "K";
+			case WINGED_GOOMBA:
+			case GREEN_PARA_TROOPA: return "W";
+			case TROOPA_SHELL: return "D";
+			case SPIKEY: return "S";
+			case BULLET_BILL: return "<";
+			case PIRANHAPLANT: return "V";
 			case FIREFLOWER: return "F";
 			case FIREBALL: return "*";
 			default: return ""+enemySquare;
