@@ -1,4 +1,4 @@
-package ch.idsia.ai.agents.ai;
+package com.reddit.programming.mario;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
