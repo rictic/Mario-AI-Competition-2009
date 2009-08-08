@@ -4,6 +4,7 @@ import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
+import ch.idsia.mario.engine.GlobalOptions;
 
 //Based on ForwardAgent
 
@@ -68,11 +69,12 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 				scene[y][x] = asciiEnemy(enemy);
 			}
 		
-		for (String[] sceneRow : scene){
-			for(String square : sceneRow)
-				System.out.print(square + " ");
-			System.out.println();
-		}
+		if (GlobalOptions.GameVeiwerOn)
+			for (String[] sceneRow : scene){
+				for(String square : sceneRow)
+					System.out.print(square + " ");
+				System.out.println();
+			}
 
 		if (levelScene[11][13] != 0 || levelScene[11][12] != 0 ||  DangerOfGap(levelScene))
 		{
