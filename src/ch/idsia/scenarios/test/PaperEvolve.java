@@ -1,16 +1,15 @@
 package ch.idsia.scenarios.test;
 
-import ch.idsia.tools.EvaluationOptions;
-import ch.idsia.tools.CmdLineOptions;
-import ch.idsia.ai.Evolvable;
-import ch.idsia.ai.ea.ES;
-import ch.idsia.ai.tasks.MultiDifficultyProgressTask;
-import ch.idsia.ai.tasks.ProgressTask;
-import ch.idsia.ai.agents.ai.*;
-import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.ai.agents.Agent;
-import ch.idsia.scenarios.Stats;
 import wox.serial.Easy;
+import ch.idsia.ai.Evolvable;
+import ch.idsia.ai.agents.Agent;
+import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.ai.agents.ai.LargeSRNAgent;
+import ch.idsia.ai.ea.ES;
+import ch.idsia.ai.tasks.ProgressTask;
+import ch.idsia.scenarios.Stats;
+import ch.idsia.tools.CmdLineOptions;
+import ch.idsia.tools.EvaluationOptions;
 
 /**
  * Created by IntelliJ IDEA.

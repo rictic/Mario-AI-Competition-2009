@@ -6,9 +6,8 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.File;
-import java.util.Iterator;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
