@@ -69,13 +69,14 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 				scene[y][x] = asciiEnemy(enemy);
 			}
 		
-		if (GlobalOptions.GameVeiwerOn)
+		if ((GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn) {
 			for (String[] sceneRow : scene){
 				for(String square : sceneRow)
 					System.out.print(square + " ");
 				System.out.println();
 			}
-
+		}
+		
 		if (levelScene[11][13] != 0 || levelScene[11][12] != 0 ||  DangerOfGap(levelScene))
 		{
 			if (observation.mayMarioJump() || ( !observation.isMarioOnGround() && action[Mario.KEY_JUMP]))
@@ -100,6 +101,10 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 		}
 
 		action[Mario.KEY_SPEED] = !fireballDetected;
+		if (oneIn(10))
+			action[Mario.KEY_SPEED] = !action[Mario.KEY_SPEED];
+		if (oneIn(100))
+			action[Mario.KEY_JUMP] = !action[Mario.KEY_JUMP];
 		return action;
 	}
 	
@@ -121,6 +126,10 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 			case FIREBALL: return false;
 			default: return true;
 		}
+	}
+	
+	private boolean oneIn(int num) {
+		return ((int)(Math.random () * num)) == 1;
 	}
 	
 	private final static int EMPTY = 0;
