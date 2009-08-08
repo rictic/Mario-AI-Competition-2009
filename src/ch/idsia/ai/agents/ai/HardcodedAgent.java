@@ -51,6 +51,7 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 		byte[][] enemiesScene = observation.getEnemiesObservation();
 		
 		String[][] scene = new String[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
+		boolean fireballDetected = false;
 		
 		for (int y = 0; y < levelScene.length; ++y)
 			for (int x = 0; x < levelScene[0].length; ++x)
@@ -62,6 +63,8 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 					continue;
 				if (enemy == MARIO)
 					marioPosition = new int[]{y,x};
+				if (enemy == FIREBALL)
+					fireballDetected = true;
 				scene[y][x] = asciiEnemy(enemy);
 			}
 		
@@ -94,22 +97,30 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 			action[Mario.KEY_JUMP] = false;
 		}
 
-		action[Mario.KEY_SPEED] = DangerOfGap(levelScene);
+		action[Mario.KEY_SPEED] = !fireballDetected;
 		return action;
 	}
 	
 	private boolean dangerousEnemies(byte[][] enemiesScene) {
 		int y = marioPosition[0];
 		int x = marioPosition[1];
-		if (enemiesScene[y][x] != BLANK && enemiesScene[y][x] != MARIO)
-			return true;
-		if (enemiesScene[y][x+1] != BLANK)
-			return true;
-		if (enemiesScene[y][x+2] != BLANK)
+		if (isDangerous(enemiesScene[y][x])
+		  ||isDangerous(enemiesScene[y][x+1])
+		  ||isDangerous(enemiesScene[y][x+2]))
 			return true;
 		return false;
 	}
-
+	
+	private boolean isDangerous(byte enemy) {
+		switch(enemy) {
+			case MARIO:
+			case BLANK:
+			case FIREFLOWER:
+			case FIREBALL: return false;
+			default: return true;
+		}
+	}
+	
 	private final static int EMPTY = 0;
 	private final static int COIN = 34;
 	private final static int SOLID = -10;
@@ -120,6 +131,7 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	private final static int COIN_BRICK = 17;
 	private final static int ITEM_BRICK = 18;
 	private final static int BRICK = 16;
+
 	private final static int MARIO = 1;
 	private String asciiLevel(byte levelSquare) {
 		switch(levelSquare) {
@@ -140,10 +152,14 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	
 	private final static int BLANK = -1;
 	private final static int GOOMBA = 2;
+	private final static int FIREFLOWER = 15;
+	private final static int FIREBALL = 25;
 	private String asciiEnemy(byte enemySquare) {
 		switch(enemySquare) {
 			case MARIO: return "M";
 			case GOOMBA: return "G";
+			case FIREFLOWER: return "F";
+			case FIREBALL: return "*";
 			default: return ""+enemySquare;
 		}
 	}
