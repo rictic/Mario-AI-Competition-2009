@@ -7,6 +7,7 @@ import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.EvaluationOptions;
+import ch.idsia.utils.ArrayUtils;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,6 +34,6 @@ public class Play {
         options.setLevelDifficulty(3);
         task.setOptions(options);
 
-        System.out.println ("Score: " + task.evaluate (controller));
+        System.out.println ("Score: " + ArrayUtils.toString(task.evaluate(controller)));
     }
 }
