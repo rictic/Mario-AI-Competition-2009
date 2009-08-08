@@ -114,22 +114,22 @@ public class Server
     {
         if (!message.startsWith("FIT"))
         {
-            int len = message.split(" ").length;
-            if (len != this.requiredSentDataSize)
-            {
-                try
-                {
-                    throw new Exception("Actual data size " + len + "of the sending message" + message +
-                            "does not match required value " + requiredSentDataSize);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                    restartServer();
-                    return STATUS.ERROR_SENDING;
-                }
-            }
-            else
+//            int len = message.split(" ").length;
+//            if (len != this.requiredSentDataSize && len != 6)
+//            {
+//                try
+//                {
+//                    throw new Exception("Actual data size " + len + " of the sending message" + message +
+//                            " does not match required value " + requiredSentDataSize);
+//                }
+//                catch (Exception e)
+//                {
+//                    e.printStackTrace();
+//                    restartServer();
+//                    return STATUS.ERROR_SENDING;
+//                }
+//            }
+//            else
             {
                 this.send(message);
             }

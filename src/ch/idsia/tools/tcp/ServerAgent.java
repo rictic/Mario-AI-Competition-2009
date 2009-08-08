@@ -19,7 +19,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
 {
     Server server = null;
     private int port;
-    private TCP_MODE tcpMode;
+    private TCP_MODE tcpMode = TCP_MODE.FAST_TCP;
 
     public ServerAgent(int port, boolean enable)
     {
@@ -97,9 +97,9 @@ public class ServerAgent extends RegisterableAgent implements Agent
 
     private void sendBitmapObservation(Environment observation)
     {
-        String tmpData =  "E " +
-                          observation.mayMarioJump() + " " +
-                          observation.isMarioOnGround() +
+        String tmpData =  "E" +
+                          (observation.mayMarioJump() ? "1" : "0")  +
+                          (observation.isMarioOnGround() ? "1" : "0") +
                           observation.getBitmapLevelObservation() +
                           observation.getBitmapEnemiesObservation();
         server.sendSafe(tmpData);
@@ -139,7 +139,8 @@ public class ServerAgent extends RegisterableAgent implements Agent
         try
         {
 //            System.out.println("ServerAgent: sending observation...");
-            sendCompleteObservation(observation);
+//            sendCompleteObservation(observation);
+            sendObservation(observation);
             action = receiveAction();
         }
         catch (IOException e)

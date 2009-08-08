@@ -93,4 +93,9 @@ public class EvaluationOptions extends SimulationOptions
     public boolean isServerMode() {
         return b(getParameterValue("-server"));
     }
+
+    public boolean isFastTCP()
+    {
+        return b(getParameterValue("-fastTCP"));
+    }
 }
