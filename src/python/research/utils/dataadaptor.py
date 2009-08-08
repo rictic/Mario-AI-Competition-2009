@@ -3,12 +3,14 @@ __date__ = "$Apr 30, 2009 1:53:54 PM$"
 
 import numpy
     
-powsof2 = (1, 2, 4, 8, 16, 32, 64, 128, 256)
+counter = 0
+
 
 def decode(estate):
     """
     decodes the encoded state estate, which is a string of 61 chars
     """
+    powsof2 = (1, 2, 4, 8, 16, 32, 64, 128)
     dstate = numpy.empty(shape = (22, 22), dtype = numpy.int)
     for i in range(22):
         for j in range(22):
@@ -16,14 +18,15 @@ def decode(estate):
     row = 0
     col = 0
     totalBitsDecoded = 0
+#    assert len(estate) == 61, "Error in data size given %d! Required: %d \n data: %s " % (len(estate), 61, estate)
     for i in range(len(estate)):
         cur_char = estate[i]
         for j in range(8):
             totalBitsDecoded += 1
-            if (col > 11 * 2 - 1):
+            if (col > 21):
                 row += 1
                 col = 0
-            if (powsof2[j] & ord(cur_char) != 0):
+            if ((int(powsof2[j]) & int(ord(cur_char))) != 0):
                 dstate[row, col] = 1
             else:
                 dstate[row, col] = 0
@@ -40,6 +43,24 @@ def extractObservation(data):
     """
     obsLength = 487
     levelScene = numpy.empty(shape = (22, 22), dtype = numpy.int)
+
+    if(data[0] == 'E'): #Encoded observation, fastTCP mode, have to be decoded
+#        assert len(data) == eobsLength
+        mayMarioJump = (data[1] == '1')
+        isMarioOnGround = (data[2] == '1')
+        levelScene = decode(data[3:64])
+#        if counter > 100:
+#            counter = 0
+        for i in range(22):
+            for j in range(22):
+               if levelScene[i, j] != 0:
+                   print '1',
+               else:
+                   print ' ',
+            print 
+        
+#        enemies = decode(data[0][64:])
+        return (mayMarioJump, isMarioOnGround, levelScene)
     data = data.split(' ')
     if (data[0] == 'FIT'):
         status = int(data[1])
@@ -59,18 +80,17 @@ def extractObservation(data):
             for j in range(22):
                 levelScene[i, j] = int(data[k + 3])
                 k += 1
-        return (mayMarioJump, isMarioOnGround, levelScene)
-    elif(data[0][0] == 'E'): #Encoded observation, fastTCP mode, have to be decoded
-#        assert len(data) == eobsLength
-        mayMarioJump = (data[0][1] == '1')
-        isMarioOnGround = (data[0][2] == '1')
-        levelScene = decode(data[0][3:64])
+
+#        if counter > 100:
+#            counter = 0        
         for i in range(22):
             for j in range(22):
-                print levelScene[i, j], ' ',
+               if levelScene[i, j] != 0:
+                   print 1,
+               else:
+                   print ' ',
             print 
-        
-#        enemies = decode(data[0][64:])
+       
         return (mayMarioJump, isMarioOnGround, levelScene)
     else:
         raise "Wrong format or corrupted observation..."
