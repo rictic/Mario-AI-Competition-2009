@@ -14,12 +14,15 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	private int jumpCounter = 0;
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
+	private ASCIIFrame asciiFrame;
 	
 	public HardcodedAgent()
 	{
 		super("HardcodedAgent");
 		action = new boolean[Environment.numberOfButtons];
 		reset();
+		
+		asciiFrame = new ASCIIFrame();
 	}
 
 	@Override
@@ -52,7 +55,9 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 		marioPosition = sensors.getMarioPosition();
 		
 		if ((GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn)
-			System.out.println(sensors);
+			asciiFrame.Update(sensors.toString(), GlobalOptions.getMarioComponent());
+		
+		asciiFrame.tick();
 		
 		if (sensors.levelScene[11][13] != 0 || sensors.levelScene[11][12] != 0 ||  DangerOfGap(sensors.levelScene))
 		{
@@ -98,6 +103,4 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	private boolean oneIn(int num) {
 		return ((int)(Math.random () * num)) == 1;
 	}
-	
-
 }

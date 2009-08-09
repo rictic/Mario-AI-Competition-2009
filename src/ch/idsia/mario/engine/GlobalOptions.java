@@ -3,6 +3,7 @@ package ch.idsia.mario.engine;
 import ch.idsia.tools.GameViewer;
 import ch.idsia.tools.LOGGER;
 
+import java.awt.Point;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
