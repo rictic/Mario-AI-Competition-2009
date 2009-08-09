@@ -17,7 +17,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private int jumpCounter = 0;
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
-
+  private ASCIIFrame asciiFrame = new ASCIIFrame();;
+  
 	MarioState ms;
 	float pred_x, pred_y;
 
@@ -35,13 +36,30 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		GlobalOptions.pauseWorld = true;
 	}
 
-	private float cost(MarioState s, MarioState initial)
-	{
-		if(s.dead)
-			return 1e30f; // dunno how to make an infinity in java
-		// TODO: how far right can mario go from here holding down speed+right?
-		return (initial.x - s.x + 11*16)/9.71f + (-initial.y + s.y)/1000.0f;
-	}
+  static final float PIXELS_TO_EDGE = 11 * 16;
+  static final float MAX_MARIO_SPEED = 9.71f;
+  private float cost(MarioState s, MarioState initial)
+  {
+    if(s.dead)
+      return Float.POSITIVE_INFINITY;
+    
+    // TODO: how far right can mario go from here holding down speed+right?
+    // 
+    // cost = initial.x + n*16 - s.x
+    //int lookahead_frames = 10;
+    // how far could we conceivably go holding speed+right from the initial state?
+    // xa[1] = (xa[0] + 3) * .89
+    // xa[2] = (((xa[0] + 3) * .89) + 3) * .89 =  xa[0]*.89^2 + 3*(.89 + .89^2)
+    // xa[n] = xa[0]*.89^N + 3*.89*(.89^n - 1)/(.89 - 1) (geometric series)
+    //double speed = initial.xa*Math.pow(0.89, lookahead_frames) + 
+    //  1.2*0.89*(Math.pow(0.89, lookahead_frames) - 1)/(0.89 - 1);
+    //
+    // 0.89^10 = 0.311817
+    // the rest of that junk: 6.68163
+    float speed = 0.311817f*initial.xa + 6.68163f; // this is how fast we could possibly be going in ten frames
+    // what i want to know is how far we could possibly go in ten frames
+    return (initial.x - s.x + 6*16)/speed + (initial.y - s.y)/1000.0f;
+  }
 
 	private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY)
 	{
@@ -59,25 +77,22 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			pq.add(ms);
 		}
 
-		for(n=0;n<10000;n++)
-		{
-			MarioState next = pq.remove();
-			for(a=0;a<16;a++)
-			{
-				MarioState ms = next.next(a, map, MapX, MapY);
-				if(ms.dead) continue;
-				ms.h = cost(ms, initialState);
-				ms.g = next.g + 1;
-				ms.cost = ms.g + ms.h;
-				if(ms.h <= 0)
-				{
-					System.out.printf("search terminated after %d iterations; best root_action=%d cost=%f\n", 
-							n, ms.root_action, ms.cost);
-					return ms.root_action;
-				}
-				pq.add(ms);
-			}
-		}
+    for(n=0;n<30000;n++) {
+      MarioState next = pq.remove();
+      for(a=0;a<16;a++) {
+        MarioState ms = next.next(a, map, MapX, MapY);
+        if(ms.dead) continue;
+        ms.h = cost(ms, initialState);
+        ms.g = next.g + 1;
+        ms.cost = ms.g + ms.h;
+        if(ms.h <= 0) {
+          System.out.printf("search terminated after %d iterations; best root_action=%d cost=%f\n", 
+              n, ms.root_action, ms.cost);
+          return ms.root_action;
+        }
+        pq.add(ms);
+      }
+    }
 
 		MarioState bestfound = pq.remove();
 		System.out.printf("giving up on search; best root_action=%d cost=%f\n", 

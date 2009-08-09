@@ -7,9 +7,9 @@ package ch.idsia.scenarios;
 //If you're using Eclipse, you should expand this import statement.
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
-import com.reddit.programming.mario.HardcodedAgent;// This line imports your interface agent.
 
-import ch.idsia.ai.agents.Agent;
+//This line imports your interface agent.
+import com.reddit.programming.mario.*;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.ai.*;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
@@ -28,7 +28,7 @@ import ch.idsia.utils.ArrayUtils;
 public class Play {
 
     public static void main(String[] args) {
-        Agent controller = new HardcodedAgent(); // This line uses the agent you imported above.
+        Agent controller = new BestFirstAgent(); // This line uses the agent you imported above.
         if (args.length > 0) {
             controller = RegisterableAgent.load (args[0]);
             RegisterableAgent.registerAgent (controller);
