@@ -52,7 +52,7 @@ public class Sensors {
 				sb.append(square + " ");
 			sb.append('\n');
 		}
-		return scene.bitmapEnemiesObservation();//sb.toString();
+		return sb.toString();
 	}
 	
 	public List<Sprite> getSprites(){
