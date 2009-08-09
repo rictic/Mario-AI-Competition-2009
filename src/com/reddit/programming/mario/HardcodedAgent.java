@@ -15,6 +15,7 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
         MarioState ms;
+        float pred_x, pred_y;
 	
 	public HardcodedAgent()
 	{
@@ -28,6 +29,8 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	{
 		action[Mario.KEY_RIGHT] = true;
 		action[Mario.KEY_SPEED] = true;
+                // disable enemies for the time being
+                GlobalOptions.pauseWorld = true;
 	}
 
 	protected boolean DangerOfGap(byte[][] levelScene)
@@ -55,8 +58,13 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
                 if(ms == null) {
                   // assume one frame of falling before we get an observation :(
                   ms = new MarioState(mpos[0], mpos[1], 0.0f, 3.0f);
+                } else {
+                  System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
+                  if(mpos[0] != pred_x || mpos[1] != pred_y) {
+                    System.out.println("mismatch; aborting");
+                    System.exit(1);
+                  }
                 }
-                System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 		
 		if ((GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn)
 			System.out.println(sensors);
@@ -93,7 +101,12 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
                   (action[Mario.KEY_RIGHT] ? 2 : 0) |
                   (action[Mario.KEY_JUMP] ? 4 : 0) |
                   (action[Mario.KEY_LEFT] ? 8 : 0);
-                ms = ms.next(_act_token, sensors.levelScene);
+                // quantize mario's position to get the map origin
+                int mX = (int)ms.x/16 - 11;
+                int mY = (int)ms.y/16 - 11;
+                ms = ms.next(_act_token, sensors.levelScene, mX,mY);
+                pred_x = ms.x;
+                pred_y = ms.y;
                 System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
                       _act_token, ms.x, ms.y, ms.xa, ms.ya));
 		return action;

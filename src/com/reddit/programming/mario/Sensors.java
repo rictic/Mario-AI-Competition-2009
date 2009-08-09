@@ -137,13 +137,13 @@ public class Sensors {
 			case MARIO: return "M";
 			case GOOMBA: return "G";
 			case RED_KOOPA_TROOPA:
-			case GREEN_KOOPA_TROOPA: return "K";
+			case GREEN_KOOPA_TROOPA: return "n";
 			case WINGED_GOOMBA:
 			case RED_PARA_TROOPA:
-			case GREEN_PARA_TROOPA: return "W";
+			case GREEN_PARA_TROOPA: return "w";
 			case SHELL: return "D";
-			case SPIKEY: return "S";
-			case WINGED_SPIKEY: return "M"; //a spikier W :)
+			case SPIKEY: return "^";
+			case WINGED_SPIKEY: return "W";
 			case BULLET_BILL: return "<";
 			case PIRANHAPLANT: return "V";
 			case FIREFLOWER: return "F";

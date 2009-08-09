@@ -24,7 +24,7 @@ public class MarioState
   private static final int ACT_JUMP = 4;
   private static final int ACT_LEFT = 8;
 
-  public MarioState next(int action, byte map[][] /*, EnemyState enemies[]*/) {
+  public MarioState next(int action, byte[][] map, int MapX, int MapY /*, EnemyState enemies[]*/) {
     // this is what passes for clone()
     MarioState n = new MarioState(x,y, xa,ya);
     n.facing = facing; n.jumpTime = jumpTime;
@@ -35,12 +35,12 @@ public class MarioState
     n.sliding = sliding;
     n.xJumpSpeed = xJumpSpeed; n.yJumpSpeed = yJumpSpeed;
 
-    n.move(action, map);
+    n.move(action, map,MapX,MapY);
 
     return n;
   }
 
-  private void move(int action, byte map[][] /*, EnemyState enemies[]*/) {
+  private void move(int action, byte[][] map, int MapX, int MapY /*, EnemyState enemies[]*/) {
     // action bits:
     //  0: speed
     //  1: right
@@ -63,7 +63,7 @@ public class MarioState
       if (jumpTime < 0) { // post-walljump
         xa = xJumpSpeed;
         ya = -jumpTime * yJumpSpeed;
-        jumpTime = jumpTime+1;
+        jumpTime++;
 
       } else if (onGround && mayJump) {
         xJumpSpeed = 0;
@@ -128,9 +128,9 @@ public class MarioState
     System.out.println("move: (xa,ya)1 = " + xa + "," + ya);
 
     onGround = false;
-    move(xa, 0, map);
+    move(xa, 0, map,MapX,MapY);
     System.out.println("move: (x,y,xa,ya)2 = " + x + "," + y + "," + xa + "," + ya);
-    move(0, ya, map);
+    move(0, ya, map,MapX,MapY);
     System.out.println("move: (x,y,xa,ya)3 = " + x + "," + y + "," + xa + "," + ya);
 
     // world.level.height hardcoded as 15
@@ -154,22 +154,22 @@ public class MarioState
     System.out.println("move: (xa,ya)5 = " + xa + "," + ya);
   }
 
-  private boolean move(float xa, float ya, byte map[][])
+  private boolean move(float xa, float ya, byte[][] map, int MapX, int MapY)
   {
     while (xa > 8) {
-      if (!move(8, 0, map)) return false;
+      if (!move(8, 0, map,MapX,MapY)) return false;
       xa -= 8;
     }
     while (xa < -8) {
-      if (!move(-8, 0, map)) return false;
+      if (!move(-8, 0, map,MapX,MapY)) return false;
       xa += 8;
     }
     while (ya > 8) {
-      if (!move(0, 8, map)) return false;
+      if (!move(0, 8, map,MapX,MapY)) return false;
       ya -= 8;
     }
     while (ya < -8) {
-      if (!move(0, -8, map)) return false;
+      if (!move(0, -8, map,MapX,MapY)) return false;
       ya += 8;
     }
 
@@ -178,35 +178,35 @@ public class MarioState
     int height = big ? 24 : 12;
     if (ya > 0)
     {
-      if (isBlocking(x + xa - width, y + ya, xa, 0, map)) collide = true;
-      else if (isBlocking(x + xa + width, y + ya, xa, 0, map)) collide = true;
-      else if (isBlocking(x + xa - width, y + ya + 1, xa, ya, map)) collide = true;
-      else if (isBlocking(x + xa + width, y + ya + 1, xa, ya, map)) collide = true;
+      if (isBlocking(x + xa - width, y + ya, xa, 0, map,MapX,MapY)) collide = true;
+      else if (isBlocking(x + xa + width, y + ya, xa, 0, map,MapX,MapY)) collide = true;
+      else if (isBlocking(x + xa - width, y + ya + 1, xa, ya, map,MapX,MapY)) collide = true;
+      else if (isBlocking(x + xa + width, y + ya + 1, xa, ya, map,MapX,MapY)) collide = true;
     }
     if (ya < 0)
     {
-      if (isBlocking(x + xa, y + ya - height, xa, ya, map)) collide = true;
-      else if (collide || isBlocking(x + xa - width, y + ya - height, xa, ya, map)) collide = true;
-      else if (collide || isBlocking(x + xa + width, y + ya - height, xa, ya, map)) collide = true;
+      if (isBlocking(x + xa, y + ya - height, xa, ya, map,MapX,MapY)) collide = true;
+      else if (collide || isBlocking(x + xa - width, y + ya - height, xa, ya, map,MapX,MapY)) collide = true;
+      else if (collide || isBlocking(x + xa + width, y + ya - height, xa, ya, map,MapX,MapY)) collide = true;
     }
     if (xa > 0)
     {
       sliding = true;
-      if (isBlocking(x + xa + width, y + ya - height, xa, ya, map)) collide = true;
+      if (isBlocking(x + xa + width, y + ya - height, xa, ya, map,MapX,MapY)) collide = true;
       else sliding = false;
-      if (isBlocking(x + xa + width, y + ya - height / 2, xa, ya, map)) collide = true;
+      if (isBlocking(x + xa + width, y + ya - height / 2, xa, ya, map,MapX,MapY)) collide = true;
       else sliding = false;
-      if (isBlocking(x + xa + width, y + ya, xa, ya, map)) collide = true;
+      if (isBlocking(x + xa + width, y + ya, xa, ya, map,MapX,MapY)) collide = true;
       else sliding = false;
     }
     if (xa < 0)
     {
       sliding = true;
-      if (isBlocking(x + xa - width, y + ya - height, xa, ya, map)) collide = true;
+      if (isBlocking(x + xa - width, y + ya - height, xa, ya, map,MapX,MapY)) collide = true;
       else sliding = false;
-      if (isBlocking(x + xa - width, y + ya - height / 2, xa, ya, map)) collide = true;
+      if (isBlocking(x + xa - width, y + ya - height / 2, xa, ya, map,MapX,MapY)) collide = true;
       else sliding = false;
-      if (isBlocking(x + xa - width, y + ya, xa, ya, map)) collide = true;
+      if (isBlocking(x + xa - width, y + ya, xa, ya, map,MapX,MapY)) collide = true;
       else sliding = false;
     }
 
@@ -238,7 +238,7 @@ public class MarioState
     }
   }
 
-  private boolean isBlocking(float _x, float _y, float xa, float ya, byte map[][])
+  private boolean isBlocking(float _x, float _y, float xa, float ya, byte[][] map, int MapX, int MapY)
   {
     int x = (int) (_x / 16); // block's quantized pos
     int y = (int) (_y / 16);
@@ -246,16 +246,20 @@ public class MarioState
     int My = (int) (this.y / 16);
     if (x == Mx && y == My) return false;
 
+          System.out.println(String.format("move: hitcheck %f,%f -> %d,%d M@%d,%d", _x,_y,x,y,Mx,My));
+
     // move x,y world coordinates to the 22x22 reference frame surrounding mario
-    x += 11-Mx;
-    y += 11-My;
+    x -= MapX;
+    y -= MapY;
+          System.out.println(String.format("move: hitcheck maporigin=%d,%d xy=%d,%d", MapX,MapY,x,y));
 
     // if we run off the edge of our map fragment here we're... blocking, i guess?
     // no, because we start intersecting the top edge of the map.  awesome!
     if(x < 0 || x >= 22 || y < 0 || y >= 22)
       return false;
 
-    byte block = map[y][x]; // !??!? why isn't this map[x][y]?!??!
+    byte block = map[y][x];
+    if(block == 1) return false; // that's mario's previous position; ignore
     if(block == -11) return ya > 0;
     if(block != 0) {
       System.out.println("collision w/ " + _x + "," + _y + "map coords " + x + "," + y + ": " + block);
