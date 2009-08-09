@@ -37,12 +37,17 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     GlobalOptions.pauseWorld = true;
   }
 
+  static final float PIXELS_TO_EDGE = 11 * 16;
+  static final float MAX_MARIO_SPEED = 9.71f;
   private float cost(MarioState s, MarioState initial)
   {
     if(s.dead)
-      return 1e30f; // dunno how to make an infinity in java
+      return Float.POSITIVE_INFINITY;
+    
+    float cost = (initial.x - s.x + PIXELS_TO_EDGE)/MAX_MARIO_SPEED;
+    cost += (-initial.y + s.y)/1000.0f;
+    return cost;
     // TODO: how far right can mario go from here holding down speed+right?
-    return (initial.x - s.x + 11*16)/9.71f + (-initial.y + s.y)/1000.0f;
   }
 
   private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY)
