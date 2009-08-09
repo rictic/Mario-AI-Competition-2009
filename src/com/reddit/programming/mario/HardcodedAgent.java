@@ -49,7 +49,7 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	public boolean[] getAction(Environment observation)
 	{
 		sensors.updateReadings(observation);
-		
+		marioPosition = sensors.getMarioPosition();
 		
 		if ((GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn)
 			System.out.println(sensors);
@@ -76,8 +76,8 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 			jumpCounter = 0;
 			action[Mario.KEY_JUMP] = false;
 		}
-
-		action[Mario.KEY_SPEED] = sensors.fireballsOnscreen == 0;
+		
+		action[Mario.KEY_SPEED] = sensors.fireballsOnScreen == 0;
 		if (oneIn(10))
 			action[Mario.KEY_SPEED] = !action[Mario.KEY_SPEED];
 		if (oneIn(100))

@@ -25,7 +25,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     private boolean running = false;
     private int width, height;
     private GraphicsConfiguration graphicsConfiguration;
-    private Scene scene;
+    private LevelScene scene;
     private boolean focused = false;
 
     int frame;
@@ -341,6 +341,12 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         }
     }
 
+    public LevelScene getFullScene() {
+    	scene.zLevelEnemies = ZLevelEnemies;
+    	scene.zLevelMap = ZLevelMap;
+    	return scene;
+    }
+    
     public byte[][] getCompleteObservation() {
         if (scene instanceof LevelScene)
             return ((LevelScene) scene).completeObservation(ZLevelEnemies, ZLevelMap);

@@ -1,28 +1,35 @@
 package com.reddit.programming.mario;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ch.idsia.mario.engine.LevelScene;
+import ch.idsia.mario.engine.sprites.Sprite;
 import ch.idsia.mario.environments.Environment;
 
 public class Sensors {
 	private Environment latestObservation;
-	private String[][] scene;
+	private String[][] asciiScene;
+	private LevelScene scene;
 	private int[] marioPosition = null;
 	public byte[][] levelScene;
 	public byte[][] enemiesScene;
-	public int fireballsOnscreen;
+	public int fireballsOnScreen;
 	
 	public void updateReadings(Environment observation) {
+		scene = observation.getFullScene();
+		fireballsOnScreen = scene.fireballsOnScreen;
 		levelScene = observation.getLevelSceneObservation();
 //		float[] marioPos = observation.getMarioFloatPos();
 //		float[] enemiesPos = observation.getEnemiesFloatPos();
 		enemiesScene = observation.getEnemiesObservation();
 		
-		String[][] scene = new String[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
-		fireballsOnscreen = 0;
+		asciiScene = new String[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
 
 		latestObservation = observation;
 		for (int y = 0; y < levelScene.length; ++y)
 			for (int x = 0; x < levelScene[0].length; ++x)
-				scene[y][x] = asciiLevel(levelScene[y][x]);
+				asciiScene[y][x] = asciiLevel(levelScene[y][x]);
 		for (int y = 0; y < enemiesScene.length; ++y)
 			for (int x = 0; x < enemiesScene[0].length; ++x){
 				byte enemy = enemiesScene[y][x];
@@ -30,11 +37,8 @@ public class Sensors {
 					continue;
 				if (enemy == MARIO)
 					marioPosition = new int[]{y,x};
-				if (enemy == FIREBALL)
-					fireballsOnscreen++;
-				scene[y][x] = asciiEnemy(enemy);
+				asciiScene[y][x] = asciiEnemy(enemy);
 			}
-
 	}
 	
 	public int[] getMarioPosition() {
@@ -43,12 +47,28 @@ public class Sensors {
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (String[] sceneRow : scene){
+		for (String[] sceneRow : asciiScene){
 			for(String square : sceneRow)
 				sb.append(square + " ");
 			sb.append('\n');
 		}
-		return sb.toString();
+		return scene.bitmapEnemiesObservation();//sb.toString();
+	}
+	
+	public List<Sprite> getSprites(){
+		return scene.getSprites();
+	}
+	
+	public List<Sprite> getDangerousSprites() {
+		List<Sprite> result = new ArrayList<Sprite>();
+		for (Sprite sprite: getSprites())
+			if (isDangerous(sprite))
+				result.add(sprite);
+		return result;
+	}
+	
+	public boolean isDangerous(Sprite sprite) {
+		return isDangerous(sprite.kind);
 	}
 	
 	public boolean isDangerous(byte enemy) {
@@ -56,7 +76,8 @@ public class Sensors {
 			case MARIO:
 			case BLANK:
 			case FIREFLOWER:
-			case FIREBALL: return false;
+			case FIREBALL:
+			case MUSHROOM: return false;
 			default: return true;
 		}
 	}
@@ -94,16 +115,21 @@ public class Sensors {
 		}
 	}
 	
+    public static final int KIND_UNDEF = -42;
+	
 	public final static int BLANK = -1;
 	public final static int GOOMBA = 2;
 	public final static int WINGED_GOOMBA = 3;
 	public final static int RED_KOOPA_TROOPA = 4;
+	public final static int RED_PARA_TROOPA = 5;
 	public final static int GREEN_KOOPA_TROOPA = 6;
 	public final static int GREEN_PARA_TROOPA = 7;
 	public final static int BULLET_BILL = 8;
-	public final static int PIRANHAPLANT = 12;
-	public final static int TROOPA_SHELL = 13;
 	public final static int SPIKEY = 9;
+	public final static int WINGED_SPIKEY = 10;
+	public final static int PIRANHAPLANT = 12;
+	public final static int SHELL = 13;
+	public final static int MUSHROOM = 14;
 	public final static int FIREFLOWER = 15;
 	public final static int FIREBALL = 25;
 	private String asciiEnemy(byte enemySquare) {
@@ -113,9 +139,11 @@ public class Sensors {
 			case RED_KOOPA_TROOPA:
 			case GREEN_KOOPA_TROOPA: return "K";
 			case WINGED_GOOMBA:
+			case RED_PARA_TROOPA:
 			case GREEN_PARA_TROOPA: return "W";
-			case TROOPA_SHELL: return "D";
+			case SHELL: return "D";
 			case SPIKEY: return "S";
+			case WINGED_SPIKEY: return "M"; //a spikier W :)
 			case BULLET_BILL: return "<";
 			case PIRANHAPLANT: return "V";
 			case FIREFLOWER: return "F";

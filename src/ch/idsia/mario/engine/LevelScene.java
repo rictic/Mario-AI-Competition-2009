@@ -462,7 +462,10 @@ public class LevelScene extends Scene implements SpriteContext
      //       System.out.print((el & MathX.pow(2,i) ) + " ");
      //   System.out.println("");
     }
-
+    public List<String> LevelSceneAroundMarioASCII(boolean Enemies, boolean LevelMap, boolean CompleteObservation) {
+    	return LevelSceneAroundMarioASCII(Enemies, LevelMap, CompleteObservation, zLevelMap, zLevelEnemies);
+    }
+    
     public List<String> LevelSceneAroundMarioASCII(boolean Enemies, boolean LevelMap,
                                                    boolean CompleteObservation,
                                                    int ZLevelMap, int ZLevelCreatures){
@@ -781,6 +784,8 @@ public class LevelScene extends Scene implements SpriteContext
 
     private DecimalFormat df = new DecimalFormat("00");
     private DecimalFormat df2 = new DecimalFormat("000");
+	public int zLevelEnemies;
+	public int zLevelMap;
 
     public void render(Graphics g, float alpha)
     {
@@ -1067,4 +1072,10 @@ public class LevelScene extends Scene implements SpriteContext
 
     public int getTimeLeft() {        return timeLeft / 15;    }
 
+	public String bitmapEnemiesObservation() {
+		return bitmapEnemiesObservation(zLevelEnemies);
+	}
+	public List<Sprite> getSprites() {
+		return sprites;
+	}
 }

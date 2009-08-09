@@ -1,5 +1,7 @@
 package ch.idsia.scenarios;
 
+import com.reddit.programming.mario.HardcodedAgent;
+
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.ai.*;
@@ -19,7 +21,7 @@ import ch.idsia.utils.ArrayUtils;
 public class Play {
 
     public static void main(String[] args) {
-        Agent controller = new HumanKeyboardAgent();
+        Agent controller = new HardcodedAgent();
         if (args.length > 0) {
             controller = RegisterableAgent.load (args[0]);
             RegisterableAgent.registerAgent (controller);
