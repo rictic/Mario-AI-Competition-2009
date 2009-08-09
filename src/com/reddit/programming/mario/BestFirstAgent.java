@@ -53,16 +53,33 @@ public class BestFirstAgent extends RedditAgent implements Agent
     // the rest of that junk: 6.68163
     float speed = 0.311817f*initial.xa + 6.68163f; // this is how fast we could possibly be going in ten frames
     // what i want to know is how far we could possibly go in ten frames
-    return (initial.x - s.x + 6*16)/speed + (initial.y - s.y)/1000.0f;
+    return (initial.x - s.x + 6*16)/speed + s.y/10000.0f; // height tiebreaker
   }
 
   public static final Comparator<MarioState> msComparator = new MarioStateComparator();
-  private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY)
+  // yay copy and paste
+  private static final int ACT_SPEED = 1;
+  private static final int ACT_RIGHT = 2;
+  private static final int ACT_JUMP = 4;
+  private static final int ACT_LEFT = 8;
+
+  private boolean useless_action(int a, MarioState s)
   {
+    if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
+    if((a&ACT_JUMP)>0) {
+      if(s.jumpTime == 0 && !s.mayJump) return true;
+      if(s.jumpTime < 0 && !s.onGround && !s.sliding) return true; // post-walljump
+    }
+    return false;
+  }
+
+  private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
     PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
     int a,n;
     // add initial set
     for(a=0;a<16;a++) {
+      if(useless_action(a, initialState))
+        continue;
       MarioState ms = initialState.next(a, map, MapX, MapY);
       ms.root_action = a;
       ms.g = 0;
@@ -72,12 +89,14 @@ public class BestFirstAgent extends RedditAgent implements Agent
     }
     
     MarioState bestfound = pq.poll();
-    for(n=0;n<30000;n++) {
+    for(n=0;n<70000;n++) {
       if (pq.size() == 0)
     	  return bestfound.root_action;
       MarioState next = pq.remove();
       bestfound = marioMax(next,bestfound);
       for(a=0;a<16;a++) {
+        if(useless_action(a, initialState))
+          continue;
         MarioState ms = next.next(a, map, MapX, MapY);
         if(ms.dead) continue;
         bestfound = marioMax(next,bestfound);
@@ -94,7 +113,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
     }
 
     if (pq.size() != 0)
-    	pq.remove();
+    	bestfound = marioMax(pq.remove(), bestfound);
     System.out.printf("giving up on search; best root_action=%d cost=%f\n", 
         bestfound.root_action, bestfound.cost);
     // return best so far
@@ -112,7 +131,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
     sensors.updateReadings(observation);
     marioPosition = sensors.getMarioPosition();
     float[] mpos = observation.getMarioFloatPos();
-        
     if(ms == null) {
       // assume one frame of falling before we get an observation :(
       ms = new MarioState(mpos[0], mpos[1], 0.0f, 3.0f);
