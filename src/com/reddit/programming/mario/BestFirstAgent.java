@@ -8,13 +8,12 @@ import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 
-//Based on ForwardAgent
-
 public class BestFirstAgent extends RedditAgent implements Agent
 {
 	private boolean[] action;
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
+	private PriorityQueue<MarioState> pq;
 
 	MarioState ms;
 	float pred_x, pred_y;
@@ -23,6 +22,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		super("BestFirstAgent");
 		action = new boolean[Environment.numberOfButtons];
 		reset();
+		pq = new PriorityQueue<MarioState>(20, msComparator);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		// the rest of that junk: 6.68163
 		float speed = 0.311817f*initial.xa + 6.68163f; // this is how fast we could possibly be going in ten frames
 		// what i want to know is how far we could possibly go in ten frames
-		return (initial.x - s.x + 6*16)/speed + s.y/10000.0f; // height tiebreaker
+		return (initial.x - s.x + 6*16)/speed;// + (s.y-initial.y)/100.0f; // height tiebreaker
 	}
 
 	// yay copy and paste
@@ -60,7 +60,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private static final int ACT_LEFT = 8;
 
 	private boolean useless_action(int a, MarioState s) {
-		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
 		if((a&ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
 			if(s.jumpTime < 0 && !s.onGround && !s.sliding) return true; // post-walljump
@@ -69,11 +68,14 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	}
 
 	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
+	//all actions save those where we're pressing left and right at the same time
+	public static final int[] reasonableActions = new int[] {0,1,2,3,4,5,6,7,8,9,12,13};
 	private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
 		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
-		int a,n;
+		int n;
+        pq.clear();
 		// add initial set
-		for(a=0;a<16;a++) {
+		for(int a : reasonableActions) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, map, MapX, MapY);
@@ -85,13 +87,14 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 
 		MarioState bestfound = pq.poll();
+		
 		for(n=0;n<70000;n++) {
 			if (pq.size() == 0)
 				return bestfound.root_action;
 			MarioState next = pq.remove();
 			bestfound = marioMax(next,bestfound);
-			for(a=0;a<16;a++) {
-				if(useless_action(a, initialState))
+			for(int a : reasonableActions) {
+				if(useless_action(a, next))
 					continue;
 				MarioState ms = next.next(a, map, MapX, MapY);
 				if(ms.dead) continue;
@@ -100,6 +103,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				ms.g = next.g + 1;
 				ms.cost = ms.g + ms.h;
 				if(ms.h <= 0) {
+					pq.clear();
 					System.out.printf("search terminated after %d iterations; best root_action=%d cost=%f\n", 
 							n, ms.root_action, ms.cost);
 					return ms.root_action;
@@ -110,14 +114,17 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 		if (pq.size() != 0)
 			bestfound = marioMax(pq.remove(), bestfound);
-		System.out.printf("giving up on search; best root_action=%d cost=%f\n", 
-				bestfound.root_action, bestfound.cost);
+		System.out.printf("giving up on search; best root_action=%d cost=%f lookahead=%f\n",
+				bestfound.root_action, bestfound.cost, bestfound.g);
 		// return best so far
+		pq.clear();
 		return bestfound.root_action;
 	}
 
 
 	public static MarioState marioMax(MarioState a, MarioState b) {
+		if(a.g > b.g) return a;
+		if(b.g > a.g) return b;
 		return msComparator.compare(a, b) >= 0 ? a : b;
 	}
 
