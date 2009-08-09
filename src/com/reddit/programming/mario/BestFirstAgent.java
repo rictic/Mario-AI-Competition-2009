@@ -56,6 +56,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
     return (initial.x - s.x + 6*16)/speed + s.y/10000.0f; // height tiebreaker
   }
 
+  public static final Comparator<MarioState> msComparator = new MarioStateComparator();
   // yay copy and paste
   private static final int ACT_SPEED = 1;
   private static final int ACT_RIGHT = 2;
@@ -72,9 +73,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
     return false;
   }
 
-  public static final Comparator<MarioState> msComparator = new MarioStateComparator();
-  private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY)
-  {
+  private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
     PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
     int a,n;
     // add initial set
@@ -90,7 +89,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
     }
     
     MarioState bestfound = pq.poll();
-    for(n=0;n<2000;n++) {
+    for(n=0;n<70000;n++) {
       if (pq.size() == 0)
     	  return bestfound.root_action;
       MarioState next = pq.remove();
@@ -104,8 +103,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
         ms.h = cost(ms, initialState);
         ms.g = next.g + 1;
         ms.cost = ms.g + ms.h;
-        if(bestfound == null || bestfound.cost > ms.cost)
-          bestfound = ms;
         if(ms.h <= 0) {
           System.out.printf("search terminated after %d iterations; best root_action=%d cost=%f\n", 
               n, ms.root_action, ms.cost);
@@ -115,7 +112,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
       }
     }
 
-    bestfound = marioMax(pq.remove(), bestfound);
+    if (pq.size() != 0)
+    	bestfound = marioMax(pq.remove(), bestfound);
     System.out.printf("giving up on search; best root_action=%d cost=%f\n", 
         bestfound.root_action, bestfound.cost);
     // return best so far
@@ -133,7 +131,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
     sensors.updateReadings(observation);
     marioPosition = sensors.getMarioPosition();
     float[] mpos = observation.getMarioFloatPos();
-        
     if(ms == null) {
       // assume one frame of falling before we get an observation :(
       ms = new MarioState(mpos[0], mpos[1], 0.0f, 3.0f);
