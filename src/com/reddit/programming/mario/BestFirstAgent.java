@@ -12,7 +12,7 @@ import java.util.Comparator;
 
 //Based on ForwardAgent
 
-public class BestFirstAgent extends RegisterableAgent implements Agent
+public class BestFirstAgent extends RedditAgent implements Agent
 {
   private boolean[] action;
   private int jumpCounter = 0;
@@ -100,8 +100,7 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
       }
     }
 
-    if ((GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn)
-      System.out.println(sensors);
+	super.UpdateMap(sensors);
 
     // quantize mario's position to get the map origin
     int mX = (int)mpos[0]/16 - 11;
