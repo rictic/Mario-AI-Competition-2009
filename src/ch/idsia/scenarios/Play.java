@@ -4,19 +4,16 @@
 
 package ch.idsia.scenarios;
 
-<<<<<<< HEAD:src/ch/idsia/scenarios/Play.java
 //If you're using Eclipse, you should expand this import statement.
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.ai.HardcodedAgent; // This line imports your interface agent.
-=======
-import com.reddit.programming.mario.HardcodedAgent;
+//import com.reddit.programming.mario.HardcodedAgent;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.ai.*;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
->>>>>>> 44d9250a7c93e865e1e4b9ea487dd0aa6d1bf054:src/ch/idsia/scenarios/Play.java
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
@@ -32,11 +29,7 @@ import ch.idsia.utils.ArrayUtils;
 public class Play {
 
     public static void main(String[] args) {
-<<<<<<< HEAD:src/ch/idsia/scenarios/Play.java
         Agent controller = new HardcodedAgent(); // This line uses the agent you imported above.
-=======
-        Agent controller = new HardcodedAgent();
->>>>>>> 44d9250a7c93e865e1e4b9ea487dd0aa6d1bf054:src/ch/idsia/scenarios/Play.java
         if (args.length > 0) {
             controller = RegisterableAgent.load (args[0]);
             RegisterableAgent.registerAgent (controller);

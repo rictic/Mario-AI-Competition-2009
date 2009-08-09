@@ -16,7 +16,7 @@ public class MLP implements FA<double[], double[]>, Evolvable {
     private double[] outputs;
     private double[] inputs;
     //private double[] targetOutputs;
-    public double mutationMagnitude = 0.1;
+    public double mutationMagnitude = 0.5;
 
 
     public static double mean = 0.0f;        // initialization mean
