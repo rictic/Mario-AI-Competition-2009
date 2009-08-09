@@ -1,18 +1,16 @@
 package com.reddit.programming.mario;
 
+import java.util.concurrent.PriorityBlockingQueue;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
-import ch.idsia.mario.engine.GlobalOptions;
 
-import java.util.List;
-import java.util.LinkedList;
+//This code is very early,
+//currently it doesn't work at all
 
-//Based on ForwardAgent
 
 class Path {
-	public LinkedList<MarioState> states;
+	public PriorityBlockingQueue<MarioState> states;
 	public double costSoFar = 0;
 	public double estimatedTotalCost = 0;
 
@@ -25,38 +23,29 @@ class Path {
 	}
 
 	public MarioState pop() {
-		return null;
-		//return states.pop();
+		return states.remove();
 	}
 
 	public Path() {
-		states = new LinkedList<MarioState>();
-	}
-
-	public Path(LinkedList<MarioState> s) {
-		states = s;
+		states = new PriorityBlockingQueue<MarioState>();
 	}
 }
 
-public class AStarAgent extends RegisterableAgent implements Agent
-{
+public class AStarAgent extends RegisterableAgent implements Agent {
 	MarioState ms;
 	protected Sensors sensors = new Sensors();
 
-	public AStarAgent()
-	{
+	public AStarAgent() {
 		super("AStarAgent");
 	}
 
 	@Override
-	public void reset()
-	{
+	public void reset() {
 
 	}
 
 	@Override
-	public boolean[] getAction(Environment observation)
-	{
+	public boolean[] getAction(Environment observation) {
 		sensors.updateReadings(observation);
 
 		float[] mpos = observation.getMarioFloatPos();
@@ -64,8 +53,6 @@ public class AStarAgent extends RegisterableAgent implements Agent
 		if(ms == null) {
 			// assume one frame of falling before we get an observation :(
 			ms = new MarioState(mpos[0], mpos[1], 0.0f, 3.0f);
-		} else {
-			//System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 		}
 
 		Path p = new Path();
@@ -102,7 +89,15 @@ public class AStarAgent extends RegisterableAgent implements Agent
 	}
 
 	private int costToNextState(MarioState state1, MarioState state2) {
-		return 1; // a bit more sophistication ;0
+		int cost = 1; //it costs us one timeunit's worth of action to get here
+		//Add in huge penalties for taking damage or falling off a cliff here
+		
+		//A penalty for being above an open pit followed by a reward for reaching the
+		//other side could be helpful
+		
+		//Add in the distance to the right-hand side of the screen
+		
+		return cost; 
 	}
 
 	private Path findPath(MarioState s, Path[] ps) {
@@ -113,26 +108,23 @@ public class AStarAgent extends RegisterableAgent implements Agent
 	}
 
 	// A* search algorithm
-	private Path search(Path[] startPaths, int j, double xRightOfScreen)
 	// j: index of currently handles item startPaths[j]
-	{
-		if (startPaths.length == 0) {
-			System.out.println("No feasible solution, abort.");
-			System.exit(1);
-		}
+	private Path search(Path[] startPaths, int j, double xRightOfScreen) {
+		if (startPaths.length == 0)
+			throw new IllegalStateException("No feasible solution.");
 
 		// TODO: check if startPaths[j] is feasibe and either take it, or push it into a list
 
 		Path path = startPaths[j];
-		MarioState state = path.states.getFirst();
+		MarioState state = path.pop();
 
 		for(MarioState state2 : successors(state)) {
 			double cost = path.costSoFar + costToNextState(state, state2);
 			double cost2 = costLeftHeuristics(state2, xRightOfScreen);
-			Path path2 = new Path(new LinkedList<MarioState>(path.states));
-			path2.costSoFar = cost;
-			path2.estimatedTotalCost = cost + cost2;
-			path2.append(state2);
+//			Path path2 = new Path(new LinkedList<MarioState>(path.states));
+//			path2.costSoFar = cost;
+//			path2.estimatedTotalCost = cost + cost2;
+//			path2.append(state2);
 		}
 
 
