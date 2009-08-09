@@ -18,6 +18,7 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
   private int jumpCounter = 0;
   protected int[] marioPosition = null;
   protected Sensors sensors = new Sensors();
+  private ASCIIFrame asciiFrame;
 
   MarioState ms;
   float pred_x, pred_y;
@@ -27,13 +28,15 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     super("BestFirstAgent");
     action = new boolean[Environment.numberOfButtons];
     reset();
+    
+    asciiFrame = new ASCIIFrame();
   }
 
   @Override
   public void reset()
   {
     // disable enemies for the time being
-    GlobalOptions.pauseWorld = true;
+    GlobalOptions.pauseWorld = false;
   }
 
   private float cost(MarioState s, MarioState initial)
@@ -89,6 +92,12 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     sensors.updateReadings(observation);
     marioPosition = sensors.getMarioPosition();
     float[] mpos = observation.getMarioFloatPos();
+    
+    if ((GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn)
+		asciiFrame.Update(sensors.toString(), GlobalOptions.getMarioComponent());
+
+	asciiFrame.tick();
+    
     if(ms == null) {
       // assume one frame of falling before we get an observation :(
       ms = new MarioState(mpos[0], mpos[1], 0.0f, 3.0f);
