@@ -62,9 +62,9 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     return (initial.x - s.x + 6*16)/speed + (initial.y - s.y)/1000.0f;
   }
 
+  public static final Comparator<MarioState> msComparator = new MarioStateComparator();
   private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY)
   {
-    Comparator<MarioState> msComparator = new MarioStateComparator();
     PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
     int a,n;
     // add initial set
@@ -76,12 +76,17 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
       ms.cost = ms.h;
       pq.add(ms);
     }
-
+    
+    MarioState bestfound = pq.poll();
     for(n=0;n<30000;n++) {
+      if (pq.size() == 0)
+    	  return bestfound.root_action;
       MarioState next = pq.remove();
+      bestfound = marioMax(next,bestfound);
       for(a=0;a<16;a++) {
         MarioState ms = next.next(a, map, MapX, MapY);
         if(ms.dead) continue;
+        bestfound = marioMax(next,bestfound);
         ms.h = cost(ms, initialState);
         ms.g = next.g + 1;
         ms.cost = ms.g + ms.h;
@@ -94,13 +99,19 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
       }
     }
 
-    MarioState bestfound = pq.remove();
+    if (pq.size() != 0)
+    	pq.remove();
     System.out.printf("giving up on search; best root_action=%d cost=%f\n", 
         bestfound.root_action, bestfound.cost);
     // return best so far
     return bestfound.root_action;
   }
 
+  
+  public static MarioState marioMax(MarioState a, MarioState b) {
+	  return msComparator.compare(a, b) >= 0 ? a : b;
+  }
+  
   @Override
   public boolean[] getAction(Environment observation)
   {
