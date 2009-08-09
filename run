@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd classes
+java ch.idsia.scenarios.Play $*
+

@@ -14,6 +14,7 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	private int jumpCounter = 0;
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
+        MarioState ms;
 	
 	public HardcodedAgent()
 	{
@@ -50,6 +51,12 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	{
 		sensors.updateReadings(observation);
 		marioPosition = sensors.getMarioPosition();
+                float[] mpos = observation.getMarioFloatPos();
+                if(ms == null) {
+                  // assume one frame of falling before we get an observation :(
+                  ms = new MarioState(mpos[0], mpos[1], 0.0f, 3.0f);
+                }
+                System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 		
 		if ((GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn)
 			System.out.println(sensors);
@@ -88,6 +95,13 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 			action[Mario.KEY_SPEED] = !action[Mario.KEY_SPEED];
 		if (oneIn(100))
 			action[Mario.KEY_JUMP] = !action[Mario.KEY_JUMP];
+                int _act_token = (action[Mario.KEY_SPEED] ? 1 : 0) |
+                  (action[Mario.KEY_RIGHT] ? 2 : 0) |
+                  (action[Mario.KEY_JUMP] ? 4 : 0) |
+                  (action[Mario.KEY_LEFT] ? 8 : 0);
+                ms = ms.next(_act_token, sensors.levelScene);
+                System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
+                      _act_token, ms.x, ms.y, ms.xa, ms.ya));
 		return action;
 	}
 	
