@@ -7,8 +7,8 @@ package ch.idsia.scenarios;
 //If you're using Eclipse, you should expand this import statement.
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.ai.agents.ai.HardcodedAgent; // This line imports your interface agent.
-//import com.reddit.programming.mario.HardcodedAgent;
+//import ch.idsia.ai.agents.ai.HardcodedAgent; 
+import com.reddit.programming.mario.HardcodedAgent; // This line imports your interface agent.
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
