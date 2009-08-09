@@ -18,7 +18,8 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
   private int jumpCounter = 0;
   protected int[] marioPosition = null;
   protected Sensors sensors = new Sensors();
-
+  private ASCIIFrame asciiFrame = new ASCIIFrame();;
+  
   MarioState ms;
   float pred_x, pred_y;
 
@@ -101,7 +102,7 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     }
 
     if ((GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn)
-      System.out.println(sensors);
+      asciiFrame.Update(sensors.toString(), GlobalOptions.getMarioComponent());
 
     // quantize mario's position to get the map origin
     int mX = (int)mpos[0]/16 - 11;

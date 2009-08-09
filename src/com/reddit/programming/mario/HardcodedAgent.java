@@ -14,7 +14,7 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	private int jumpCounter = 0;
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
-	private ASCIIFrame asciiFrame;
+	private ASCIIFrame asciiFrame = new ASCIIFrame();;
 	MarioState ms;
 	float pred_x, pred_y;
 
@@ -23,8 +23,6 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 		super("HardcodedAgent");
 		action = new boolean[Environment.numberOfButtons];
 		reset();
-
-		asciiFrame = new ASCIIFrame();
 	}
 
 	@Override
