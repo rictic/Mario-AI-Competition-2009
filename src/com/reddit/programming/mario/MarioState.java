@@ -15,8 +15,8 @@ public class MarioState
          sliding = false; // sliding down the side of a wall
   public float xJumpSpeed = 0, yJumpSpeed = 0;
 
-  public MarioState(float _x, float _y) {
-    x = _x; y = _y;
+  public MarioState(float _x, float _y, float _xa, float _ya) {
+    x = _x; y = _y; xa = _xa; ya = _ya;
   }
 
   private static final int ACT_SPEED = 1;
@@ -25,19 +25,35 @@ public class MarioState
   private static final int ACT_LEFT = 8;
 
   public MarioState next(int action, byte map[][] /*, EnemyState enemies[]*/) {
+    // this is what passes for clone()
+    MarioState n = new MarioState(x,y, xa,ya);
+    n.facing = facing; n.jumpTime = jumpTime;
+    n.big = big; n.fire = fire;
+    n.dead = dead;
+    n.onGround = onGround;
+    n.mayJump = mayJump;
+    n.sliding = sliding;
+    n.xJumpSpeed = xJumpSpeed; n.yJumpSpeed = yJumpSpeed;
+
+    n.move(action, map);
+
+    return n;
+  }
+
+  private void move(int action, byte map[][] /*, EnemyState enemies[]*/) {
     // action bits:
     //  0: speed
     //  1: right
     //  2: jump
     //  3: left
     //  4: duck not implemented; waste of search time
-    MarioState n = new MarioState(x,y);
-
     boolean ducking = false; // just... we aren't doing this
     float sideWaysSpeed = (action&ACT_SPEED) != 0 ? 1.2f : 0.6f;
+    System.out.println("move: sidewaysspeed = " + sideWaysSpeed);
+    System.out.println(String.format("move: xy=%5.1f,%5.1f", x, y));
 
-    if (xa > 2) n.facing = 1;
-    else if (xa < -2) n.facing = -1;
+    if (xa > 2) facing = 1;
+    else if (xa < -2) facing = -1;
 
     // jumping logic
     // note: jumpTime ranges from 7 downto 0 during a standard upware jump
@@ -45,92 +61,97 @@ public class MarioState
     // jumpTime ranges from -6 upto 0 in the rare case of walljumps
     if ((action&ACT_JUMP) != 0 || (jumpTime < 0 && !onGround && !sliding)) {
       if (jumpTime < 0) { // post-walljump
-        n.xa = xJumpSpeed;
-        n.ya = -jumpTime * yJumpSpeed;
-        n.jumpTime = jumpTime+1;
+        xa = xJumpSpeed;
+        ya = -jumpTime * yJumpSpeed;
+        jumpTime = jumpTime+1;
 
       } else if (onGround && mayJump) {
-        n.xJumpSpeed = 0;
-        n.yJumpSpeed = -1.9f;
-        n.jumpTime = 7;
-        n.ya = jumpTime * yJumpSpeed;
-        n.onGround = false;
-        n.sliding = false;
+        xJumpSpeed = 0;
+        yJumpSpeed = -1.9f;
+        jumpTime = 7;
+        ya = jumpTime * yJumpSpeed;
+        onGround = false;
+        sliding = false;
 
       } else if (sliding && mayJump) { // walljump?
-        n.xJumpSpeed = -facing * 6.0f;
-        n.yJumpSpeed = -2.0f;
-        n.jumpTime = -6;
-        n.xa = xJumpSpeed;
-        n.ya = -jumpTime * yJumpSpeed;
-        n.onGround = false;
-        n.sliding = false;
-        n.facing = -facing;
+        xJumpSpeed = -facing * 6.0f;
+        yJumpSpeed = -2.0f;
+        jumpTime = -6;
+        xa = xJumpSpeed;
+        ya = -jumpTime * yJumpSpeed;
+        onGround = false;
+        sliding = false;
+        facing = -facing;
 
       } else if (jumpTime > 0) { // post-peak downward jump trajectory
         // apparently this acts different than falling?
-        n.xa = xa + xJumpSpeed;
-        n.ya = jumpTime * yJumpSpeed;
-        n.jumpTime = n.jumpTime-1;
+        xa = xa + xJumpSpeed;
+        ya = jumpTime * yJumpSpeed;
+        jumpTime = jumpTime-1;
       }
     } else {
-      n.jumpTime = 0;
+      jumpTime = 0;
     }
 
     // ducking code elided
 
     if ((action&ACT_LEFT) != 0 && !ducking) {
-      if (facing == 1) n.sliding = false;
-      n.xa = xa - sideWaysSpeed;
-      if (jumpTime >= 0) n.facing = -1;
+      if (facing == 1) sliding = false;
+      xa -= sideWaysSpeed;
+      if (jumpTime >= 0) facing = -1;
     }
 
     if ((action&ACT_RIGHT) != 0 && !ducking)
     {
-      if (n.facing == -1) n.sliding = false;
-      n.xa = xa + sideWaysSpeed;
-      if (jumpTime >= 0) n.facing = 1;
+      if (facing == -1) sliding = false;
+      xa += sideWaysSpeed;
+      if (jumpTime >= 0) facing = 1;
     }
 
     if (((action&ACT_LEFT) == 0 && (action&ACT_RIGHT) == 0) || ducking || ya < 0 || onGround) {
-      n.sliding = false;
+      sliding = false;
     }
 
 //    if ((action&ACT_SPEED) != 0 && canShoot && fire && world.fireballsOnScreen<2) {
 //      // in theory: add fireball to our state
 //    }
-//    n.canShoot = (action&ACT_SPEED) == 0;
+//    canShoot = (action&ACT_SPEED) == 0;
 
-    n.mayJump = (onGround || sliding) && (action&ACT_JUMP) == 0;
+    mayJump = (onGround || sliding) && (action&ACT_JUMP) == 0;
 
-    if (Math.abs(xa) < 0.5f) { n.xa = 0; }
+    if (Math.abs(xa) < 0.5f) { xa = 0; }
 
     // friction while sliding against a wall
     if (sliding)
-      n.ya = ya * 0.5f;
+      ya = ya * 0.5f;
 
-    n.onGround = false;
-    n.move(xa, 0, map);
-    n.move(0, ya, map);
+    System.out.println("move: (xa,ya)1 = " + xa + "," + ya);
+
+    onGround = false;
+    move(xa, 0, map);
+    System.out.println("move: (x,y,xa,ya)2 = " + x + "," + y + "," + xa + "," + ya);
+    move(0, ya, map);
+    System.out.println("move: (x,y,xa,ya)3 = " + x + "," + y + "," + xa + "," + ya);
 
     // world.level.height hardcoded as 15
-    if (y > 15*16 + 16) { n.dead = true; }
+    if (y > 15*16 + 16) { dead = true; }
 
-    if (x < 0) { n.x = 0; n.xa = 0; }
+    if (x < 0) { x = 0; xa = 0; }
 
-    n.ya = ya * 0.85f; // downward air friction
+    System.out.println("move: (x,y,xa,ya)4 = " + x + "," + y + "," + xa + "," + ya);
+
+    ya *= 0.85f; // downward air friction
 
     if (onGround) { // ground friction
-      n.xa = xa * GROUND_INERTIA;
+      xa *= GROUND_INERTIA;
       // maximum speed is GROUND_INERTIA/(1-GROUND_INERTIA) * impulse_per_step
       // impulse_per_step = 0.6 if walking, 1.2 if running
       // max speed = 4.85 walking, 9.7 running
     } else { // falling
-      n.xa = xa * AIR_INERTIA;
-      n.ya = ya + 3;
+      xa *= AIR_INERTIA;
+      ya += 3;
     }
-
-    return n;
+    System.out.println("move: (xa,ya)5 = " + xa + "," + ya);
   }
 
   private boolean move(float xa, float ya, byte map[][])
@@ -153,8 +174,8 @@ public class MarioState
     }
 
     boolean collide = false;
-    float width = 8;
-    float height = big ? 24 : 12;
+    int width = 4;
+    int height = big ? 24 : 12;
     if (ya > 0)
     {
       if (isBlocking(x + xa - width, y + ya, xa, 0, map)) collide = true;
@@ -219,16 +240,26 @@ public class MarioState
 
   private boolean isBlocking(float _x, float _y, float xa, float ya, byte map[][])
   {
-    int x = (int) (_x / 16);
+    int x = (int) (_x / 16); // block's quantized pos
     int y = (int) (_y / 16);
-    if (x == (int) (this.x / 16) && y == (int) (this.y / 16)) return false;
+    int Mx = (int) (this.x / 16); // mario's quantized pos
+    int My = (int) (this.y / 16);
+    if (x == Mx && y == My) return false;
 
-    float width = 8;
-    float height = big ? 24 : 12;
+    // move x,y world coordinates to the 22x22 reference frame surrounding mario
+    x += 11-Mx;
+    y += 11-My;
 
-    // FIXME: if we run off the edge of our map fragment here we're in trouble
-    byte block = map[x][y];
+    // if we run off the edge of our map fragment here we're... blocking, i guess?
+    // no, because we start intersecting the top edge of the map.  awesome!
+    if(x < 0 || x >= 22 || y < 0 || y >= 22)
+      return false;
+
+    byte block = map[y][x]; // !??!? why isn't this map[x][y]?!??!
     if(block == -11) return ya > 0;
+    if(block != 0) {
+      System.out.println("collision w/ " + _x + "," + _y + "map coords " + x + "," + y + ": " + block);
+    }
     return block != 0;
 
     // ugh.  if we're simulating enemy state, we need to propagate here.
