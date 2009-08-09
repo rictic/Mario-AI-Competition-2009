@@ -15,7 +15,7 @@ public class Sensors {
 	public byte[][] levelScene;
 	public byte[][] enemiesScene;
 	public int fireballsOnScreen;
-	
+
 	public void updateReadings(Environment observation) {
 		scene = observation.getFullScene();
 		fireballsOnScreen = scene.fireballsOnScreen;
@@ -23,7 +23,7 @@ public class Sensors {
 //		float[] marioPos = observation.getMarioFloatPos();
 //		float[] enemiesPos = observation.getEnemiesFloatPos();
 		enemiesScene = observation.getEnemiesObservation();
-		
+
 		asciiScene = new String[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
 
 		latestObservation = observation;
@@ -40,11 +40,11 @@ public class Sensors {
 				asciiScene[y][x] = asciiEnemy(enemy);
 			}
 	}
-	
+
 	public int[] getMarioPosition() {
 		return marioPosition;
 	}
-	
+
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (String[] sceneRow : asciiScene){
@@ -54,11 +54,11 @@ public class Sensors {
 		}
 		return sb.toString();
 	}
-	
+
 	public List<Sprite> getSprites(){
 		return scene.getSprites();
 	}
-	
+
 	public List<Sprite> getDangerousSprites() {
 		List<Sprite> result = new ArrayList<Sprite>();
 		for (Sprite sprite: getSprites())
@@ -66,11 +66,11 @@ public class Sensors {
 				result.add(sprite);
 		return result;
 	}
-	
+
 	public boolean isDangerous(Sprite sprite) {
 		return isDangerous(sprite.kind);
 	}
-	
+
 	public boolean isDangerous(byte enemy) {
 		switch(enemy) {
 			case MARIO:
@@ -81,7 +81,7 @@ public class Sensors {
 			default: return true;
 		}
 	}
-	
+
 	public final static int EMPTY = 0;
 	public final static int COIN = 34;
 	public final static int SOLID = -10;
@@ -94,7 +94,7 @@ public class Sensors {
 	public final static int ITEM_BRICK = 18;
 	public final static int BRICK = 16;
 	public final static int EDGE_BRICK = -12;
-	
+
 	public final static int MARIO = 1;
 	private String asciiLevel(byte levelSquare) {
 		switch(levelSquare) {
@@ -114,9 +114,9 @@ public class Sensors {
 			default: return ""+levelSquare;
 		}
 	}
-	
-    public static final int KIND_UNDEF = -42;
-	
+
+	public static final int KIND_UNDEF = -42;
+
 	public final static int BLANK = -1;
 	public final static int GOOMBA = 2;
 	public final static int WINGED_GOOMBA = 3;
@@ -137,13 +137,13 @@ public class Sensors {
 			case MARIO: return "M";
 			case GOOMBA: return "G";
 			case RED_KOOPA_TROOPA:
-			case GREEN_KOOPA_TROOPA: return "K";
+			case GREEN_KOOPA_TROOPA: return "n";
 			case WINGED_GOOMBA:
 			case RED_PARA_TROOPA:
-			case GREEN_PARA_TROOPA: return "W";
+			case GREEN_PARA_TROOPA: return "w";
 			case SHELL: return "D";
-			case SPIKEY: return "S";
-			case WINGED_SPIKEY: return "M"; //a spikier W :)
+			case SPIKEY: return "^";
+			case WINGED_SPIKEY: return "W";
 			case BULLET_BILL: return "<";
 			case PIRANHAPLANT: return "V";
 			case FIREFLOWER: return "F";
