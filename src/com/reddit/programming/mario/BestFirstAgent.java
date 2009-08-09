@@ -44,11 +44,22 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     if(s.dead)
       return Float.POSITIVE_INFINITY;
     
-    //the minimum number of pixels to get to the rightmost edge of the screen
-    float cost = (initial.x - s.x + PIXELS_TO_EDGE)/MAX_MARIO_SPEED;
-    // a small reward for being higher
-    cost += (s.y - initial.y)/300.0f;
-    return cost;
+    // TODO: how far right can mario go from here holding down speed+right?
+    // 
+    // cost = initial.x + n*16 - s.x
+    //int lookahead_frames = 10;
+    // how far could we conceivably go holding speed+right from the initial state?
+    // xa[1] = (xa[0] + 3) * .89
+    // xa[2] = (((xa[0] + 3) * .89) + 3) * .89 =  xa[0]*.89^2 + 3*(.89 + .89^2)
+    // xa[n] = xa[0]*.89^N + 3*.89*(.89^n - 1)/(.89 - 1) (geometric series)
+    //double speed = initial.xa*Math.pow(0.89, lookahead_frames) + 
+    //  1.2*0.89*(Math.pow(0.89, lookahead_frames) - 1)/(0.89 - 1);
+    //
+    // 0.89^10 = 0.311817
+    // the rest of that junk: 6.68163
+    float speed = 0.311817f*initial.xa + 6.68163f; // this is how fast we could possibly be going in ten frames
+    // what i want to know is how far we could possibly go in ten frames
+    return (initial.x - s.x + 6*16)/speed + (initial.y - s.y)/1000.0f;
   }
 
   private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY)
@@ -66,7 +77,7 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
       pq.add(ms);
     }
 
-    for(n=0;n<10000;n++) {
+    for(n=0;n<30000;n++) {
       MarioState next = pq.remove();
       for(a=0;a<16;a++) {
         MarioState ms = next.next(a, map, MapX, MapY);
