@@ -265,7 +265,8 @@ public class MarioState
 
     byte block = map[y][x];
     if(block == 1) return false; // that's mario's previous position; ignore
-    if(block == -11) return ya > 0;
+    if(block == 34) return false; // coin
+    if(block == -11) return ya > 0; // platform
     if(block != 0) {
       //System.out.println("collision w/ " + _x + "," + _y + "map coords " + x + "," + y + ": " + block);
     }
