@@ -69,7 +69,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
 	//all actions save those where we're pressing left and right at the same time
-	public static final int[] reasonableActions = new int[] {0,1,2,3,4,5,6,7,8,9,12,13};
+	public static final int[] reasonableActions = new int[] {1,3,5,7,9,13};
 	private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
 		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
 		int n;
@@ -88,7 +88,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 		MarioState bestfound = pq.poll();
 		
-		for(n=0;n<70000;n++) {
+		for(n=0;n<200000;n++) {
 			if (pq.size() == 0)
 				return bestfound.root_action;
 			MarioState next = pq.remove();
