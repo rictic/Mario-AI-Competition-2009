@@ -55,7 +55,23 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     // the rest of that junk: 6.68163
     float speed = 0.311817f*initial.xa + 6.68163f; // this is how fast we could possibly be going in ten frames
     // what i want to know is how far we could possibly go in ten frames
-    return (initial.x - s.x + 6*16)/speed + (initial.y - s.y)/1000.0f;
+    return (initial.x - s.x + 6*16)/speed + s.y/10000.0f; // height tiebreaker
+  }
+
+  // yay copy and paste
+  private static final int ACT_SPEED = 1;
+  private static final int ACT_RIGHT = 2;
+  private static final int ACT_JUMP = 4;
+  private static final int ACT_LEFT = 8;
+
+  private boolean useless_action(int a, MarioState s)
+  {
+    if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
+    if((a&ACT_JUMP)>0) {
+      if(s.jumpTime == 0 && !s.mayJump) return true;
+      if(s.jumpTime < 0 && !s.onGround && !s.sliding) return true; // post-walljump
+    }
+    return false;
   }
 
   private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY)
@@ -63,8 +79,11 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     Comparator<MarioState> msComparator = new MarioStateComparator();
     PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
     int a,n;
+    MarioState bestfound = null;
     // add initial set
     for(a=0;a<16;a++) {
+      if(useless_action(a, initialState))
+        continue;
       MarioState ms = initialState.next(a, map, MapX, MapY);
       ms.root_action = a;
       ms.g = 0;
@@ -73,14 +92,18 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
       pq.add(ms);
     }
 
-    for(n=0;n<30000;n++) {
+    for(n=0;n<30000 && !pq.isEmpty();n++) {
       MarioState next = pq.remove();
       for(a=0;a<16;a++) {
+        if(useless_action(a, initialState))
+          continue;
         MarioState ms = next.next(a, map, MapX, MapY);
         if(ms.dead) continue;
         ms.h = cost(ms, initialState);
         ms.g = next.g + 1;
         ms.cost = ms.g + ms.h;
+        if(bestfound == null || bestfound.cost > ms.cost)
+          bestfound = ms;
         if(ms.h <= 0) {
           System.out.printf("search terminated after %d iterations; best root_action=%d cost=%f\n", 
               n, ms.root_action, ms.cost);
@@ -90,7 +113,10 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
       }
     }
 
-    MarioState bestfound = pq.remove();
+    if(bestfound == null) {
+      System.out.printf("all search was a dead end?!\n");
+      return 0;
+    }
     System.out.printf("giving up on search; best root_action=%d cost=%f\n", 
         bestfound.root_action, bestfound.cost);
     // return best so far
