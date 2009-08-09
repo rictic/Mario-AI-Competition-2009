@@ -77,7 +77,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
   {
     PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
     int a,n;
-    MarioState bestfound = null;
     // add initial set
     for(a=0;a<16;a++) {
       if(useless_action(a, initialState))
@@ -91,7 +90,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
     }
     
     MarioState bestfound = pq.poll();
-    for(n=0;n<30000;n++) {
+    for(n=0;n<2000;n++) {
       if (pq.size() == 0)
     	  return bestfound.root_action;
       MarioState next = pq.remove();
@@ -116,8 +115,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
       }
     }
 
-    if (pq.size() != 0)
-    	pq.remove();
+    bestfound = marioMax(pq.remove(), bestfound);
     System.out.printf("giving up on search; best root_action=%d cost=%f\n", 
         bestfound.root_action, bestfound.cost);
     // return best so far
