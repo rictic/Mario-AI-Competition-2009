@@ -98,7 +98,7 @@ public class LevelScene extends Scene implements SpriteContext
                     case(-108):
                     case(-107):
                     case(-106):
-                    case(14): // Particle
+                    // case(14): // Particle?  no, it's a cannon
                     case(15): // Sparcle, irrelevant
                         return 0;
                     case(-128):
@@ -134,7 +134,9 @@ public class LevelScene extends Scene implements SpriteContext
                     case(-82):
                     case(-81):
                     case(4):
-                    case(30): // canon
+                    case(14): // canon top
+                    case(30): // canon middle
+                    case(46): // canon bottom
                         return -10;   // border, cannot pass through, can stand on
                     case(9):
                         return -12; // hard formation border. Pay attention!
