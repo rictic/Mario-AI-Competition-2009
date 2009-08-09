@@ -1,25 +1,21 @@
 package com.reddit.programming.mario;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 import ch.idsia.ai.agents.Agent;
-import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
-import ch.idsia.mario.engine.GlobalOptions;
-
-// if someone wants to make a multithreaded version, go nuts with the BlockingPriorityQueue
-import java.util.PriorityQueue;
-import java.util.Comparator;
 
 //Based on ForwardAgent
 
-public class BestFirstAgent extends RegisterableAgent implements Agent
+public class BestFirstAgent extends RedditAgent implements Agent
 {
   private boolean[] action;
-  private int jumpCounter = 0;
   protected int[] marioPosition = null;
   protected Sensors sensors = new Sensors();
-  private ASCIIFrame asciiFrame = new ASCIIFrame();;
-  
+
   MarioState ms;
   float pred_x, pred_y;
 
@@ -37,8 +33,6 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     GlobalOptions.pauseWorld = true;
   }
 
-  static final float PIXELS_TO_EDGE = 11 * 16;
-  static final float MAX_MARIO_SPEED = 9.71f;
   private float cost(MarioState s, MarioState initial)
   {
     if(s.dead)
@@ -129,8 +123,7 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
       }
     }
 
-    if ((GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn)
-      asciiFrame.Update(sensors.toString(), GlobalOptions.getMarioComponent());
+	super.UpdateMap(sensors);
 
     // quantize mario's position to get the map origin
     int mX = (int)mpos[0]/16 - 11;
