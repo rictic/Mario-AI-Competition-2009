@@ -1,21 +1,18 @@
 package com.reddit.programming.mario;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 import ch.idsia.ai.agents.Agent;
-import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
-import ch.idsia.mario.engine.GlobalOptions;
-
-// if someone wants to make a multithreaded version, go nuts with the BlockingPriorityQueue
-import java.util.PriorityQueue;
-import java.util.Comparator;
 
 //Based on ForwardAgent
 
-public class BestFirstAgent extends RegisterableAgent implements Agent
+public class BestFirstAgent extends RedditAgent implements Agent
 {
   private boolean[] action;
-  private int jumpCounter = 0;
   protected int[] marioPosition = null;
   protected Sensors sensors = new Sensors();
 
@@ -39,7 +36,8 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
   private float cost(MarioState s, MarioState initial)
   {
     if(s.dead)
-      return 1e30f; // dunno how to make an infinity in java
+      return Float.POSITIVE_INFINITY;
+    
     // TODO: how far right can mario go from here holding down speed+right?
     // 
     // cost = initial.x + n*16 - s.x
@@ -74,9 +72,9 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     return false;
   }
 
+  public static final Comparator<MarioState> msComparator = new MarioStateComparator();
   private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY)
   {
-    Comparator<MarioState> msComparator = new MarioStateComparator();
     PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
     int a,n;
     MarioState bestfound = null;
@@ -91,14 +89,19 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
       ms.cost = ms.h;
       pq.add(ms);
     }
-
-    for(n=0;n<30000 && !pq.isEmpty();n++) {
+    
+    MarioState bestfound = pq.poll();
+    for(n=0;n<30000;n++) {
+      if (pq.size() == 0)
+    	  return bestfound.root_action;
       MarioState next = pq.remove();
+      bestfound = marioMax(next,bestfound);
       for(a=0;a<16;a++) {
         if(useless_action(a, initialState))
           continue;
         MarioState ms = next.next(a, map, MapX, MapY);
         if(ms.dead) continue;
+        bestfound = marioMax(next,bestfound);
         ms.h = cost(ms, initialState);
         ms.g = next.g + 1;
         ms.cost = ms.g + ms.h;
@@ -113,22 +116,26 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
       }
     }
 
-    if(bestfound == null) {
-      System.out.printf("all search was a dead end?!\n");
-      return 0;
-    }
+    if (pq.size() != 0)
+    	pq.remove();
     System.out.printf("giving up on search; best root_action=%d cost=%f\n", 
         bestfound.root_action, bestfound.cost);
     // return best so far
     return bestfound.root_action;
   }
 
+  
+  public static MarioState marioMax(MarioState a, MarioState b) {
+	  return msComparator.compare(a, b) >= 0 ? a : b;
+  }
+  
   @Override
   public boolean[] getAction(Environment observation)
   {
     sensors.updateReadings(observation);
     marioPosition = sensors.getMarioPosition();
     float[] mpos = observation.getMarioFloatPos();
+        
     if(ms == null) {
       // assume one frame of falling before we get an observation :(
       ms = new MarioState(mpos[0], mpos[1], 0.0f, 3.0f);
@@ -140,8 +147,7 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
       }
     }
 
-    if ((GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn)
-      System.out.println(sensors);
+	super.UpdateMap(sensors);
 
     // quantize mario's position to get the map origin
     int mX = (int)mpos[0]/16 - 11;
