@@ -44,10 +44,11 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     if(s.dead)
       return Float.POSITIVE_INFINITY;
     
+    //the minimum number of pixels to get to the rightmost edge of the screen
     float cost = (initial.x - s.x + PIXELS_TO_EDGE)/MAX_MARIO_SPEED;
-    cost += (-initial.y + s.y)/1000.0f;
+    // a small reward for being higher
+    cost += (s.y - initial.y)/300.0f;
     return cost;
-    // TODO: how far right can mario go from here holding down speed+right?
   }
 
   private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY)
