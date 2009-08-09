@@ -15,6 +15,10 @@ public class MarioState
          sliding = false; // sliding down the side of a wall
   public float xJumpSpeed = 0, yJumpSpeed = 0;
 
+  // fields used by the search stuff
+  public float cost;
+  public int root_action;
+
   public MarioState(float _x, float _y, float _xa, float _ya) {
     x = _x; y = _y; xa = _xa; ya = _ya;
   }
@@ -34,6 +38,7 @@ public class MarioState
     n.mayJump = mayJump;
     n.sliding = sliding;
     n.xJumpSpeed = xJumpSpeed; n.yJumpSpeed = yJumpSpeed;
+    n.root_action = root_action;
 
     n.move(action, map,MapX,MapY);
 
@@ -49,8 +54,8 @@ public class MarioState
     //  4: duck not implemented; waste of search time
     boolean ducking = false; // just... we aren't doing this
     float sideWaysSpeed = (action&ACT_SPEED) != 0 ? 1.2f : 0.6f;
-    System.out.println("move: sidewaysspeed = " + sideWaysSpeed);
-    System.out.println(String.format("move: xy=%5.1f,%5.1f", x, y));
+    //System.out.println("move: sidewaysspeed = " + sideWaysSpeed);
+    //System.out.println(String.format("move: xy=%5.1f,%5.1f", x, y));
 
     if (xa > 2) facing = 1;
     else if (xa < -2) facing = -1;
@@ -125,20 +130,20 @@ public class MarioState
     if (sliding)
       ya = ya * 0.5f;
 
-    System.out.println("move: (xa,ya)1 = " + xa + "," + ya);
+    //System.out.println("move: (xa,ya)1 = " + xa + "," + ya);
 
     onGround = false;
     move(xa, 0, map,MapX,MapY);
-    System.out.println("move: (x,y,xa,ya)2 = " + x + "," + y + "," + xa + "," + ya);
+    //System.out.println("move: (x,y,xa,ya)2 = " + x + "," + y + "," + xa + "," + ya);
     move(0, ya, map,MapX,MapY);
-    System.out.println("move: (x,y,xa,ya)3 = " + x + "," + y + "," + xa + "," + ya);
+    //System.out.println("move: (x,y,xa,ya)3 = " + x + "," + y + "," + xa + "," + ya);
 
     // world.level.height hardcoded as 15
     if (y > 15*16 + 16) { dead = true; }
 
     if (x < 0) { x = 0; xa = 0; }
 
-    System.out.println("move: (x,y,xa,ya)4 = " + x + "," + y + "," + xa + "," + ya);
+    //System.out.println("move: (x,y,xa,ya)4 = " + x + "," + y + "," + xa + "," + ya);
 
     ya *= 0.85f; // downward air friction
 
@@ -151,7 +156,7 @@ public class MarioState
       xa *= AIR_INERTIA;
       ya += 3;
     }
-    System.out.println("move: (xa,ya)5 = " + xa + "," + ya);
+    //System.out.println("move: (xa,ya)5 = " + xa + "," + ya);
   }
 
   private boolean move(float xa, float ya, byte[][] map, int MapX, int MapY)
@@ -246,12 +251,12 @@ public class MarioState
     int My = (int) (this.y / 16);
     if (x == Mx && y == My) return false;
 
-          System.out.println(String.format("move: hitcheck %f,%f -> %d,%d M@%d,%d", _x,_y,x,y,Mx,My));
+          //System.out.println(String.format("move: hitcheck %f,%f -> %d,%d M@%d,%d", _x,_y,x,y,Mx,My));
 
     // move x,y world coordinates to the 22x22 reference frame surrounding mario
     x -= MapX;
     y -= MapY;
-          System.out.println(String.format("move: hitcheck maporigin=%d,%d xy=%d,%d", MapX,MapY,x,y));
+          //System.out.println(String.format("move: hitcheck maporigin=%d,%d xy=%d,%d", MapX,MapY,x,y));
 
     // if we run off the edge of our map fragment here we're... blocking, i guess?
     // no, because we start intersecting the top edge of the map.  awesome!
@@ -262,7 +267,7 @@ public class MarioState
     if(block == 1) return false; // that's mario's previous position; ignore
     if(block == -11) return ya > 0;
     if(block != 0) {
-      System.out.println("collision w/ " + _x + "," + _y + "map coords " + x + "," + y + ": " + block);
+      //System.out.println("collision w/ " + _x + "," + _y + "map coords " + x + "," + y + ": " + block);
     }
     return block != 0;
 
