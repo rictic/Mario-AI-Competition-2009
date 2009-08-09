@@ -112,6 +112,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
     sensors.updateReadings(observation);
     marioPosition = sensors.getMarioPosition();
     float[] mpos = observation.getMarioFloatPos();
+        
     if(ms == null) {
       // assume one frame of falling before we get an observation :(
       ms = new MarioState(mpos[0], mpos[1], 0.0f, 3.0f);
