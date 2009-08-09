@@ -82,9 +82,15 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 			}
 			++jumpCounter;
 		}
-		else if (dangerousEnemies(sensors.enemiesScene)) {
-			action[Mario.KEY_JUMP] = true;
-			++jumpCounter;
+		else if (dangerousHorizontalEnemies(sensors.enemiesScene)) {
+			if (!dangerousVerticalEnemies(sensors.enemiesScene)) {
+				action[Mario.KEY_JUMP] = true;
+				++jumpCounter;
+				System.out.println("Jumping!");
+			}
+			else {
+				//Something should go here....
+			}
 		}
 		else {
 			action[Mario.KEY_JUMP] = false;
@@ -117,12 +123,27 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 		return action;
 	}
 
-	private boolean dangerousEnemies(byte[][] enemiesScene) {
+	private boolean isThereGround(byte[][] levelScene) {
+
+		return true;
+	}
+
+	private boolean dangerousHorizontalEnemies(byte[][] enemiesScene) {
 		int y = marioPosition[0];
 		int x = marioPosition[1];
 		if (sensors.isDangerous(enemiesScene[y][x])
 				||sensors.isDangerous(enemiesScene[y][x+1])
 				||sensors.isDangerous(enemiesScene[y][x+2]))
+			return true;
+		return false;
+	}
+
+	private boolean dangerousVerticalEnemies(byte[][] enemiesScene) {
+		int y = marioPosition[0];
+		int x = marioPosition[1];
+		if (sensors.isDangerous(enemiesScene[y][x])
+				||sensors.isDangerous(enemiesScene[y+1][x])
+				||sensors.isDangerous(enemiesScene[y-1][x]))
 			return true;
 		return false;
 	}
