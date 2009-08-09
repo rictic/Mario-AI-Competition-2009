@@ -1,6 +1,14 @@
+// This is a file that will play the game through once on normal speed.
+// You can set which agent to use, and it was originally created to use
+// the human KeyboardAgent.
+
 package ch.idsia.scenarios;
 
-import com.reddit.programming.mario.HardcodedAgent;
+//If you're using Eclipse, you should expand this import statement.
+import ch.idsia.ai.agents.Agent;
+import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.ai.agents.ai.HardcodedAgent; // This line imports your interface agent.
+//import com.reddit.programming.mario.HardcodedAgent;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
@@ -21,7 +29,7 @@ import ch.idsia.utils.ArrayUtils;
 public class Play {
 
     public static void main(String[] args) {
-        Agent controller = new HardcodedAgent();
+        Agent controller = new HardcodedAgent(); // This line uses the agent you imported above.
         if (args.length > 0) {
             controller = RegisterableAgent.load (args[0]);
             RegisterableAgent.registerAgent (controller);
