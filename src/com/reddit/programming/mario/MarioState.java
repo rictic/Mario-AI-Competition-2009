@@ -16,7 +16,7 @@ public class MarioState
   public float xJumpSpeed = 0, yJumpSpeed = 0;
 
   // fields used by the search stuff
-  public float cost;
+  public float g, h, cost; // heuristic costs
   public int root_action;
 
   public MarioState(float _x, float _y, float _xa, float _ya) {
