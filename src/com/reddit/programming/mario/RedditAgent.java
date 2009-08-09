@@ -3,7 +3,6 @@ package com.reddit.programming.mario;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.GlobalOptions;
-import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 
 public class RedditAgent extends RegisterableAgent implements Agent
