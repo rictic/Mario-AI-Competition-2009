@@ -51,6 +51,16 @@ public class Sensors {
 		return sb.toString();
 	}
 	
+	public boolean isDangerous(byte enemy) {
+		switch(enemy) {
+			case MARIO:
+			case BLANK:
+			case FIREFLOWER:
+			case FIREBALL: return false;
+			default: return true;
+		}
+	}
+	
 	public final static int EMPTY = 0;
 	public final static int COIN = 34;
 	public final static int SOLID = -10;

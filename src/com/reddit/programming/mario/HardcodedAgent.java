@@ -88,21 +88,11 @@ public class HardcodedAgent extends RegisterableAgent implements Agent
 	private boolean dangerousEnemies(byte[][] enemiesScene) {
 		int y = marioPosition[0];
 		int x = marioPosition[1];
-		if (isDangerous(enemiesScene[y][x])
-		  ||isDangerous(enemiesScene[y][x+1])
-		  ||isDangerous(enemiesScene[y][x+2]))
+		if (sensors.isDangerous(enemiesScene[y][x])
+		  ||sensors.isDangerous(enemiesScene[y][x+1])
+		  ||sensors.isDangerous(enemiesScene[y][x+2]))
 			return true;
 		return false;
-	}
-	
-	private boolean isDangerous(byte enemy) {
-		switch(enemy) {
-			case Sensors.MARIO:
-			case Sensors.BLANK:
-			case Sensors.FIREFLOWER:
-			case Sensors.FIREBALL: return false;
-			default: return true;
-		}
 	}
 	
 	private boolean oneIn(int num) {
