@@ -53,7 +53,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return (initial.x - s.x + 6*16)/speed + s.y/10000.0f; // height tiebreaker
 	}
 
-	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
 	// yay copy and paste
 	private static final int ACT_SPEED = 1;
 	private static final int ACT_RIGHT = 2;
@@ -69,6 +68,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return false;
 	}
 
+	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
 	private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
 		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
 		int a,n;
