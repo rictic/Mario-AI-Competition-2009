@@ -41,7 +41,7 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     if(s.dead)
       return 1e30f; // dunno how to make an infinity in java
     // TODO: how far right can mario go from here holding down speed+right?
-    return (initial.x + 11*16 - s.x)/9.71f;
+    return (initial.x - s.x + 11*16)/9.71f + (-initial.y + s.y)/1000.0f;
   }
 
   private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY)
@@ -53,7 +53,9 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
     for(a=0;a<16;a++) {
       MarioState ms = initialState.next(a, map, MapX, MapY);
       ms.root_action = a;
-      ms.cost = cost(ms, initialState);
+      ms.g = 0;
+      ms.h = cost(ms, initialState);
+      ms.cost = ms.h;
       pq.add(ms);
     }
 
@@ -62,8 +64,10 @@ public class BestFirstAgent extends RegisterableAgent implements Agent
       for(a=0;a<16;a++) {
         MarioState ms = next.next(a, map, MapX, MapY);
         if(ms.dead) continue;
-        ms.cost = cost(ms, initialState);
-        if(ms.cost <= 0) {
+        ms.h = cost(ms, initialState);
+        ms.g = next.g + 1;
+        ms.cost = ms.g + ms.h;
+        if(ms.h <= 0) {
           System.out.printf("search terminated after %d iterations; best root_action=%d cost=%f\n", 
               n, ms.root_action, ms.cost);
           return ms.root_action;
