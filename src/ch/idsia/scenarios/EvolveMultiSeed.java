@@ -5,7 +5,7 @@ import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.ai.Evolvable;
 import ch.idsia.ai.ea.ES;
 import ch.idsia.ai.tasks.MultiSeedProgressTask;
-import ch.idsia.ai.agents.ai.HardcodedAgent;
+import ch.idsia.ai.agents.ai.LargeMLPAgent;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.Agent;
 import wox.serial.Easy;
@@ -25,7 +25,7 @@ public class EvolveMultiSeed {
         EvaluationOptions options = new CmdLineOptions(new String[0]);
         options.setMaxAttempts(1);
         options.setPauseWorld(true);
-        Evolvable initial = new HardcodedAgent();
+        Evolvable initial = new LargeMLPAgent();
         if (args.length > 0) {
             initial = (Evolvable) RegisterableAgent.load (args[0]);
             //RegisterableAgent.registerAgent ((Agent) initial);

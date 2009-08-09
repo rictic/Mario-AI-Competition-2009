@@ -4,4 +4,6 @@ The original code, taken directly from the competition page is in the 'original'
 
 The 'master' branch should contain fixes, improvements, examples, and library classes that may be useful to others.
 
-So what're you waiting for?  Fork this project and start hacking!  
+So what're you waiting for?  Fork this project and start hacking!
+
+Join us on IRC at irc://chat.freenode.net/#marioai
