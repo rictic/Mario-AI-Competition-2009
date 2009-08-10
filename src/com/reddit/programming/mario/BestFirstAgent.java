@@ -84,7 +84,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	}
 
 
-	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
 	// yay copy and paste
 	private static final int ACT_SPEED = 1;
 	private static final int ACT_RIGHT = 2;
@@ -92,8 +91,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private static final int ACT_LEFT = 8;
 
 	private boolean useless_action(int a, MarioState s) {
-		if((a&ACT_SPEED) == 0) return true; // haha
-		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
 		if((a&ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
 			if(s.jumpTime <= 0 && !s.onGround && !s.sliding) return true;
@@ -101,12 +98,15 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return false;
 	}
 
+	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
+	//all actions save those where we're pressing left and right at the same time
+	public static final int[] reasonableActions = new int[] {1,3,5,7,9,13};
 	private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
 		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
+		int n;
         pq.clear();
-		int a,n;
 		// add initial set
-		for(a=0;a<16;a++) {
+		for(int a : reasonableActions) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, map, MapX, MapY);
@@ -123,7 +123,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			MarioState next = pq.remove();
 			//System.out.printf("a*: trying "); next.print();
 			bestfound = marioMax(next,bestfound);
-			for(a=0;a<16;a++) {
+			for(int a : reasonableActions) {
 				if(useless_action(a, next))
 					continue;
 				MarioState ms = next.next(a, map, MapX, MapY);
