@@ -119,7 +119,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 
 		MarioState bestfound = pq.peek();
-		for(n=0;n<10000 && !pq.isEmpty();n++) {
+		for(n=0;n<1000 && !pq.isEmpty();n++) {
 			MarioState next = pq.remove();
 			//System.out.printf("a*: trying "); next.print();
 			bestfound = marioMax(next,bestfound);
@@ -159,8 +159,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 
 	public static MarioState marioMax(MarioState a, MarioState b) {
-		if(a.g > b.g) return a;
-		if(b.g > a.g) return b;
 		return msComparator.compare(a, b) >= 0 ? a : b;
 	}
 
@@ -176,8 +174,9 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		} else {
 			System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 			if(mpos[0] != pred_x || mpos[1] != pred_y) {
-				System.out.println("mario state mismatch; aborting");
-				System.exit(1);
+				System.out.println("mario state mismatch; attempting crappy resynchronizing");
+				ms.x = mpos[0]; ms.y = mpos[1];
+				//System.exit(1);
 			}
 		}
 
