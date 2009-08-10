@@ -51,10 +51,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 	// runDistance is terrible to invert, so use the secant method to solve it
 	private float stepsToRun(float distance, float v0) {
-		float x0 = 1,
-			  x1 = 2;
-		float xdiff;
-		//int n=0;
+		float x0=1, x1=2, xdiff;
 		do {
 			float fx0 = runDistance(v0, x0) - distance;
 			float fx1 = runDistance(v0, x1) - distance;
@@ -72,8 +69,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
-        if(initial.x + lookaheadDist - s.x <= 0) return 0;
-        return stepsToRun(initial.x + lookaheadDist - s.x, s.xa);
+		if(initial.x + lookaheadDist - s.x <= 0) return 0;
+		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa);
 	}
 
 
@@ -95,8 +92,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	}
 
 	private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
-		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
-        pq.clear();
+		pq.clear();
 		int a,n;
 		// add initial set
 		for(a=0;a<16;a++) {
@@ -171,7 +167,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		} else {
 			//System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 			if(mpos[0] != pred_x || mpos[1] != pred_y) {
-				System.out.println("mario state mismatch; attempting resync");
+				//System.out.println("mario state mismatch; attempting resync");
 				ms.x = mpos[0]; ms.y = mpos[1];
 				// we also need some guess for xa and ya here, ideally.
 				//
