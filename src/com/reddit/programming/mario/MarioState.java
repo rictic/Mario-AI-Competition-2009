@@ -16,11 +16,19 @@ public class MarioState
   public float xJumpSpeed = 0, yJumpSpeed = 0;
 
   // fields used by the search stuff
-  public float g, h, cost; // heuristic costs
-  public int root_action;
+  public float g, cost; // heuristic costs
+  public int root_action, action;
+  public MarioState pred; // predecessor
 
   public MarioState(float _x, float _y, float _xa, float _ya) {
     x = _x; y = _y; xa = _xa; ya = _ya;
+  }
+
+  public void print() {
+	  System.out.printf("g=%d a:%d x:(%f,%f) v:(%f,%f) %s%s%s cost=%f\n", (int)g, action,x,y,xa,ya,
+			  onGround ? "G":"g",
+			  mayJump ? "J":"j",
+			  sliding ? "S":"s", cost);
   }
 
   private static final int ACT_SPEED = 1;
@@ -39,6 +47,7 @@ public class MarioState
     n.sliding = sliding;
     n.xJumpSpeed = xJumpSpeed; n.yJumpSpeed = yJumpSpeed;
     n.root_action = root_action;
+	n.action = action;
 
     n.move(action, map,MapX,MapY);
 
