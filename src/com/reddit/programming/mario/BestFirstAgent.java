@@ -28,7 +28,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	@Override
 	public void reset() {
 		// disable enemies for the time being
-		GlobalOptions.pauseWorld = true;
+		GlobalOptions.pauseWorld = false;
 	}
 
 	private float runDistance(float v0, float steps) {

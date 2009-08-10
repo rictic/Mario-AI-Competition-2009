@@ -27,6 +27,9 @@ public class GlobalOptions {
     //    public static Defaults defaults = new Defaults();
     public static boolean GameVeiwerContinuousUpdatesOn = false;
     public static boolean PowerRestoration;
+    
+    private static int seed = 0;
+    private static int difficulty = 0;
 
     public static boolean StopSimulationIfWin;
 
@@ -65,6 +68,26 @@ public class GlobalOptions {
         return dateFormat.format(date);
     }
 
+    public static void setSeed(int s)
+    {
+    	seed = s;
+    }
+    
+    public static void setDifficulty(int d)
+    {
+    	difficulty = d;
+    }
+
+    public static int getSeed()
+    {
+    	return seed;
+    }
+    
+    public static int getDifficulty()
+    {
+    	return difficulty;
+    }
+    
 //    public static class Defaults extends SimulationOptions
 //    {
 //        private static boolean gui;
