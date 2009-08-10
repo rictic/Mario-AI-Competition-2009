@@ -40,7 +40,10 @@ public class Play {
         options.setVisualization(true);
         options.setMaxAttempts(1);
         options.setMatlabFileName("");
-        options.setLevelRandSeed(0);//(int) (Math.random () * Integer.MAX_VALUE));
+        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
+        //options.setLevelRandSeed(0);
+        //options.setLevelLength(1024);
+        //options.setLevelRandSeed(1339049343);
         options.setLevelDifficulty(10);
         task.setOptions(options);
 
