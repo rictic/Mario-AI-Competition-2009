@@ -85,8 +85,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private static final int ACT_LEFT = 8;
 
 	private boolean useless_action(int a, MarioState s) {
-		if((a&ACT_SPEED) == 0) return true; // haha
-		//if((a&ACT_RIGHT) == 0) return true; // haha
+	//	if((a&ACT_SPEED) == 0) return true; // our heuristic is good enough that we can let go of speed now
 //		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
 		if((a&ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
@@ -113,7 +112,11 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 
 		MarioState bestfound = pq.peek();
-		for(n=0;n<10000 && !pq.isEmpty();n++) {
+
+		// FIXME: instead of using a hardcoded number of iterations,
+		// periodically grab the system millisecond clock and terminate the
+		// search after ~40ms
+		for(n=0;n<2000 && !pq.isEmpty();n++) {
 			MarioState next = pq.remove();
 			//System.out.printf("a*: trying "); next.print();
 			bestfound = marioMax(next,bestfound);
@@ -168,8 +171,16 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		} else {
 			//System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 			if(mpos[0] != pred_x || mpos[1] != pred_y) {
-				//System.out.println("mario state mismatch; aborting");
-				//System.exit(1);
+				System.out.println("mario state mismatch; attempting resync");
+				ms.x = mpos[0]; ms.y = mpos[1];
+				// we also need some guess for xa and ya here, ideally.
+				//
+				// generally this shouldn't happen, unless we mispredict
+				// something.  currently if we stomp an enemy then we don't
+				// predict that and get confused.
+				//
+				// but it will happen when we win, cuz we have no idea we won
+				// and it won't let us move.
 			}
 		}
 
@@ -178,6 +189,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		// quantize mario's position to get the map origin
 		int mX = (int)mpos[0]/16 - 11;
 		int mY = (int)mpos[1]/16 - 11;
+
 		int next_action = searchForAction(ms, sensors.levelScene, mX,mY);
 		ms = ms.next(next_action, sensors.levelScene, mX,mY);
 		pred_x = ms.x;
