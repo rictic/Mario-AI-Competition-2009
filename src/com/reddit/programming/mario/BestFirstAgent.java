@@ -53,10 +53,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			//System.out.printf("secantstep: x0:%f x1:%f fx0:%f fx1:%f xdiff:%f\n",
 			//		x0,x1, fx0,fx1, xdiff);
 		} while(Math.abs(xdiff) > 1e-4);
-		if(x1 < 0) {
-			System.out.printf("stepstorun(%f,%f) -> %f\n", distance, v0, x1);
-			x1 = -x1;
-		}
 		return x1;
 	}
 
@@ -140,12 +136,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				if(h <= 0) {
 					pq.clear();
 					//System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
-							//n, ms.root_action, ms.cost, ms.g);
-					MarioState s;
-					for(s = ms;s != null;s = s.pred) {
-						//System.out.printf("state %d: ", (int)s.g);
-						s.print();
-					}
+					//		n, ms.root_action, ms.cost, ms.g);
+					//MarioState s;
+					//for(s = ms;s != null;s = s.pred) {
+					//	System.out.printf("state %d: ", (int)s.g);
+					//	s.print();
+					//}
 					return ms.root_action;
 				}
 				pq.add(ms);
@@ -155,7 +151,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		if (!pq.isEmpty())
 			bestfound = marioMax(pq.remove(), bestfound);
 		//System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
-				//bestfound.root_action, bestfound.cost, bestfound.g);
+		//		bestfound.root_action, bestfound.cost, bestfound.g);
 		// return best so far
 		pq.clear();
 		return bestfound.root_action;
@@ -193,7 +189,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		pred_x = ms.x;
 		pred_y = ms.y;
 		//System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
-				//next_action, ms.x, ms.y, ms.xa, ms.ya));
+		//		next_action, ms.x, ms.y, ms.xa, ms.ya));
 
 		action[Mario.KEY_SPEED] = (next_action&1)!=0;
 		action[Mario.KEY_RIGHT] = (next_action&2)!=0;

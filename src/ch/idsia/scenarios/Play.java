@@ -28,33 +28,40 @@ import ch.idsia.utils.ArrayUtils;
  */
 public class Play {
 
-    public static void main(String[] args)
-    {
-        int seed = 1068790349; //(int) (Math.random () * Integer.MAX_VALUE);
-        int difficulty = 10;
-        
-        GlobalOptions.setSeed(seed);
-        GlobalOptions.setDifficulty(difficulty);
-        
-        Agent controller = new BestFirstAgent(); // This line uses the agent you imported above.
-        if (args.length > 0) {
-            controller = RegisterableAgent.load (args[0]);
-            RegisterableAgent.registerAgent (controller);
-        }
-        
-        EvaluationOptions options = new CmdLineOptions(new String[0]);
-        options.setAgent(controller);
-        Task task = new ProgressTask(options);
-        options.setMaxFPS(false);
-        options.setVisualization(true);
-        options.setMaxAttempts(1);
-        options.setMatlabFileName("");
-        options.setLevelRandSeed(seed);
-        options.setLevelDifficulty(difficulty);
-        task.setOptions(options);
+	public static void main(String[] args) {
+		int seed = (int) (Math.random () * Integer.MAX_VALUE);
+		int difficulty = 10;
 
-        System.out.println("Score: " + ArrayUtils.toString(task.evaluate(controller)));
-        System.out.println("Seed: " + options.getLevelRandSeed());
-        System.out.println("Difficulty: " + options.getLevelDifficulty());
-    }
+		GlobalOptions.setSeed(seed);
+		GlobalOptions.setDifficulty(difficulty);
+
+		Agent controller = new BestFirstAgent(); // This line uses the agent you imported above.
+		if (args.length > 0) {
+			controller = RegisterableAgent.load (args[0]);
+			RegisterableAgent.registerAgent (controller);
+		}
+		if (args.length > 1) {
+			seed = Integer.parseInt(args[1]);
+		}
+		if (args.length > 2) {
+			difficulty = Integer.parseInt(args[2]);
+		}
+
+		EvaluationOptions options = new CmdLineOptions(new String[0]);
+		options.setAgent(controller);
+		Task task = new ProgressTask(options);
+		options.setMaxFPS(false);
+		options.setVisualization(true);
+		options.setMaxAttempts(1);
+		options.setMatlabFileName("");
+		//options.setLevelLength(1024);
+		options.setLevelRandSeed(seed);
+		options.setLevelDifficulty(difficulty);
+		task.setOptions(options);
+
+		System.out.println("Score: " + ArrayUtils.toString(task.evaluate(controller)));
+		System.out.println("Seed: " + options.getLevelRandSeed());
+		System.out.println("Difficulty: " + options.getLevelDifficulty());
+	}
 }
+
