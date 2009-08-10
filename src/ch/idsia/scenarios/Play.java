@@ -31,6 +31,13 @@ public class Play {
 	public static void main(String[] args) {
 		int seed = (int) (Math.random () * Integer.MAX_VALUE);
 		int difficulty = 10;
+		
+		if (args.length > 1) {
+			seed = Integer.parseInt(args[1]);
+		}
+		if (args.length > 2) {
+			difficulty = Integer.parseInt(args[2]);
+		}
 
 		GlobalOptions.setSeed(seed);
 		GlobalOptions.setDifficulty(difficulty);
@@ -39,12 +46,6 @@ public class Play {
 		if (args.length > 0) {
 			controller = RegisterableAgent.load (args[0]);
 			RegisterableAgent.registerAgent (controller);
-		}
-		if (args.length > 1) {
-			seed = Integer.parseInt(args[1]);
-		}
-		if (args.length > 2) {
-			difficulty = Integer.parseInt(args[2]);
 		}
 
 		EvaluationOptions options = new CmdLineOptions(new String[0]);
