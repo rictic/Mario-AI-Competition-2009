@@ -50,14 +50,17 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			x0 = x1;
 			x1 -= xdiff;
 			if(x1 < 0) x1 = -x1;
-			//System.out.printf("secantstep %d: x0:%f x1:%f fx0:%f fx1:%f xdiff:%f\n",
-			//		n++, x0,x1, fx0,fx1, xdiff);
+			//System.out.printf("secantstep: x0:%f x1:%f fx0:%f fx1:%f xdiff:%f\n",
+			//		x0,x1, fx0,fx1, xdiff);
 		} while(Math.abs(xdiff) > 1e-4);
-		if(x1 < 0)
+		if(x1 < 0) {
 			System.out.printf("stepstorun(%f,%f) -> %f\n", distance, v0, x1);
+			x1 = -x1;
+		}
 		return x1;
 	}
 
+	private static final float lookaheadDist = 11*16;
 	private float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
@@ -78,9 +81,9 @@ public class BestFirstAgent extends RedditAgent implements Agent
 //		return (initial.x - s.x + dist_to_travel)/8;// + s.y/1000.0f; // height tiebreaker
         // we want to return #steps to goal; 20/dist_to_travel = N/(x - initial.x)
 //		return (s.x - initial.x)*20/dist_to_travel;
-        if(initial.x + 7*16 - s.x <= 0) return 0;
+        if(initial.x + lookaheadDist - s.x <= 0) return 0;
 		// stepsToRun is a slight overestimate for some presently-unknown reason, so *0.9 with it
-        return 0.9f*stepsToRun(initial.x + 7*16 - s.x, s.xa);
+        return 0.9f*stepsToRun(initial.x + lookaheadDist - s.x, s.xa);
 	}
 
 
@@ -119,7 +122,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 
 		MarioState bestfound = pq.peek();
-		for(n=0;n<1000 && !pq.isEmpty();n++) {
+		for(n=0;n<4000 && !pq.isEmpty();n++) {
 			MarioState next = pq.remove();
 			//System.out.printf("a*: trying "); next.print();
 			bestfound = marioMax(next,bestfound);
