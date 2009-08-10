@@ -128,7 +128,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 		try {
 			System.out.println("sleeping");
-			Thread.sleep(10);
+			Thread.sleep(40);
 		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
 		System.out.println("stopping searchers");
 		for (StateSearcher searcher: searchers)
