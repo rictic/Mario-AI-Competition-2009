@@ -100,8 +100,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	}
 
 	private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
-		PriorityBlockingQueue<MarioState> pq = new PriorityBlockingQueue<MarioState>(20, msComparator);
-		
+		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
+		int i = 0;
 		// add initial set
 		for(int a=0;a<16;a++) {
 			if(useless_action(a, initialState))
@@ -115,8 +115,14 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			//System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
 		MarioState bestfound = pq.peek();
-		for (int i = 0; i < searchers.length; i++){
-			searchers[i] = new StateSearcher(initialState, map, MapX, MapY, pq, bestfound);
+		PriorityQueue<MarioState>[] pqs = new PriorityQueue[searchers.length];
+		for (i = 0; i < pqs.length; i++) pqs[i] = new PriorityQueue<MarioState>(20, msComparator);
+		i = 0;
+		while (!pq.isEmpty())
+			pqs[i++%(pqs.length-1)].add(pq.remove());
+		
+		for (i = 0; i < searchers.length; i++){
+			searchers[i] = new StateSearcher(initialState, map, MapX, MapY, pqs[i], bestfound);
 			searchPool.execute(searchers[i]);
 		}
 		try {
@@ -132,8 +138,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			if (searcher.bestfound != null)
 				bestfound = marioMax(searcher.bestfound, bestfound);
 		
-		if (!pq.isEmpty())
-			bestfound = marioMax(pq.remove(), bestfound);
 		//System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
 		//		bestfound.root_action, bestfound.cost, bestfound.g);
 		// return best so far
@@ -141,7 +145,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	}
 
 	private class StateSearcher implements Runnable {
-		private final PriorityBlockingQueue<MarioState> pq;
+		private final PriorityQueue<MarioState> pq;
 		private final MarioState initialState;
 		private final byte[][] map;
 		private final int MapX;
@@ -150,7 +154,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		public boolean isStopped = false;
 		private MarioState bestfound;
 		
-		public StateSearcher(MarioState initialState, byte[][] map, int MapX, int MapY, PriorityBlockingQueue<MarioState> pq, MarioState bestfound) {
+		public StateSearcher(MarioState initialState, byte[][] map, int MapX, int MapY, PriorityQueue<MarioState> pq, MarioState bestfound) {
 			this.pq = pq; this.map = map; this.MapX = MapX; this.MapY = MapY; 
 			this.initialState = initialState; this.bestfound = bestfound;
 		}
@@ -160,19 +164,13 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 		
 		public void run() {
-			while(true){
-				//repeat if an interrupted exception occurs, break otherwise
-				try {
-					doRun();
-					break;
-				} catch (InterruptedException e) {e.printStackTrace();}
-			}
+			doRun();
 			isStopped = true;
 		}
 		
-		private void doRun() throws InterruptedException {
+		private void doRun() {
 			while((!shouldStop) && (!pq.isEmpty())) {
-				MarioState next = pq.poll(1, TimeUnit.MILLISECONDS);
+				MarioState next = pq.remove();
 				//System.out.printf("a*: trying "); next.print();
 				bestfound = marioMax(next,bestfound);
 				for(int a = 0;a<16;a++) {
