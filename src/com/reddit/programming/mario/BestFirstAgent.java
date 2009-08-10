@@ -28,13 +28,25 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	@Override
 	public void reset() {
 		// disable enemies for the time being
-		GlobalOptions.pauseWorld = false;
+		GlobalOptions.pauseWorld = true;
 	}
 
 	private float runDistance(float v0, float steps) {
-		float bleh = (float) Math.pow(0.89f, steps);
-		//-78.5554 + 78.5554 0.89^J + 9.70909 J + (8.09091- 8.09091 0.89^J) v
-		return 78.5554f*(bleh-1) + 9.70909f*steps + 8.09091f*(1-bleh)*v0;
+		// Mario's running iteration looks like this:
+		//   xa'[n] = xa[n-1] + 1.2
+		//   x[n] = x[n-1] + xa'[n]
+		//   xa[n] = xa'[n] * 0.89
+		// Working through the recurrence:
+		// x[n] = x0 + xa0*Sum[d^i,{i,0,n-1}] + s*Sum[(n-i)*d^i,{i,0,n-1}]
+		// where d === damping = 0.89 and s === step size = 1.2
+		// if you substitute and solve you get this:
+
+		float d_n = (float) Math.pow(0.89f, steps); // d^n
+		return 88.2645f*(d_n-1) + 10.9091f*steps + 9.09091f*(1-d_n)*v0;
+
+		// each of these constants is deliberately rounded upwards; we need to
+		// slightly overestimate runDistance so that we slightly underestimate
+		// our heuristic cost to goal
 	}
 
 	// runDistance is terrible to invert, so use the secant method to solve it
@@ -49,9 +61,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			xdiff = fx1 * (x1 - x0)/(fx1 - fx0);
 			x0 = x1;
 			x1 -= xdiff;
+			// if our iteration takes us negative, negate and hope it doesn't loop
 			if(x1 < 0) x1 = -x1;
-			//System.out.printf("secantstep: x0:%f x1:%f fx0:%f fx1:%f xdiff:%f\n",
-			//		x0,x1, fx0,fx1, xdiff);
 		} while(Math.abs(xdiff) > 1e-4);
 		return x1;
 	}
@@ -61,25 +72,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
-		// believe it or not, this has a derivation; i didn't pull these numbers out of my ass
-		// d: damping constant = 0.89
-		// s: step speed = 1.2
-		// J: steps to look ahead; v: initial velocity
-		// Sum[v*d^M + s*Sum[d^n, {n, 1, M}], {M, 0, J}]
-		// (-d^2 s + d^(2 + J) s + d J s - d^2 J s + v - d v - d^(1 + J) v + 
-		//  d^(2 + J) v)/(-1 + d)^2
-		//
-		// with d and s set above and J=20:
-		// 123.264 + 8.30423 v
-		// what i want to know is how far we could possibly go in twenty frames
-//		float speed = 0.311817f*initial.xa + 6.68163f; // this is how fast we could possibly be going in 
-//		float dist_to_travel = 123.264f + 8.30423f*initial.xa;
-//		return (initial.x - s.x + dist_to_travel)/8;// + s.y/1000.0f; // height tiebreaker
-        // we want to return #steps to goal; 20/dist_to_travel = N/(x - initial.x)
-//		return (s.x - initial.x)*20/dist_to_travel;
         if(initial.x + lookaheadDist - s.x <= 0) return 0;
-		// stepsToRun is a slight overestimate for some presently-unknown reason, so *0.9 with it
-        return 0.9f*stepsToRun(initial.x + lookaheadDist - s.x, s.xa);
+        return stepsToRun(initial.x + lookaheadDist - s.x, s.xa);
 	}
 
 
