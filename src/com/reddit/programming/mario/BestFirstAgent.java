@@ -49,11 +49,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			xdiff = fx1 * (x1 - x0)/(fx1 - fx0);
 			x0 = x1;
 			x1 -= xdiff;
+			if(x1 < 0) x1 = -x1;
 			//System.out.printf("secantstep %d: x0:%f x1:%f fx0:%f fx1:%f xdiff:%f\n",
 			//		n++, x0,x1, fx0,fx1, xdiff);
 		} while(Math.abs(xdiff) > 1e-4);
-		//if(x1 < 2)
-		//	System.out.printf("stepstorun(%f,%f) -> %f\n", distance, v0, x1);
+		if(x1 < 0)
+			System.out.printf("stepstorun(%f,%f) -> %f\n", distance, v0, x1);
 		return x1;
 	}
 
@@ -92,8 +93,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 	private boolean useless_action(int a, MarioState s) {
 		if((a&ACT_SPEED) == 0) return true; // haha
-		//if((a&ACT_RIGHT) == 0) return true; // haha
-//		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
+		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
 		if((a&ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
 			if(s.jumpTime <= 0 && !s.onGround && !s.sliding) return true;
