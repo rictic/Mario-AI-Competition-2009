@@ -2,6 +2,7 @@ package com.reddit.programming.mario;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
@@ -95,11 +96,10 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	}
 
 	private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
-		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
-        pq.clear();
-		int a,n;
+		PriorityBlockingQueue<MarioState> pq = new PriorityBlockingQueue<MarioState>(20, msComparator);
+		
 		// add initial set
-		for(a=0;a<16;a++) {
+		for(int a=0;a<16;a++) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, map, MapX, MapY);
@@ -110,50 +110,78 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			pq.add(ms);
 			//System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
-
-		MarioState bestfound = pq.peek();
-
-		// FIXME: instead of using a hardcoded number of iterations,
-		// periodically grab the system millisecond clock and terminate the
-		// search after ~40ms
-		for(n=0;n<2000 && !pq.isEmpty();n++) {
-			MarioState next = pq.remove();
-			//System.out.printf("a*: trying "); next.print();
-			bestfound = marioMax(next,bestfound);
-			for(a=0;a<16;a++) {
-				if(useless_action(a, next))
-					continue;
-				MarioState ms = next.next(a, map, MapX, MapY);
-				if(ms.dead) continue;
-				ms.pred = next;
-				bestfound = marioMax(next,bestfound);
-				float h = cost(ms, initialState);
-				ms.g = next.g + 1;
-				ms.cost = ms.g + h + ((a&ACT_JUMP)>0?0.0001f:0);
-				if(h <= 0) {
-					pq.clear();
-					//System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
-					//		n, ms.root_action, ms.cost, ms.g);
-					//MarioState s;
-					//for(s = ms;s != null;s = s.pred) {
-					//	System.out.printf("state %d: ", (int)s.g);
-					//	s.print();
-					//}
-					return ms.root_action;
-				}
-				pq.add(ms);
-			}
-		}
-
+		
+		StateSearcher searcher = new StateSearcher(initialState, map, MapX, MapY, pq);
+		Thread searcherThread = new Thread(searcher);
+		searcherThread.start();
+		try {
+			Thread.sleep(40);
+			searcher.stop();
+			searcherThread.join();
+		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
+		
+		MarioState bestfound = searcher.bestfound;
+		
 		if (!pq.isEmpty())
 			bestfound = marioMax(pq.remove(), bestfound);
 		//System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
 		//		bestfound.root_action, bestfound.cost, bestfound.g);
 		// return best so far
-		pq.clear();
 		return bestfound.root_action;
 	}
 
+	private class StateSearcher implements Runnable {
+		private final PriorityBlockingQueue<MarioState> pq;
+		private final MarioState initialState;
+		private final byte[][] map;
+		private final int MapX;
+		private final int MapY;
+		private boolean shouldStop = false;
+		public boolean isStopped = false;
+		private MarioState bestfound;
+		
+		public StateSearcher(MarioState initialState, byte[][] map, int MapX, int MapY, PriorityBlockingQueue<MarioState> pq) {
+			this.pq = pq; this.map = map; this.MapX = MapX; this.MapY = MapY; this.initialState = initialState;
+		}
+		
+		public void stop() {
+			this.shouldStop = true;
+		}
+		
+		public void run() {
+			bestfound = pq.peek();
+			while((!shouldStop) && (!pq.isEmpty())) {
+				MarioState next = pq.remove();
+				//System.out.printf("a*: trying "); next.print();
+				bestfound = marioMax(next,bestfound);
+				for(int a = 0;a<16;a++) {
+					if(useless_action(a, next))
+						continue;
+					MarioState ms = next.next(a, map, MapX, MapY);
+					if(ms.dead) continue;
+					ms.pred = next;
+					bestfound = marioMax(next,bestfound);
+					float h = cost(ms, initialState);
+					ms.g = next.g + 1;
+					ms.cost = ms.g + h + ((a&ACT_JUMP)>0?0.0001f:0);
+					if(h <= 0) {
+						pq.clear(); //stop any other threads as well
+						//System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
+						//		n, ms.root_action, ms.cost, ms.g);
+						//MarioState s;
+						//for(s = ms;s != null;s = s.pred) {
+						//	System.out.printf("state %d: ", (int)s.g);
+						//	s.print();
+						//}
+						bestfound = ms;
+						return;
+					}
+					pq.add(ms);
+				}
+			}
+		}
+		
+	}
 
 	public static MarioState marioMax(MarioState a, MarioState b) {
 		return msComparator.compare(a, b) >= 0 ? a : b;
