@@ -25,10 +25,10 @@ public class ASCIIFrame extends JFrame
 	Point defaultLocation = new Point(350, 350);
 	Point gameLocation = new Point();
 	Dimension gameSize = new Dimension();
-		
+	
 	public ASCIIFrame()
 	{
-		super("ASCII Map");
+		super(String.format("ASCII Map - Seed: %d - Difficulty: %d", GlobalOptions.getSeed(), GlobalOptions.getDifficulty()));
 		
 		asciiText = new TextArea(20, 80);
 		asciiText.setFont(new Font("Courier", Font.PLAIN, 10));

@@ -15,6 +15,7 @@ import ch.idsia.ai.agents.ai.*;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;
+import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.EvaluationOptions;
 import ch.idsia.utils.ArrayUtils;
@@ -27,12 +28,20 @@ import ch.idsia.utils.ArrayUtils;
  */
 public class Play {
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
+        int seed = 1068790349; //(int) (Math.random () * Integer.MAX_VALUE);
+        int difficulty = 10;
+        
+        GlobalOptions.setSeed(seed);
+        GlobalOptions.setDifficulty(difficulty);
+        
         Agent controller = new BestFirstAgent(); // This line uses the agent you imported above.
         if (args.length > 0) {
             controller = RegisterableAgent.load (args[0]);
             RegisterableAgent.registerAgent (controller);
         }
+        
         EvaluationOptions options = new CmdLineOptions(new String[0]);
         options.setAgent(controller);
         Task task = new ProgressTask(options);
@@ -40,8 +49,8 @@ public class Play {
         options.setVisualization(true);
         options.setMaxAttempts(1);
         options.setMatlabFileName("");
-        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
-        options.setLevelDifficulty(10);
+        options.setLevelRandSeed(seed);
+        options.setLevelDifficulty(difficulty);
         task.setOptions(options);
 
         System.out.println("Score: " + ArrayUtils.toString(task.evaluate(controller)));
