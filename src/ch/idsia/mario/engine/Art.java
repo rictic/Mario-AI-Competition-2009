@@ -61,7 +61,7 @@ public class Art
 
     private static Image getImage(GraphicsConfiguration gc, String imageName) throws IOException
     {
-        System.out.println("trying to get " + imageName);
+//        System.out.println("trying to get " + imageName);
         String[] filenames = new String[]{imageName, curDir + "/img/" + imageName, curDir + "/../img/" + imageName};
         File imageFile = null;
         for (String filename : filenames) {
