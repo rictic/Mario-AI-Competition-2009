@@ -31,27 +31,58 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		GlobalOptions.pauseWorld = true;
 	}
 
+	private float runDistance(float v0, float steps) {
+		float bleh = (float) Math.pow(0.89f, steps);
+		//-78.5554 + 78.5554 0.89^J + 9.70909 J + (8.09091- 8.09091 0.89^J) v
+		return 78.5554f*(bleh-1) + 9.70909f*steps + 8.09091f*(1-bleh)*v0;
+	}
+
+	// runDistance is terrible to invert, so use the secant method to solve it
+	private float stepsToRun(float distance, float v0) {
+		float x0 = 1,
+			  x1 = 2;
+		float xdiff;
+		//int n=0;
+		do {
+			float fx0 = runDistance(v0, x0) - distance;
+			float fx1 = runDistance(v0, x1) - distance;
+			xdiff = fx1 * (x1 - x0)/(fx1 - fx0);
+			x0 = x1;
+			x1 -= xdiff;
+			if(x1 < 0) x1 = -x1;
+			//System.out.printf("secantstep %d: x0:%f x1:%f fx0:%f fx1:%f xdiff:%f\n",
+			//		n++, x0,x1, fx0,fx1, xdiff);
+		} while(Math.abs(xdiff) > 1e-4);
+		if(x1 < 0)
+			System.out.printf("stepstorun(%f,%f) -> %f\n", distance, v0, x1);
+		return x1;
+	}
+
 	private float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
-		// TODO: how far right can mario go from here holding down speed+right?
-		// 
-		// cost = initial.x + n*16 - s.x
-		//int lookahead_frames = 10;
-		// how far could we conceivably go holding speed+right from the initial state?
-		// xa[1] = (xa[0] + 3) * .89
-		// xa[2] = (((xa[0] + 3) * .89) + 3) * .89 =  xa[0]*.89^2 + 3*(.89 + .89^2)
-		// xa[n] = xa[0]*.89^N + 3*.89*(.89^n - 1)/(.89 - 1) (geometric series)
-		//double speed = initial.xa*Math.pow(0.89, lookahead_frames) + 
-		//  1.2*0.89*(Math.pow(0.89, lookahead_frames) - 1)/(0.89 - 1);
+		// believe it or not, this has a derivation; i didn't pull these numbers out of my ass
+		// d: damping constant = 0.89
+		// s: step speed = 1.2
+		// J: steps to look ahead; v: initial velocity
+		// Sum[v*d^M + s*Sum[d^n, {n, 1, M}], {M, 0, J}]
+		// (-d^2 s + d^(2 + J) s + d J s - d^2 J s + v - d v - d^(1 + J) v + 
+		//  d^(2 + J) v)/(-1 + d)^2
 		//
-		// 0.89^10 = 0.311817
-		// the rest of that junk: 6.68163
-		float speed = 0.311817f*initial.xa + 6.68163f; // this is how fast we could possibly be going in ten frames
-		// what i want to know is how far we could possibly go in ten frames
-		return (initial.x - s.x + 6*16)/speed;// + (s.y-initial.y)/100.0f; // height tiebreaker
+		// with d and s set above and J=20:
+		// 123.264 + 8.30423 v
+		// what i want to know is how far we could possibly go in twenty frames
+//		float speed = 0.311817f*initial.xa + 6.68163f; // this is how fast we could possibly be going in 
+//		float dist_to_travel = 123.264f + 8.30423f*initial.xa;
+//		return (initial.x - s.x + dist_to_travel)/8;// + s.y/1000.0f; // height tiebreaker
+        // we want to return #steps to goal; 20/dist_to_travel = N/(x - initial.x)
+//		return (s.x - initial.x)*20/dist_to_travel;
+        if(initial.x + 7*16 - s.x <= 0) return 0;
+		// stepsToRun is a slight overestimate for some presently-unknown reason, so *0.9 with it
+        return 0.9f*stepsToRun(initial.x + 7*16 - s.x, s.xa);
 	}
+
 
 	// yay copy and paste
 	private static final int ACT_SPEED = 1;
@@ -62,7 +93,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private boolean useless_action(int a, MarioState s) {
 		if((a&ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
-			if(s.jumpTime < 0 && !s.onGround && !s.sliding) return true; // post-walljump
+			if(s.jumpTime <= 0 && !s.onGround && !s.sliding) return true;
 		}
 		return false;
 	}
@@ -80,41 +111,46 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				continue;
 			MarioState ms = initialState.next(a, map, MapX, MapY);
 			ms.root_action = a;
+			ms.pred = null;
 			ms.g = 0;
-			ms.h = cost(ms, initialState);
-			ms.cost = ms.h;
+			ms.cost = cost(ms, initialState);
 			pq.add(ms);
+			System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
 
-		MarioState bestfound = pq.poll();
-		
-		for(n=0;n<200000;n++) {
-			if (pq.size() == 0)
-				return bestfound.root_action;
+		MarioState bestfound = pq.peek();
+		for(n=0;n<10000 && !pq.isEmpty();n++) {
 			MarioState next = pq.remove();
+			//System.out.printf("a*: trying "); next.print();
 			bestfound = marioMax(next,bestfound);
 			for(int a : reasonableActions) {
 				if(useless_action(a, next))
 					continue;
 				MarioState ms = next.next(a, map, MapX, MapY);
 				if(ms.dead) continue;
+				ms.pred = next;
 				bestfound = marioMax(next,bestfound);
-				ms.h = cost(ms, initialState);
+				float h = cost(ms, initialState);
 				ms.g = next.g + 1;
-				ms.cost = ms.g + ms.h;
-				if(ms.h <= 0) {
+				ms.cost = ms.g + h + ((a&ACT_JUMP)>0?0.0001f:0);
+				if(h <= 0) {
 					pq.clear();
-					System.out.printf("search terminated after %d iterations; best root_action=%d cost=%f\n", 
-							n, ms.root_action, ms.cost);
+					System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
+							n, ms.root_action, ms.cost, ms.g);
+					MarioState s;
+					for(s = ms;s != null;s = s.pred) {
+						System.out.printf("state %d: ", (int)s.g);
+						s.print();
+					}
 					return ms.root_action;
 				}
 				pq.add(ms);
 			}
 		}
 
-		if (pq.size() != 0)
+		if (!pq.isEmpty())
 			bestfound = marioMax(pq.remove(), bestfound);
-		System.out.printf("giving up on search; best root_action=%d cost=%f lookahead=%f\n",
+		System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
 				bestfound.root_action, bestfound.cost, bestfound.g);
 		// return best so far
 		pq.clear();
