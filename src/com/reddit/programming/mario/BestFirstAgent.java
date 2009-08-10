@@ -5,6 +5,7 @@ import java.util.PriorityQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
@@ -171,7 +172,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		
 		private void doRun() throws InterruptedException {
 			while((!shouldStop) && (!pq.isEmpty())) {
-				MarioState next = pq.take();
+				MarioState next = pq.poll(1, TimeUnit.MILLISECONDS);
 				//System.out.printf("a*: trying "); next.print();
 				bestfound = marioMax(next,bestfound);
 				for(int a = 0;a<16;a++) {
