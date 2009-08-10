@@ -371,7 +371,6 @@ public class Mario extends Sprite
             xa = 0;
         }
 //    System.out.println("mariostate: (x,y,xa,ya)4 = " + x + "," + y + "," + xa + "," + ya);
-
         ya *= 0.85f;
         if (onGround)
         {

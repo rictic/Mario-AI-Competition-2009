@@ -13,8 +13,8 @@ public class Stats {
     final static int numberOfTrials = 100;
 
     public static void main(String[] args) {
-        Agent controller = RegisterableAgent.load (args[0]);
-        final int startingSeed = Integer.parseInt (args[1]);
+        Agent controller = RegisterableAgent.load ("com.reddit.programming.mario.BestFirstAgent");
+        final int startingSeed = Integer.parseInt ("0");
         doStats (controller, startingSeed);
         System.exit(0);
 

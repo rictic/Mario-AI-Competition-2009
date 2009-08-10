@@ -25,10 +25,10 @@ public class MarioState
   }
 
   public void print() {
-	  System.out.printf("g=%d a:%d x:(%f,%f) v:(%f,%f) %s%s%s cost=%f\n", (int)g, action,x,y,xa,ya,
-			  onGround ? "G":"g",
-			  mayJump ? "J":"j",
-			  sliding ? "S":"s", cost);
+//	  System.out.printf("g=%d a:%d x:(%f,%f) v:(%f,%f) %s%s%s cost=%f\n", (int)g, action,x,y,xa,ya,
+//			  onGround ? "G":"g",
+//			  mayJump ? "J":"j",
+//			  sliding ? "S":"s", cost);
   }
 
   private static final int ACT_SPEED = 1;

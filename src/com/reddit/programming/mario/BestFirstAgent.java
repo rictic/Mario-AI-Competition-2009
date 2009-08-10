@@ -89,6 +89,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private static final int ACT_LEFT = 8;
 
 	private boolean useless_action(int a, MarioState s) {
+		//if((a&ACT_RIGHT) == 0) return true; // haha
+//		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
 		if((a&ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
 			if(s.jumpTime <= 0 && !s.onGround && !s.sliding) return true;
@@ -96,15 +98,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return false;
 	}
 
-	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
-	//all actions save those where we're pressing left and right at the same time
-	public static final int[] reasonableActions = new int[] {1,3,5,7,9,13};
 	private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
 		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
-		int n;
         pq.clear();
+		int a,n;
 		// add initial set
-		for(int a : reasonableActions) {
+		for(a=0;a<16;a++) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, map, MapX, MapY);
@@ -113,15 +112,14 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			ms.g = 0;
 			ms.cost = cost(ms, initialState);
 			pq.add(ms);
-//			System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
 
 		MarioState bestfound = pq.peek();
-		for(n=0;n<1000 && !pq.isEmpty();n++) {
+		for(n=0;n<10000 && !pq.isEmpty();n++) {
 			MarioState next = pq.remove();
 			//System.out.printf("a*: trying "); next.print();
 			bestfound = marioMax(next,bestfound);
-			for(int a : reasonableActions) {
+			for(a=0;a<16;a++) {
 				if(useless_action(a, next))
 					continue;
 				MarioState ms = next.next(a, map, MapX, MapY);
@@ -139,6 +137,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 					for(s = ms;s != null;s = s.pred) {
 //						System.out.printf("state %d: ", (int)s.g);
 //						s.print();
+					//System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
+							//n, ms.root_action, ms.cost, ms.g);
 					}
 					return ms.root_action;
 				}
@@ -155,7 +155,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return bestfound.root_action;
 	}
 
-
+	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
 	public static MarioState marioMax(MarioState a, MarioState b) {
 		return msComparator.compare(a, b) >= 0 ? a : b;
 	}
@@ -189,7 +189,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		pred_y = ms.y;
 //		System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
 //				next_action, ms.x, ms.y, ms.xa, ms.ya));
-
 		action[Mario.KEY_SPEED] = (next_action&1)!=0;
 		action[Mario.KEY_RIGHT] = (next_action&2)!=0;
 		action[Mario.KEY_JUMP] = (next_action&4)!=0;
