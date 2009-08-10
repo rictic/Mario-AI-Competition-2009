@@ -6,19 +6,23 @@ import ch.idsia.mario.engine.GlobalOptions;
 
 public class RedditAgent extends RegisterableAgent implements Agent
 {
-	private ASCIIFrame asciiFrame;
+	private ASCIIFrame asciiFrame = null;
+	private final boolean useASCIIFrame = (GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn;
 	
-	public RedditAgent(String s)
+	public RedditAgent(String name)
 	{
-		super(s);
-		asciiFrame = new ASCIIFrame();
+		super(name);
+//		if (useASCIIFrame)
+//			asciiFrame = new ASCIIFrame();
 	}
 
 	public void UpdateMap(Sensors sensors)
 	{
-		if ((GlobalOptions.FPS != GlobalOptions.InfiniteFPS) && GlobalOptions.GameVeiwerOn)
-			asciiFrame.Update(sensors.toString(), GlobalOptions.getMarioComponent());
+//		if (useASCIIFrame) {
+//			asciiFrame.tick();
+//			asciiFrame.Update(sensors.toString(), GlobalOptions.getMarioComponent());
+//		}
 
-		asciiFrame.tick();
+
 	}
 }

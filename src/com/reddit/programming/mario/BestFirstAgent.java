@@ -13,7 +13,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private boolean[] action;
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
-	private PriorityQueue<MarioState> pq;
 
 	MarioState ms;
 	float pred_x, pred_y;
@@ -22,7 +21,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		super("BestFirstAgent");
 		action = new boolean[Environment.numberOfButtons];
 		reset();
-		pq = new PriorityQueue<MarioState>(20, msComparator);
 	}
 
 	@Override
@@ -53,8 +51,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			//System.out.printf("secantstep %d: x0:%f x1:%f fx0:%f fx1:%f xdiff:%f\n",
 			//		n++, x0,x1, fx0,fx1, xdiff);
 		} while(Math.abs(xdiff) > 1e-4);
-		if(x1 < 0)
-			System.out.printf("stepstorun(%f,%f) -> %f\n", distance, v0, x1);
+//		if(x1 < 0)
+//			System.out.printf("stepstorun(%f,%f) -> %f\n", distance, v0, x1);
 		return x1;
 	}
 
@@ -115,7 +113,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			ms.g = 0;
 			ms.cost = cost(ms, initialState);
 			pq.add(ms);
-			System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
+//			System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
 
 		MarioState bestfound = pq.peek();
@@ -135,12 +133,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				ms.cost = ms.g + h + ((a&ACT_JUMP)>0?0.0001f:0);
 				if(h <= 0) {
 					pq.clear();
-					System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
-							n, ms.root_action, ms.cost, ms.g);
+//					System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
+//							n, ms.root_action, ms.cost, ms.g);
 					MarioState s;
 					for(s = ms;s != null;s = s.pred) {
-						System.out.printf("state %d: ", (int)s.g);
-						s.print();
+//						System.out.printf("state %d: ", (int)s.g);
+//						s.print();
 					}
 					return ms.root_action;
 				}
@@ -150,8 +148,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 		if (!pq.isEmpty())
 			bestfound = marioMax(pq.remove(), bestfound);
-		System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
-				bestfound.root_action, bestfound.cost, bestfound.g);
+//		System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
+//				bestfound.root_action, bestfound.cost, bestfound.g);
 		// return best so far
 		pq.clear();
 		return bestfound.root_action;
@@ -172,9 +170,9 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			// assume one frame of falling before we get an observation :(
 			ms = new MarioState(mpos[0], mpos[1], 0.0f, 3.0f);
 		} else {
-			System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
+//			System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 			if(mpos[0] != pred_x || mpos[1] != pred_y) {
-				System.out.println("mario state mismatch; attempting crappy resynchronizing");
+//				System.out.println("mario state mismatch; attempting crappy resynchronizing");
 				ms.x = mpos[0]; ms.y = mpos[1];
 				//System.exit(1);
 			}
@@ -189,8 +187,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		ms = ms.next(next_action, sensors.levelScene, mX,mY);
 		pred_x = ms.x;
 		pred_y = ms.y;
-		System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
-				next_action, ms.x, ms.y, ms.xa, ms.ya));
+//		System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
+//				next_action, ms.x, ms.y, ms.xa, ms.ya));
 
 		action[Mario.KEY_SPEED] = (next_action&1)!=0;
 		action[Mario.KEY_RIGHT] = (next_action&2)!=0;

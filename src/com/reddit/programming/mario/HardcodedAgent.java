@@ -1,10 +1,9 @@
 package com.reddit.programming.mario;
 
 import ch.idsia.ai.agents.Agent;
-import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
-import ch.idsia.mario.engine.GlobalOptions;
 
 //Based on ForwardAgent
 
@@ -14,7 +13,7 @@ public class HardcodedAgent extends RedditAgent implements Agent
 	private int jumpCounter = 0;
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
-	private ASCIIFrame asciiFrame = new ASCIIFrame();;
+	
 	MarioState ms;
 	float pred_x, pred_y;
 

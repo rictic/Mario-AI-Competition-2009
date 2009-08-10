@@ -13,7 +13,6 @@ public class Stats {
     final static int numberOfTrials = 100;
 
     public static void main(String[] args) {
-
         Agent controller = RegisterableAgent.load (args[0]);
         final int startingSeed = Integer.parseInt (args[1]);
         doStats (controller, startingSeed);
