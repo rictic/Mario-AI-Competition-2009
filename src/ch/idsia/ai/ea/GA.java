@@ -13,7 +13,7 @@ public class GA
 	private double bestFitnessEver;
 	
 	private static final int tournamentSize = 5;
-	private static final double probCrossover = 0.01;
+	private static final double probCrossover = 0.50;
 	
 	private final Task task;
 	

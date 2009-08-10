@@ -40,7 +40,7 @@ public class GeneticPlay {
         //options.setAgent(controller);
         Task task = new ProgressTask(options);
         options.setMaxFPS(false);
-        options.setVisualization(true);
+        options.setVisualization(false);
         options.setMaxAttempts(1);
         options.setMatlabFileName("");
         options.setLevelRandSeed(seed);
