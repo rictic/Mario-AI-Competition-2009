@@ -71,7 +71,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 		if(initial.x + lookaheadDist - s.x <= 0)
 			return -stepsToRun(s.x - initial.x - lookaheadDist, s.xa);
-		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa);
+		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa) + s.y*0.0001f; // height tiebreaker
 	}
 
 
