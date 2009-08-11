@@ -1,13 +1,9 @@
 package com.reddit.programming.mario;
 
-public class MarioState
+public class MarioState extends SpriteState
 {
-	private static float GROUND_INERTIA = 0.89f;
-	private static float AIR_INERTIA = 0.89f;
-
 	// FIXME: try to minimize the sizes of these fields as much as possible; we
 	// allocate a huge number of MarioState objects.
-	public float x,y,xa = 0, ya = 0;
 	public int facing = 1, jumpTime = 0;
 	public boolean big = true,  // mario is big
 		   fire = true, // mario can throw fireballs
@@ -55,6 +51,8 @@ public class MarioState
 		n.root_action = root_action;
 		n.action = action;
 		n.ws = ws;
+		n.pred = this;
+		n.g = g + 1;
 
 		n.move(action);
 
@@ -161,17 +159,16 @@ public class MarioState
 
 		//System.out.println("move: (x,y,xa,ya)4 = " + x + "," + y + "," + xa + "," + ya);
 
-		ya *= 0.85f; // up/down air friction
+		// maximum speed is DAMPING_X/(1-DAMPING_X) * impulse_per_step
+		// impulse_per_step = 0.6 if walking, 1.2 if running
+		// max speed = 4.85 walking, 9.7 running
+		xa *= DAMPING_X;
+		ya *= DAMPING_Y;
 
-		if (onGround) { // ground friction
-			xa *= GROUND_INERTIA;
-			// maximum speed is GROUND_INERTIA/(1-GROUND_INERTIA) * impulse_per_step
-			// impulse_per_step = 0.6 if walking, 1.2 if running
-			// max speed = 4.85 walking, 9.7 running
-		} else { // falling
-			xa *= AIR_INERTIA;
+		// falling?
+		if (!onGround)
 			ya += 3;
-		}
+
 		//System.out.println("move: (xa,ya)5 = " + xa + "," + ya);
 	}
 
