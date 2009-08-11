@@ -19,7 +19,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
 {
     Server server = null;
     private int port;
-    private TCP_MODE tcpMode = TCP_MODE.FAST_TCP;
+    private TCP_MODE tcpMode = TCP_MODE.SIMPLE_TCP;
 
     public ServerAgent(int port, boolean enable)
     {
@@ -31,10 +31,11 @@ public class ServerAgent extends RegisterableAgent implements Agent
         }
     }
 
-    public ServerAgent(Server server)
+    public ServerAgent(Server server, boolean isFastTCP)
     {
         super("ServerAgent");
         this.server = server;
+        this.tcpMode = (isFastTCP) ? TCP_MODE.FAST_TCP : TCP_MODE.SIMPLE_TCP;
     }
 
     public String getName()
@@ -42,6 +43,10 @@ public class ServerAgent extends RegisterableAgent implements Agent
         return this.name + ((server == null) ? "" : server.getClientName());
     }
 
+    public void setFastTCP(boolean isFastTCP)
+    {
+        this.tcpMode = (isFastTCP) ? TCP_MODE.FAST_TCP : TCP_MODE.SIMPLE_TCP;
+    }
 
     // A tiny bit of singletone-like concept. Server is created ones for each egent. Basically we are not going
     // To create more than one ServerAgent at a run, but this flexibility allows to add this feature with certain ease.
@@ -62,7 +67,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
             this.createServer(port);
     }
 
-    private void sendCompleteObservation(Environment observation)
+    private void sendRawObservation(Environment observation)
     {
 //        byte[][] levelScene = observation.getLevelSceneObservation();
         // MERGED
@@ -77,7 +82,12 @@ public class ServerAgent extends RegisterableAgent implements Agent
                 tmpData += " " + (completeObs[x][y]);
             }
         }
-//        tmpData = "O 0 10 101 0 1 0 10 10 1 0 10 0 1 010 1 01";
+        tmpData += " " + observation.getMarioFloatPos()[0]
+                 + " " + observation.getMarioFloatPos()[1];
+        
+        float[] enemiesFloatPoses = observation.getEnemiesFloatPos();
+        for (int i = 0; i < enemiesFloatPoses.length; ++i)
+            tmpData += " " + enemiesFloatPoses[i];
 
         server.sendSafe(tmpData);
         // TODO: StateEncoderDecoder.Encode.Decode.  zip, gzip do not send mario position. zero instead for better compression.
@@ -87,7 +97,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
     {
         if (this.tcpMode == TCP_MODE.SIMPLE_TCP)
         {
-            this.sendCompleteObservation(observation);
+            this.sendRawObservation(observation);
         }
         else if (this.tcpMode == TCP_MODE.FAST_TCP)
         {
@@ -97,11 +107,32 @@ public class ServerAgent extends RegisterableAgent implements Agent
 
     private void sendBitmapObservation(Environment observation)
     {
+        
         String tmpData =  "E" +
                           (observation.mayMarioJump() ? "1" : "0")  +
                           (observation.isMarioOnGround() ? "1" : "0") +
-                          observation.getBitmapLevelObservation() +
-                          observation.getBitmapEnemiesObservation();
+                          observation.getBitmapLevelObservation();
+//                          observation.getBitmapEnemiesObservation();
+        int check_sum = 0;
+        for (int i = 3; i < tmpData.length(); ++i)
+        {
+            char cur_char = tmpData.charAt(i);
+            if (cur_char != 0)
+            {
+//                System.out.print(i + " ");
+//                MathX.show(cur_char);
+                check_sum += Integer.valueOf(cur_char);
+            }
+        }
+        if (tmpData.length() != /*125 - 61*/34)
+            try {
+                throw new Exception("Pipetz!");
+            } catch (Exception e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                System.err.println(e.getMessage());
+            }
+        tmpData += " " + check_sum;
+//        System.out.println("tmpData size = " + tmpData.length());
         server.sendSafe(tmpData);
     }
 
@@ -139,7 +170,7 @@ public class ServerAgent extends RegisterableAgent implements Agent
         try
         {
 //            System.out.println("ServerAgent: sending observation...");
-//            sendCompleteObservation(observation);
+//            sendRawObservation(observation);
             sendObservation(observation);
             action = receiveAction();
         }

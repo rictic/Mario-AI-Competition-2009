@@ -2,6 +2,7 @@ package ch.idsia.tools;
 
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.simulation.SimulationOptions;
+import ch.idsia.tools.tcp.ServerAgent;
 
 import java.awt.*;
 
@@ -34,7 +35,6 @@ public class EvaluationOptions extends SimulationOptions
         GlobalOptions.pauseWorld = isPauseWorld();
         GlobalOptions.PowerRestoration = isPowerRestoration();
         GlobalOptions.StopSimulationIfWin = isStopSimulationIfWin();
-
     }    
 
     public Boolean isExitProgramWhenFinished()    {

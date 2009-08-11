@@ -60,7 +60,7 @@ public class GameViewer extends JFrame
             g.setColor(Color.GREEN);
             if (toolsConfigurator.getMarioComponent() != null)
             {
-                for (String s: toolsConfigurator.getMarioComponent().getObservation(
+                for (String s: toolsConfigurator.getMarioComponent().getTextObservation(
                         ShowEnemiesObservation.getState(),
                         ShowLevelMapObservation.getState(),
                         ShowCompleteObservation.getState(),
