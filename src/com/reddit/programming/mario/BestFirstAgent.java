@@ -65,13 +65,23 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	}
 
 	private static final float lookaheadDist = 11*16;
-	private float cost(MarioState s, MarioState initial) {
+	private float cost(MarioState s, MarioState initial, byte[][] map) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
+		float tiebreaker = 0;
+		// add a height tiebreaker iff there is an object in front of us
+		// if we always add the tiebreaker, we end up taking unnecessary leaps
+		// of faith down holes.  this just helps us get unstuck faster when we
+		// land in front of something.
+		if(map[11][12] != 0) // technically we can skip it if it's -11 (platform) as well
+			tiebreaker = s.y*0.0001f;
+
+		// if we reach the goal, don't add the tiebreaker
 		if(initial.x + lookaheadDist - s.x <= 0)
 			return -stepsToRun(s.x - initial.x - lookaheadDist, s.xa);
-		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa) + s.y*0.0001f; // height tiebreaker
+
+		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa) + tiebreaker;
 	}
 
 
@@ -103,7 +113,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			ms.root_action = a;
 			ms.pred = null;
 			ms.g = 0;
-			ms.cost = cost(ms, initialState);
+			ms.cost = cost(ms, initialState, map);
 			pq.add(ms);
 			//System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
@@ -122,7 +132,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				MarioState ms = next.next(a, map, MapX, MapY);
 				if(ms.dead) continue;
 				ms.pred = next;
-				float h = cost(ms, initialState);
+				float h = cost(ms, initialState, map);
 				ms.g = next.g + 1;
 				ms.cost = ms.g + h + ((a&ACT_JUMP)>0?0.0001f:0);
 				n++;
