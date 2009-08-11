@@ -6,7 +6,7 @@ powsof2 = (1, 2, 4, 8, 16, 32, 64, 128,
 
 def show(el):
     print "block (", el, ") :",
-    for  i in range(17):
+    for  i in range(16):
         print ((int(el) & powsof2[i])),
     print
 
