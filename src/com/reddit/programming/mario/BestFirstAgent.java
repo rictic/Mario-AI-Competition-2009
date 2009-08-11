@@ -28,7 +28,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	@Override
 	public void reset() {
 		// disable enemies for the time being
-		GlobalOptions.pauseWorld = true;
+		//GlobalOptions.pauseWorld = true;
 		ms = null;
 		marioPosition = null;
 	}
@@ -67,7 +67,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	}
 
 	private static final float lookaheadDist = 10*16;
-	private float cost(MarioState s, MarioState initial, byte[][] map) {
+	private float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
@@ -76,12 +76,15 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		// if we always add the tiebreaker, we end up taking unnecessary leaps
 		// of faith down holes.  this just helps us get unstuck faster when we
 		// land in front of something.
-		if(map[11][12] != 0) // technically we can skip it if it's -11 (platform) as well
-			tiebreaker = s.y*0.0001f;
+		if(initial.ws.map[11][12] != 0) // technically we can skip it if it's -11 (platform) as well
+			tiebreaker += s.y*0.0001f;
 
-		// if we reach the goal, don't add the tiebreaker
+		// if we're falling into a hole, we get a huge penalty.  perhaps we can walljump out.
+		if(s.y > 208)
+			tiebreaker += s.y;
+		
 		if(initial.x + lookaheadDist - s.x <= 0)
-			return -stepsToRun(s.x - initial.x - lookaheadDist, s.xa);
+			return -stepsToRun(s.x - initial.x - lookaheadDist, s.xa) + tiebreaker;
 
 		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa) + tiebreaker;
 	}
@@ -104,18 +107,19 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return false;
 	}
 
-	private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
+	private int searchForAction(MarioState initialState, WorldState ws) {
 		pq.clear();
+		initialState.ws = ws;
 		int a,n;
 		// add initial set
 		for(a=1;a<16;a++) {
 			if(useless_action(a, initialState))
 				continue;
-			MarioState ms = initialState.next(a, map, MapX, MapY);
+			MarioState ms = initialState.next(a, ws);
 			ms.root_action = a;
 			ms.pred = null;
 			ms.g = 0;
-			ms.cost = cost(ms, initialState, map);
+			ms.cost = cost(ms, initialState);
 			pq.add(ms);
 			//System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
@@ -127,21 +131,34 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		// search after ~40ms
 		for(n=0;n<4000 && !pq.isEmpty();) {
 			MarioState next = pq.remove();
+
+			// next.cost can be infinite, and still at the head of the queue,
+			// if the node got marked dead
+			if(next.cost == Float.POSITIVE_INFINITY) continue;
+
 			//System.out.printf("a*: trying "); next.print();
 			for(a=1;a<16;a++) {
 				if(useless_action(a, next))
 					continue;
-				MarioState ms = next.next(a, map, MapX, MapY);
-				if(ms.dead) continue;
+				MarioState ms = next.next(a, next.ws);
 				ms.pred = next;
-				float h = cost(ms, initialState, map);
+
+				// if we die, prune our predecessor node that got us here
+				if(ms.dead) {
+					// removing things from a priority queue is ridiculously
+					// slow, so we'll just mark it dead
+					ms.pred.cost = Float.POSITIVE_INFINITY;
+					continue;
+				}
+
+				float h = cost(ms, initialState);
 				ms.g = next.g + 1;
 				ms.cost = ms.g + h + ((a&ACT_JUMP)>0?0.0001f:0);
 				n++;
 				if(h <= 0) {
 					pq.clear();
-					//System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
-					//		n, ms.root_action, ms.cost, ms.g);
+					System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
+							n, ms.root_action, ms.cost, ms.g);
 					//MarioState s;
 					//for(s = ms;s != null;s = s.pred) {
 					//	System.out.printf("state %d: ", (int)s.g);
@@ -156,8 +173,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 		if (!pq.isEmpty())
 			bestfound = marioMin(pq.remove(), bestfound);
-		//System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
-		//		bestfound.root_action, bestfound.cost, bestfound.g);
+		System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
+				bestfound.root_action, bestfound.cost, bestfound.g);
 		// return best so far
 		pq.clear();
 		return bestfound.root_action;
@@ -200,11 +217,10 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		super.UpdateMap(sensors);
 
 		// quantize mario's position to get the map origin
-		int mX = (int)mpos[0]/16 - 11;
-		int mY = (int)mpos[1]/16 - 11;
+		WorldState ws = new WorldState(sensors.levelScene, mpos);
 
-		int next_action = searchForAction(ms, sensors.levelScene, mX,mY);
-		ms = ms.next(next_action, sensors.levelScene, mX,mY);
+		int next_action = searchForAction(ms, ws);
+		ms = ms.next(next_action, ws);
 		pred_x = ms.x;
 		pred_y = ms.y;
 		//System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
