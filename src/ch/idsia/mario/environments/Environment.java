@@ -36,5 +36,5 @@ public interface Environment
 
     public boolean isMarioOnGround();
     public boolean mayMarioJump();
-//    public Point getMarioPosition();
+    public boolean isMarioCarrying();
 }
