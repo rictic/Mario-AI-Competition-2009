@@ -15,7 +15,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	protected Sensors sensors = new Sensors();
 	private PriorityQueue<MarioState> pq;
 
-	MarioState ms;
+	MarioState ms = null;
 	float pred_x, pred_y;
 
 	public BestFirstAgent() {
@@ -29,6 +29,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	public void reset() {
 		// disable enemies for the time being
 		GlobalOptions.pauseWorld = true;
+		ms = null;
+		marioPosition = null;
 	}
 
 	private float runDistance(float v0, float steps) {
@@ -64,7 +66,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return x1;
 	}
 
-	private static final float lookaheadDist = 11*16;
+	private static final float lookaheadDist = 10*16;
 	private float cost(MarioState s, MarioState initial, byte[][] map) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
