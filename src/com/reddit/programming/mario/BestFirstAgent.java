@@ -77,7 +77,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
-        if(initial.x + lookaheadDist - s.x <= 0) return 0;
+        if(initial.x + lookaheadDist - s.x <= 0)
+			return -stepsToRun(s.x - initial.x - lookaheadDist, s.xa);
         return stepsToRun(initial.x + lookaheadDist - s.x, s.xa);
 	}
 
@@ -103,7 +104,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
 		int i = 0;
 		// add initial set
-		for(int a=0;a<16;a++) {
+		for(int a=1;a<16;a++) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, map, MapX, MapY);
@@ -114,15 +115,14 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			pq.add(ms);
 			//System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
-		MarioState bestfound = pq.peek();
 		PriorityQueue<MarioState>[] pqs = new PriorityQueue[searchers.length];
 		for (i = 0; i < pqs.length; i++) pqs[i] = new PriorityQueue<MarioState>(20, msComparator);
 		i = 0;
 		while (!pq.isEmpty())
-			pqs[i++%(pqs.length-1)].add(pq.remove());
+			pqs[i++%pqs.length].add(pq.remove());
 		
 		for (i = 0; i < searchers.length; i++){
-			searchers[i] = new StateSearcher(initialState, map, MapX, MapY, pqs[i], bestfound);
+			searchers[i] = new StateSearcher(initialState, map, MapX, MapY, pqs[i], i);
 			searchPool.execute(searchers[i]);
 		}
 		try {
@@ -134,12 +134,14 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		for (StateSearcher searcher: searchers)
 			while(!searcher.isStopped){}
 		
-		for (StateSearcher searcher: searchers)
-			if (searcher.bestfound != null)
-				bestfound = marioMax(searcher.bestfound, bestfound);
+		MarioState bestfound = null;
+		for (StateSearcher searcher: searchers) {
+			bestfound = marioMin(searcher.bestfound, bestfound);
+
+		System.out.printf("searcher_(%d): best root_action=%d cost=%f lookahead=%f\n",
+				searcher.id, bestfound.root_action, bestfound.cost, bestfound.g);
+		}
 		
-		//System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
-		//		bestfound.root_action, bestfound.cost, bestfound.g);
 		// return best so far
 		return bestfound.root_action;
 	}
@@ -150,13 +152,15 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		private final byte[][] map;
 		private final int MapX;
 		private final int MapY;
+		private final int id;
 		private boolean shouldStop = false;
 		public boolean isStopped = false;
 		private MarioState bestfound;
 		
-		public StateSearcher(MarioState initialState, byte[][] map, int MapX, int MapY, PriorityQueue<MarioState> pq, MarioState bestfound) {
+		public StateSearcher(MarioState initialState, byte[][] map, int MapX, int MapY, PriorityQueue<MarioState> pq, int id) {
 			this.pq = pq; this.map = map; this.MapX = MapX; this.MapY = MapY; 
-			this.initialState = initialState; this.bestfound = bestfound;
+			this.initialState = initialState; this.bestfound = null;
+			this.id = id;
 		}
 		
 		public void stop() {
@@ -169,11 +173,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 		
 		private void doRun() {
+			int n = 0;
 			while((!shouldStop) && (!pq.isEmpty())) {
+				n++;
 				MarioState next = pq.remove();
 				//System.out.printf("a*: trying "); next.print();
-				bestfound = marioMax(next,bestfound);
-				for(int a = 0;a<16;a++) {
+				for(int a = 1;a<16;a++) {
 					if(useless_action(a, next))
 						continue;
 					MarioState ms = next.next(a, map, MapX, MapY);
@@ -182,26 +187,36 @@ public class BestFirstAgent extends RedditAgent implements Agent
 					float h = cost(ms, initialState);
 					ms.g = next.g + 1;
 					ms.cost = ms.g + h + ((a&ACT_JUMP)>0?0.0001f:0);
+					bestfound = marioMin(ms,bestfound);
 					if(h <= 0) {
-						//System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
-						//		n, ms.root_action, ms.cost, ms.g);
+						bestfound = ms;
+						//System.out.printf("searcher%d: goal @%d iterations; best a=%d cost=%f lookahead=%f\n", 
+						//		id, n, ms.root_action, ms.cost, ms.g);
 						//MarioState s;
 						//for(s = ms;s != null;s = s.pred) {
 						//	System.out.printf("state %d: ", (int)s.g);
 						//	s.print();
 						//}
-						bestfound = ms;
 						return;
 					}
 					pq.add(ms);
 				}
 			}
+			//System.out.printf("searcher%d: stopped @%d iterations; best a=%d cost=%f lookahead=%f\n", 
+			//		id, n, bestfound.root_action, bestfound.cost, bestfound.g);
 		}
 		
 	}
 
-	public static MarioState marioMax(MarioState a, MarioState b) {
-		return msComparator.compare(a, b) >= 0 ? a : b;
+	public static MarioState marioMin(MarioState a, MarioState b) {
+		if(a == null) return b;
+		if(b == null) return a;
+		// for determining which state is best, go purely by heuristic cost to
+		// goal (which is the total cost minus the number of steps) in order to
+		// prefer better-explored avenues of an early-terminated search, and
+		// always prefer a completed search to an incomplete one
+		if(a.cost - a.g < b.cost - b.g) return a;
+		return b;
 	}
 
 	@Override
