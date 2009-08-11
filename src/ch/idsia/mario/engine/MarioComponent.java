@@ -400,5 +400,9 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         return null;
     }
 
+    public int getMarioMode()
+    {
+        return mario.getMode();
+    }
 
 }
