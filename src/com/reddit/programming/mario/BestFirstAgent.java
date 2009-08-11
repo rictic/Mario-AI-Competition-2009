@@ -69,7 +69,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
-		if(initial.x + lookaheadDist - s.x <= 0) return 0;
+		if(initial.x + lookaheadDist - s.x <= 0)
+			return -stepsToRun(s.x - initial.x - lookaheadDist, s.xa);
 		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa);
 	}
 
@@ -95,7 +96,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		pq.clear();
 		int a,n;
 		// add initial set
-		for(a=0;a<16;a++) {
+		for(a=1;a<16;a++) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, map, MapX, MapY);
@@ -112,20 +113,19 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		// FIXME: instead of using a hardcoded number of iterations,
 		// periodically grab the system millisecond clock and terminate the
 		// search after ~40ms
-		for(n=0;n<2000 && !pq.isEmpty();n++) {
+		for(n=0;n<4000 && !pq.isEmpty();) {
 			MarioState next = pq.remove();
 			//System.out.printf("a*: trying "); next.print();
-			bestfound = marioMax(next,bestfound);
-			for(a=0;a<16;a++) {
+			for(a=1;a<16;a++) {
 				if(useless_action(a, next))
 					continue;
 				MarioState ms = next.next(a, map, MapX, MapY);
 				if(ms.dead) continue;
 				ms.pred = next;
-				bestfound = marioMax(next,bestfound);
 				float h = cost(ms, initialState);
 				ms.g = next.g + 1;
 				ms.cost = ms.g + h + ((a&ACT_JUMP)>0?0.0001f:0);
+				n++;
 				if(h <= 0) {
 					pq.clear();
 					//System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
@@ -138,11 +138,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 					return ms.root_action;
 				}
 				pq.add(ms);
+				bestfound = marioMin(ms,bestfound);
 			}
 		}
 
 		if (!pq.isEmpty())
-			bestfound = marioMax(pq.remove(), bestfound);
+			bestfound = marioMin(pq.remove(), bestfound);
 		//System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
 		//		bestfound.root_action, bestfound.cost, bestfound.g);
 		// return best so far
@@ -151,8 +152,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	}
 
 
-	public static MarioState marioMax(MarioState a, MarioState b) {
-		return msComparator.compare(a, b) >= 0 ? a : b;
+	public static MarioState marioMin(MarioState a, MarioState b) {
+		if(a == null) return b;
+		if(b == null) return a;
+		// compare heuristic cost only
+		if(a.cost - a.g <= b.cost - b.g) return a;
+		return b;
 	}
 
 	@Override
