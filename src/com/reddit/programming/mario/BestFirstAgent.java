@@ -116,6 +116,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			//System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
 		PriorityQueue<MarioState>[] pqs = new PriorityQueue[searchers.length];
+		//System.out.println("creating searchers");
 		for (i = 0; i < pqs.length; i++) pqs[i] = new PriorityQueue<MarioState>(20, msComparator);
 		i = 0;
 		while (!pq.isEmpty())
@@ -126,11 +127,13 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			searchPool.execute(searchers[i]);
 		}
 		try {
+			//System.out.println("sleeping");
 			Thread.sleep(40);
 		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
-		
+		//System.out.println("stopping searchers");
 		for (StateSearcher searcher: searchers)
 			searcher.stop();
+		//System.out.println("waiting on searchers to stop");
 		for (StateSearcher searcher: searchers)
 			while(!searcher.isStopped){}
 		
@@ -138,8 +141,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		for (StateSearcher searcher: searchers) {
 			bestfound = marioMin(searcher.bestfound, bestfound);
 
-		System.out.printf("searcher_(%d): best root_action=%d cost=%f lookahead=%f\n",
-				searcher.id, bestfound.root_action, bestfound.cost, bestfound.g);
+			//System.out.printf("searcher_(%d): best root_action=%d cost=%f lookahead=%f\n",
+			//		searcher.id, bestfound.root_action, bestfound.cost, bestfound.g);
 		}
 		
 		// return best so far
