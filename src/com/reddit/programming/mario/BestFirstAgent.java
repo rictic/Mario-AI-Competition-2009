@@ -14,6 +14,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
 	private PriorityQueue<MarioState> pq;
+	private int DrawIndex = 0;
 
 	MarioState ms;
 	float pred_x, pred_y;
@@ -124,7 +125,20 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				if(useless_action(a, next))
 					continue;
 				MarioState ms = next.next(a, map, MapX, MapY);
-				if(ms.dead) continue;
+
+				GlobalOptions.MarioPos[DrawIndex][0] = (int) next.x;
+				GlobalOptions.MarioPos[DrawIndex][1] = (int) next.y;
+				DrawIndex++;
+				GlobalOptions.MarioPos[DrawIndex][0] = (int) ms.x;
+				GlobalOptions.MarioPos[DrawIndex][1] = (int) ms.y;
+				DrawIndex++;
+
+				if (DrawIndex >= 400) {
+					DrawIndex = 0;
+				}
+
+				if (ms.dead)
+					continue;
 				ms.pred = next;
 				bestfound = marioMax(next,bestfound);
 				float h = cost(ms, initialState);

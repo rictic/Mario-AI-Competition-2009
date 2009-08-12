@@ -30,6 +30,8 @@ public class GlobalOptions {
     
     private static int seed = 0;
     private static int difficulty = 0;
+    
+    public static int[][] MarioPos = new int[400][2];
 
     public static boolean StopSimulationIfWin;
 
