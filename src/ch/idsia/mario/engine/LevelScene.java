@@ -135,7 +135,7 @@ public class LevelScene extends Scene implements SpriteContext
                     case(-82):
                     case(-81):
                     case(4):
-                    case(30): // canon
+                    case(30): case(46): // canon
                         return -10;   // border, cannot pass through, can stand on
                     case(9):
                         return -12; // hard formation border. Pay attention!
@@ -295,15 +295,6 @@ public class LevelScene extends Scene implements SpriteContext
         for (Float F: poses)
             ret[i++] = F;
 
-//        if (i > 0)
-//        {
-//            System.out.print("Enemies Poses:" );
-//            for (int j = 0; j < i/2; ++j)
-//            {
-//                System.out.print("               " + ret[j] + " " + ret[j + 1] + "\n");
-//            }
-//        }
-
         return ret;
     }
 
@@ -324,8 +315,8 @@ public class LevelScene extends Scene implements SpriteContext
                 }
                 else
                     ret[obsX][obsY] = 0;
-                if (x == MarioXInMap && y == MarioYInMap)
-                    ret[obsX][obsY] = mario.kind;
+//                if (x == MarioXInMap && y == MarioYInMap)
+//                    ret[obsX][obsY] = mario.kind;
             }
         }
 
@@ -346,7 +337,13 @@ public class LevelScene extends Scene implements SpriteContext
             {
                 int obsX = sprite.mapY - MarioYInMap + Environment.HalfObsHeight;
                 int obsY = sprite.mapX - MarioXInMap + Environment.HalfObsWidth;
-                ret[obsX][obsY] = ZLevelEnemyGeneralization(sprite.kind, ZLevelEnemies);
+                // quick fix TODO: handle this in more general way.
+                if (ret[obsX][obsY] != 14)
+                {
+                    byte tmp = ZLevelEnemyGeneralization(sprite.kind, ZLevelEnemies);
+                    if (tmp != Sprite.KIND_NONE)
+                        ret[obsX][obsY] = tmp;
+                }
             }
         }
 
