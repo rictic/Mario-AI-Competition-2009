@@ -157,6 +157,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		private boolean shouldStop = false;
 		public boolean isStopped = false;
 		private MarioState bestfound;
+		private int DrawIndex = 0;
 		
 		public StateSearcher(MarioState initialState, byte[][] map, int MapX, int MapY, PriorityQueue<MarioState> pq, MarioState bestfound) {
 			this.pq = pq; this.map = map; this.MapX = MapX; this.MapY = MapY; 
@@ -181,6 +182,19 @@ public class BestFirstAgent extends RedditAgent implements Agent
 					if(useless_action(a, next))
 						continue;
 					MarioState ms = next.next(a, map, MapX, MapY);
+
+					GlobalOptions.MarioPos[DrawIndex][0] = (int)next.x;
+					GlobalOptions.MarioPos[DrawIndex][1] = (int)next.y;
+					DrawIndex++;
+					GlobalOptions.MarioPos[DrawIndex][0] = (int)ms.x;
+					GlobalOptions.MarioPos[DrawIndex][1] = (int)ms.y;
+					DrawIndex++;
+					
+					if (DrawIndex >= 400)
+					{
+						DrawIndex = 0;
+					}
+					
 					if(ms.dead) continue;
 					ms.pred = next;
 					float h = cost(ms, initialState);
@@ -232,7 +246,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				// and it won't let us move.
 			}
 		}
-
+		
 		super.UpdateMap(sensors);
 
 		// quantize mario's position to get the map origin
