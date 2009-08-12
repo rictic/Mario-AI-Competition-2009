@@ -4,6 +4,9 @@ __date__ = "$May 13, 2009 1:25:30 AM$"
 from client import Client
 from pybrain.rl.environments.environment import Environment
 from pybrain.utilities import setAllArgs
+from utils.dataadaptor import show
+import sys
+#import chardet
 
 class TCPEnvironment(Environment):
 
@@ -22,16 +25,29 @@ class TCPEnvironment(Environment):
         """returns the availability status of the environment"""
         return self.connected
 
+    def to_unicode_or_bust(self, obj, encoding = 'utf-8'):
+        if isinstance(obj, basestring):
+            if not isinstance(obj, unicode):
+                obj = unicode(obj, encoding)
+        return obj
+
     def getSensors(self):
         """ receives an observation via tcp connection"""
         #        print "Looking forward to receive data"
+        
         data = self.client.recvData()
-        #        print "Data received: ", data
+        data = self.to_unicode_or_bust(data)
+                
         if data == "ciao":
             self.client.disconnect()
             self.connected = False            
         elif len(data) > 5:
         #        print data
+#            for i in range(31):
+#                cur_char = ord(data[i + 3])
+#                if (cur_char != 0):
+#                    print i + 3,
+#                    show(cur_char)
             return data
 
     def performAction(self, action):

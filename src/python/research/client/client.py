@@ -22,7 +22,7 @@ class Client:
         self.disconnect()
 
     def connectToDefaultServer(self):
-            """connect to a server using defind by constructor host and port"""
+            """connect to a server using defined by constructor host and port"""
             self.connectToServer(self.Host, self.Port)
 
     def connectToServer(self, host, port):

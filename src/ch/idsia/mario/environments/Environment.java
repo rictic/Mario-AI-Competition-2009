@@ -26,6 +26,8 @@ public interface Environment
 
     public float[] getMarioFloatPos();
 
+    public int getMarioMode();
+
     public float[] getEnemiesFloatPos();
 
     public String getBitmapEnemiesObservation();
@@ -34,5 +36,5 @@ public interface Environment
 
     public boolean isMarioOnGround();
     public boolean mayMarioJump();
-//    public Point getMarioPosition();
+    public boolean isMarioCarrying();
 }

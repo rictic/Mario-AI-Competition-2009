@@ -7,6 +7,7 @@ import ch.idsia.mario.simulation.BasicSimulator;
 import ch.idsia.mario.simulation.ISimulation;
 import ch.idsia.tools.tcp.Server;
 import ch.idsia.tools.tcp.ServerAgent;
+import ch.idsia.tools.tcp.TCP_MODE;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class Evaluator implements Runnable
     private void evaluateServerMode()
     {
         Server server = new Server(evaluationOptions.getServerAgentPort(), Environment.numberOfObservationElements, Environment.numberOfButtons);
-        evaluationOptions.setAgent(new ServerAgent(server));
+        evaluationOptions.setAgent(new ServerAgent(server, evaluationOptions.isFastTCP()));
 
         ISimulation simulator = new BasicSimulator(evaluationOptions.getSimulationOptionsCopy());
         while (server.isRunning())
@@ -48,6 +49,8 @@ public class Evaluator implements Runnable
             {
                 resetData = resetData.split("reset\\s*")[1];
                 evaluationOptions.setUpOptions(resetData.split("[\\s]+"));
+                //TODO: Fix this in more general way
+                ((ServerAgent)evaluationOptions.getAgent()).setFastTCP(evaluationOptions.isFastTCP());
                 init(evaluationOptions);
                 // Simulate One Level
                 EvaluationInfo evaluationInfo;

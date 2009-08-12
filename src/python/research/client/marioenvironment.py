@@ -10,12 +10,13 @@ class MarioEnvironment(TCPEnvironment):
 
 
     # Level settings
-    levelDifficulty = 5
+    levelDifficulty = 0
     levelType = 0
     creaturesEnabled = True
     initMarioMode = 2
     levelSeed = 1
     timeLimit = 100
+    fastTCP = False
     
     # Other settings
     visualization = True
@@ -42,5 +43,8 @@ class MarioEnvironment(TCPEnvironment):
             argstring += "-vis on "
         else:
             argstring += "-vis off "
+        if self.fastTCP:
+            argstring += "-fastTCP on"
+
         self.client.sendData("reset -maxFPS on " + argstring + self.otherServerArgs + "\r\n")
 

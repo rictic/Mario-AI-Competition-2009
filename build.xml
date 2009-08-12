@@ -1,0 +1,55 @@
+<project name="marioai" default="compile" basedir=".">
+    <description>
+        simple example build file
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="build" location="classes"/>
+  <property name="dist"  location="dist"/>
+  <property name="lib"  location="lib"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+    <copy todir="${build}/ch/idsia/mario/engine/resources">
+      <fileset dir="${src}/ch/idsia/mario/engine/resources">
+        <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+                  
+                  
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source " >
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}">
+      <classpath>
+         <fileset dir="${lib}">
+           <include name="**/*.jar" />
+         </fileset>
+      </classpath>
+    </javac>
+  </target>
+  <target name="play" depends="compile"
+        description="tests Mario whether it works" >
+    <!-- Create the distribution directory -->
+    <java classname="ch.idsia.scenarios.Play" dir="${build}" failonerror="false" fork="true">
+      <classpath>
+         <fileset dir="${lib}">
+           <include name="**/*.jar" />
+         </fileset>
+           <pathelement location="${build}" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+</project>

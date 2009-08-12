@@ -1,9 +1,6 @@
 package ch.idsia.tools.tcp;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -59,7 +56,10 @@ public class Server
             System.out.println ("Server: Waiting for a client to connect on port " + this.port);
             socket = serverSocket.accept ();
             System.out.println ("Server: We have a connection from " + socket.getInetAddress ());
-            out = new PrintWriter(socket.getOutputStream ());
+
+            out = new PrintWriter( new OutputStreamWriter(socket.getOutputStream(), "UTF-8") );
+
+//            out = new PrintWriter(socket.getOutputStream (), "UTF-8");
             this.send("Server: Hi! Welcome.");
             in = new BufferedReader (new InputStreamReader(socket.getInputStream ()));
             final String greetingMessage = in.readLine();
@@ -114,22 +114,22 @@ public class Server
     {
         if (!message.startsWith("FIT"))
         {
-            int len = message.split(" ").length;
-            if (len != this.requiredSentDataSize)
-            {
-                try
-                {
-                    throw new Exception("Actual data size " + len + "of the sending message" + message +
-                            "does not match required value " + requiredSentDataSize);
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                    restartServer();
-                    return STATUS.ERROR_SENDING;
-                }
-            }
-            else
+//            int len = message.split(" ").length;
+//            if (len != this.requiredSentDataSize && len != 6)
+//            {
+//                try
+//                {
+//                    throw new Exception("Actual data size " + len + " of the sending message" + message +
+//                            " does not match required value " + requiredSentDataSize);
+//                }
+//                catch (Exception e)
+//                {
+//                    e.printStackTrace();
+//                    restartServer();
+//                    return STATUS.ERROR_SENDING;
+//                }
+//            }
+//            else
             {
                 this.send(message);
             }
