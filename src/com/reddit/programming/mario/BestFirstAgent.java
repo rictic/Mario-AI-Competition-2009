@@ -14,8 +14,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
 	private PriorityQueue<MarioState> pq;
+	private static final boolean verbose1 = true;
+	private static final boolean verbose2 = true;
+	private static final boolean drawPath = true;
+	private int DrawIndex = 0;
 
-	MarioState ms = null;
+	MarioState ms = null, ms_prev = null;
 	float pred_x, pred_y;
 
 	public BestFirstAgent() {
@@ -28,7 +32,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	@Override
 	public void reset() {
 		// disable enemies for the time being
-		//GlobalOptions.pauseWorld = true;
+		GlobalOptions.pauseWorld = true;
 		ms = null;
 		marioPosition = null;
 	}
@@ -54,6 +58,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	// runDistance is terrible to invert, so use the secant method to solve it
 	private float stepsToRun(float distance, float v0) {
 		float x0=1, x1=2, xdiff;
+		float sgn = 1;
+		if(distance < 0) { sgn = -1; distance = -distance; }
 		do {
 			float fx0 = runDistance(v0, x0) - distance;
 			float fx1 = runDistance(v0, x1) - distance;
@@ -63,7 +69,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			// if our iteration takes us negative, negate and hope it doesn't loop
 			if(x1 < 0) x1 = -x1;
 		} while(Math.abs(xdiff) > 1e-4);
-		return x1;
+		return x1*sgn;
 	}
 
 	private static final float lookaheadDist = 10*16;
@@ -79,13 +85,26 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		if(initial.ws.map[11][12] != 0) // technically we can skip it if it's -11 (platform) as well
 			tiebreaker += s.y*0.0001f;
 
-		// if we're falling into a hole, we get a huge penalty.  perhaps we can walljump out.
-		if(s.y > 208)
-			tiebreaker += s.y;
-		
-		if(initial.x + lookaheadDist - s.x <= 0)
-			return -stepsToRun(s.x - initial.x - lookaheadDist, s.xa) + tiebreaker;
+		// GET COINS!
+		boolean coingoal = false;
+		for(int j=0;j<22;j++)
+			for(int i=0;i<22;i++)
+				if(s.ws.map[j][i] == 34) { // i really need to get rid of these magic numbers.  this = coin
+					if(!coingoal) tiebreaker = Float.POSITIVE_INFINITY;
+					tiebreaker = Math.min(tiebreaker, 
+										  (Math.abs(stepsToRun(16*(s.ws.MapX+i)+8 - s.x, s.xa)) +
+										   0.5f*Math.abs(16*(s.ws.MapY+j)+8 - s.y)));
+					coingoal = true;
+				}
+		if(coingoal)
+			return tiebreaker;
 
+		// if we're falling into a hole, we get a huge penalty.  perhaps we can walljump out.
+		// ...but this heuristic blows.  we need a better approach to falling
+		// down holes in general.
+//		if(s.y > 208)
+//			tiebreaker += s.y;
+		
 		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa) + tiebreaker;
 	}
 
@@ -98,8 +117,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private static final int ACT_LEFT = 8;
 
 	private boolean useless_action(int a, MarioState s) {
-	//	if((a&ACT_SPEED) == 0) return true; // our heuristic is good enough that we can let go of speed now
-//		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
+		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
 		if((a&ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
 			if(s.jumpTime <= 0 && !s.onGround && !s.sliding) return true;
@@ -110,6 +128,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private int searchForAction(MarioState initialState, WorldState ws) {
 		pq.clear();
 		initialState.ws = ws;
+		initialState.g = 0;
 		int a,n;
 		// add initial set
 		for(a=1;a<16;a++) {
@@ -117,11 +136,10 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				continue;
 			MarioState ms = initialState.next(a, ws);
 			ms.root_action = a;
-			ms.pred = null;
-			ms.g = 0;
-			ms.cost = cost(ms, initialState);
+			ms.cost = 1 + cost(ms, initialState);
 			pq.add(ms);
-			//System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
+			if(verbose1)
+				System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
 
 		MarioState bestfound = pq.peek();
@@ -135,6 +153,19 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			// next.cost can be infinite, and still at the head of the queue,
 			// if the node got marked dead
 			if(next.cost == Float.POSITIVE_INFINITY) continue;
+
+			if(drawPath) {
+				GlobalOptions.MarioPos[DrawIndex][0] = (int) next.x;
+				GlobalOptions.MarioPos[DrawIndex][1] = (int) next.y;
+				DrawIndex++;
+				GlobalOptions.MarioPos[DrawIndex][0] = (int) next.pred.x;
+				GlobalOptions.MarioPos[DrawIndex][1] = (int) next.pred.y;
+				DrawIndex++;
+
+				if (DrawIndex >= 400) {
+					DrawIndex = 0;
+				}
+			}
 
 			//System.out.printf("a*: trying "); next.print();
 			for(a=1;a<16;a++) {
@@ -153,17 +184,21 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 				float h = cost(ms, initialState);
 				ms.g = next.g + 1;
-				ms.cost = ms.g + h + ((a&ACT_JUMP)>0?0.0001f:0);
+				ms.cost = ms.g + h;// + ((a&ACT_JUMP)>0?0.0001f:0);
 				n++;
 				if(h <= 0) {
 					pq.clear();
-					System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
-							n, ms.root_action, ms.cost, ms.g);
-					//MarioState s;
-					//for(s = ms;s != null;s = s.pred) {
-					//	System.out.printf("state %d: ", (int)s.g);
-					//	s.print();
-					//}
+					if(verbose1) {
+						System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
+								n, ms.root_action, ms.cost, ms.g);
+					}
+					if(verbose2) {
+						MarioState s;
+						for(s = ms;s != initialState;s = s.pred) {
+							System.out.printf("state %d: ", (int)s.g);
+							s.print();
+						}
+					}
 					return ms.root_action;
 				}
 				pq.add(ms);
@@ -173,8 +208,10 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 		if (!pq.isEmpty())
 			bestfound = marioMin(pq.remove(), bestfound);
-		System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
-				bestfound.root_action, bestfound.cost, bestfound.g);
+		if(verbose1) {
+			System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
+					bestfound.root_action, bestfound.cost, bestfound.g);
+		}
 		// return best so far
 		pq.clear();
 		return bestfound.root_action;
@@ -201,16 +238,15 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		} else {
 			//System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 			if(mpos[0] != pred_x || mpos[1] != pred_y) {
-				//System.out.println("mario state mismatch; attempting resync");
-				ms.x = mpos[0]; ms.y = mpos[1];
-				// we also need some guess for xa and ya here, ideally.
-				//
 				// generally this shouldn't happen, unless we mispredict
 				// something.  currently if we stomp an enemy then we don't
 				// predict that and get confused.
 				//
 				// but it will happen when we win, cuz we have no idea we won
 				// and it won't let us move.
+				if(verbose1)
+					System.out.println("mario state mismatch; attempting resync");
+				resync(observation);
 			}
 		}
 
@@ -220,6 +256,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		WorldState ws = new WorldState(sensors.levelScene, mpos);
 
 		int next_action = searchForAction(ms, ws);
+		ms_prev = ms;
 		ms = ms.next(next_action, ws);
 		pred_x = ms.x;
 		pred_y = ms.y;
@@ -232,6 +269,26 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		action[Mario.KEY_LEFT] = (next_action&8)!=0;
 
 		return action;
+	}
+
+	private void resync(Environment observation) {
+		float[] mpos = observation.getMarioFloatPos();
+		ms.x = mpos[0]; ms.y = mpos[1];
+		ms.mayJump = observation.mayMarioJump();
+		ms.onGround = observation.isMarioOnGround();
+		// again, Mario's iteration looks like this:
+		//   xa',ya'[n] = xa,ya[n-1] + lastmove_sx,y
+		//   x,y[n] = x,y[n-1] + xa',ya'[n]
+		//   xa,ya[n] = xa',ya'[n] * damp_x,y
+
+		// lastmove_s was guessed wrong, or we wouldn't be out of sync.  we can
+		// directly get the new xa and ya, as long as no collisions occurred.
+		// if there *was* a collision and xa,ya are wrong, they probably will
+		// be corrected by each call next()
+		if(ms_prev != null) {
+			ms.xa = (ms.x - ms_prev.x) * 0.89f;
+			ms.ya = (ms.y - ms_prev.y) * 0.85f;
+		}
 	}
 
 }

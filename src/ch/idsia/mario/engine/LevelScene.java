@@ -826,6 +826,15 @@ public class LevelScene extends Scene implements SpriteContext
         layer.setCam(xCam, yCam);
         layer.render(g, tick, paused?0:alpha);
         layer.renderExit0(g, tick, paused?0:alpha, mario.winTime==0);
+        
+        g.setColor(Color.RED); 
+		for (int i = 0; i < 400; i += 2)
+		{
+			g.drawLine(GlobalOptions.MarioPos[i][0] - xCam,
+						GlobalOptions.MarioPos[i][1] - yCam,
+						GlobalOptions.MarioPos[i + 1][0] - xCam,
+						GlobalOptions.MarioPos[i + 1][1] - yCam);
+		}
 
         g.translate(-xCam, -yCam);
 
