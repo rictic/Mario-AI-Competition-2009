@@ -157,14 +157,15 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			if(drawPath) {
 				GlobalOptions.MarioPos[DrawIndex][0] = (int) next.x;
 				GlobalOptions.MarioPos[DrawIndex][1] = (int) next.y;
+				GlobalOptions.MarioPos[DrawIndex][2] = costToTransparency(next.cost);
 				DrawIndex++;
 				GlobalOptions.MarioPos[DrawIndex][0] = (int) next.pred.x;
 				GlobalOptions.MarioPos[DrawIndex][1] = (int) next.pred.y;
+				GlobalOptions.MarioPos[DrawIndex][2] = costToTransparency(next.pred.cost);
 				DrawIndex++;
 
-				if (DrawIndex >= 400) {
+				if (DrawIndex >= 400)
 					DrawIndex = 0;
-				}
 			}
 
 			//System.out.printf("a*: trying "); next.print();
@@ -217,6 +218,10 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return bestfound.root_action;
 	}
 
+	public static int costToTransparency(float cost) {
+		if (cost <= 0) return 100;
+		return Math.max(0, 20-(int)cost);
+	}
 
 	public static MarioState marioMin(MarioState a, MarioState b) {
 		if(a == null) return b;

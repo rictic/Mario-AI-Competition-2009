@@ -836,7 +836,7 @@ public class LevelScene extends Scene implements SpriteContext
 //						GlobalOptions.MarioPos[i][1] - yCam,
 //						GlobalOptions.MarioPos[i + 1][0] - xCam,
 //						GlobalOptions.MarioPos[i + 1][1] - yCam);
-			addSprite(new StaticMario(this, GlobalOptions.MarioPos[i][0], GlobalOptions.MarioPos[i][1]));
+			addSprite(new StaticMario(this, GlobalOptions.MarioPos[i][0], GlobalOptions.MarioPos[i][1], GlobalOptions.MarioPos[i][2]));
 		}
 
         g.translate(-xCam, -yCam);

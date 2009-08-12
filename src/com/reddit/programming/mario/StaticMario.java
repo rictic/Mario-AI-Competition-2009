@@ -16,7 +16,7 @@ public class StaticMario extends Sprite
     public boolean avoidCliffs = false;
     private int life;
 
-    public StaticMario(LevelScene world, int x, int y)
+    public StaticMario(LevelScene world, int x, int y, int transparency)
     {
         kind = KIND_MARIO;
         sheet = Art.smallMario;
@@ -37,5 +37,6 @@ public class StaticMario extends Sprite
         facing = 1;
         wPic  = hPic = 16;
         life = 0;
+        this.transparency = transparency / 100.0f;
     }
 }
