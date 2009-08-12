@@ -15,6 +15,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.reddit.programming.mario.StaticMario;
+
 
 public class LevelScene extends Scene implements SpriteContext
 {
@@ -830,10 +832,11 @@ public class LevelScene extends Scene implements SpriteContext
         g.setColor(Color.RED); 
 		for (int i = 0; i < 400; i += 2)
 		{
-			g.drawLine(GlobalOptions.MarioPos[i][0] - xCam,
-						GlobalOptions.MarioPos[i][1] - yCam,
-						GlobalOptions.MarioPos[i + 1][0] - xCam,
-						GlobalOptions.MarioPos[i + 1][1] - yCam);
+//			g.drawLine(GlobalOptions.MarioPos[i][0] - xCam,
+//						GlobalOptions.MarioPos[i][1] - yCam,
+//						GlobalOptions.MarioPos[i + 1][0] - xCam,
+//						GlobalOptions.MarioPos[i + 1][1] - yCam);
+			addSprite(new StaticMario(this, GlobalOptions.MarioPos[i][0], GlobalOptions.MarioPos[i][1]));
 		}
 
         g.translate(-xCam, -yCam);

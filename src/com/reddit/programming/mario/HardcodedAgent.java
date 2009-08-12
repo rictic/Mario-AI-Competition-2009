@@ -110,7 +110,7 @@ public class HardcodedAgent extends RedditAgent implements Agent
 		// quantize mario's position to get the map origin
 		int mX = (int)ms.x/16 - 11;
 		int mY = (int)ms.y/16 - 11;
-		ms = ms.next(_act_token, sensors.levelScene, mX,mY);
+//		ms = ms.next(_act_token, sensors.levelScene, mX,mY);
 		pred_x = ms.x;
 		pred_y = ms.y;
 		System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",

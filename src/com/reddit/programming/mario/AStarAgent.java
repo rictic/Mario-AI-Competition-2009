@@ -74,14 +74,15 @@ public class AStarAgent extends RegisterableAgent implements Agent {
 		int mX = (int)ms.x/16 - 11;
 		int mY = (int)ms.y/16 - 11;
 
-		MarioState[] result = new MarioState[] {
-				ms.next(12, sensors.levelScene, mX, mY),
-				ms.next(8, sensors.levelScene, mX, mY),
-				ms.next(4, sensors.levelScene, mX, mY),
-				ms.next(2, sensors.levelScene, mX, mY) //extend, decide on state, etc.
-				// for example: if jumping, we can simply go on...
-		};
-		return result;
+//		MarioState[] result = new MarioState[] {
+//				ms.next(12, sensors.levelScene, mX, mY),
+//				ms.next(8, sensors.levelScene, mX, mY),
+//				ms.next(4, sensors.levelScene, mX, mY),
+//				ms.next(2, sensors.levelScene, mX, mY) //extend, decide on state, etc.
+//				// for example: if jumping, we can simply go on...
+//		};
+//		return result;
+		return null;
 	}
 
 	private double costLeftHeuristics(MarioState curr, double xRightOfScreen) {
