@@ -298,7 +298,7 @@ public class LevelScene extends Scene implements SpriteContext
         return ret;
     }
 
-    public byte[][] completeObservation(int ZLevelEnemies, int ZLeveMap)
+    public byte[][] completeObservation(int ZLevelEnemies, int ZLevelMap)
     {
         byte[][] ret = new byte[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
         //TODO: Move to constants 16
@@ -311,7 +311,7 @@ public class LevelScene extends Scene implements SpriteContext
             {
                 if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
                 {
-                    ret[obsX][obsY] = ZLevelMapElementGeneralization(level.map[x][y], ZLevelEnemies);
+                    ret[obsX][obsY] = ZLevelMapElementGeneralization(level.map[x][y], ZLevelMap);
                 }
                 else
                     ret[obsX][obsY] = 0;
