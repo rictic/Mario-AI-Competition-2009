@@ -16,6 +16,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private PriorityQueue<MarioState> pq;
 	private static final boolean verbose1 = false;
 	private static final boolean verbose2 = false;
+	private static final boolean drawPath = true;
+	private int DrawIndex = 0;
 
 	MarioState ms = null, ms_prev = null;
 	float pred_x, pred_y;
@@ -139,6 +141,19 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			// next.cost can be infinite, and still at the head of the queue,
 			// if the node got marked dead
 			if(next.cost == Float.POSITIVE_INFINITY) continue;
+
+			if(drawPath) {
+				GlobalOptions.MarioPos[DrawIndex][0] = (int) next.x;
+				GlobalOptions.MarioPos[DrawIndex][1] = (int) next.y;
+				DrawIndex++;
+				GlobalOptions.MarioPos[DrawIndex][0] = (int) next.pred.x;
+				GlobalOptions.MarioPos[DrawIndex][1] = (int) next.pred.y;
+				DrawIndex++;
+
+				if (DrawIndex >= 400) {
+					DrawIndex = 0;
+				}
+			}
 
 			//System.out.printf("a*: trying "); next.print();
 			for(a=1;a<16;a++) {
