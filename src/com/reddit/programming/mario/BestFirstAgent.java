@@ -3,6 +3,8 @@ package com.reddit.programming.mario;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+import java.io.IOException;
+
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
@@ -72,7 +74,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return x1*sgn;
 	}
 
-	private static final float lookaheadDist = 10*16;
+	private static final float lookaheadDist = 9*16;
 	private float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
@@ -82,8 +84,10 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		// if we always add the tiebreaker, we end up taking unnecessary leaps
 		// of faith down holes.  this just helps us get unstuck faster when we
 		// land in front of something.
-		if(initial.ws.map[11][12] != 0) // technically we can skip it if it's -11 (platform) as well
-			tiebreaker += s.y*0.0001f;
+		int MarioX = (int)s.x/16 - s.ws.MapX+1;
+		if(MarioX >= 0 && MarioX < 22)
+			if(s.ws.map[11][MarioX] != 0)
+				tiebreaker += s.y*0.0001f;
 
 		/*
 		// GET COINS!
@@ -127,6 +131,19 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return false;
 	}
 
+	private void addLine(float x0, float y0, float x1, float y1, int color) {
+		if(drawPath && GlobalOptions.MarioPosSize < 400) {
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int)x0;
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int)y0;
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = color;
+			GlobalOptions.MarioPosSize++;
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int)x1;
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int)y1;
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = color;
+			GlobalOptions.MarioPosSize++;
+		}
+	}
+
 	private int searchForAction(MarioState initialState, WorldState ws) {
 		pq.clear();
 		initialState.ws = ws;
@@ -159,18 +176,9 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			// if the node got marked dead
 			if(next.cost == Float.POSITIVE_INFINITY) continue;
 
-			if(drawPath && GlobalOptions.MarioPosSize < 400) {
-				int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
-				color = color|(color<<8)|(color<<16);
-				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int) next.x;
-				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int) next.y;
-				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = color;
-				GlobalOptions.MarioPosSize++;
-				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int) next.pred.x;
-				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int) next.pred.y;
-				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = costToTransparency(next.pred.cost);
-				GlobalOptions.MarioPosSize++;
-			}
+			int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
+			color = color|(color<<8)|(color<<16);
+			addLine(next.x, next.y, next.pred.x, next.pred.y, color);
 
 			//System.out.printf("a*: trying "); next.print();
 			for(a=1;a<16;a++) {
@@ -197,12 +205,16 @@ public class BestFirstAgent extends RedditAgent implements Agent
 						System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
 								n, ms.root_action, ms.cost, ms.g);
 					}
-					if(verbose2) {
-						MarioState s;
-						for(s = ms;s != initialState;s = s.pred) {
+					MarioState s;
+					if(GlobalOptions.MarioPosSize > 400-46)
+						GlobalOptions.MarioPosSize = 400-46;
+					for(s = ms;s != initialState;s = s.pred) {
+						if(verbose2) {
 							System.out.printf("state %d: ", (int)s.g);
 							s.print();
 						}
+						// green line shows taken path
+						addLine(s.x, s.y, s.pred.x, s.pred.y, 0x00ff00);
 					}
 					return ms.root_action;
 				}
@@ -276,6 +288,11 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		action[Mario.KEY_RIGHT] = (next_action&2)!=0;
 		action[Mario.KEY_JUMP] = (next_action&4)!=0;
 		action[Mario.KEY_LEFT] = (next_action&8)!=0;
+
+		// Uncomment to single-step with the enter key
+		//try {
+		//	System.in.read();
+		//} catch(IOException e) {};
 
 		return action;
 	}

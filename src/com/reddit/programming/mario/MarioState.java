@@ -84,7 +84,7 @@ public class MarioState extends SpriteState
 				ya = -jumpTime * yJumpSpeed;
 				jumpTime++;
 
-			} else if (onGround && mayJump) {
+			} else if (onGround && mayJump) { // initial jump phase
 				xJumpSpeed = 0;
 				yJumpSpeed = -1.9f;
 				jumpTime = 7;
