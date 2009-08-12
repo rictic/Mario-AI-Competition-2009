@@ -7,36 +7,34 @@ import ch.idsia.mario.engine.sprites.Sprite;
 
 public class StaticMario extends Sprite
 {
-    private int width = 4;
-    int height = 24;
-
-    private LevelScene world;
-    public int facing;
-
-    public boolean avoidCliffs = false;
-    private int life;
-
-    public StaticMario(LevelScene world, int x, int y, int transparency)
+    public StaticMario(LevelScene world, int x, int y, int transparency, int marioMode)
     {
-        kind = KIND_MARIO;
-        sheet = Art.smallMario;
-
-        xPicO = 8;
-        yPicO = 15;
-        wPic = hPic = 16;
-
-        this.x = x;
+    	kind = KIND_MARIO;
+        this.transparency = transparency / 100.0f;
+        
+    	this.x = x;
         this.y = y;
-        this.world = world;
         xPicO = 8;
         yPicO = 15;
 
         xPic = 1;
         yPic = 0;
-        height = 12;
-        facing = 1;
-        wPic  = hPic = 16;
-        life = 0;
-        this.transparency = transparency / 100.0f;
+    	
+        int size = 32;
+        if (marioMode == 0) {
+        	sheet = Art.smallMario;
+        	size = 16;
+            xPicO = 8;
+            yPicO = 15;
+        }
+        	
+        else {
+        	sheet = marioMode > 1 ? Art.fireMario : Art.mario;
+        	size = 32;
+        	xPicO = 16;
+            yPicO = 31;
+        }
+
+        wPic = hPic = size;
     }
 }
