@@ -25,15 +25,15 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     private boolean running = false;
     private int width, height;
     private GraphicsConfiguration graphicsConfiguration;
-    private LevelScene scene;
+    private Scene scene;
     private boolean focused = false;
 
     int frame;
     int delay;
     Thread animator;
 
-    private int ZLevelEnemies;
-    private int ZLevelMap;
+    private int ZLevelEnemies = 1;
+    private int ZLevelMap = 1;
 
     public void setGameViewer(GameViewer gameViewer) {
         this.gameViewer = gameViewer;
@@ -312,11 +312,10 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 //        scene.init();
     }
 
-    public List<String> getObservation(boolean Enemies, boolean LevelMap, boolean Complete, int ZLevel) {
+    public List<String> getTextObservation(boolean Enemies, boolean LevelMap, boolean Complete, int ZLevel) {
         if (scene instanceof LevelScene)
             return ((LevelScene) scene).LevelSceneAroundMarioASCII(Enemies, LevelMap, Complete, ZLevel, 1);
         else {
-            //
             return new ArrayList<String>();
         }
     }
@@ -341,12 +340,6 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         }
     }
 
-    public LevelScene getFullScene() {
-    	scene.zLevelEnemies = ZLevelEnemies;
-    	scene.zLevelMap = ZLevelMap;
-    	return scene;
-    }
-    
     public byte[][] getCompleteObservation() {
         if (scene instanceof LevelScene)
             return ((LevelScene) scene).completeObservation(ZLevelEnemies, ZLevelMap);
@@ -372,14 +365,6 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     public boolean mayMarioJump() {
         return mario.mayJump();
     }
-
-//    public Point getMarioPosition()
-//    {
-//        if (scene instanceof LevelScene)
-//            return new Point(((LevelScene)scene).mario.mapX, ((LevelScene)scene).mario.mapY);
-//
-//        return null;
-//    }
 
     public void setAgent(Agent agent) {
         this.agent = agent;
@@ -415,5 +400,13 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         return null;
     }
 
+    public int getMarioMode()
+    {
+        return mario.getMode();
+    }
 
+    public boolean isMarioCarrying()
+    {
+        return mario.carried != null;
+    }
 }

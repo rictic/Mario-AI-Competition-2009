@@ -1,11 +1,8 @@
 import numpy
-__author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
-__date__ ="$May 1, 2009 2:46:34 AM$"
+__author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch"
+__date__ = "$May 1, 2009 2:46:34 AM$"
 
 from marioagent import MarioAgent
-
-if __name__ != "__main__":
-    print "Importing %s " % __name__;
 
 class ForwardAgent(MarioAgent):
     """ In fact the Python twin of the
@@ -18,10 +15,19 @@ class ForwardAgent(MarioAgent):
     levelScene = None
     mayMarioJump = None
     isMarioOnGround = None
+    marioFloats = None
+    enemiesFloats = None
+    isEpisodeOver = False
 
     trueJumpCounter = 0;
     trueSpeedCounter = 0;
 
+
+    def reset(self):
+        self.isEpisodeOver = False
+        self.trueJumpCounter = 0;
+        self.trueSpeedCounter = 0;
+        
     def __init__(self):
         """Constructor"""
         self.trueJumpCounter = 0
@@ -29,15 +35,14 @@ class ForwardAgent(MarioAgent):
         self.action = numpy.zeros(5, int)
         self.action[1] = 1
         self.actionStr = ""
-        pass
-
+        
     def _dangerOfGap(self):
-        for x in range(9,13):
+        for x in range(9, 13):
             f = True
-            for y in range(12,22):
-                if  (self.levelScene[y,x] != 0):
+            for y in range(12, 22):
+                if  (self.levelScene[y, x] != 0):
                     f = False
-            if (f and self.levelScene[12,11] != 0):
+            if (f and self.levelScene[12, 11] != 0):
                 return True
         return False
 
@@ -45,30 +50,26 @@ class ForwardAgent(MarioAgent):
     def _a2(self):
         """ Interesting, sometimes very useful behaviour which might prevent falling down into a gap!
         Just substitue getAction by this method and see how it behaves.
-
-        Get observation, (possibly analyse it), sent an action back
-        @param obs: observation from the environment
-        @type obs: by default, this is assumed to be a numpy array of doubles
         """
         if (self.mayMarioJump):
                     print "m: %d, %s, %s, 12: %d, 13: %d, j: %d" \
-            % (self.levelScene[11,11], self.mayMarioJump, self.isMarioOnGround, \
-            self.levelScene[11,12], self.levelScene[11,12], self.trueJumpCounter)
+            % (self.levelScene[11, 11], self.mayMarioJump, self.isMarioOnGround, \
+            self.levelScene[11, 12], self.levelScene[11, 12], self.trueJumpCounter)
         else:
             if self.levelScene == None:
                 print "Bad news....."
             print "m: %d, 12: %d, 13: %d, j: %d" \
-                % (self.levelScene[11,11], \
-                self.levelScene[11,12], self.levelScene[11,12], self.trueJumpCounter)
+                % (self.levelScene[11, 11], \
+                self.levelScene[11, 12], self.levelScene[11, 12], self.trueJumpCounter)
 
         a = numpy.zeros(5, int)
         a[1] = 1
 
         danger = self._dangerOfGap()
-        if (self.levelScene[11,12] != 0 or \
-            self.levelScene[11,13] != 0 or danger):
+        if (self.levelScene[11, 12] != 0 or \
+            self.levelScene[11, 13] != 0 or danger):
             if (self.mayMarioJump or \
-                ( not self.isMarioOnGround and a[self.KEY_JUMP] == 1)):
+                (not self.isMarioOnGround and a[self.KEY_JUMP] == 1)):
                 a[self.KEY_JUMP] = 1
             self.trueJumpCounter += 1
         else:
@@ -95,20 +96,20 @@ class ForwardAgent(MarioAgent):
         print "action: " , actionStr
         return actionStr
 
-    def produceAction(self):
-        """Get observation, (possibly analyse it), sent an action back
-        @param obs: observation from the environment
-        @type obs: by default, this is assumed to be a numpy array of doubles
+    def getAction(self):
+        """ Possible analysis of current observation and sending an action back
         """
 #        print "M: mayJump: %s, onGround: %s, level[11,12]: %d, level[11,13]: %d, jc: %d" \
 #            % (self.mayMarioJump, self.isMarioOnGround, self.levelScene[11,12], \
 #            self.levelScene[11,13], self.trueJumpCounter)
+#        if (self.isEpisodeOver):
+#            return numpy.ones(5, int)
 
         danger = self._dangerOfGap()
-        if (self.levelScene[11,12] != 0 or \
-            self.levelScene[11,13] != 0 or danger):
+        if (self.levelScene[11, 12] != 0 or \
+            self.levelScene[11, 13] != 0 or danger):
             if (self.mayMarioJump or \
-                ( not self.isMarioOnGround and self.action[self.KEY_JUMP] == 1)):
+                (not self.isMarioOnGround and self.action[self.KEY_JUMP] == 1)):
                 self.action[self.KEY_JUMP] = 1
             self.trueJumpCounter += 1
         else:
@@ -121,23 +122,13 @@ class ForwardAgent(MarioAgent):
 
         self.action[self.KEY_SPEED] = danger
         return self.action
-#        self.actionStr = ""
-#
-#        for i in range(5):
-#            if self.action[i] == 1:
-#                self.actionStr += '1'
-#            elif self.action[i] == 0:
-#                self.actionStr += '0'
-#            else:
-#                print "something very dangerous happen...."
-#
-#        self.actionStr += "\r\n"
-#        print "action: " , self.actionStr
-#        return self.actionStr
 
     def integrateObservation(self, obs):
         """This method stores the observation inside the agent"""
-        self.mayMarioJump, self.isMarioOnGround, self.levelScene = obs
+        if (len(obs) != 6):
+            self.isEpisodeOver = True
+        else:
+            self.mayMarioJump, self.isMarioOnGround, self.marioFloats, self.enemiesFloats, self.levelScene, dummy = obs
 #        self.printLevelScene()
 
     def printLevelScene(self):

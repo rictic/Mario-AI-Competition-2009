@@ -2,6 +2,7 @@ package ch.idsia.scenarios;
 
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.Agent;
+import ch.idsia.ai.agents.ai.TimingAgent;
 import ch.idsia.tools.EvaluationOptions;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.Evaluator;
@@ -16,12 +17,11 @@ public class Stats {
 
         Agent controller = RegisterableAgent.load ("com.reddit.programming.mario.BestFirstAgent");
         final int startingSeed = Integer.parseInt ("0");
-        doStats (controller, startingSeed);
-        System.exit(0);
-
+        doStats (new TimingAgent(controller), startingSeed);
     }
 
-    public static void doStats (Agent controller, int startingSeed) {
+    public static void doStats (Agent agent, int startingSeed) {
+        TimingAgent controller = new TimingAgent (agent);
         RegisterableAgent.registerAgent (controller);
         EvaluationOptions options = new CmdLineOptions(new String[0]);
 
@@ -49,12 +49,13 @@ public class Stats {
         System.out.println("Competition score: " + competitionScore);
     }
 
-    public static double testConfig (Agent controller, EvaluationOptions options, int seed, int level, boolean paused) {
+    public static double testConfig (TimingAgent controller, EvaluationOptions options, int seed, int level, boolean paused) {
         options.setLevelDifficulty(level);
         options.setPauseWorld(paused);
         StatisticalSummary ss = test (controller, options, seed, level);
-        System.out.printf("Level %d %s %.4f (%.4f) (min %.4f max %.4f)\n", level, paused ? "paused" : "unpaused",
-                ss.mean(), ss.sd(), ss.min(), ss.max());
+        System.out.printf("Level %d %s %.4f (%.4f) (min %.4f max %.4f) (avg time %.4f)\n",
+                level, paused ? "paused" : "unpaused",
+                ss.mean(), ss.sd(), ss.min(), ss.max(), controller.averageTimeTaken());
         return ss.mean();
     }
 

@@ -1,7 +1,7 @@
 import sys
 import socket
-__author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
-__date__ ="$May 1, 2009 9:02:32 AM$"
+__author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch"
+__date__ = "$May 1, 2009 9:02:32 AM$"
 
 class Client:
     """
@@ -39,7 +39,7 @@ class Client:
             raise
 
 #        self.sock.settimeout(5)
-        print "Timeout set to 5"
+#        print "Timeout set to 5"
         try:
             self.sock.connect((host, port))
             print "Client: Connection to %s:%s succeeded!" % (host, port)
