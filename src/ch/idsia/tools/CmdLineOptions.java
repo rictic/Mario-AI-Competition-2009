@@ -125,8 +125,6 @@ public class CmdLineOptions extends EvaluationOptions
     public Boolean isGameViewerContinuousUpdates() {
         return b(getParameterValue("-gvc"));      }
 
-    public Boolean isTimer() {
-        return b(getParameterValue("-t"));      }
 
 //    public Integer getAttemptsNumber() {
 //        return i(getParameterValue("-an"));      }

@@ -35,6 +35,7 @@ public class EvaluationOptions extends SimulationOptions
         GlobalOptions.pauseWorld = isPauseWorld();
         GlobalOptions.PowerRestoration = isPowerRestoration();
         GlobalOptions.StopSimulationIfWin = isStopSimulationIfWin();
+        GlobalOptions.TimerOn = isTimer();
     }    
 
     public Boolean isExitProgramWhenFinished()    {
@@ -98,4 +99,8 @@ public class EvaluationOptions extends SimulationOptions
     {
         return b(getParameterValue("-fastTCP"));
     }
+
+    public Boolean isTimer() {
+        return b(getParameterValue("-t"));      }
+
 }
