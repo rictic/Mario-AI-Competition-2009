@@ -82,9 +82,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			tiebreaker += s.y*0.0001f;
 
 		// if we're falling into a hole, we get a huge penalty.  perhaps we can walljump out.
-		if(s.y > 208)
-			tiebreaker += s.y;
+		// ...but this heuristic blows.  we need a better approach to falling
+		// down holes in general.
+//		if(s.y > 208)
+//			tiebreaker += s.y;
 		
+		// stepsToRun is only defined for positive displacements
 		if(initial.x + lookaheadDist - s.x <= 0)
 			return -stepsToRun(s.x - initial.x - lookaheadDist, s.xa) + tiebreaker;
 
@@ -100,8 +103,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private static final int ACT_LEFT = 8;
 
 	private boolean useless_action(int a, MarioState s) {
-	//	if((a&ACT_SPEED) == 0) return true; // our heuristic is good enough that we can let go of speed now
-//		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
+		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
 		if((a&ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
 			if(s.jumpTime <= 0 && !s.onGround && !s.sliding) return true;

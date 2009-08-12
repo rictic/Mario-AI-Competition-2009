@@ -52,14 +52,14 @@ public class Stats {
     public static double testConfig (Agent controller, EvaluationOptions options, int seed, int level, boolean paused) {
         options.setLevelDifficulty(level);
         options.setPauseWorld(paused);
-        StatisticalSummary ss = test (controller, options, seed);
+        StatisticalSummary ss = test (controller, options, seed, level);
         System.out.printf("Level %d %s %.4f (%.4f) (min %.4f max %.4f)\n", level, paused ? "paused" : "unpaused",
                 ss.mean(), ss.sd(), ss.min(), ss.max());
         return ss.mean();
     }
 
 
-    public static StatisticalSummary test (Agent controller, EvaluationOptions options, int seed) {
+    public static StatisticalSummary test (Agent controller, EvaluationOptions options, int seed, int level) {
         StatisticalSummary ss = new StatisticalSummary ();
         for (int i = 0; i < numberOfTrials; i++) {
             options.setLevelRandSeed(seed + i);
@@ -67,6 +67,7 @@ public class Stats {
             options.setAgent(controller);
             Evaluator evaluator = new Evaluator (options);
             EvaluationInfo result = evaluator.evaluate().get(0);
+			System.out.printf("  map seed %d diff %2d -> %f\n", seed+i, level, result.computeDistancePassed());
             ss.add (result.computeDistancePassed());
         }
         return ss;

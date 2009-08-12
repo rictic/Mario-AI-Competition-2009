@@ -278,7 +278,11 @@ public class MarioState extends SpriteState
 
 		byte block = ws.map[y][x];
 		if(block == 1) return false; // that's mario's previous position; ignore
-		if(block == 34) return false; // coin
+		if(block == 34) { // coin
+			// yay for crazy side effects: pick up coin
+			ws = ws.removeTile(x,y);
+			return false;
+		}
 		if(block == -11) return ya > 0; // platform
 		//if(block != 0) {
 		//	System.out.println("collision w/ " + _x + "," + _y + "map coords " + x + "," + y + ": " + block);

@@ -1,5 +1,5 @@
 #!/bin/sh
 
 cd classes
-java ch.idsia.scenarios.Play $*
+java ch.idsia.scenarios.Play com.reddit.programming.mario.BestFirstAgent $*
 
