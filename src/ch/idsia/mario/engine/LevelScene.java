@@ -791,6 +791,7 @@ public class LevelScene extends Scene implements SpriteContext
 	public int zLevelEnemies;
 	public int zLevelMap;
 
+	public ArrayList<StaticMario> temporarySprites = new ArrayList(400);
     public void render(Graphics g, float alpha)
     {
         int xCam = (int) (mario.xOld + (mario.x - mario.xOld) * alpha) - 160;
@@ -830,13 +831,20 @@ public class LevelScene extends Scene implements SpriteContext
         layer.renderExit0(g, tick, paused?0:alpha, mario.winTime==0);
         
         g.setColor(Color.RED); 
-		for (int i = 0; i < 400; i += 2)
+		
+        for (StaticMario sm : temporarySprites)
+        	removeSprite(sm);
+        temporarySprites.clear();
+        for (int i = 0; i < 400; i += 2)
 		{
+			StaticMario marioVisSprite = new StaticMario(this, GlobalOptions.MarioPos[i][0], GlobalOptions.MarioPos[i][1], GlobalOptions.MarioPos[i][2]);
+			addSprite(marioVisSprite);
+			temporarySprites.add(marioVisSprite);
 //			g.drawLine(GlobalOptions.MarioPos[i][0] - xCam,
 //						GlobalOptions.MarioPos[i][1] - yCam,
 //						GlobalOptions.MarioPos[i + 1][0] - xCam,
 //						GlobalOptions.MarioPos[i + 1][1] - yCam);
-			addSprite(new StaticMario(this, GlobalOptions.MarioPos[i][0], GlobalOptions.MarioPos[i][1], GlobalOptions.MarioPos[i][2]));
+			
 		}
 
         g.translate(-xCam, -yCam);
