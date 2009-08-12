@@ -840,9 +840,8 @@ public class LevelScene extends Scene implements SpriteContext
         for (StaticMario sm : temporarySprites)
         	removeSprite(sm);
         temporarySprites.clear();
-        for (int i = 0; i < 400; i += 2)
-		{
-			StaticMario marioVisSprite = new StaticMario(this, GlobalOptions.MarioPos[i][0], GlobalOptions.MarioPos[i][1], GlobalOptions.MarioPos[i][2]);
+        for (int[] marioInfo : GlobalOptions.MarioPos) {
+			StaticMario marioVisSprite = new StaticMario(this, marioInfo[0], marioInfo[1], marioInfo[2], marioInfo[3]);
 			addSprite(marioVisSprite);
 			temporarySprites.add(marioVisSprite);
 //			g.drawLine(GlobalOptions.MarioPos[i][0] - xCam,

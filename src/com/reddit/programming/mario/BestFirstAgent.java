@@ -158,13 +158,10 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			searchPool.execute(searchers[i]);
 		}
 		try {
-			//System.out.println("sleeping");
 			Thread.sleep(40);
 		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
-		//System.out.println("stopping searchers");
 		for (StateSearcher searcher: searchers)
 			searcher.stop();
-		//System.out.println("waiting on searchers to stop");
 		for (StateSearcher searcher: searchers)
 			while(!searcher.isStopped){}
 		
@@ -172,8 +169,9 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		for (StateSearcher searcher: searchers) {
 			bestfound = marioMin(searcher.bestfound, bestfound);
 
-			//System.out.printf("searcher_(%d): best root_action=%d cost=%f lookahead=%f\n",
-			//		searcher.id, bestfound.root_action, bestfound.cost, bestfound.g);
+			if (verbose1)
+				System.out.printf("searcher_(%d): best root_action=%d cost=%f lookahead=%f\n",
+						searcher.id, bestfound.root_action, bestfound.cost, bestfound.g);
 		}
 		
 		// return best so far
@@ -188,11 +186,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		private boolean shouldStop = false;
 		public boolean isStopped = false;
 		private MarioState bestfound;
-				
+		private int drawIndex;
+		
 		public StateSearcher(MarioState initialState, WorldState ws, PriorityQueue<MarioState> pq, int id) {
 			this.pq = pq; this.ws = ws; 
 			this.initialState = initialState; this.bestfound = null;
-			this.id = id;
+			this.id = id; drawIndex = id;
 		}
 
 		public void stop() {
@@ -206,7 +205,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		
 		private void doRun() {
 			int n = 0;
-			int drawIndex = id;
 			bestfound = pq.peek();
 			while((!shouldStop) && (!pq.isEmpty())) {
 				MarioState next = pq.remove();
@@ -215,16 +213,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				// if the node got marked dead
 				if(next.cost == Float.POSITIVE_INFINITY) continue;
 
-				if(drawPath) {
-					GlobalOptions.MarioPos[drawIndex] = new int[]{(int)next.x, (int)next.y, costToTransparency(next.cost)};
-					drawIndex += simultaneousSearchers;
-					if (drawIndex >= 400)
-						drawIndex = id;
-					GlobalOptions.MarioPos[drawIndex] = new int[]{(int)next.pred.x, (int)next.pred.y, costToTransparency(next.pred.cost)};
-					drawIndex += simultaneousSearchers;
-					if (drawIndex >= 400)
-						drawIndex = id;					
-				}
+				if(drawPath)
+					addToDrawPath(next.pred);
 
 				bestfound = marioMin(next,bestfound);
 				for(int a=1;a<16;a++) {
@@ -264,11 +254,18 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				}
 			}
 		}
+
+		private void addToDrawPath(MarioState mario) {
+			GlobalOptions.MarioPos[drawIndex] = new int[]{(int)mario.x, (int)mario.y, costToTransparency(mario.cost), mario.marioMode()};
+			drawIndex += simultaneousSearchers;
+			if (drawIndex >= 400)
+				drawIndex = id;
+		}
 	}
 
 	public static int costToTransparency(float cost) {
-		if (cost <= 0) return 100;
-		return Math.max(0, 20-(int)cost);
+		if (cost <= 0) return 80;
+		return Math.max(0, 40-(int)cost);
 	}
 
 	public static MarioState marioMin(MarioState a, MarioState b) {
