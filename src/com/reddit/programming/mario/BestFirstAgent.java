@@ -85,6 +85,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		if(initial.ws.map[11][12] != 0) // technically we can skip it if it's -11 (platform) as well
 			tiebreaker += s.y*0.0001f;
 
+		/*
 		// GET COINS!
 		boolean coingoal = false;
 		for(int j=0;j<22;j++)
@@ -98,6 +99,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				}
 		if(coingoal)
 			return tiebreaker;
+			*/
 
 		// if we're falling into a hole, we get a huge penalty.  perhaps we can walljump out.
 		// ...but this heuristic blows.  we need a better approach to falling
@@ -129,6 +131,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		pq.clear();
 		initialState.ws = ws;
 		initialState.g = 0;
+		initialState.cost = cost(initialState, initialState);
 		int a,n;
 		// add initial set
 		for(a=1;a<16;a++) {
@@ -144,6 +147,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 		MarioState bestfound = pq.peek();
 
+		GlobalOptions.MarioPosSize = 0;
+
 		// FIXME: instead of using a hardcoded number of iterations,
 		// periodically grab the system millisecond clock and terminate the
 		// search after ~40ms
@@ -154,18 +159,17 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			// if the node got marked dead
 			if(next.cost == Float.POSITIVE_INFINITY) continue;
 
-			if(drawPath) {
-				GlobalOptions.MarioPos[DrawIndex][0] = (int) next.x;
-				GlobalOptions.MarioPos[DrawIndex][1] = (int) next.y;
-				GlobalOptions.MarioPos[DrawIndex][2] = costToTransparency(next.cost);
-				DrawIndex++;
-				GlobalOptions.MarioPos[DrawIndex][0] = (int) next.pred.x;
-				GlobalOptions.MarioPos[DrawIndex][1] = (int) next.pred.y;
-				GlobalOptions.MarioPos[DrawIndex][2] = costToTransparency(next.pred.cost);
-				DrawIndex++;
-
-				if (DrawIndex >= 400)
-					DrawIndex = 0;
+			if(drawPath && GlobalOptions.MarioPosSize < 400) {
+				int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
+				color = color|(color<<8)|(color<<16);
+				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int) next.x;
+				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int) next.y;
+				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = color;
+				GlobalOptions.MarioPosSize++;
+				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int) next.pred.x;
+				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int) next.pred.y;
+				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = costToTransparency(next.pred.cost);
+				GlobalOptions.MarioPosSize++;
 			}
 
 			//System.out.printf("a*: trying "); next.print();
