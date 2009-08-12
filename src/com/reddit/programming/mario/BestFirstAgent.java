@@ -34,6 +34,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	public void reset() {
 		// disable enemies for the time being
 		GlobalOptions.pauseWorld = true;
+		ms = null;
+		marioPosition = null;
 	}
 
 	private float runDistance(float v0, float steps) {
@@ -56,10 +58,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 	// runDistance is terrible to invert, so use the secant method to solve it
 	private float stepsToRun(float distance, float v0) {
-		float x0 = 1,
-			  x1 = 2;
-		float xdiff;
-		//int n=0;
+		float x0=1, x1=2, xdiff;
 		do {
 			float fx0 = runDistance(v0, x0) - distance;
 			float fx1 = runDistance(v0, x1) - distance;
@@ -72,14 +71,24 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return x1;
 	}
 
-	private static final float lookaheadDist = 11*16;
-	private float cost(MarioState s, MarioState initial) {
+	private static final float lookaheadDist = 10*16;
+	private float cost(MarioState s, MarioState initial, byte[][] map) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
-        if(initial.x + lookaheadDist - s.x <= 0)
+		float tiebreaker = 0;
+		// add a height tiebreaker iff there is an object in front of us
+		// if we always add the tiebreaker, we end up taking unnecessary leaps
+		// of faith down holes.  this just helps us get unstuck faster when we
+		// land in front of something.
+		if(map[11][12] != 0) // technically we can skip it if it's -11 (platform) as well
+			tiebreaker = s.y*0.0001f;
+
+		// if we reach the goal, don't add the tiebreaker
+		if(initial.x + lookaheadDist - s.x <= 0)
 			return -stepsToRun(s.x - initial.x - lookaheadDist, s.xa);
-        return stepsToRun(initial.x + lookaheadDist - s.x, s.xa);
+
+		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa) + tiebreaker;
 	}
 
 
@@ -111,7 +120,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			ms.root_action = a;
 			ms.pred = null;
 			ms.g = 0;
-			ms.cost = cost(ms, initialState);
+			ms.cost = cost(ms, initialState, map);
 			pq.add(ms);
 			//System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
@@ -187,7 +196,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 					MarioState ms = next.next(a, map, MapX, MapY);
 					if(ms.dead) continue;
 					ms.pred = next;
-					float h = cost(ms, initialState);
+					float h = cost(ms, initialState, map);
 					ms.g = next.g + 1;
 					ms.cost = ms.g + h + ((a&ACT_JUMP)>0?0.0001f:0);
 					bestfound = marioMin(ms,bestfound);
@@ -205,20 +214,16 @@ public class BestFirstAgent extends RedditAgent implements Agent
 					pq.add(ms);
 				}
 			}
-			//System.out.printf("searcher%d: stopped @%d iterations; best a=%d cost=%f lookahead=%f\n", 
-			//		id, n, bestfound.root_action, bestfound.cost, bestfound.g);
 		}
 		
 	}
 
+
 	public static MarioState marioMin(MarioState a, MarioState b) {
 		if(a == null) return b;
 		if(b == null) return a;
-		// for determining which state is best, go purely by heuristic cost to
-		// goal (which is the total cost minus the number of steps) in order to
-		// prefer better-explored avenues of an early-terminated search, and
-		// always prefer a completed search to an incomplete one
-		if(a.cost - a.g < b.cost - b.g) return a;
+		// compare heuristic cost only
+		if(a.cost - a.g <= b.cost - b.g) return a;
 		return b;
 	}
 
@@ -234,7 +239,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		} else {
 			//System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 			if(mpos[0] != pred_x || mpos[1] != pred_y) {
-				System.out.println("mario state mismatch; attempting resync");
+				//System.out.println("mario state mismatch; attempting resync");
 				ms.x = mpos[0]; ms.y = mpos[1];
 				// we also need some guess for xa and ya here, ideally.
 				//
