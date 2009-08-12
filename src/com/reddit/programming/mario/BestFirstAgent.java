@@ -14,8 +14,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
 	private PriorityQueue<MarioState> pq;
-	private static final boolean verbose1 = false;
-	private static final boolean verbose2 = false;
+	private static final boolean verbose1 = true;
+	private static final boolean verbose2 = true;
 	private static final boolean drawPath = true;
 	private int DrawIndex = 0;
 
@@ -58,6 +58,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	// runDistance is terrible to invert, so use the secant method to solve it
 	private float stepsToRun(float distance, float v0) {
 		float x0=1, x1=2, xdiff;
+		float sgn = 1;
+		if(distance < 0) { sgn = -1; distance = -distance; }
 		do {
 			float fx0 = runDistance(v0, x0) - distance;
 			float fx1 = runDistance(v0, x1) - distance;
@@ -67,7 +69,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			// if our iteration takes us negative, negate and hope it doesn't loop
 			if(x1 < 0) x1 = -x1;
 		} while(Math.abs(xdiff) > 1e-4);
-		return x1;
+		return x1*sgn;
 	}
 
 	private static final float lookaheadDist = 10*16;
@@ -83,16 +85,26 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		if(initial.ws.map[11][12] != 0) // technically we can skip it if it's -11 (platform) as well
 			tiebreaker += s.y*0.0001f;
 
+		// GET COINS!
+		boolean coingoal = false;
+		for(int j=0;j<22;j++)
+			for(int i=0;i<22;i++)
+				if(s.ws.map[j][i] == 34) { // i really need to get rid of these magic numbers.  this = coin
+					if(!coingoal) tiebreaker = Float.POSITIVE_INFINITY;
+					tiebreaker = Math.min(tiebreaker, 
+										  (Math.abs(stepsToRun(16*(s.ws.MapX+i)+8 - s.x, s.xa)) +
+										   0.5f*Math.abs(16*(s.ws.MapY+j)+8 - s.y)));
+					coingoal = true;
+				}
+		if(coingoal)
+			return tiebreaker;
+
 		// if we're falling into a hole, we get a huge penalty.  perhaps we can walljump out.
 		// ...but this heuristic blows.  we need a better approach to falling
 		// down holes in general.
 //		if(s.y > 208)
 //			tiebreaker += s.y;
 		
-		// stepsToRun is only defined for positive displacements
-		if(initial.x + lookaheadDist - s.x <= 0)
-			return -stepsToRun(s.x - initial.x - lookaheadDist, s.xa) + tiebreaker;
-
 		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa) + tiebreaker;
 	}
 
