@@ -49,6 +49,14 @@ public class ForwardAgent extends RegisterableAgent implements Agent
         return false;
     }
 
+//    private void show(char el) {
+//        System.out.print("block (" + Integer.valueOf(el) + ") :");
+//        for (int i = 0;i < 8; ++i)
+//            System.out.print((el & MathX.powsof2[i] ) + " ");
+//        System.out.println("");
+//    }
+    
+
     private byte[][] decode(String estate)
     {
         byte[][] dstate = new byte[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
@@ -58,10 +66,15 @@ public class ForwardAgent extends RegisterableAgent implements Agent
         int row = 0;
         int col = 0;
         int totalBitsDecoded = 0;
+
         for (int i = 0; i < estate.length(); ++i)
         {
             char cur_char = estate.charAt(i);
-            for (int j = 0; j < 8; ++j)
+            if (cur_char != 0)
+            {
+                MathX.show(cur_char);
+            }
+            for (int j = 0; j < 16; ++j)
             {
                 totalBitsDecoded++;
                 if (col > Environment.HalfObsHeight*2 - 1)
@@ -70,16 +83,18 @@ public class ForwardAgent extends RegisterableAgent implements Agent
                     col = 0;
                 }
 
-                if ((MathX.pow(2,j) & cur_char) != 0)
+//                if ((MathX.pow(2,j) & cur_char) != 0)
+                if ((MathX.powsof2[j] & cur_char) != 0)
                 {
 
                     try{
                         dstate[row][col] = 1;
+//                        show(cur_char);
                     }
                     catch (Exception e)
                     {
-                     //   System.out.println("row = " + row);
-                     //   System.out.println("col = " + col);
+                        System.out.println("row = " + row);
+                        System.out.println("col = " + col);
                     }
                 }
                 else
@@ -92,7 +107,7 @@ public class ForwardAgent extends RegisterableAgent implements Agent
             }
         }
 
-        //System.out.println("\ntotalBitsDecoded = " + totalBitsDecoded);
+        System.out.println("totalBitsDecoded = " + totalBitsDecoded);
         return dstate;
     }
 
@@ -108,50 +123,50 @@ public class ForwardAgent extends RegisterableAgent implements Agent
         float[] enemiesPos = observation.getEnemiesFloatPos();
         String encodedState = observation.getBitmapLevelObservation();
         byte[][] levelSceneFromBitmap = decode(encodedState);
-        encodedState = observation.getBitmapEnemiesObservation();
-        byte[][] enemiesFromBitmap = decode(encodedState);
-        /*
-        System.out.println("\nEnemies BIMAP:");
-        for (int i = 0; i < enemiesFromBitmap.length; ++i)
-        {
-            for (int j = 0; j < enemiesFromBitmap[0].length; ++j)
-            {
-                if (enemiesFromBitmap[i][j] != 0)
-//                    System.out.print( "1 ");
-                    System.out.print(enemiesFromBitmap[i][j] + " ");
-                else
-                    System.out.print( "  ");
-            }
-            System.out.println("");
-        }
+//        encodedState = observation.getBitmapEnemiesObservation();
+//        byte[][] enemiesFromBitmap = decode(encodedState);
 
-        System.out.println("\nBItmaP:");
-        for (int i = 0; i < levelSceneFromBitmap.length; ++i)
-        {
-            for (int j = 0; j < levelSceneFromBitmap[0].length; ++j)
-            {
-                if (levelSceneFromBitmap[i][j] != 0)
-//                    System.out.print( "1 ");
-                    System.out.print(levelSceneFromBitmap[i][j] + " ");
-                else
-                    System.out.print( "  ");
-            }
-            System.out.println("");
-        }
+//        System.out.println("\nEnemies BIMAP:");
+//        for (int i = 0; i < enemiesFromBitmap.length; ++i)
+//        {
+//            for (int j = 0; j < enemiesFromBitmap[0].length; ++j)
+//            {
+//                if (enemiesFromBitmap[i][j] != 0)
+////                    System.out.print( "1 ");
+//                    System.out.print(enemiesFromBitmap[i][j] + " ");
+//                else
+//                    System.out.print( "  ");
+//            }
+//            System.out.println("");
+//        }
 
-        System.out.println("\nLEVELScene:");
-        for (int i = 0; i < levelScene.length; ++i)
-        {
-            for (int j = 0; j < levelScene[0].length; ++j)
-            {
-                if (levelScene[i][j] != 0)
-                    System.out.print( "1 ");
-                else
-                    System.out.print( "  ");
-            }
-            System.out.println("");
-        }
-        */
+//        System.out.println("\nBItmaP:");
+//        for (int i = 0; i < levelSceneFromBitmap.length; ++i)
+//        {
+//            for (int j = 0; j < levelSceneFromBitmap[0].length; ++j)
+//            {
+//                if (levelSceneFromBitmap[i][j] != 0)
+////                    System.out.print( "1 ");
+//                    System.out.print(levelSceneFromBitmap[i][j] + " ");
+//                else
+//                    System.out.print( "  ");
+//            }
+//            System.out.println("");
+//        }
+//
+//        System.out.println("\nLEVELScene:");
+//        for (int i = 0; i < levelScene.length; ++i)
+//        {
+//            for (int j = 0; j < levelScene[0].length; ++j)
+//            {
+//                if (levelScene[i][j] != 0)
+//                    System.out.print( "1 ");
+//                else
+//                    System.out.print( "  ");
+//            }
+//            System.out.println("");
+//        }
+
         
         if (levelSceneFromBitmap[11][13] != 0 || levelSceneFromBitmap[11][12] != 0 ||  DangerOfGap(levelSceneFromBitmap))
         {

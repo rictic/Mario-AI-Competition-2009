@@ -9,12 +9,14 @@ package ch.idsia.utils;
  */
 public class MathX
 {
-    
-    public static char pow(int base, int power)
-    {
-        char ret = 1;
-        for (int i = 0; i < power; ++i)
-           ret *= base;
-        return ret;
+    public static int[] powsof2 = {1, 2, 4, 8, 16, 32, 64, 128,
+                         256, 512, 1024, 2048, 4096, 8192, 16384, 32768};
+
+    public static void show(char el) {
+        System.out.print("block (" + Integer.valueOf(el) + ") :");
+        for (int i = 0;i < 16; ++i)
+            System.out.print((el & powsof2[i] ) + " ");
+        System.out.println("");
     }
+
 }

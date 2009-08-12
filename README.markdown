@@ -7,3 +7,5 @@ The 'master' branch should contain fixes, improvements, examples, and library cl
 So what're you waiting for?  Fork this project and start hacking!
 
 Join us on IRC at irc://chat.freenode.net/#marioai
+
+Group README: http://docs.google.com/Doc?docid=0AcOiEAaEF0pXZGQ2OXFxNnJfNmZtNWQ4amZn

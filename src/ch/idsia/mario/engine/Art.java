@@ -6,12 +6,9 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-
+import java.io.File;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
 
 
 public class Art
@@ -75,6 +72,7 @@ public class Art
         	throw new IOException("Couldn't find image" + imageFile);
         
         BufferedImage source = ImageIO.read(imageFile);
+
         Image image = gc.createCompatibleImage(source.getWidth(), source.getHeight(), Transparency.BITMASK);
         Graphics2D g = (Graphics2D) image.getGraphics();
         g.setComposite(AlphaComposite.Src);

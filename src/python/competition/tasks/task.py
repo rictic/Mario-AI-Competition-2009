@@ -1,5 +1,5 @@
-__author__="Sergey Karakovskiy, sergey at idsia fullstop ch"
-__date__ ="$May 12, 2009 11:48:33 PM$"
+__author__ = "Sergey Karakovskiy, sergey at idsia fullstop ch"
+__date__ = "$May 12, 2009 11:48:33 PM$"
 
 
 class Task(object):
@@ -18,7 +18,7 @@ class Task(object):
 
     def getObservation(self):
         """ a filtered mapping to getSample of the underlying environment. """
-        obs = self.env.getObservation()
+        obs = self.env.getSensors()
         return obs
 
 
