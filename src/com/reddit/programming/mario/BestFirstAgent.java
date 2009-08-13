@@ -15,9 +15,9 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private boolean[] action;
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
-	private PriorityQueue<MarioState> pq;
-	private static final boolean verbose1 = false;
-	private static final boolean verbose2 = false;
+	private PriorityQueue<MarioState> pq, pq2;
+	private static final boolean verbose1 = true;
+	private static final boolean verbose2 = true;
 	private static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
@@ -30,7 +30,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		super("BestFirstAgent");
 		action = new boolean[Environment.numberOfButtons];
 		reset();
-		pq = new PriorityQueue<MarioState>(20, msComparator);
+		pq = new PriorityQueue<MarioState>(400, msComparator);
+		pq2 = new PriorityQueue<MarioState>(400, msComparator);
 	}
 
 	@Override
@@ -205,6 +206,15 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 	}
 
+	private PriorityQueue<MarioState> prune_pq() {
+		// first, swap pq2 and pq
+		PriorityQueue<MarioState> p = pq; pq = pq2; pq2 = p;
+		while(!pq2.isEmpty() && pq.size() < 200)
+			pq.add(pq2.remove());
+		pq2.clear();
+		return pq;
+	}
+
 	private int searchForAction(MarioState initialState, WorldState ws) {
 		pq.clear();
 		initialState.ws = ws;
@@ -230,7 +240,10 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		// FIXME: instead of using a hardcoded number of iterations,
 		// periodically grab the system millisecond clock and terminate the
 		// search after ~40ms
-		for(n=0;n<4000 && !pq.isEmpty();) {
+		int pq_siz=0;
+		for(n=0;n<1000 && !pq.isEmpty();n++) {
+			if(pq.size() > 400)
+				pq = prune_pq();
 			MarioState next = pq.remove();
 
 			// next.cost can be infinite, and still at the head of the queue,
@@ -259,12 +272,11 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				float h = cost(ms, initialState);
 				ms.g = next.g + 1;
 				ms.cost = ms.g + h;// + ((a&ACT_JUMP)>0?0.0001f:0);
-				n++;
 				if(h < 0.5f) {
 					pq.clear();
 					if(verbose1) {
-						System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
-								n, ms.root_action, ms.cost, ms.g);
+						System.out.printf("BestFirst: searched %d iterations (%d states); best a=%d cost=%f lookahead=%f\n", 
+								n, pq_siz, ms.root_action, ms.cost, ms.g);
 					}
 					MarioState s;
 					if(GlobalOptions.MarioPosSize > 400-46)
@@ -280,6 +292,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 					return ms.root_action;
 				}
 				pq.add(ms);
+				pq_siz++;
 				bestfound = marioMin(ms,bestfound);
 			}
 		}
