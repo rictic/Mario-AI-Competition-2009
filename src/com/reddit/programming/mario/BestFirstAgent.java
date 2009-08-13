@@ -7,6 +7,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import java.io.IOException;
+
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
@@ -77,7 +79,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return x1*sgn;
 	}
 
-	private static final float lookaheadDist = 10*16;
+	private static final float lookaheadDist = 9*16;
 	private float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
@@ -87,9 +89,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		// if we always add the tiebreaker, we end up taking unnecessary leaps
 		// of faith down holes.  this just helps us get unstuck faster when we
 		// land in front of something.
-		if(initial.ws.map[11][12] != 0) // technically we can skip it if it's -11 (platform) as well
-			tiebreaker += s.y*0.0001f;
+		int MarioX = (int)s.x/16 - s.ws.MapX+1;
+		if(MarioX >= 0 && MarioX < 22)
+			if(s.ws.map[11][MarioX] != 0)
+				tiebreaker += s.y*0.0001f;
 
+		/*
 		// GET COINS!
 		boolean coingoal = false;
 		for(int j=0;j<22;j++)
@@ -103,6 +108,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				}
 		if(coingoal)
 			return tiebreaker;
+			*/
 
 		// if we're falling into a hole, we get a huge penalty.  perhaps we can walljump out.
 		// ...but this heuristic blows.  we need a better approach to falling
@@ -129,12 +135,26 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 		return false;
 	}
-
+	
+	private void addLine(MarioState ms, int color) {
+		if(!drawPath) return;
+		GlobalOptions.MarioPosSize = 0;
+		for (MarioState s = ms; s != null; s = s.pred) {
+			if(drawPath && GlobalOptions.MarioPosSize < GlobalOptions.MarioPos.length - 3){
+				GlobalOptions.MarioPos[GlobalOptions.MarioPosSize++] = new int[]{(int)s.x,(int)s.y,color};
+				if (s.pred != null)
+					GlobalOptions.MarioPos[GlobalOptions.MarioPosSize++] = new int[]{(int)s.pred.x,(int)s.pred.y,color};
+			}
+		}
+		GlobalOptions.MarioPosSize = Math.min(GlobalOptions.MarioPosSize, GlobalOptions.MarioPos.length-1);
+	}
+	
 	private int searchForAction(MarioState initialState, WorldState ws) {
 		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
 		int i = 0;
 		initialState.ws = ws;
 		initialState.g = 0;
+		initialState.cost = cost(initialState, initialState);
 		// add initial set
 		for(int a=1;a<16;a++) {
 			if(useless_action(a, initialState))
@@ -150,6 +170,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		//System.out.println("creating searchers");
 		for (i = 0; i < pqs.length; i++) pqs[i] = new PriorityQueue<MarioState>(20, msComparator);
 		i = 0;
+		GlobalOptions.MarioPosSize = 0;
 		while (!pq.isEmpty())
 			pqs[i++%pqs.length].add(pq.remove());
 		
@@ -174,10 +195,14 @@ public class BestFirstAgent extends RedditAgent implements Agent
 						searcher.id, bestfound.root_action, bestfound.cost, bestfound.g);
 		}
 		
+		addLine(bestfound, 0xffffff);
+
+		
 		// return best so far
 		return bestfound.root_action;
 	}
 
+	
 	private class StateSearcher implements Runnable {
 		private final PriorityQueue<MarioState> pq;
 		private final MarioState initialState;
@@ -209,12 +234,13 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			while((!shouldStop) && (!pq.isEmpty())) {
 				MarioState next = pq.remove();
 
+//				int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
+//				color = color|(color<<8)|(color<<16);
+//				addLine(next.x, next.y, next.pred.x, next.pred.y, color);
 				// next.cost can be infinite, and still at the head of the queue,
 				// if the node got marked dead
 				if(next.cost == Float.POSITIVE_INFINITY) continue;
 
-				if(drawPath)
-					addToDrawPath(next.pred);
 
 				bestfound = marioMin(next,bestfound);
 				for(int a=1;a<16;a++) {
@@ -222,18 +248,11 @@ public class BestFirstAgent extends RedditAgent implements Agent
 						continue;
 					MarioState ms = next.next(a, next.ws);
 
-//					GlobalOptions.MarioPos[DrawIndex][0] = (int)next.x;
-//					GlobalOptions.MarioPos[DrawIndex][1] = (int)next.y;
-//					DrawIndex++;
-//					GlobalOptions.MarioPos[DrawIndex][0] = (int)ms.x;
-//					GlobalOptions.MarioPos[DrawIndex][1] = (int)ms.y;
-//					DrawIndex++;
-					
 					if (DrawIndex >= 400)
 					{
 						DrawIndex = 0;
 					}
-					
+
 					if(ms.dead) continue;
 					ms.pred = next;
 
@@ -253,27 +272,22 @@ public class BestFirstAgent extends RedditAgent implements Agent
 						if(verbose1) {
 							System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
 									n, ms.root_action, ms.cost, ms.g);
-						}
-						if(verbose2) {
 							MarioState s;
+							if(GlobalOptions.MarioPosSize > 400-46)
+								GlobalOptions.MarioPosSize = 400-46;
 							for(s = ms;s != initialState;s = s.pred) {
-								System.out.printf("state %d: ", (int)s.g);
-								s.print();
+								if(verbose2) {
+									System.out.printf("state %d: ", (int)s.g);
+									s.print();
+								}
 							}
+							bestfound = ms;
+							return;
 						}
-						bestfound = ms;
-						return;
 					}
 					pq.add(ms);
 				}
 			}
-		}
-
-		private void addToDrawPath(MarioState mario) {
-			GlobalOptions.MarioPos[DrawIndex] = new int[]{(int)mario.x, (int)mario.y, costToTransparency(mario.cost), mario.marioMode()};
-			DrawIndex += simultaneousSearchers;
-			if (DrawIndex >= 400)
-				DrawIndex = id;
 		}
 	}
 
@@ -331,6 +345,11 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		action[Mario.KEY_RIGHT] = (next_action&2)!=0;
 		action[Mario.KEY_JUMP] = (next_action&4)!=0;
 		action[Mario.KEY_LEFT] = (next_action&8)!=0;
+
+		// Uncomment to single-step with the enter key
+		//try {
+		//	System.in.read();
+		//} catch(IOException e) {};
 
 		return action;
 	}
