@@ -1,13 +1,18 @@
 package com.reddit.programming.mario;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import java.io.IOException;
+
+import sun.misc.Queue;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
@@ -22,6 +27,9 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private static final int simultaneousSearchers = Runtime.getRuntime().availableProcessors();
 	private ExecutorService searchPool = Executors.newFixedThreadPool(simultaneousSearchers);
 	private StateSearcher[] searchers = new StateSearcher[simultaneousSearchers];
+	private Stack<Integer> decisions = new Stack<Integer>();
+	private static final int budgetPerFrame = 40; //time, in milliseconds, that we can think per frame
+	private int budget = 0;  //time, in milliseconds, that we can spend planning
 	
 	private static final boolean verbose1 = true;
 	private static final boolean verbose2 = true;
@@ -121,11 +129,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 
 	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
-	// yay copy and paste
-	private static final int ACT_SPEED = 1;
-	private static final int ACT_RIGHT = 2;
-	private static final int ACT_JUMP = 4;
-	private static final int ACT_LEFT = 8;
 
 	private boolean useless_action(int a, MarioState s) {
 		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
@@ -150,11 +153,15 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	}
 	
 	private int searchForAction(MarioState initialState, WorldState ws) {
+		budget += budgetPerFrame; //we get a frame's worth of time
+		if (!decisions.isEmpty())
+			return decisions.pop();	
 		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
 		int i = 0;
 		initialState.ws = ws;
 		initialState.g = 0;
 		initialState.cost = cost(initialState, initialState);
+		initialState.pred = null;
 		// add initial set
 		for(int a=1;a<16;a++) {
 			if(useless_action(a, initialState))
@@ -164,7 +171,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			ms.cost = 1 + cost(ms, initialState);
 			pq.add(ms);
 			if(verbose1)
-				System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
+				System.out.printf("BestFirst: root action %s initial cost=%f\n", actionToString(a), ms.cost);
 		}
 		PriorityQueue<MarioState>[] pqs = new PriorityQueue[searchers.length];
 		//System.out.println("creating searchers");
@@ -179,8 +186,10 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			searchPool.execute(searchers[i]);
 		}
 		try {
-			Thread.sleep(40);
+			Thread.sleep(budget);
 		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
+		budget = 0; //used up our whole budget (assuming we weren't interrupted)
+		
 		for (StateSearcher searcher: searchers)
 			searcher.stop();
 		for (StateSearcher searcher: searchers)
@@ -191,18 +200,43 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			bestfound = marioMin(searcher.bestfound, bestfound);
 
 			if (verbose1)
-				System.out.printf("searcher_(%d): best root_action=%d cost=%f lookahead=%f\n",
-						searcher.id, bestfound.root_action, bestfound.cost, bestfound.g);
+				System.out.printf("searcher_(%d): best root_action=%s cost=%f lookahead=%f\n",
+						searcher.id, actionToString(bestfound.root_action), bestfound.cost, bestfound.g);
+		}
+
+		addLine(bestfound, 0xffffff);
+		
+		while(bestfound.pred != null){
+			decisions.push(bestfound.action);
+			bestfound = bestfound.pred;
+		}
+		int desiredSize = Math.max(5, Math.min(20, decisions.size() / 2));
+		while(decisions.size() > desiredSize) decisions.remove(0);
+		
+		if (verbose1){
+			System.out.println("Decisions made:");
+			System.out.println(decisionsToString(decisions));
 		}
 		
-		addLine(bestfound, 0xffffff);
+		if (decisions.empty()){
+			if (verbose1)
+				System.err.println("NO PLAN FOUND?");
+			return bestfound.root_action;
+		}
 
-		
 		// return best so far
-		return bestfound.root_action;
+		return searchForAction(null,null);
 	}
 
 	
+	private String decisionsToString(Stack<Integer> decisions) {
+		String result = "";
+		for (int decision : decisions)
+			result += actionToString(decision) + "\n";
+		return result;
+	}
+
+
 	private class StateSearcher implements Runnable {
 		private final PriorityQueue<MarioState> pq;
 		private final MarioState initialState;
@@ -270,8 +304,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 					n++;
 					if(h <= 0) {
 						if(verbose1) {
-							System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
-									n, ms.root_action, ms.cost, ms.g);
+							System.out.printf("BestFirst: searched %d iterations; best a=%s cost=%f lookahead=%f\n", 
+									n, actionToString(ms.root_action), ms.cost, ms.g);
 							MarioState s;
 							if(GlobalOptions.MarioPosSize > 400-46)
 								GlobalOptions.MarioPosSize = 400-46;
@@ -355,6 +389,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	}
 
 	private void resync(Environment observation) {
+		System.out.println("Out of sync, resyncing");
 		float[] mpos = observation.getMarioFloatPos();
 		ms.x = mpos[0]; ms.y = mpos[1];
 		ms.mayJump = observation.mayMarioJump();
@@ -373,5 +408,4 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			ms.ya = (ms.y - ms_prev.y) * 0.85f;
 		}
 	}
-
 }
