@@ -15,6 +15,8 @@ class ForwardAgent(MarioAgent):
     levelScene = None
     mayMarioJump = None
     isMarioOnGround = None
+    marioFloats = None
+    enemiesFloats = None
     isEpisodeOver = False
 
     trueJumpCounter = 0;
@@ -123,10 +125,10 @@ class ForwardAgent(MarioAgent):
 
     def integrateObservation(self, obs):
         """This method stores the observation inside the agent"""
-        if (len(obs) != 3):
+        if (len(obs) != 6):
             self.isEpisodeOver = True
         else:
-            self.mayMarioJump, self.isMarioOnGround, self.levelScene = obs
+            self.mayMarioJump, self.isMarioOnGround, self.marioFloats, self.enemiesFloats, self.levelScene, dummy = obs
 #        self.printLevelScene()
 
     def printLevelScene(self):

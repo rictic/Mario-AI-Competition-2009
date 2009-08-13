@@ -21,7 +21,11 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private ExecutorService searchPool = Executors.newFixedThreadPool(simultaneousSearchers);
 	private StateSearcher[] searchers = new StateSearcher[simultaneousSearchers];
 	
-	MarioState ms;
+	private static final boolean verbose1 = true;
+	private static final boolean verbose2 = true;
+	private static final boolean drawPath = true;
+
+	MarioState ms = null, ms_prev = null;
 	float pred_x, pred_y;
 
 	public BestFirstAgent() {
@@ -34,6 +38,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	public void reset() {
 		// disable enemies for the time being
 		GlobalOptions.pauseWorld = true;
+		ms = null;
+		marioPosition = null;
 	}
 
 	private float runDistance(float v0, float steps) {
@@ -56,10 +62,9 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 	// runDistance is terrible to invert, so use the secant method to solve it
 	private float stepsToRun(float distance, float v0) {
-		float x0 = 1,
-			  x1 = 2;
-		float xdiff;
-		//int n=0;
+		float x0=1, x1=2, xdiff;
+		float sgn = 1;
+		if(distance < 0) { sgn = -1; distance = -distance; }
 		do {
 			float fx0 = runDistance(v0, x0) - distance;
 			float fx1 = runDistance(v0, x1) - distance;
@@ -69,16 +74,43 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			// if our iteration takes us negative, negate and hope it doesn't loop
 			if(x1 < 0) x1 = -x1;
 		} while(Math.abs(xdiff) > 1e-4);
-		return x1;
+		return x1*sgn;
 	}
 
-	private static final float lookaheadDist = 11*16;
+	private static final float lookaheadDist = 10*16;
 	private float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
-        if(initial.x + lookaheadDist - s.x <= 0) return 0;
-        return stepsToRun(initial.x + lookaheadDist - s.x, s.xa);
+		float tiebreaker = 0;
+		// add a height tiebreaker iff there is an object in front of us
+		// if we always add the tiebreaker, we end up taking unnecessary leaps
+		// of faith down holes.  this just helps us get unstuck faster when we
+		// land in front of something.
+		if(initial.ws.map[11][12] != 0) // technically we can skip it if it's -11 (platform) as well
+			tiebreaker += s.y*0.0001f;
+
+		// GET COINS!
+		boolean coingoal = false;
+		for(int j=0;j<22;j++)
+			for(int i=0;i<22;i++)
+				if(s.ws.map[j][i] == 34) { // i really need to get rid of these magic numbers.  this = coin
+					if(!coingoal) tiebreaker = Float.POSITIVE_INFINITY;
+					tiebreaker = Math.min(tiebreaker, 
+										  (Math.abs(stepsToRun(16*(s.ws.MapX+i)+8 - s.x, s.xa)) +
+										   0.5f*Math.abs(16*(s.ws.MapY+j)+8 - s.y)));
+					coingoal = true;
+				}
+		if(coingoal)
+			return tiebreaker;
+
+		// if we're falling into a hole, we get a huge penalty.  perhaps we can walljump out.
+		// ...but this heuristic blows.  we need a better approach to falling
+		// down holes in general.
+//		if(s.y > 208)
+//			tiebreaker += s.y;
+		
+		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa) + tiebreaker;
 	}
 
 
@@ -90,8 +122,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private static final int ACT_LEFT = 8;
 
 	private boolean useless_action(int a, MarioState s) {
-	//	if((a&ACT_SPEED) == 0) return true; // our heuristic is good enough that we can let go of speed now
-//		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
+		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
 		if((a&ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
 			if(s.jumpTime <= 0 && !s.onGround && !s.sliding) return true;
@@ -99,51 +130,50 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		return false;
 	}
 
-	private int searchForAction(MarioState initialState, byte[][] map, int MapX, int MapY) {
+	private int searchForAction(MarioState initialState, WorldState ws) {
 		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
 		int i = 0;
+		initialState.ws = ws;
+		initialState.g = 0;
 		// add initial set
-		for(int a=0;a<16;a++) {
+		for(int a=1;a<16;a++) {
 			if(useless_action(a, initialState))
 				continue;
-			MarioState ms = initialState.next(a, map, MapX, MapY);
+			MarioState ms = initialState.next(a, ws);
 			ms.root_action = a;
-			ms.pred = null;
-			ms.g = 0;
-			ms.cost = cost(ms, initialState);
+			ms.cost = 1 + cost(ms, initialState);
 			pq.add(ms);
-			//System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
+			if(verbose1)
+				System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
-		MarioState bestfound = pq.peek();
 		PriorityQueue<MarioState>[] pqs = new PriorityQueue[searchers.length];
-		System.out.println("creating searchers");
+		//System.out.println("creating searchers");
 		for (i = 0; i < pqs.length; i++) pqs[i] = new PriorityQueue<MarioState>(20, msComparator);
 		i = 0;
 		while (!pq.isEmpty())
-			pqs[i++%(pqs.length-1)].add(pq.remove());
-		System.out.println("starting searchers");
+			pqs[i++%pqs.length].add(pq.remove());
+		
 		for (i = 0; i < searchers.length; i++){
-			searchers[i] = new StateSearcher(initialState, map, MapX, MapY, pqs[i], bestfound);
+			searchers[i] = new StateSearcher(initialState, ws, pqs[i], i);
 			searchPool.execute(searchers[i]);
 		}
 		try {
-			System.out.println("sleeping");
 			Thread.sleep(40);
 		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
-		System.out.println("stopping searchers");
 		for (StateSearcher searcher: searchers)
 			searcher.stop();
-		System.out.println("waiting on searchers to stop");
 		for (StateSearcher searcher: searchers)
 			while(!searcher.isStopped){}
 		
-		for (StateSearcher searcher: searchers)
-			if (searcher.bestfound != null)
-				bestfound = marioMax(searcher.bestfound, bestfound);
+		MarioState bestfound = null;
+		for (StateSearcher searcher: searchers) {
+			bestfound = marioMin(searcher.bestfound, bestfound);
+
+			if (verbose1)
+				System.out.printf("searcher_(%d): best root_action=%d cost=%f lookahead=%f\n",
+						searcher.id, bestfound.root_action, bestfound.cost, bestfound.g);
+		}
 		
-		System.out.println("action found: " + bestfound.root_action);
-		//System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
-		//		bestfound.root_action, bestfound.cost, bestfound.g);
 		// return best so far
 		return bestfound.root_action;
 	}
@@ -151,19 +181,19 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private class StateSearcher implements Runnable {
 		private final PriorityQueue<MarioState> pq;
 		private final MarioState initialState;
-		private final byte[][] map;
-		private final int MapX;
-		private final int MapY;
+		private final WorldState ws;
+		private final int id;
 		private boolean shouldStop = false;
 		public boolean isStopped = false;
 		private MarioState bestfound;
 		private int DrawIndex = 0;
 		
-		public StateSearcher(MarioState initialState, byte[][] map, int MapX, int MapY, PriorityQueue<MarioState> pq, MarioState bestfound) {
-			this.pq = pq; this.map = map; this.MapX = MapX; this.MapY = MapY; 
-			this.initialState = initialState; this.bestfound = bestfound;
+		public StateSearcher(MarioState initialState, WorldState ws, PriorityQueue<MarioState> pq, int id) {
+			this.pq = pq; this.ws = ws; 
+			this.initialState = initialState; this.bestfound = null;
+			this.id = id; drawIndex = id;
 		}
-		
+
 		public void stop() {
 			this.shouldStop = true;
 		}
@@ -174,11 +204,20 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 		
 		private void doRun() {
+			int n = 0;
+			bestfound = pq.peek();
 			while((!shouldStop) && (!pq.isEmpty())) {
 				MarioState next = pq.remove();
-				//System.out.printf("a*: trying "); next.print();
-				bestfound = marioMax(next,bestfound);
-				for(int a = 0;a<16;a++) {
+
+				// next.cost can be infinite, and still at the head of the queue,
+				// if the node got marked dead
+				if(next.cost == Float.POSITIVE_INFINITY) continue;
+
+				if(drawPath)
+					addToDrawPath(next.pred);
+
+				bestfound = marioMin(next,bestfound);
+				for(int a=1;a<16;a++) {
 					if(useless_action(a, next))
 						continue;
 					MarioState ms = next.next(a, map, MapX, MapY);
@@ -197,17 +236,31 @@ public class BestFirstAgent extends RedditAgent implements Agent
 					
 					if(ms.dead) continue;
 					ms.pred = next;
+
+					// if we die, prune our predecessor node that got us here
+					if(ms.dead) {
+						// removing things from a priority queue is ridiculously
+						// slow, so we'll just mark it dead
+						ms.pred.cost = Float.POSITIVE_INFINITY;
+						continue;
+					}
+
 					float h = cost(ms, initialState);
 					ms.g = next.g + 1;
-					ms.cost = ms.g + h + ((a&ACT_JUMP)>0?0.0001f:0);
+					ms.cost = ms.g + h;// + ((a&ACT_JUMP)>0?0.0001f:0);
+					n++;
 					if(h <= 0) {
-						//System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
-						//		n, ms.root_action, ms.cost, ms.g);
-						//MarioState s;
-						//for(s = ms;s != null;s = s.pred) {
-						//	System.out.printf("state %d: ", (int)s.g);
-						//	s.print();
-						//}
+						if(verbose1) {
+							System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
+									n, ms.root_action, ms.cost, ms.g);
+						}
+						if(verbose2) {
+							MarioState s;
+							for(s = ms;s != initialState;s = s.pred) {
+								System.out.printf("state %d: ", (int)s.g);
+								s.print();
+							}
+						}
 						bestfound = ms;
 						return;
 					}
@@ -215,11 +268,26 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				}
 			}
 		}
-		
+
+		private void addToDrawPath(MarioState mario) {
+			GlobalOptions.MarioPos[drawIndex] = new int[]{(int)mario.x, (int)mario.y, costToTransparency(mario.cost), mario.marioMode()};
+			drawIndex += simultaneousSearchers;
+			if (drawIndex >= 400)
+				drawIndex = id;
+		}
 	}
 
-	public static MarioState marioMax(MarioState a, MarioState b) {
-		return msComparator.compare(a, b) >= 0 ? a : b;
+	public static int costToTransparency(float cost) {
+		if (cost <= 0) return 80;
+		return Math.max(0, 40-(int)cost);
+	}
+
+	public static MarioState marioMin(MarioState a, MarioState b) {
+		if(a == null) return b;
+		if(b == null) return a;
+		// compare heuristic cost only
+		if(a.cost - a.g <= b.cost - b.g) return a;
+		return b;
 	}
 
 	@Override
@@ -234,27 +302,26 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		} else {
 			//System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 			if(mpos[0] != pred_x || mpos[1] != pred_y) {
-				System.out.println("mario state mismatch; attempting resync");
-				ms.x = mpos[0]; ms.y = mpos[1];
-				// we also need some guess for xa and ya here, ideally.
-				//
 				// generally this shouldn't happen, unless we mispredict
 				// something.  currently if we stomp an enemy then we don't
 				// predict that and get confused.
 				//
 				// but it will happen when we win, cuz we have no idea we won
 				// and it won't let us move.
+				if(verbose1)
+					System.out.println("mario state mismatch; attempting resync");
+				resync(observation);
 			}
 		}
 		
 		super.UpdateMap(sensors);
 
 		// quantize mario's position to get the map origin
-		int mX = (int)mpos[0]/16 - 11;
-		int mY = (int)mpos[1]/16 - 11;
+		WorldState ws = new WorldState(sensors.levelScene, mpos);
 
-		int next_action = searchForAction(ms, sensors.levelScene, mX,mY);
-		ms = ms.next(next_action, sensors.levelScene, mX,mY);
+		int next_action = searchForAction(ms, ws);
+		ms_prev = ms;
+		ms = ms.next(next_action, ws);
 		pred_x = ms.x;
 		pred_y = ms.y;
 		//System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
@@ -266,6 +333,26 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		action[Mario.KEY_LEFT] = (next_action&8)!=0;
 
 		return action;
+	}
+
+	private void resync(Environment observation) {
+		float[] mpos = observation.getMarioFloatPos();
+		ms.x = mpos[0]; ms.y = mpos[1];
+		ms.mayJump = observation.mayMarioJump();
+		ms.onGround = observation.isMarioOnGround();
+		// again, Mario's iteration looks like this:
+		//   xa',ya'[n] = xa,ya[n-1] + lastmove_sx,y
+		//   x,y[n] = x,y[n-1] + xa',ya'[n]
+		//   xa,ya[n] = xa',ya'[n] * damp_x,y
+
+		// lastmove_s was guessed wrong, or we wouldn't be out of sync.  we can
+		// directly get the new xa and ya, as long as no collisions occurred.
+		// if there *was* a collision and xa,ya are wrong, they probably will
+		// be corrected by each call next()
+		if(ms_prev != null) {
+			ms.xa = (ms.x - ms_prev.x) * 0.89f;
+			ms.ya = (ms.y - ms_prev.y) * 0.85f;
+		}
 	}
 
 }

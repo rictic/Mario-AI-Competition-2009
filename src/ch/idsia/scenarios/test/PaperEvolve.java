@@ -35,7 +35,7 @@ public class PaperEvolve {
         options.setPauseWorld(false);
         options.setVisualization(false);
         ProgressTask task = new ProgressTask(options);
-        int seed = (int) (Math.random () * Integer.MAX_VALUE);  
+        int seed = (int) (Math.random () * Integer.MAX_VALUE);
         ES es = new ES (task, initial, populationSize);
         System.out.println("Evolving " + initial + " with task " + task);
         int difficulty = 0;
@@ -52,6 +52,7 @@ public class PaperEvolve {
                 options.setLevelRandSeed(seed);
             }
         }
-        Stats.main(new String[]{fileName, "1"});
+        Stats.main(new String[]{fileName, "0"});
+        System.out.println("\n\n\n\n\n\n\n\n\n");
     }
 }

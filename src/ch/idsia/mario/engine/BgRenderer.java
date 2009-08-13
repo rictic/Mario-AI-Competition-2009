@@ -1,15 +1,8 @@
 package ch.idsia.mario.engine;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.Image;
-import java.awt.Transparency;
+import java.awt.*;
 import java.util.Random;
-
-import ch.idsia.mario.engine.level.Level;
+import ch.idsia.mario.engine.level.*;
 
 
 public class BgRenderer

@@ -11,9 +11,12 @@ import ch.idsia.utils.MathX;
 import java.awt.*;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.reddit.programming.mario.StaticMario;
 
 
 public class LevelScene extends Scene implements SpriteContext
@@ -278,31 +281,32 @@ public class LevelScene extends Scene implements SpriteContext
 
     public float[] enemiesFloatPos()
     {
-        float[] ret = new float[sprites.size()*2 - 2];
-
         List<Float> poses = new ArrayList<Float>();
-        int i = 0;
         for (Sprite sprite : sprites)
         {
             // check if is an influenceable creature
             if (sprite.kind >= Sprite.KIND_GOOMBA && sprite.kind <= Sprite.KIND_MUSHROOM)
             {
-                ret[i] = sprite.x;
-                ret[i+1] = sprite.y;
-                i += 2;
+                poses.add((float)sprite.kind);
+                poses.add(sprite.x);
+                poses.add(sprite.y);
             }
-            continue;
         }
 
-        if (i > 0)
-        {
-           /* System.out.print("Enemies Poses:" );
-            for (int j = 0; j < i/2; ++j)
-            {
-                System.out.print("               " + ret[j] + " " + ret[j + 1] + "\n");
-            }  */
+        float[] ret = new float[poses.size()];
 
-        }
+        int i = 0;
+        for (Float F: poses)
+            ret[i++] = F;
+
+//        if (i > 0)
+//        {
+//            System.out.print("Enemies Poses:" );
+//            for (int j = 0; j < i/2; ++j)
+//            {
+//                System.out.print("               " + ret[j] + " " + ret[j + 1] + "\n");
+//            }
+//        }
 
         return ret;
     }
@@ -371,7 +375,7 @@ public class LevelScene extends Scene implements SpriteContext
         int MarioYInMap = (int)mario.y/16;
 
         char block = 0;
-        char bitCounter = 0;
+        byte bitCounter = 0;
         int totalBits = 0;
         int totalBytes = 0;
         for (int y = MarioYInMap - Environment.HalfObsHeight, obsX = 0; y < MarioYInMap + Environment.HalfObsHeight; y++, obsX++)
@@ -379,7 +383,7 @@ public class LevelScene extends Scene implements SpriteContext
             for (int x = MarioXInMap - Environment.HalfObsWidth, obsY = 0; x < MarioXInMap + Environment.HalfObsWidth; x++, obsY++)
             {
                 ++totalBits;
-                if (bitCounter > 7)
+                if (bitCounter > 15)
                 {
                     // update a symbol and store the current one
                     ret += block;
@@ -391,24 +395,32 @@ public class LevelScene extends Scene implements SpriteContext
                 {
                     int temp = ZLevelMapElementGeneralization(level.map[x][y], ZLevel);
                     if (temp != 0)
-                        block |= MathX.pow(2, bitCounter);
+                        block |= MathX.powsof2[bitCounter];
                 }
                 ++bitCounter;
             }
-            if (block != 0)
-            {
-               // System.out.println("block = " + block);
-                show(block);
-            }
+//            if (block != 0)
+//            {
+//                System.out.println("block = " + block);
+//                show(block);
+//            }
 
         }
 
         if (bitCounter > 0)
             ret += block;
 
-        //System.out.println("totalBits = " + totalBits);
-        //System.out.println("totalBytes = " + totalBytes);
-        //System.out.println("ret = " + ret);
+//        try {
+//            String s = new String(code, "UTF8");
+//            System.out.println("s = " + s);
+//            ret = s;
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
+//        System.out.println("totalBits = " + totalBits);
+//        System.out.println("totalBytes = " + totalBytes);
+//        System.out.println("ret = " + ret);
+
         return ret;
     }
 
@@ -438,23 +450,23 @@ public class LevelScene extends Scene implements SpriteContext
                 }
                 int temp = enemiesObservation[i][j] ;
                 if (temp != -1)
-                    block |= MathX.pow(2, bitCounter);
+                    block |= MathX.powsof2[bitCounter];
                 ++bitCounter;
             }
-            if (block != 0)
-            {
-              //  System.out.println("block = " + block);
-                show(block);
-            }
+//            if (block != 0)
+//            {
+//                System.out.println("block = " + block);
+//                show(block);
+//            }
 
         }
 
         if (bitCounter > 0)
             ret += block;
 
-        //System.out.println("totalBits = " + totalBits);
-        //System.out.println("totalBytes = " + totalBytes);
-        //System.out.println("ret = " + ret);
+//        System.out.println("totalBits = " + totalBits);
+//        System.out.println("totalBytes = " + totalBytes);
+//        System.out.println("ret = " + ret);
         return ret;
     }
 
@@ -463,9 +475,6 @@ public class LevelScene extends Scene implements SpriteContext
      //   for (int i = 0;i < 8; ++i)
      //       System.out.print((el & MathX.pow(2,i) ) + " ");
      //   System.out.println("");
-    }
-    public List<String> LevelSceneAroundMarioASCII(boolean Enemies, boolean LevelMap, boolean CompleteObservation) {
-    	return LevelSceneAroundMarioASCII(Enemies, LevelMap, CompleteObservation, zLevelMap, zLevelEnemies);
     }
     
     public List<String> LevelSceneAroundMarioASCII(boolean Enemies, boolean LevelMap,
@@ -786,9 +795,8 @@ public class LevelScene extends Scene implements SpriteContext
 
     private DecimalFormat df = new DecimalFormat("00");
     private DecimalFormat df2 = new DecimalFormat("000");
-	public int zLevelEnemies;
-	public int zLevelMap;
 
+	public ArrayList<StaticMario> temporarySprites = new ArrayList(400);
     public void render(Graphics g, float alpha)
     {
         int xCam = (int) (mario.xOld + (mario.x - mario.xOld) * alpha) - 160;
@@ -828,12 +836,19 @@ public class LevelScene extends Scene implements SpriteContext
         layer.renderExit0(g, tick, paused?0:alpha, mario.winTime==0);
         
         g.setColor(Color.RED); 
-		for (int i = 0; i < 400; i += 2)
-		{
-			g.drawLine(GlobalOptions.MarioPos[i][0] - xCam,
-						GlobalOptions.MarioPos[i][1] - yCam,
-						GlobalOptions.MarioPos[i + 1][0] - xCam,
-						GlobalOptions.MarioPos[i + 1][1] - yCam);
+		
+        for (StaticMario sm : temporarySprites)
+        	removeSprite(sm);
+        temporarySprites.clear();
+        for (int[] marioInfo : GlobalOptions.MarioPos) {
+			StaticMario marioVisSprite = new StaticMario(this, marioInfo[0], marioInfo[1], marioInfo[2], marioInfo[3]);
+			addSprite(marioVisSprite);
+			temporarySprites.add(marioVisSprite);
+//			g.drawLine(GlobalOptions.MarioPos[i][0] - xCam,
+//						GlobalOptions.MarioPos[i][1] - yCam,
+//						GlobalOptions.MarioPos[i + 1][0] - xCam,
+//						GlobalOptions.MarioPos[i + 1][1] - yCam);
+			
 		}
 
         g.translate(-xCam, -yCam);
@@ -1083,10 +1098,4 @@ public class LevelScene extends Scene implements SpriteContext
 
     public int getTimeLeft() {        return timeLeft / 15;    }
 
-	public String bitmapEnemiesObservation() {
-		return bitmapEnemiesObservation(zLevelEnemies);
-	}
-	public List<Sprite> getSprites() {
-		return sprites;
-	}
 }

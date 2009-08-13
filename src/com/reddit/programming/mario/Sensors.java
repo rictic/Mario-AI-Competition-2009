@@ -10,15 +10,12 @@ import ch.idsia.mario.environments.Environment;
 public class Sensors {
 	private Environment latestObservation;
 	private String[][] asciiScene;
-	private LevelScene scene;
 	private int[] marioPosition = null;
 	public byte[][] levelScene;
 	public byte[][] enemiesScene;
 	public int fireballsOnScreen;
 
 	public void updateReadings(Environment observation) {
-		scene = observation.getFullScene();
-		fireballsOnScreen = scene.fireballsOnScreen;
 		levelScene = observation.getLevelSceneObservation();
 //		float[] marioPos = observation.getMarioFloatPos();
 //		float[] enemiesPos = observation.getEnemiesFloatPos();
@@ -27,6 +24,7 @@ public class Sensors {
 		asciiScene = new String[Environment.HalfObsWidth*2][Environment.HalfObsHeight*2];
 
 		latestObservation = observation;
+		fireballsOnScreen = 0;
 		for (int y = 0; y < levelScene.length; ++y)
 			for (int x = 0; x < levelScene[0].length; ++x)
 				asciiScene[y][x] = asciiLevel(levelScene[y][x]);
@@ -37,6 +35,8 @@ public class Sensors {
 					continue;
 				if (enemy == MARIO)
 					marioPosition = new int[]{y,x};
+				if (enemy == FIREBALL)
+					fireballsOnScreen++;
 				asciiScene[y][x] = asciiEnemy(enemy);
 			}
 	}
@@ -53,18 +53,6 @@ public class Sensors {
 			sb.append('\n');
 		}
 		return sb.toString();
-	}
-
-	public List<Sprite> getSprites(){
-		return scene.getSprites();
-	}
-
-	public List<Sprite> getDangerousSprites() {
-		List<Sprite> result = new ArrayList<Sprite>();
-		for (Sprite sprite: getSprites())
-			if (isDangerous(sprite))
-				result.add(sprite);
-		return result;
 	}
 
 	public boolean isDangerous(Sprite sprite) {
