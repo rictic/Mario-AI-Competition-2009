@@ -5,6 +5,7 @@ import java.util.HashMap;
 public class WorldState
 {
 	public byte[][] map;
+	public int[] heightmap;
 	public int MapX, MapY;
 	WorldState pred = null;
 	HashMap<WSHashKey, WorldState> succ; // successor map
@@ -50,11 +51,32 @@ public class WorldState
 		MapX = (int)marioPosition[0]/16 - 11;
 		MapY = (int)marioPosition[1]/16 - 11;
 		succ = new HashMap<WSHashKey, WorldState>();
+		initHeightmap();
 	}
 
-	WorldState(byte[][] _map, int _MapX, int _MapY) {
+	WorldState(byte[][] _map, int _MapX, int _MapY, int[] _heightmap) {
 		map = _map; MapX = _MapX; MapY = _MapY;
+		heightmap = _heightmap;
 		succ = new HashMap<WSHashKey, WorldState>();
+	}
+
+	void initHeightmap() {
+		heightmap = new int[22];
+		//System.out.printf("heightmap: ");
+		for(int i=0;i<22;i++) {
+			int j;
+			for(j=21;j>=0;j--) // find the first block from the bottom
+				if(map[j][i] != 0) break;
+			if(j < 0) {
+				heightmap[i] = 22;
+			} else {
+				for(;j>=0;j--)
+					if(map[j][i] == 0 || map[j][i] == 1) break; // 1 is mario, 0 is blank
+				heightmap[i] = j+1;
+			}
+			//System.out.printf("%02d ", heightmap[i]);
+		}
+		//System.out.printf("\n");
 	}
 
 	WorldState _removeTile(WSHashKey h, int x, int y) {
@@ -63,7 +85,7 @@ public class WorldState
 			for(int i=0;i<22;i++)
 				newmap[j][i] = map[j][i];
 		newmap[y][x] = 0;
-		WorldState ws = new WorldState(newmap, MapX, MapY);
+		WorldState ws = new WorldState(newmap, MapX, MapY, heightmap);
 		succ.put(h, ws);
 		return ws;
 	}

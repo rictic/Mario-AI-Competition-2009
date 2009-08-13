@@ -16,9 +16,11 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
 	private PriorityQueue<MarioState> pq;
-	private static final boolean verbose1 = true;
-	private static final boolean verbose2 = true;
+	private static final boolean verbose1 = false;
+	private static final boolean verbose2 = false;
 	private static final boolean drawPath = true;
+	// enable to single-step with the enter key on stdin
+	private static final boolean stdinSingleStep = false;
 	private int DrawIndex = 0;
 
 	MarioState ms = null, ms_prev = null;
@@ -39,79 +41,138 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		marioPosition = null;
 	}
 
-	private float runDistance(float v0, float steps) {
-		// Mario's running iteration looks like this:
-		//   xa'[n] = xa[n-1] + 1.2
-		//   x[n] = x[n-1] + xa'[n]
-		//   xa[n] = xa'[n] * 0.89
-		// Working through the recurrence:
-		// x[n] = x0 + xa0*Sum[d^i,{i,0,n-1}] + s*Sum[(n-i)*d^i,{i,0,n-1}]
-		// where d === damping = 0.89 and s === step size = 1.2
-		// if you substitute and solve you get this:
-
-		float d_n = (float) Math.pow(0.89f, steps); // d^n
-		return 88.2645f*(d_n-1) + 10.9091f*steps + 9.09091f*(1-d_n)*v0;
-
-		// each of these constants is deliberately rounded upwards; we need to
-		// slightly overestimate runDistance so that we slightly underestimate
-		// our heuristic cost to goal
+	private float stepsToJump(float h) {
+		if(h < 26.6f) return 10*h/133;
+		if(h < 64.6) return (float) (17-Math.sqrt(281-80*h/19))/2;
+		return Float.POSITIVE_INFINITY;
 	}
 
-	// runDistance is terrible to invert, so use the secant method to solve it
-	private float stepsToRun(float distance, float v0) {
+	// I LOVE ALL THIS TYPING!
+	// NOT ONLY ON THE KEYBOARD, BUT ALSO THE CREATION OF NEW TYPES AND
+	// SPECIFYING THEIR USE
+	static interface DistanceFunction { public float value(float dx0, float n); }
+
+	static private class FallDistance implements DistanceFunction {
+		public float value(float ya0, float steps) {
+			// Mario's falling iteration looks like this:
+			//   y[n] = y[n-1] + ya[n-1]
+			//   ya[n] = (ya[n-1] * d) + s
+			// Solving the recurrence:
+			//   ya[n] = ya0*d^n + s*Sum[d^i, {i,0,n-1}]
+			//   y[n] = y0 + ya0*Sum[d^i, {i,0,n-1}] + s*(Sum[(n-1-i)*d^i, {i,0,n-2}])
+			//
+			float d_n = (float) Math.pow(0.85f, steps); // d^n
+			return 20*steps - 20*(d_n-1)*(ya0-20)/3;
+		}
+	}
+	private static final FallDistance fallDistance = new FallDistance();
+
+	static private class RunDistance implements DistanceFunction {
+		public float value(float v0, float steps) {
+			// Mario's running iteration looks like this:
+			//   xa'[n] = xa[n-1] + 1.2
+			//   x[n] = x[n-1] + xa'[n]
+			//   xa[n] = xa'[n] * 0.89
+			// Working through the recurrence:
+			// x[n] = x0 + xa0*Sum[d^i,{i,0,n-1}] + s*Sum[(n-i)*d^i,{i,0,n-1}]
+			// where d === damping = 89/100 and s === step size = 12/10
+			// if you substitute and solve you get this:
+
+			float d_n = (float) Math.pow(0.89f, steps); // d^n
+			return (1320*steps - 20*(d_n-1)*(55*v0-534))/121;
+		}
+	}
+	private static final RunDistance runDistance = new RunDistance();
+
+	private float secantSolve(DistanceFunction f, float distance, float dx0, float min) {
 		float x0=1, x1=2, xdiff;
 		float sgn = 1;
 		if(distance < 0) { sgn = -1; distance = -distance; }
 		do {
-			float fx0 = runDistance(v0, x0) - distance;
-			float fx1 = runDistance(v0, x1) - distance;
-			xdiff = fx1 * (x1 - x0)/(fx1 - fx0);
+			float fx0 = f.value(dx0, x0);
+			float fx1 = f.value(dx0, x1);
+			xdiff = (fx1-distance) * (x1 - x0)/(fx1 - fx0);
 			x0 = x1;
 			x1 -= xdiff;
 			// if our iteration takes us negative, negate and hope it doesn't loop
-			if(x1 < 0) x1 = -x1;
+			if(x1 < min) x1 = 2*min-x1; // reflect about min
 		} while(Math.abs(xdiff) > 1e-4);
 		return x1*sgn;
 	}
+
+	// runDistance is terrible to invert, so use the secant method to solve it
+	private float stepsToRun(float distance, float v0) {
+		return secantSolve(runDistance, distance, v0, 0);
+	}
+
+	// as, of course, is fallDistance
+	private float stepsToFall(float height, float ya0) {
+		// this has too many numerical problems; let's just underestimate it
+		if(ya0 < 0) {
+			// if we're "falling upwards" then find where we're falling
+			// downwards at the same height
+			float apogee = (float) (Math.log(1-ya0/20)/Math.log(0.85));
+			return secantSolve(fallDistance, height, ya0, 2*apogee);
+		}
+		else
+			return secantSolve(fallDistance, height, ya0, 0);
+	}
+
 
 	private static final float lookaheadDist = 9*16;
 	private float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
-		float tiebreaker = 0;
-		// add a height tiebreaker iff there is an object in front of us
-		// if we always add the tiebreaker, we end up taking unnecessary leaps
-		// of faith down holes.  this just helps us get unstuck faster when we
-		// land in front of something.
-		int MarioX = (int)s.x/16 - s.ws.MapX+1;
-		if(MarioX >= 0 && MarioX < 22)
-			if(s.ws.map[11][MarioX] != 0)
-				tiebreaker += s.y*0.0001f;
+		int MarioX = (int)s.x/16 - s.ws.MapX;
+		int goal = 21;
+		// move goal back from the abyss
+		while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
+		float steps = Math.abs(stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa));
 
+		// NOTE: despite messing around with the various hacks below, nothing
+		// seems to work better than just the horizintal distance, because it's
+		// the only "accurate" metric i've tried.
+		//
+		// instead, we need a higher-level planner that gives us a set of
+		// waypoints for simple jumps, and we can compute our cost to all the
+		// following waypoints more easily
+
+		//if(!s.onGround) steps += 0.001f;
+
+		// this is a horrid overestimate.  might not work at all.
+		// it's *supposed* to figure out how many steps it takes to surmount
+		// the next obstacle.  it doesn't seem to help.
 		/*
-		// GET COINS!
-		boolean coingoal = false;
-		for(int j=0;j<22;j++)
-			for(int i=0;i<22;i++)
-				if(s.ws.map[j][i] == 34) { // i really need to get rid of these magic numbers.  this = coin
-					if(!coingoal) tiebreaker = Float.POSITIVE_INFINITY;
-					tiebreaker = Math.min(tiebreaker, 
-										  (Math.abs(stepsToRun(16*(s.ws.MapX+i)+8 - s.x, s.xa)) +
-										   0.5f*Math.abs(16*(s.ws.MapY+j)+8 - s.y)));
-					coingoal = true;
+		if(MarioX < 21 && MarioX >= 0) {
+			int MarioY = (int)s.y/16 - s.ws.MapY;
+			int h0 = s.ws.heightmap[MarioX];
+			int h1 = s.ws.heightmap[MarioX+1];
+			int y0 = (h0+s.ws.MapY)*16;
+			int y1 = (h1+s.ws.MapY)*16;
+			//System.out.printf("MarioX=%d MarioY=%d heightmap[x+1]=%d y=%d\n",
+			//		MarioX, MarioY, s.ws.heightmap[MarioX+1], y);
+			if(h1 < MarioY) {
+				float _y = s.y;
+				if(!s.onGround && s.ya>0 && y0>_y) { // fall to ground so we can jump
+					//System.out.printf("MarioY=%d ledgey=%d y=%8.1f ya=%f stepstoFall=", MarioY, y0, _y, s.ya);
+					float fallsteps = stepsToFall(y0 - _y, s.ya);
+					//System.out.printf("%f\n", fallsteps);
+					steps += fallsteps;
+					_y = y0;
 				}
-		if(coingoal)
-			return tiebreaker;
-			*/
+				float jumpsteps = stepsToJump(_y - y1);
+				steps += jumpsteps;
+				//System.out.printf("MarioY=%d ledgey=%d y=%8.1f stepstoJump=%f\n",
+				//		MarioY, y1, _y, jumpsteps);
+				_y = y1;
+			}
+			//if(!s.onGround && MarioY < y)
+			//	steps += 0.1*stepsToFall(s.y - (y+s.ws.MapY)*16, s.ya);
+		}
+		*/
 
-		// if we're falling into a hole, we get a huge penalty.  perhaps we can walljump out.
-		// ...but this heuristic blows.  we need a better approach to falling
-		// down holes in general.
-//		if(s.y > 208)
-//			tiebreaker += s.y;
-		
-		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa) + tiebreaker;
+		return steps;
 	}
 
 
@@ -199,7 +260,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				ms.g = next.g + 1;
 				ms.cost = ms.g + h;// + ((a&ACT_JUMP)>0?0.0001f:0);
 				n++;
-				if(h <= 0) {
+				if(h < 0.5f) {
 					pq.clear();
 					if(verbose1) {
 						System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
@@ -289,10 +350,11 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		action[Mario.KEY_JUMP] = (next_action&4)!=0;
 		action[Mario.KEY_LEFT] = (next_action&8)!=0;
 
-		// Uncomment to single-step with the enter key
-		//try {
-		//	System.in.read();
-		//} catch(IOException e) {};
+		if(stdinSingleStep) {
+			try {
+				System.in.read();
+			} catch(IOException e) {};
+		}
 
 		return action;
 	}
