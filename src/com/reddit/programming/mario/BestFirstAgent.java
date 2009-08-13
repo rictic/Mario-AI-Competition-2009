@@ -191,7 +191,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		public StateSearcher(MarioState initialState, WorldState ws, PriorityQueue<MarioState> pq, int id) {
 			this.pq = pq; this.ws = ws; 
 			this.initialState = initialState; this.bestfound = null;
-			this.id = id; drawIndex = id;
+			this.id = id; DrawIndex = id;
 		}
 
 		public void stop() {
@@ -220,14 +220,14 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				for(int a=1;a<16;a++) {
 					if(useless_action(a, next))
 						continue;
-					MarioState ms = next.next(a, map, MapX, MapY);
+					MarioState ms = next.next(a, next.ws);
 
-					GlobalOptions.MarioPos[DrawIndex][0] = (int)next.x;
-					GlobalOptions.MarioPos[DrawIndex][1] = (int)next.y;
-					DrawIndex++;
-					GlobalOptions.MarioPos[DrawIndex][0] = (int)ms.x;
-					GlobalOptions.MarioPos[DrawIndex][1] = (int)ms.y;
-					DrawIndex++;
+//					GlobalOptions.MarioPos[DrawIndex][0] = (int)next.x;
+//					GlobalOptions.MarioPos[DrawIndex][1] = (int)next.y;
+//					DrawIndex++;
+//					GlobalOptions.MarioPos[DrawIndex][0] = (int)ms.x;
+//					GlobalOptions.MarioPos[DrawIndex][1] = (int)ms.y;
+//					DrawIndex++;
 					
 					if (DrawIndex >= 400)
 					{
@@ -270,10 +270,10 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 
 		private void addToDrawPath(MarioState mario) {
-			GlobalOptions.MarioPos[drawIndex] = new int[]{(int)mario.x, (int)mario.y, costToTransparency(mario.cost), mario.marioMode()};
-			drawIndex += simultaneousSearchers;
-			if (drawIndex >= 400)
-				drawIndex = id;
+			GlobalOptions.MarioPos[DrawIndex] = new int[]{(int)mario.x, (int)mario.y, costToTransparency(mario.cost), mario.marioMode()};
+			DrawIndex += simultaneousSearchers;
+			if (DrawIndex >= 400)
+				DrawIndex = id;
 		}
 	}
 
