@@ -4,9 +4,11 @@ import java.awt.Graphics;
 import java.util.Vector;
 
 import ch.idsia.mario.engine.GlobalOptions;
+import ch.idsia.mario.engine.LevelScene;
 
 public class DebugPolyLineList
 {
+	private StaticMario mario = null;
 	private Vector<DebugPolyLine> polyLines = new Vector<DebugPolyLine>(0);
 	
 	public final int MAXSIZE = 400;
@@ -21,8 +23,8 @@ public class DebugPolyLineList
 	public DebugPolyLineList()
 	{
 		DrawFilled = false;
-	}
-	
+    }
+
 	public int Size()
 	{
 		return polyLines.size();
@@ -53,7 +55,7 @@ public class DebugPolyLineList
 		polyLines.clear();
 	}
 
-	public void DrawAll(Graphics g, int xcam, int ycam)
+	public void DrawAll(Graphics g, LevelScene w, int xcam, int ycam)
 	{
 		for (int i = polyLines.size() - 1; i >= 0; i--)
 		{
@@ -63,7 +65,7 @@ public class DebugPolyLineList
 				g.setColor(line.color);
 				if (i == 0)
 				{
-					drawThickPolyline(g, line.GetX(g), line.GetY(g), line.points.size(), 4, xcam, ycam);
+					drawThickPolyline(g, w, line.GetX(g), line.GetY(g), line.points.size(), 4, xcam, ycam);
 				}
 				else
 				{
@@ -90,10 +92,11 @@ public class DebugPolyLineList
 		}
 	}
 
-	private void drawThickPolyline(Graphics g, int[] xArray, int[] yArray, int count, int thickness, int xcam, int ycam)
+	private void drawThickPolyline(Graphics g, LevelScene w, int[] xArray, int[] yArray, int count, int thickness, int xcam, int ycam)
 	{
 		// The thick line is in fact a filled polygon
-		for (int i = 0; i < count - 1; i++)
+		int i = 0;
+		for ( ; i < count - 1; i++)
 		{
 			int x1, x2, y1, y2;
 			
@@ -139,5 +142,15 @@ public class DebugPolyLineList
 				g.drawPolygon(xPoints, yPoints, 4);
 			}
 		}
+        if (mario == null)
+        {
+            mario = new StaticMario(w, xArray[0], yArray[0], 50, 0);
+            w.addSprite(mario);
+        }
+		else
+        {
+            mario.x = xArray[0];
+            mario.y = yArray[0];
+        }
 	}
 }

@@ -837,7 +837,7 @@ public class LevelScene extends Scene implements SpriteContext
 
         // Draw the lines to the screen
         g.translate(-xCam, -yCam);
-        GlobalOptions.MarioLines.DrawAll(g, xCam, yCam);
+        GlobalOptions.MarioLines.DrawAll(g, this, xCam, yCam);
         g.translate(xCam, yCam);
 		
 //        for (StaticMario sm : temporarySprites)
