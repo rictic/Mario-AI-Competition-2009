@@ -132,19 +132,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 		return false;
 	}
-	
-	private void addLine(float x0, float y0, float x1, float y1, int color) {
-		if (drawPath && GlobalOptions.MarioPosSize < 400) {
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int)x0;
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int)y0;
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = color;
-			GlobalOptions.MarioPosSize++;
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int)x1;
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int)y1;
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = color;
-			GlobalOptions.MarioPosSize++;
-		}
-	}
 
 	private void addLine(float x0, float y0, float x1, float y1, int color) {
 		if(drawPath && GlobalOptions.MarioPosSize < 400) {
@@ -191,10 +178,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			// next.cost can be infinite, and still at the head of the queue,
 			// if the node got marked dead
 			if(next.cost == Float.POSITIVE_INFINITY) continue;
-
-			int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
-			color = color|(color<<8)|(color<<16);
-			addLine(next.x, next.y, next.pred.x, next.pred.y, color);
 
 			int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
 			color = color|(color<<8)|(color<<16);
