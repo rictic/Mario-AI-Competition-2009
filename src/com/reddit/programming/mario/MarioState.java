@@ -295,5 +295,9 @@ public final class MarioState extends SpriteState
 		//   world.bump(x, y, large);
 		// }
 	}
+	
+	public int marioMode() {
+		return ((big) ? 1 : 0) + ((fire) ? 1 : 0);
+	}
 }
 

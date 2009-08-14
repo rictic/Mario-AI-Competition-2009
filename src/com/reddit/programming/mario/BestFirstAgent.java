@@ -242,11 +242,20 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		// return best so far
 		pq.clear();
 		return bestfound.root_action;
+
 	}
 
+	private void addToDrawPath(MarioState mario) {
+		GlobalOptions.MarioPos[DrawIndex] = new int[]{(int)mario.x, (int)mario.y, costToTransparency(mario.cost), mario.marioMode()};
+		DrawIndex++;
+		if (DrawIndex >= 400)
+			DrawIndex = 0;
+	}
+
+	
 	public static int costToTransparency(float cost) {
-		if (cost <= 0) return 100;
-		return Math.max(0, 20-(int)cost);
+		if (cost <= 0) return 80;
+		return Math.max(0, 40-(int)cost);
 	}
 
 	public static MarioState marioMin(MarioState a, MarioState b) {
