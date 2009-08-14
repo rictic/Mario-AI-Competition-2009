@@ -1,6 +1,6 @@
 package com.reddit.programming.mario;
 
-public class MarioState extends SpriteState
+public final class MarioState extends SpriteState
 {
 	// FIXME: try to minimize the sizes of these fields as much as possible; we
 	// allocate a huge number of MarioState objects.

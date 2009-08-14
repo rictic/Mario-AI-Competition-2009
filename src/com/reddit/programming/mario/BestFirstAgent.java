@@ -10,17 +10,19 @@ import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 
-public class BestFirstAgent extends RedditAgent implements Agent
+public final class BestFirstAgent extends RedditAgent implements Agent
 {
 	private boolean[] action;
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
 	private PriorityQueue<MarioState> pq, pq2;
 	private static final boolean verbose1 = true;
-	private static final boolean verbose2 = true;
+	private static final boolean verbose2 = false;
 	private static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
+	private static final int maxBreadth = 1000;
+	private static final int maxSteps = 200;
 	private int DrawIndex = 0;
 
 	MarioState ms = null, ms_prev = null;
@@ -30,8 +32,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		super("BestFirstAgent");
 		action = new boolean[Environment.numberOfButtons];
 		reset();
-		pq = new PriorityQueue<MarioState>(400, msComparator);
-		pq2 = new PriorityQueue<MarioState>(400, msComparator);
+		pq = new PriorityQueue<MarioState>(maxBreadth, msComparator);
+		pq2 = new PriorityQueue<MarioState>(maxBreadth, msComparator);
 	}
 
 	@Override
@@ -42,84 +44,6 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		marioPosition = null;
 	}
 
-	private float stepsToJump(float h) {
-		if(h < 26.6f) return 10*h/133;
-		if(h < 64.6) return (float) (17-Math.sqrt(281-80*h/19))/2;
-		return Float.POSITIVE_INFINITY;
-	}
-
-	// I LOVE ALL THIS TYPING!
-	// NOT ONLY ON THE KEYBOARD, BUT ALSO THE CREATION OF NEW TYPES AND
-	// SPECIFYING THEIR USE
-	static interface DistanceFunction { public float value(float dx0, float n); }
-
-	static private class FallDistance implements DistanceFunction {
-		public float value(float ya0, float steps) {
-			// Mario's falling iteration looks like this:
-			//   y[n] = y[n-1] + ya[n-1]
-			//   ya[n] = (ya[n-1] * d) + s
-			// Solving the recurrence:
-			//   ya[n] = ya0*d^n + s*Sum[d^i, {i,0,n-1}]
-			//   y[n] = y0 + ya0*Sum[d^i, {i,0,n-1}] + s*(Sum[(n-1-i)*d^i, {i,0,n-2}])
-			//
-			float d_n = (float) Math.pow(0.85f, steps); // d^n
-			return 20*steps - 20*(d_n-1)*(ya0-20)/3;
-		}
-	}
-	private static final FallDistance fallDistance = new FallDistance();
-
-	static private class RunDistance implements DistanceFunction {
-		public float value(float v0, float steps) {
-			// Mario's running iteration looks like this:
-			//   xa'[n] = xa[n-1] + 1.2
-			//   x[n] = x[n-1] + xa'[n]
-			//   xa[n] = xa'[n] * 0.89
-			// Working through the recurrence:
-			// x[n] = x0 + xa0*Sum[d^i,{i,0,n-1}] + s*Sum[(n-i)*d^i,{i,0,n-1}]
-			// where d === damping = 89/100 and s === step size = 12/10
-			// if you substitute and solve you get this:
-
-			float d_n = (float) Math.pow(0.89f, steps); // d^n
-			return (1320*steps - 20*(d_n-1)*(55*v0-534))/121;
-		}
-	}
-	private static final RunDistance runDistance = new RunDistance();
-
-	private float secantSolve(DistanceFunction f, float distance, float dx0, float min) {
-		float x0=1, x1=2, xdiff;
-		float sgn = 1;
-		if(distance < 0) { sgn = -1; distance = -distance; }
-		do {
-			float fx0 = f.value(dx0, x0);
-			float fx1 = f.value(dx0, x1);
-			xdiff = (fx1-distance) * (x1 - x0)/(fx1 - fx0);
-			x0 = x1;
-			x1 -= xdiff;
-			// if our iteration takes us negative, negate and hope it doesn't loop
-			if(x1 < min) x1 = 2*min-x1; // reflect about min
-		} while(Math.abs(xdiff) > 1e-4);
-		return x1*sgn;
-	}
-
-	// runDistance is terrible to invert, so use the secant method to solve it
-	private float stepsToRun(float distance, float v0) {
-		return secantSolve(runDistance, distance, v0, 0);
-	}
-
-	// as, of course, is fallDistance
-	private float stepsToFall(float height, float ya0) {
-		// this has too many numerical problems; let's just underestimate it
-		if(ya0 < 0) {
-			// if we're "falling upwards" then find where we're falling
-			// downwards at the same height
-			float apogee = (float) (Math.log(1-ya0/20)/Math.log(0.85));
-			return secantSolve(fallDistance, height, ya0, 2*apogee);
-		}
-		else
-			return secantSolve(fallDistance, height, ya0, 0);
-	}
-
-
 	private static final float lookaheadDist = 9*16;
 	private float cost(MarioState s, MarioState initial) {
 		if(s.dead)
@@ -129,7 +53,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		int goal = 21;
 		// move goal back from the abyss
 		while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
-		float steps = Math.abs(stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa));
+		float steps = Math.abs(MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa));
 
 		// NOTE: despite messing around with the various hacks below, nothing
 		// seems to work better than just the horizintal distance, because it's
@@ -157,19 +81,19 @@ public class BestFirstAgent extends RedditAgent implements Agent
 				float _y = s.y;
 				if(!s.onGround && s.ya>0 && y0>_y) { // fall to ground so we can jump
 					//System.out.printf("MarioY=%d ledgey=%d y=%8.1f ya=%f stepstoFall=", MarioY, y0, _y, s.ya);
-					float fallsteps = stepsToFall(y0 - _y, s.ya);
+					float fallsteps = MarioMath.stepsToFall(y0 - _y, s.ya);
 					//System.out.printf("%f\n", fallsteps);
 					steps += fallsteps;
 					_y = y0;
 				}
-				float jumpsteps = stepsToJump(_y - y1);
+				float jumpsteps = MarioMath.stepsToJump(_y - y1);
 				steps += jumpsteps;
 				//System.out.printf("MarioY=%d ledgey=%d y=%8.1f stepstoJump=%f\n",
 				//		MarioY, y1, _y, jumpsteps);
 				_y = y1;
 			}
 			//if(!s.onGround && MarioY < y)
-			//	steps += 0.1*stepsToFall(s.y - (y+s.ws.MapY)*16, s.ya);
+			//	steps += 0.1*MarioMath.stepsToFall(s.y - (y+s.ws.MapY)*16, s.ya);
 		}
 		*/
 
@@ -209,7 +133,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 	private PriorityQueue<MarioState> prune_pq() {
 		// first, swap pq2 and pq
 		PriorityQueue<MarioState> p = pq; pq = pq2; pq2 = p;
-		while(!pq2.isEmpty() && pq.size() < 200)
+		while(!pq2.isEmpty() && pq.size() < maxBreadth/2)
 			pq.add(pq2.remove());
 		pq2.clear();
 		return pq;
@@ -241,8 +165,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		// periodically grab the system millisecond clock and terminate the
 		// search after ~40ms
 		int pq_siz=0;
-		for(n=0;n<1000 && !pq.isEmpty();n++) {
-			if(pq.size() > 400)
+		for(n=0;n<maxSteps && !pq.isEmpty();n++) {
+			if(pq.size() > maxBreadth)
 				pq = prune_pq();
 			MarioState next = pq.remove();
 

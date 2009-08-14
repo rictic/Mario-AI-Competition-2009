@@ -2,7 +2,7 @@ package com.reddit.programming.mario;
 
 import java.util.HashMap;
 
-public class WorldState
+public final class WorldState
 {
 	public byte[][] map;
 	public int[] heightmap;
