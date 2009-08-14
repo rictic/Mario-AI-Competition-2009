@@ -13,6 +13,11 @@ public final class MarioState extends SpriteState
 		   sliding = false; // sliding down the side of a wall
 	public float xJumpSpeed = 0, yJumpSpeed = 0; // can we get rid of this somehow?
 
+	public static int ACT_SPEED = 1;
+	public static int ACT_RIGHT = 2;
+	public static int ACT_LEFT = 4;
+	public static int ACT_JUMP = 8;
+
 	// fields used by the search stuff
 	public float g, cost; // heuristic costs
 	public int root_action;
@@ -32,11 +37,6 @@ public final class MarioState extends SpriteState
 				mayJump ? "J":"j",
 				sliding ? "S":"s", cost);
 	}
-
-	private static final int ACT_SPEED = 1;
-	private static final int ACT_RIGHT = 2;
-	private static final int ACT_JUMP = 4;
-	private static final int ACT_LEFT = 8;
 
 	public MarioState next(int action, WorldState ws) {
 		// this is what passes for clone()
