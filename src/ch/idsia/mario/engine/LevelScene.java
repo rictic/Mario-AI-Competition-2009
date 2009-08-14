@@ -830,27 +830,33 @@ public class LevelScene extends Scene implements SpriteContext
         }
 
         g.translate(xCam, yCam);
-
+        
         layer.setCam(xCam, yCam);
         layer.render(g, tick, paused?0:alpha);
         layer.renderExit0(g, tick, paused?0:alpha, mario.winTime==0);
+
+        // Draw the lines to the screen
+        g.translate(-xCam, -yCam);
+        GlobalOptions.MarioLines.DrawAll(g, xCam, yCam);
+        g.translate(xCam, yCam);
+		
+//        for (StaticMario sm : temporarySprites)
+//        	removeSprite(sm);
+//        temporarySprites.clear();
         
-        for (StaticMario sm : temporarySprites)
-        	removeSprite(sm);
-        temporarySprites.clear();
-        for (int i = 0; i < GlobalOptions.MarioPosSize; i += 2)
-		{
-			// uncomment this for mario ghosts
-//			StaticMario marioVisSprite = new StaticMario(this, GlobalOptions.MarioPos[i][0], GlobalOptions.MarioPos[i][1], GlobalOptions.MarioPos[i][2]);
+//        for (int i = 0; i < GlobalOptions.MarioPosSize; i += 2)
+//		{
+//			// uncomment this for mario ghosts
+//			StaticMario marioVisSprite = new StaticMario(this, GlobalOptions.MarioPos[i][0], GlobalOptions.MarioPos[i][1], GlobalOptions.MarioPos[i][2], Mario.large?1:0);
 //			addSprite(marioVisSprite);
 //			temporarySprites.add(marioVisSprite);
-			g.setColor(new Color(GlobalOptions.MarioPos[i][2]));
-			g.drawLine(GlobalOptions.MarioPos[i][0] - xCam,
-						GlobalOptions.MarioPos[i][1] - yCam,
-						GlobalOptions.MarioPos[i + 1][0] - xCam,
-						GlobalOptions.MarioPos[i + 1][1] - yCam);
-			
-		}
+//			g.setColor(new Color(GlobalOptions.MarioPos[i][2]));
+////			g.drawLine(GlobalOptions.MarioPos[i][0] - xCam,
+////						GlobalOptions.MarioPos[i][1] - yCam,
+////						GlobalOptions.MarioPos[i + 1][0] - xCam,
+////						GlobalOptions.MarioPos[i + 1][1] - yCam);
+//			
+//		}
 
         g.translate(-xCam, -yCam);
 

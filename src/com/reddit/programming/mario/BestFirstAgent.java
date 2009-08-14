@@ -3,6 +3,8 @@ package com.reddit.programming.mario;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
+import java.awt.Color;
+import java.awt.Point;
 import java.io.IOException;
 
 import ch.idsia.ai.agents.Agent;
@@ -130,6 +132,19 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 		return false;
 	}
+	
+	private void addLine(float x0, float y0, float x1, float y1, int color) {
+		if (drawPath && GlobalOptions.MarioPosSize < 400) {
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int)x0;
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int)y0;
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = color;
+			GlobalOptions.MarioPosSize++;
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int)x1;
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int)y1;
+			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = color;
+			GlobalOptions.MarioPosSize++;
+		}
+	}
 
 	private void addLine(float x0, float y0, float x1, float y1, int color) {
 		if(drawPath && GlobalOptions.MarioPosSize < 400) {
@@ -170,6 +185,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		// periodically grab the system millisecond clock and terminate the
 		// search after ~40ms
 		for(n=0;n<4000 && !pq.isEmpty();) {
+			DebugPolyLine line1 = new DebugPolyLine(Color.BLUE);
 			MarioState next = pq.remove();
 
 			// next.cost can be infinite, and still at the head of the queue,
@@ -179,6 +195,13 @@ public class BestFirstAgent extends RedditAgent implements Agent
 			int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
 			color = color|(color<<8)|(color<<16);
 			addLine(next.x, next.y, next.pred.x, next.pred.y, color);
+
+			int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
+			color = color|(color<<8)|(color<<16);
+			addLine(next.x, next.y, next.pred.x, next.pred.y, color);
+			line1.AddPoint(next.x, next.y);
+			line1.AddPoint(next.pred.x, next.pred.y);
+			line1.color = new Color(color);
 
 			//System.out.printf("a*: trying "); next.print();
 			for(a=1;a<16;a++) {
@@ -208,19 +231,25 @@ public class BestFirstAgent extends RedditAgent implements Agent
 					MarioState s;
 					if(GlobalOptions.MarioPosSize > 400-46)
 						GlobalOptions.MarioPosSize = 400-46;
+					
+					DebugPolyLine line2 = new DebugPolyLine(Color.YELLOW);
 					for(s = ms;s != initialState;s = s.pred) {
 						if(verbose2) {
 							System.out.printf("state %d: ", (int)s.g);
 							s.print();
 						}
 						// green line shows taken path
-						addLine(s.x, s.y, s.pred.x, s.pred.y, 0x00ff00);
+						line2.AddPoint(s.x, s.y);
+						line2.AddPoint(s.pred.x, s.pred.y);
+						//addLine(s.x, s.y, s.pred.x, s.pred.y, 0x00ff00);
 					}
+					GlobalOptions.MarioLines.PushFront(line2);
 					return ms.root_action;
 				}
 				pq.add(ms);
 				bestfound = marioMin(ms,bestfound);
 			}
+			GlobalOptions.MarioLines.Push(line1);
 		}
 
 		if (!pq.isEmpty())
