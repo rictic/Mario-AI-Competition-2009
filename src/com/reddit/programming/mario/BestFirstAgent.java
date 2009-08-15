@@ -21,8 +21,8 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	private static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
-	private static final int maxBreadth = 4000;
-	private static final int maxSteps = 500;
+	private static final int maxBreadth = 256;
+	private static final int maxSteps = 2000;
 	private int DrawIndex = 0;
 
 	MarioState ms = null, ms_prev = null;
@@ -54,8 +54,16 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		// move goal back from the abyss
 		//while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
 		//no don't
-		float steps = Math.abs(MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa));
-		if(!s.onGround) steps += 0.001*s.y;
+		//
+		float steps = MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa);
+		// if we're standing in front of some thing, give the heuristic a
+		// little help also adds a small penalty for walking up to something in
+		// the first place
+		if(MarioX < 21) {
+			float nextColY = (s.ws.heightmap[MarioX+1] + s.ws.MapY)*16;
+			if(nextColY < s.y)
+				steps += MarioMath.stepsToJump(s.y-nextColY);
+		}
 
 		return steps;
 	}
@@ -63,7 +71,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
 
-	// so we use 0, 1, 2, 4, 7 jump frames, depending on the value of action>>3
 	private boolean useless_action(int a, MarioState s) {
 		if((a&MarioState.ACT_LEFT)>0 && (a&MarioState.ACT_RIGHT)>0) return true;
 		if((a/MarioState.ACT_JUMP)>0) {
@@ -130,7 +137,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 			// next.cost can be infinite, and still at the head of the queue,
 			// if the node got marked dead
-			if(next.cost == Float.POSITIVE_INFINITY) continue;
+			//if(next.cost == Float.POSITIVE_INFINITY) continue;
 
 			int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
 			color = color|(color<<8)|(color<<16);
@@ -143,11 +150,18 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 				MarioState ms = next.next(a, next.ws);
 				ms.pred = next;
 
-				// if we die, prune our predecessor node that got us here
+				// if we die, penalize the predecessor path that got us here
 				if(ms.dead) {
+					float penalty = 1000;
+					for(ms = ms.pred;ms != initialState;ms = ms.pred) {
+						pq.remove(ms);
+						ms.cost += penalty;
+						pq.add(ms);
+						penalty = penalty/4;
+					}
 					// removing things from a priority queue is ridiculously
 					// slow, so we'll just mark it dead
-					ms.pred.cost = Float.POSITIVE_INFINITY;
+					//ms.pred.cost = Float.POSITIVE_INFINITY;
 					continue;
 				}
 
