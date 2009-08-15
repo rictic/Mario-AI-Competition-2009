@@ -19,13 +19,15 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	private static final boolean verbose1 = true;
 	private static final boolean verbose2 = true;
 	private static final boolean drawPath = true;
+	private static final boolean drawWaypoint = true;
 	// enable to single-step with the enter key on stdin
-	private static final boolean stdinSingleStep = true;
+	private static final boolean stdinSingleStep = false;
 	private static final int maxBreadth = 1000;
 	private static final int maxSteps = 200;
 	private int DrawIndex = 0;
 
 	private static final PathPlanner pathplan = new PathPlanner();
+	private PathPlanner.Waypoint nextWaypoint;
 
 	MarioState ms = null, ms_prev = null;
 	float pred_x, pred_y;
@@ -57,49 +59,19 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
 		float steps = Math.abs(MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa));
 
-		// NOTE: despite messing around with the various hacks below, nothing
-		// seems to work better than just the horizintal distance, because it's
-		// the only "accurate" metric i've tried.
-		//
-		// instead, we need a higher-level planner that gives us a set of
-		// waypoints for simple jumps, and we can compute our cost to all the
-		// following waypoints more easily
+		float stepsx = Math.abs(MarioMath.stepsToRun(nextWaypoint.x - s.x, s.xa));
+		float stepsy = 0;
+		// if we are moving upwards, we need to go to ymin at least
+		// if we are moving downwards, we need to go to waypoint y
+		//   ymin
+		//   |
+		// a_|_b   a_  _b <- ymin
+		if(s.ya < 0)
+			stepsy = MarioMath.stepsToJump(s.y-nextWaypoint.ymin);
+		else if(s.ya > 0)
+			stepsy = MarioMath.stepsToFall(s.y-nextWaypoint.y, s.ya);
 
-		//if(!s.onGround) steps += 0.001f;
-
-		// this is a horrid overestimate.  might not work at all.
-		// it's *supposed* to figure out how many steps it takes to surmount
-		// the next obstacle.  it doesn't seem to help.
-		/*
-		if(MarioX < 21 && MarioX >= 0) {
-			int MarioY = (int)s.y/16 - s.ws.MapY;
-			int h0 = s.ws.heightmap[MarioX];
-			int h1 = s.ws.heightmap[MarioX+1];
-			int y0 = (h0+s.ws.MapY)*16;
-			int y1 = (h1+s.ws.MapY)*16;
-			//System.out.printf("MarioX=%d MarioY=%d heightmap[x+1]=%d y=%d\n",
-			//		MarioX, MarioY, s.ws.heightmap[MarioX+1], y);
-			if(h1 < MarioY) {
-				float _y = s.y;
-				if(!s.onGround && s.ya>0 && y0>_y) { // fall to ground so we can jump
-					//System.out.printf("MarioY=%d ledgey=%d y=%8.1f ya=%f stepstoFall=", MarioY, y0, _y, s.ya);
-					float fallsteps = MarioMath.stepsToFall(y0 - _y, s.ya);
-					//System.out.printf("%f\n", fallsteps);
-					steps += fallsteps;
-					_y = y0;
-				}
-				float jumpsteps = MarioMath.stepsToJump(_y - y1);
-				steps += jumpsteps;
-				//System.out.printf("MarioY=%d ledgey=%d y=%8.1f stepstoJump=%f\n",
-				//		MarioY, y1, _y, jumpsteps);
-				_y = y1;
-			}
-			//if(!s.onGround && MarioY < y)
-			//	steps += 0.1*MarioMath.stepsToFall(s.y - (y+s.ws.MapY)*16, s.ya);
-		}
-		*/
-
-		return steps;
+		return Math.max(stepsy, stepsx);
 	}
 
 
@@ -138,10 +110,25 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 	private int searchForAction(MarioState initialState, WorldState ws) {
 		pq.clear();
-		pathplan.reset(ws);
+		GlobalOptions.MarioPosSize = 0;
+
 		initialState.ws = ws;
 		initialState.g = 0;
+		if(initialState.onGround) {
+			pathplan.reset(ws);
+			nextWaypoint = pathplan.getNextWaypoint(initialState.x, initialState.xa);
+		}
+
+		// we have nowhere to go, so do nothing!
+		if(nextWaypoint == null) {
+			if(verbose1)
+				System.out.printf("no plan; trying default\n");
+			nextWaypoint = PathPlanner.defaultWaypoint(initialState);
+			//return 0;
+		}
+
 		initialState.cost = cost(initialState, initialState);
+
 		int a,n;
 		// add initial set
 		for(a=1;a<16;a++) {
@@ -157,21 +144,16 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 		MarioState bestfound = pq.peek();
 
-		GlobalOptions.MarioPosSize = 0;
-
-		/*
-		PathPlanner.Waypoint w = pathplan.getNextWaypoint(initialState.x, initialState.xa);
-		if(w != null) {
-			// x marks the spot
-			addLine((w.x+ws.MapX)*16 + 4,  (w.y+ws.MapY)*16 - 4,
-					(w.x+ws.MapX)*16 + 12, (w.y+ws.MapY)*16 + 4,
-					0xff0000);
-			addLine((w.x+ws.MapX)*16 + 12,  (w.y+ws.MapY)*16 - 4,
-					(w.x+ws.MapX)*16 + 4, (w.y+ws.MapY)*16 + 4,
-					0xff0000);
-			System.out.printf("waypoint: (%d,%d) cost=%f\n", w.x, w.y, w.cost);
+		if(drawWaypoint) {
+			PathPlanner.Waypoint w = nextWaypoint;
+			if(w != null) {
+				// x marks the spot
+				addLine(w.x-4, w.y-4, w.x+4, w.y+4, 0xff0000);
+				addLine(w.x-4, w.y+4, w.x+4, w.y-4, 0xff0000);
+				addLine(w.x, w.y, w.x, w.ymin, 0xff0000);
+				System.out.printf("waypoint: (%d,%d) cost=%f\n", w.x, w.y, w.cost);
+			}
 		}
-		*/
 
 		// FIXME: instead of using a hardcoded number of iterations,
 		// periodically grab the system millisecond clock and terminate the
@@ -303,10 +285,10 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		//System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
 		//		next_action, ms.x, ms.y, ms.xa, ms.ya));
 
-		action[Mario.KEY_SPEED] = (next_action&1)!=0;
-		action[Mario.KEY_RIGHT] = (next_action&2)!=0;
-		action[Mario.KEY_JUMP] = (next_action&4)!=0;
-		action[Mario.KEY_LEFT] = (next_action&8)!=0;
+		action[Mario.KEY_SPEED] = (next_action&MarioState.ACT_SPEED)!=0;
+		action[Mario.KEY_RIGHT] = (next_action&MarioState.ACT_RIGHT)!=0;
+		action[Mario.KEY_JUMP] = (next_action&MarioState.ACT_JUMP)!=0;
+		action[Mario.KEY_LEFT] = (next_action&MarioState.ACT_LEFT)!=0;
 
 		if(stdinSingleStep) {
 			try {

@@ -10,8 +10,8 @@ import java.util.TreeMap;
 // for.
 public final class PathPlanner
 {
-	public class Waypoint {
-		public int x,y;
+	static public class Waypoint {
+		public int x,y,ymin;
 		public float cost;
 	}
 
@@ -44,6 +44,8 @@ public final class PathPlanner
 	// a_||
 	//    |c_   a = x0,y0, b=x1-1,min_y, c=x1,y1
 	//
+	// so the jump must be at least ay-by high and the fall will be at least
+	// cy-by high
 	private float moveCost(int x0, int y0, int x1, int y1, int min_y, float xa) {
 		if(y1 == y0 && min_y == y0) {
 			// just run forward
@@ -55,7 +57,7 @@ public final class PathPlanner
 			if(min_y-y0 < -4)
 				return Float.POSITIVE_INFINITY;
 
-			float g = jumpUpSteps[min_y-y1];
+			float g = jumpUpSteps[y0-min_y];
 			if(y1 != min_y)
 				g += MarioMath.stepsToFall(16*(y1-min_y), 0);
 
@@ -116,7 +118,7 @@ public final class PathPlanner
 			if(y1 < min_y)
 				min_y = y1;
 
-			if(y0-y1 < 4) // there's no way we can reach past a >4 block high jump
+			if(y0-min_y > 4) // there's no way we can reach past a >4 block high jump
 				break;
 
 			if(y1 == 22) // mind the gap
@@ -132,8 +134,9 @@ public final class PathPlanner
 			}
 			if(c < w.cost) {
 				w.cost = c;
-				w.x = i;
-				w.y = y1;
+				w.x = 16*(i+ws.MapX)+8;
+				w.y = 16*(y1+ws.MapY)-1;
+				w.ymin = 16*(min_y+ws.MapY)-1;
 			}
 		}
 		goal[x][xaidx] = w;
@@ -147,7 +150,10 @@ public final class PathPlanner
 	}
 
 	public Waypoint getNextWaypoint(float _x, float xa) {
-		int x = (int)_x/16 - ws.MapX;
+		if(ws == null)
+			return null;
+
+		int x = (int)(_x+8)/16 - ws.MapX;
 		calc(x, xa);
 		return goal[x][xaIdx(xa)];
 	}
@@ -159,5 +165,12 @@ public final class PathPlanner
 				goal[x][xa] = null;
 	}
 
+	static public Waypoint defaultWaypoint(MarioState s) {
+		Waypoint w = new Waypoint();
+		w.x = (int)s.x + 160;
+		w.y = (int)s.y;
+		w.ymin = (int)s.y - 64;
+		return w;
+	}
 }
 

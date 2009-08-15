@@ -60,12 +60,6 @@ public final class MarioState extends SpriteState
 	}
 
 	private void move(int action) {
-		// action bits:
-		//  0: speed
-		//  1: right
-		//  2: jump
-		//  3: left
-		//  4: duck not implemented; waste of search time
 		boolean ducking = false; // just... we aren't doing this
 		float sideWaysSpeed = (action&ACT_SPEED) != 0 ? 1.2f : 0.6f;
 		//System.out.println("move: sidewaysspeed = " + sideWaysSpeed);
