@@ -12,16 +12,24 @@ import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 
-public class BestFirstAgent extends RedditAgent implements Agent
+public final class BestFirstAgent extends RedditAgent implements Agent
 {
 	private boolean[] action;
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
-	private PriorityQueue<MarioState> pq;
+	private PriorityQueue<MarioState> pq, pq2;
 	private static final boolean verbose1 = true;
 	private static final boolean verbose2 = true;
 	private static final boolean drawPath = true;
+	private static final boolean drawWaypoint = true;
+	// enable to single-step with the enter key on stdin
+	private static final boolean stdinSingleStep = false;
+	private static final int maxBreadth = 1000;
+	private static final int maxSteps = 200;
 	private int DrawIndex = 0;
+
+	private static final PathPlanner pathplan = new PathPlanner();
+	private PathPlanner.Waypoint nextWaypoint;
 
 	MarioState ms = null, ms_prev = null;
 	float pred_x, pred_y;
@@ -30,7 +38,8 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		super("BestFirstAgent");
 		action = new boolean[Environment.numberOfButtons];
 		reset();
-		pq = new PriorityQueue<MarioState>(20, msComparator);
+		pq = new PriorityQueue<MarioState>(maxBreadth, msComparator);
+		pq2 = new PriorityQueue<MarioState>(maxBreadth, msComparator);
 	}
 
 	@Override
@@ -41,92 +50,38 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		marioPosition = null;
 	}
 
-	private float runDistance(float v0, float steps) {
-		// Mario's running iteration looks like this:
-		//   xa'[n] = xa[n-1] + 1.2
-		//   x[n] = x[n-1] + xa'[n]
-		//   xa[n] = xa'[n] * 0.89
-		// Working through the recurrence:
-		// x[n] = x0 + xa0*Sum[d^i,{i,0,n-1}] + s*Sum[(n-i)*d^i,{i,0,n-1}]
-		// where d === damping = 0.89 and s === step size = 1.2
-		// if you substitute and solve you get this:
-
-		float d_n = (float) Math.pow(0.89f, steps); // d^n
-		return 88.2645f*(d_n-1) + 10.9091f*steps + 9.09091f*(1-d_n)*v0;
-
-		// each of these constants is deliberately rounded upwards; we need to
-		// slightly overestimate runDistance so that we slightly underestimate
-		// our heuristic cost to goal
-	}
-
-	// runDistance is terrible to invert, so use the secant method to solve it
-	private float stepsToRun(float distance, float v0) {
-		float x0=1, x1=2, xdiff;
-		float sgn = 1;
-		if(distance < 0) { sgn = -1; distance = -distance; }
-		do {
-			float fx0 = runDistance(v0, x0) - distance;
-			float fx1 = runDistance(v0, x1) - distance;
-			xdiff = fx1 * (x1 - x0)/(fx1 - fx0);
-			x0 = x1;
-			x1 -= xdiff;
-			// if our iteration takes us negative, negate and hope it doesn't loop
-			if(x1 < 0) x1 = -x1;
-		} while(Math.abs(xdiff) > 1e-4);
-		return x1*sgn;
-	}
-
 	private static final float lookaheadDist = 9*16;
 	private float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
-		float tiebreaker = 0;
-		// add a height tiebreaker iff there is an object in front of us
-		// if we always add the tiebreaker, we end up taking unnecessary leaps
-		// of faith down holes.  this just helps us get unstuck faster when we
-		// land in front of something.
-		int MarioX = (int)s.x/16 - s.ws.MapX+1;
-		if(MarioX >= 0 && MarioX < 22)
-			if(s.ws.map[11][MarioX] != 0)
-				tiebreaker += s.y*0.0001f;
+		int MarioX = (int)s.x/16 - s.ws.MapX;
+		int goal = 21;
+		// move goal back from the abyss
+		while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
+		float steps = Math.abs(MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa));
 
-		/*
-		// GET COINS!
-		boolean coingoal = false;
-		for(int j=0;j<22;j++)
-			for(int i=0;i<22;i++)
-				if(s.ws.map[j][i] == 34) { // i really need to get rid of these magic numbers.  this = coin
-					if(!coingoal) tiebreaker = Float.POSITIVE_INFINITY;
-					tiebreaker = Math.min(tiebreaker, 
-										  (Math.abs(stepsToRun(16*(s.ws.MapX+i)+8 - s.x, s.xa)) +
-										   0.5f*Math.abs(16*(s.ws.MapY+j)+8 - s.y)));
-					coingoal = true;
-				}
-		if(coingoal)
-			return tiebreaker;
-			*/
+		float stepsx = Math.abs(MarioMath.stepsToRun(nextWaypoint.x - s.x, s.xa));
+		float stepsy = 0;
+		// if we are moving upwards, we need to go to ymin at least
+		// if we are moving downwards, we need to go to waypoint y
+		//   ymin
+		//   |
+		// a_|_b   a_  _b <- ymin
+		if(s.ya < 0)
+			stepsy = MarioMath.stepsToJump(s.y-nextWaypoint.ymin);
+		else if(s.ya > 0)
+			stepsy = MarioMath.stepsToFall(s.y-nextWaypoint.y, s.ya);
 
-		// if we're falling into a hole, we get a huge penalty.  perhaps we can walljump out.
-		// ...but this heuristic blows.  we need a better approach to falling
-		// down holes in general.
-//		if(s.y > 208)
-//			tiebreaker += s.y;
-		
-		return stepsToRun(initial.x + lookaheadDist - s.x, s.xa) + tiebreaker;
+		return Math.max(stepsy, stepsx);
 	}
 
 
 	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
-	// yay copy and paste
-	private static final int ACT_SPEED = 1;
-	private static final int ACT_RIGHT = 2;
-	private static final int ACT_JUMP = 4;
-	private static final int ACT_LEFT = 8;
 
 	private boolean useless_action(int a, MarioState s) {
-		if((a&ACT_LEFT)>0 && (a&ACT_RIGHT)>0) return true;
-		if((a&ACT_JUMP)>0) {
+		if((a&MarioState.ACT_LEFT)>0 && (a&MarioState.ACT_RIGHT)>0) return true;
+		if((a&MarioState.ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
 			if(s.jumpTime <= 0 && !s.onGround && !s.sliding) return true;
 		}
@@ -146,11 +101,36 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		}
 	}
 
+	private PriorityQueue<MarioState> prune_pq() {
+		// first, swap pq2 and pq
+		PriorityQueue<MarioState> p = pq; pq = pq2; pq2 = p;
+		while(!pq2.isEmpty() && pq.size() < maxBreadth/2)
+			pq.add(pq2.remove());
+		pq2.clear();
+		return pq;
+	}
+
 	private int searchForAction(MarioState initialState, WorldState ws) {
 		pq.clear();
+		GlobalOptions.MarioPosSize = 0;
+
 		initialState.ws = ws;
 		initialState.g = 0;
+		if(initialState.onGround) {
+			pathplan.reset(ws);
+			nextWaypoint = pathplan.getNextWaypoint(initialState.x, initialState.xa);
+		}
+
+		// we have nowhere to go, so do nothing!
+		if(nextWaypoint == null) {
+			if(verbose1)
+				System.out.printf("no plan; trying default\n");
+			nextWaypoint = PathPlanner.defaultWaypoint(initialState);
+			//return 0;
+		}
+
 		initialState.cost = cost(initialState, initialState);
+
 		int a,n;
 		// add initial set
 		for(a=1;a<16;a++) {
@@ -166,12 +146,24 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 		MarioState bestfound = pq.peek();
 
-		GlobalOptions.MarioPosSize = 0;
+		if(drawWaypoint) {
+			PathPlanner.Waypoint w = nextWaypoint;
+			if(w != null) {
+				// x marks the spot
+				addLine(w.x-4, w.y-4, w.x+4, w.y+4, 0xff0000);
+				addLine(w.x-4, w.y+4, w.x+4, w.y-4, 0xff0000);
+				addLine(w.x, w.y, w.x, w.ymin, 0xff0000);
+				System.out.printf("waypoint: (%d,%d) cost=%f\n", w.x, w.y, w.cost);
+			}
+		}
 
 		// FIXME: instead of using a hardcoded number of iterations,
 		// periodically grab the system millisecond clock and terminate the
 		// search after ~40ms
-		for(n=0;n<4000 && !pq.isEmpty();) {
+		int pq_siz=0;
+		for(n=0;n<maxSteps && !pq.isEmpty();n++) {
+			if(pq.size() > maxBreadth)
+				pq = prune_pq();
 			DebugPolyLine line1 = new DebugPolyLine(Color.BLUE);
 			MarioState next = pq.remove();
 
@@ -203,13 +195,12 @@ public class BestFirstAgent extends RedditAgent implements Agent
 
 				float h = cost(ms, initialState);
 				ms.g = next.g + 1;
-				ms.cost = ms.g + h;// + ((a&ACT_JUMP)>0?0.0001f:0);
-				n++;
-				if(h <= 0) {
+				ms.cost = ms.g + h;// + ((a&MarioState.ACT_JUMP)>0?0.0001f:0);
+				if(h < 0.5f) {
 					pq.clear();
 					if(verbose1) {
-						System.out.printf("BestFirst: searched %d iterations; best a=%d cost=%f lookahead=%f\n", 
-								n, ms.root_action, ms.cost, ms.g);
+						System.out.printf("BestFirst: searched %d iterations (%d states); best a=%d cost=%f lookahead=%f\n", 
+								n, pq_siz, ms.root_action, ms.cost, ms.g);
 					}
 					MarioState s;
 					if(GlobalOptions.MarioPosSize > 400-46)
@@ -230,6 +221,7 @@ public class BestFirstAgent extends RedditAgent implements Agent
 					return ms.root_action;
 				}
 				pq.add(ms);
+				pq_siz++;
 				bestfound = marioMin(ms,bestfound);
 			}
 			GlobalOptions.MarioLines.Push(line1);
@@ -305,15 +297,16 @@ public class BestFirstAgent extends RedditAgent implements Agent
 		//System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
 		//		next_action, ms.x, ms.y, ms.xa, ms.ya));
 
-		action[Mario.KEY_SPEED] = (next_action&1)!=0;
-		action[Mario.KEY_RIGHT] = (next_action&2)!=0;
-		action[Mario.KEY_JUMP] = (next_action&4)!=0;
-		action[Mario.KEY_LEFT] = (next_action&8)!=0;
+		action[Mario.KEY_SPEED] = (next_action&MarioState.ACT_SPEED)!=0;
+		action[Mario.KEY_RIGHT] = (next_action&MarioState.ACT_RIGHT)!=0;
+		action[Mario.KEY_JUMP] = (next_action&MarioState.ACT_JUMP)!=0;
+		action[Mario.KEY_LEFT] = (next_action&MarioState.ACT_LEFT)!=0;
 
-		// Uncomment to single-step with the enter key
-		//try {
-		//	System.in.read();
-		//} catch(IOException e) {};
+		if(stdinSingleStep) {
+			try {
+				System.in.read();
+			} catch(IOException e) {};
+		}
 
 		return action;
 	}

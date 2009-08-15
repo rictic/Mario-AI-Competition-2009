@@ -1,6 +1,6 @@
 package com.reddit.programming.mario;
 
-public class MarioState extends SpriteState
+public final class MarioState extends SpriteState
 {
 	// FIXME: try to minimize the sizes of these fields as much as possible; we
 	// allocate a huge number of MarioState objects.
@@ -12,6 +12,11 @@ public class MarioState extends SpriteState
 		   mayJump = true,  // yep
 		   sliding = false; // sliding down the side of a wall
 	public float xJumpSpeed = 0, yJumpSpeed = 0; // can we get rid of this somehow?
+
+	public static int ACT_SPEED = 1;
+	public static int ACT_RIGHT = 2;
+	public static int ACT_LEFT = 4;
+	public static int ACT_JUMP = 8;
 
 	// fields used by the search stuff
 	public float g, cost; // heuristic costs
@@ -32,11 +37,6 @@ public class MarioState extends SpriteState
 				mayJump ? "J":"j",
 				sliding ? "S":"s", cost);
 	}
-
-	private static final int ACT_SPEED = 1;
-	private static final int ACT_RIGHT = 2;
-	private static final int ACT_JUMP = 4;
-	private static final int ACT_LEFT = 8;
 
 	public MarioState next(int action, WorldState ws) {
 		// this is what passes for clone()
@@ -60,12 +60,6 @@ public class MarioState extends SpriteState
 	}
 
 	private void move(int action) {
-		// action bits:
-		//  0: speed
-		//  1: right
-		//  2: jump
-		//  3: left
-		//  4: duck not implemented; waste of search time
 		boolean ducking = false; // just... we aren't doing this
 		float sideWaysSpeed = (action&ACT_SPEED) != 0 ? 1.2f : 0.6f;
 		//System.out.println("move: sidewaysspeed = " + sideWaysSpeed);
