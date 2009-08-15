@@ -72,7 +72,7 @@ public final class MarioState extends SpriteState
 			float w = 16;
 			float width = 4, height=24;
 			if (ex > -width*2-4 && ex < width*2+4) {
-				if (ey > -height && ey < (n.big ? 24:12)) {
+				if (ey > -(t>1?12:24) && ey < (n.big ? 24:12)) {
 					n.dead = true;
 				}
 			}
