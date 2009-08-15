@@ -106,7 +106,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 		int a,n;
 		// add initial set
-		for(a=1;a<40;a++) {
+		for(a=1;a<16;a++) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, ws);
@@ -137,7 +137,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 			addLine(next.x, next.y, next.pred.x, next.pred.y, color);
 
 			//System.out.printf("a*: trying "); next.print();
-			for(a=1;a<40;a++) {
+			for(a=1;a<16;a++) {
 				if(useless_action(a, next))
 					continue;
 				MarioState ms = next.next(a, next.ws);
