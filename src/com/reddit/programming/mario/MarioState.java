@@ -67,12 +67,15 @@ public final class MarioState extends SpriteState
 
 		for(int i=0;i<ws.enemies.length;i+=3) {
 			int t = (int)ws.enemies[i];
+			if(t >= 13) // shells and other non-enemies start at 13
+				continue;
 			float ex = ws.enemies[i+1] - n.x;
 			float ey = ws.enemies[i+2] - n.y;
 			float w = 16;
 			float width = 4, height=24;
 			if (ex > -width*2-4 && ex < width*2+4) {
-				if (ey > -(t>1?12:24) && ey < (n.big ? 24:12)) {
+				//if (ey > -(t>1?12:24) && ey < (n.big ? 24:12)) {
+				if (ey > -24 && ey < (n.big ? 24:12)) {
 					n.dead = true;
 				}
 			}
