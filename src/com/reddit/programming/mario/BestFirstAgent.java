@@ -19,15 +19,11 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	private static final boolean verbose1 = true;
 	private static final boolean verbose2 = false;
 	private static final boolean drawPath = true;
-	private static final boolean drawWaypoint = true;
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
 	private static final int maxBreadth = 1000;
 	private static final int maxSteps = 200;
 	private int DrawIndex = 0;
-
-	//private static final PathPlanner pathplan = new PathPlanner();
-	//private PathPlanner.Waypoint nextWaypoint;
 
 	MarioState ms = null, ms_prev = null;
 	float pred_x, pred_y;
@@ -103,19 +99,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		initialState.ws = ws;
 		initialState.g = 0;
 
-		//if(initialState.onGround) {
-		//	pathplan.reset(ws);
-		//	nextWaypoint = pathplan.getNextWaypoint(initialState.x, initialState.xa);
-		//}
-
-		// we have nowhere to go, so do nothing!
-		//if(nextWaypoint == null) {
-		//	if(verbose1)
-		//		System.out.printf("no plan; trying default\n");
-		//	nextWaypoint = PathPlanner.defaultWaypoint(initialState);
-		//	//return 0;
-		//}
-
 		initialState.cost = cost(initialState, initialState);
 
 		int a,n;
@@ -132,17 +115,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		}
 
 		MarioState bestfound = pq.peek();
-
-		//if(drawWaypoint) {
-		//	PathPlanner.Waypoint w = nextWaypoint;
-		//	if(w != null) {
-		//		// x marks the spot
-		//		addLine(w.x-4, w.y-4, w.x+4, w.y+4, 0xff0000);
-		//		addLine(w.x-4, w.y+4, w.x+4, w.y-4, 0xff0000);
-		//		addLine(w.x, w.y, w.x, w.ymin, 0xff0000);
-		//		System.out.printf("waypoint: (%d,%d) cost=%f\n", w.x, w.y, w.cost);
-		//	}
-		//}
 
 		// FIXME: instead of using a hardcoded number of iterations,
 		// periodically grab the system millisecond clock and terminate the
