@@ -65,6 +65,20 @@ public final class MarioState extends SpriteState
 			n.move(action);
 		}
 
+		for(int i=0;i<ws.enemies.length;i+=3) {
+			int t = (int)ws.enemies[i];
+			float ex = ws.enemies[i+1] - n.x;
+			float ey = ws.enemies[i+2] - n.y;
+			float w = 16;
+			float width = 4, height=24;
+			if (ex > -width*2-4 && ex < width*2+4) {
+				if (ey > -height && ey < (n.big ? 24:12)) {
+					n.dead = true;
+				}
+			}
+
+		}
+
 		return n;
 	}
 

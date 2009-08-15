@@ -16,13 +16,14 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
 	private PriorityQueue<MarioState> pq, pq2;
-	private static final boolean verbose1 = true;
-	private static final boolean verbose2 = true;
+	private static final boolean verbose1 = false;
+	private static final boolean verbose2 = false;
 	private static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
 	private static final int maxBreadth = 256;
 	private static final int maxSteps = 2000;
+	private boolean won = false;
 	private int DrawIndex = 0;
 
 	MarioState ms = null, ms_prev = null;
@@ -39,7 +40,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	@Override
 	public void reset() {
 		// disable enemies for the time being
-		GlobalOptions.pauseWorld = true;
+		//GlobalOptions.pauseWorld = true;
 		ms = null;
 		marioPosition = null;
 	}
@@ -229,6 +230,9 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	@Override
 	public boolean[] getAction(Environment observation)
 	{
+		if(won) // we won!  we can't do anything!
+			return action;
+
 		sensors.updateReadings(observation);
 		marioPosition = sensors.getMarioPosition();
 		float[] mpos = observation.getMarioFloatPos();
@@ -241,9 +245,14 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 				// generally this shouldn't happen, unless we mispredict
 				// something.  currently if we stomp an enemy then we don't
 				// predict that and get confused.
-				//
+
 				// but it will happen when we win, cuz we have no idea we won
-				// and it won't let us move.
+				// and it won't let us move.  well, let's guess whether we won:
+			//	if(mpos[0] > 4000 && mpos[0] == ms_prev.x && mpos[1] == ms_prev.y) {
+			//		System.out.println("ack, can't move.  assuming we just won");
+			//		won = true;
+			//		return action;
+			//	}
 				if(verbose1)
 					System.out.println("mario state mismatch; attempting resync");
 				resync(observation);
@@ -253,7 +262,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		super.UpdateMap(sensors);
 
 		// quantize mario's position to get the map origin
-		WorldState ws = new WorldState(sensors.levelScene, mpos);
+		WorldState ws = new WorldState(sensors.levelScene, mpos, observation.getEnemiesFloatPos());
 
 		int next_action = searchForAction(ms, ws);
 		if(next_action/MarioState.ACT_JUMP > 0)
