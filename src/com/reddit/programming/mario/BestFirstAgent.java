@@ -16,8 +16,8 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
 	private PriorityQueue<MarioState> pq, pq2;
-	private static final boolean verbose1 = false;
-	private static final boolean verbose2 = false;
+	private static final boolean verbose1 = true;
+	private static final boolean verbose2 = true;
 	private static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
@@ -109,6 +109,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 		initialState.ws = ws;
 		initialState.g = 0;
+		initialState.dead = false;
 
 		initialState.cost = cost(initialState, initialState);
 
@@ -248,11 +249,11 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 				// but it will happen when we win, cuz we have no idea we won
 				// and it won't let us move.  well, let's guess whether we won:
-			//	if(mpos[0] > 4000 && mpos[0] == ms_prev.x && mpos[1] == ms_prev.y) {
-			//		System.out.println("ack, can't move.  assuming we just won");
-			//		won = true;
-			//		return action;
-			//	}
+				if(mpos[0] > 4000 && mpos[0] == ms_prev.x && mpos[1] == ms_prev.y) {
+					System.out.println("ack, can't move.  assuming we just won");
+					won = true;
+					return action;
+				}
 				if(verbose1)
 					System.out.println("mario state mismatch; attempting resync");
 				resync(observation);
