@@ -9,6 +9,7 @@ public final class MarioState extends SpriteState
 		   fire = true, // mario can throw fireballs
 		   dead = false, // dead
 		   onGround = false, // standing on ground
+		   wasOnGround = false, // previous frame (used for stomping logic)
 		   mayJump = true,  // yep
 		   sliding = false; // sliding down the side of a wall
 	public float xJumpSpeed = 0, yJumpSpeed = 0; // can we get rid of this somehow?
@@ -46,6 +47,7 @@ public final class MarioState extends SpriteState
 		n.big = big; n.fire = fire;
 		n.dead = dead;
 		n.onGround = onGround;
+		n.wasOnGround = onGround;
 		n.mayJump = mayJump;
 		n.sliding = sliding;
 		n.xJumpSpeed = xJumpSpeed; n.yJumpSpeed = yJumpSpeed;
@@ -67,16 +69,26 @@ public final class MarioState extends SpriteState
 
 		for(int i=0;i<ws.enemies.length;i+=3) {
 			int t = (int)ws.enemies[i];
+			
+			// FIXME: shells are dangerous iff they're moving and not being carried
 			if(t >= 13) // shells and other non-enemies start at 13
 				continue;
 			float ex = ws.enemies[i+1] - n.x;
 			float ey = ws.enemies[i+2] - n.y;
 			float w = 16;
-			float width = 4, height=24;
+
+			// red & green (winged & not) are big, others are small
+			float height=(t>=4 && t <= 7) ? 24 : 12;
+			float width = 4;
+
 			if (ex > -width*2-4 && ex < width*2+4) {
-				//if (ey > -(t>1?12:24) && ey < (n.big ? 24:12)) {
-				if (ey > -24 && ey < (n.big ? 24:12)) {
-					n.dead = true;
+				if (ey > -height && ey < (n.big ? 24:12)) {
+					// 9 and above is spiky; otherwise we can stomp
+					// the rest of this junk is the stomp logic
+					if(t >= 9 || (ya <= 0 || wasOnGround || onGround || ey<=0))
+						n.dead = true;
+					else
+						stomp(ex,ey,height);
 				}
 			}
 
@@ -318,6 +330,21 @@ public final class MarioState extends SpriteState
 	
 	public int marioMode() {
 		return ((big) ? 1 : 0) + ((fire) ? 1 : 0);
+	}
+
+	// positions are relative!
+	private void stomp(float ex, float ey, float eh)
+	{
+		float targetY = ey - eh / 2;
+		move(0, targetY);
+
+		xJumpSpeed = 0;
+		yJumpSpeed = -1.9f;
+		jumpTime = 8;
+		ya = jumpTime * yJumpSpeed;
+		onGround = false;
+		sliding = false;
+		//invulnerableTime = 1;
 	}
 }
 

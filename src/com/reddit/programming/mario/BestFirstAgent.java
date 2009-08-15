@@ -16,11 +16,11 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
 	private PriorityQueue<MarioState> pq, pq2;
-	private static final boolean verbose1 = false;
-	private static final boolean verbose2 = false;
+	private static final boolean verbose1 = true;
+	private static final boolean verbose2 = true;
 	private static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
-	private static final boolean stdinSingleStep = false;
+	private static final boolean stdinSingleStep = true;
 	private static final int maxBreadth = 256;
 	private static final int maxSteps = 2000;
 	private boolean won = false;
@@ -255,7 +255,8 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 					return action;
 				}
 				if(verbose1)
-					System.out.println("mario state mismatch; attempting resync");
+					System.out.printf("mario state mismatch (%f,%f) -> (%f,%f); attempting resync",
+							ms.x,ms.y, mpos[0], mpos[1]);
 				resync(observation);
 			}
 		}
