@@ -50,7 +50,7 @@ public final class PathPlanner
 		if(y1 == y0 && min_y == y0) {
 			// just run forward
 			float g = MarioMath.stepsToRun(16*(x1-x0), xa);
-			xa = MarioMath.runSpeed(xa, g);
+			//xa = MarioMath.runSpeed(xa, g);
 			return g + calc(x1, MarioMath.runSpeed(xa, g));
 		} else if(min_y < y0) { // do we need to jump?
 			// can we jump high enough?
@@ -153,7 +153,7 @@ public final class PathPlanner
 		if(ws == null)
 			return null;
 
-		int x = (int)(_x+8)/16 - ws.MapX;
+		int x = (int)_x/16 - ws.MapX;
 		calc(x, xa);
 		return goal[x][xaIdx(xa)];
 	}
