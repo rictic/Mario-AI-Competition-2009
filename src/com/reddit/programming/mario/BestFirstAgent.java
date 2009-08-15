@@ -21,15 +21,11 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	private static final boolean verbose1 = true;
 	private static final boolean verbose2 = true;
 	private static final boolean drawPath = true;
-	private static final boolean drawWaypoint = true;
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
-	private static final int maxBreadth = 1000;
-	private static final int maxSteps = 200;
+	private static final int maxBreadth = 4000;
+	private static final int maxSteps = 500;
 	private int DrawIndex = 0;
-
-	private static final PathPlanner pathplan = new PathPlanner();
-	private PathPlanner.Waypoint nextWaypoint;
 
 	MarioState ms = null, ms_prev = null;
 	float pred_x, pred_y;
@@ -58,30 +54,21 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		int MarioX = (int)s.x/16 - s.ws.MapX;
 		int goal = 21;
 		// move goal back from the abyss
-		while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
+		//while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
+		//no don't
 		float steps = Math.abs(MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa));
+		if(!s.onGround) steps += 0.001*s.y;
 
-		float stepsx = Math.abs(MarioMath.stepsToRun(nextWaypoint.x - s.x, s.xa));
-		float stepsy = 0;
-		// if we are moving upwards, we need to go to ymin at least
-		// if we are moving downwards, we need to go to waypoint y
-		//   ymin
-		//   |
-		// a_|_b   a_  _b <- ymin
-		if(s.ya < 0)
-			stepsy = MarioMath.stepsToJump(s.y-nextWaypoint.ymin);
-		else if(s.ya > 0)
-			stepsy = MarioMath.stepsToFall(s.y-nextWaypoint.y, s.ya);
-
-		return Math.max(stepsy, stepsx);
+		return steps;
 	}
 
 
 	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
 
+	// so we use 0, 1, 2, 4, 7 jump frames, depending on the value of action>>3
 	private boolean useless_action(int a, MarioState s) {
 		if((a&MarioState.ACT_LEFT)>0 && (a&MarioState.ACT_RIGHT)>0) return true;
-		if((a&MarioState.ACT_JUMP)>0) {
+		if((a/MarioState.ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
 			if(s.jumpTime <= 0 && !s.onGround && !s.sliding) return true;
 		}
@@ -116,46 +103,23 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 		initialState.ws = ws;
 		initialState.g = 0;
-		if(initialState.onGround) {
-			pathplan.reset(ws);
-			nextWaypoint = pathplan.getNextWaypoint(initialState.x, initialState.xa);
-		}
-
-		// we have nowhere to go, so do nothing!
-		if(nextWaypoint == null) {
-			if(verbose1)
-				System.out.printf("no plan; trying default\n");
-			nextWaypoint = PathPlanner.defaultWaypoint(initialState);
-			//return 0;
-		}
 
 		initialState.cost = cost(initialState, initialState);
 
 		int a,n;
 		// add initial set
-		for(a=1;a<16;a++) {
+		for(a=1;a<40;a++) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, ws);
 			ms.root_action = a;
 			ms.cost = 1 + cost(ms, initialState);
 			pq.add(ms);
-			if(verbose1)
+			if(verbose2)
 				System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
 
 		MarioState bestfound = pq.peek();
-
-		if(drawWaypoint) {
-			PathPlanner.Waypoint w = nextWaypoint;
-			if(w != null) {
-				// x marks the spot
-				addLine(w.x-4, w.y-4, w.x+4, w.y+4, 0xff0000);
-				addLine(w.x-4, w.y+4, w.x+4, w.y-4, 0xff0000);
-				addLine(w.x, w.y, w.x, w.ymin, 0xff0000);
-				System.out.printf("waypoint: (%d,%d) cost=%f\n", w.x, w.y, w.cost);
-			}
-		}
 
 		// FIXME: instead of using a hardcoded number of iterations,
 		// periodically grab the system millisecond clock and terminate the
@@ -179,7 +143,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 			line1.color = new Color(color);
 
 			//System.out.printf("a*: trying "); next.print();
-			for(a=1;a<16;a++) {
+			for(a=1;a<40;a++) {
 				if(useless_action(a, next))
 					continue;
 				MarioState ms = next.next(a, next.ws);
@@ -195,8 +159,8 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 				float h = cost(ms, initialState);
 				ms.g = next.g + 1;
-				ms.cost = ms.g + h;// + ((a&MarioState.ACT_JUMP)>0?0.0001f:0);
-				if(h < 0.5f) {
+				ms.cost = ms.g + h;// + ((a/MarioState.ACT_JUMP)>0?0.0001f:0);
+				if(h < 0.1f) {
 					pq.clear();
 					if(verbose1) {
 						System.out.printf("BestFirst: searched %d iterations (%d states); best a=%d cost=%f lookahead=%f\n", 
@@ -290,6 +254,8 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		WorldState ws = new WorldState(sensors.levelScene, mpos);
 
 		int next_action = searchForAction(ms, ws);
+		if(next_action/MarioState.ACT_JUMP > 0)
+			next_action = (next_action&7) + 8;
 		ms_prev = ms;
 		ms = ms.next(next_action, ws);
 		pred_x = ms.x;
@@ -299,8 +265,8 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 		action[Mario.KEY_SPEED] = (next_action&MarioState.ACT_SPEED)!=0;
 		action[Mario.KEY_RIGHT] = (next_action&MarioState.ACT_RIGHT)!=0;
-		action[Mario.KEY_JUMP] = (next_action&MarioState.ACT_JUMP)!=0;
 		action[Mario.KEY_LEFT] = (next_action&MarioState.ACT_LEFT)!=0;
+		action[Mario.KEY_JUMP] = (next_action&MarioState.ACT_JUMP)!=0;
 
 		if(stdinSingleStep) {
 			try {

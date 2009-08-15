@@ -17,6 +17,7 @@ public final class MarioState extends SpriteState
 	public static int ACT_RIGHT = 2;
 	public static int ACT_LEFT = 4;
 	public static int ACT_JUMP = 8;
+	public static int[] jumpstep_table = {0,1,2,4,7};
 
 	// fields used by the search stuff
 	public float g, cost; // heuristic costs
@@ -54,7 +55,15 @@ public final class MarioState extends SpriteState
 		n.pred = this;
 		n.g = g + 1;
 
-		n.move(action);
+		int jump_steps = action/ACT_JUMP;
+		if(jump_steps > 1) {
+			action = (action&7) + 8;
+			for(int i=0;i<jumpstep_table[jump_steps];i++) {
+				n.move(action);
+			}
+		} else {
+			n.move(action);
+		}
 
 		return n;
 	}
