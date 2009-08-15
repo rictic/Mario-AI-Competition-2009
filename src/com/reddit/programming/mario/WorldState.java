@@ -7,6 +7,7 @@ public final class WorldState
 	public byte[][] map;
 	public int[] heightmap;
 	public int MapX, MapY;
+	float[] enemies;
 	WorldState pred = null;
 	HashMap<WSHashKey, WorldState> succ; // successor map
 
@@ -46,18 +47,20 @@ public final class WorldState
 	// public int lastModifiedFrame - i don't think i need this now, but it
 	// seemed like a good idea at some point in order to consolidate similar frames
 
-	WorldState(byte[][] _map, float[] marioPosition) {
+	WorldState(byte[][] _map, float[] marioPosition, float[] enemyPosition) {
 		map = _map;
 		MapX = (int)marioPosition[0]/16 - 11;
 		MapY = (int)marioPosition[1]/16 - 11;
 		succ = new HashMap<WSHashKey, WorldState>();
+		enemies = enemyPosition;
 		initHeightmap();
 	}
 
-	WorldState(byte[][] _map, int _MapX, int _MapY, int[] _heightmap) {
+	WorldState(byte[][] _map, int _MapX, int _MapY, int[] _heightmap, float[] enemyPosition) {
 		map = _map; MapX = _MapX; MapY = _MapY;
 		heightmap = _heightmap;
 		succ = new HashMap<WSHashKey, WorldState>();
+		enemies = enemyPosition;
 	}
 
 	void initHeightmap() {
@@ -85,7 +88,7 @@ public final class WorldState
 			for(int i=0;i<22;i++)
 				newmap[j][i] = map[j][i];
 		newmap[y][x] = 0;
-		WorldState ws = new WorldState(newmap, MapX, MapY, heightmap);
+		WorldState ws = new WorldState(newmap, MapX, MapY, heightmap, enemies);
 		succ.put(h, ws);
 		return ws;
 	}

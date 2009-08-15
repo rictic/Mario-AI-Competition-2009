@@ -23,8 +23,9 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	private static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
-	private static final int maxBreadth = 4000;
-	private static final int maxSteps = 500;
+	private static final int maxBreadth = 256;
+	private static final int maxSteps = 2000;
+	private boolean won = false;
 	private int DrawIndex = 0;
 
 	MarioState ms = null, ms_prev = null;
@@ -41,7 +42,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	@Override
 	public void reset() {
 		// disable enemies for the time being
-		GlobalOptions.pauseWorld = true;
+		//GlobalOptions.pauseWorld = true;
 		ms = null;
 		marioPosition = null;
 	}
@@ -56,8 +57,16 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		// move goal back from the abyss
 		//while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
 		//no don't
-		float steps = Math.abs(MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa));
-		if(!s.onGround) steps += 0.001*s.y;
+		//
+		float steps = MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa);
+		// if we're standing in front of some thing, give the heuristic a
+		// little help also adds a small penalty for walking up to something in
+		// the first place
+		if(MarioX < 21) {
+			float nextColY = (s.ws.heightmap[MarioX+1] + s.ws.MapY)*16;
+			if(nextColY < s.y)
+				steps += MarioMath.stepsToJump(s.y-nextColY);
+		}
 
 		return steps;
 	}
@@ -65,7 +74,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
 
-	// so we use 0, 1, 2, 4, 7 jump frames, depending on the value of action>>3
 	private boolean useless_action(int a, MarioState s) {
 		if((a&MarioState.ACT_LEFT)>0 && (a&MarioState.ACT_RIGHT)>0) return true;
 		if((a/MarioState.ACT_JUMP)>0) {
@@ -103,12 +111,13 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 		initialState.ws = ws;
 		initialState.g = 0;
+		initialState.dead = false;
 
 		initialState.cost = cost(initialState, initialState);
 
 		int a,n;
 		// add initial set
-		for(a=1;a<40;a++) {
+		for(a=1;a<16;a++) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, ws);
@@ -133,7 +142,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 			// next.cost can be infinite, and still at the head of the queue,
 			// if the node got marked dead
-			if(next.cost == Float.POSITIVE_INFINITY) continue;
+			//if(next.cost == Float.POSITIVE_INFINITY) continue;
 
 			int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
 			color = color|(color<<8)|(color<<16);
@@ -143,17 +152,24 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 			line1.color = new Color(color);
 
 			//System.out.printf("a*: trying "); next.print();
-			for(a=1;a<40;a++) {
+			for(a=1;a<16;a++) {
 				if(useless_action(a, next))
 					continue;
 				MarioState ms = next.next(a, next.ws);
 				ms.pred = next;
 
-				// if we die, prune our predecessor node that got us here
+				// if we die, penalize the predecessor path that got us here
 				if(ms.dead) {
+					float penalty = 1000;
+					for(ms = ms.pred;ms != initialState;ms = ms.pred) {
+						pq.remove(ms);
+						ms.cost += penalty;
+						pq.add(ms);
+						penalty = penalty/4;
+					}
 					// removing things from a priority queue is ridiculously
 					// slow, so we'll just mark it dead
-					ms.pred.cost = Float.POSITIVE_INFINITY;
+					//ms.pred.cost = Float.POSITIVE_INFINITY;
 					continue;
 				}
 
@@ -227,6 +243,9 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	@Override
 	public boolean[] getAction(Environment observation)
 	{
+		if(won) // we won!  we can't do anything!
+			return action;
+
 		sensors.updateReadings(observation);
 		marioPosition = sensors.getMarioPosition();
 		float[] mpos = observation.getMarioFloatPos();
@@ -239,9 +258,14 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 				// generally this shouldn't happen, unless we mispredict
 				// something.  currently if we stomp an enemy then we don't
 				// predict that and get confused.
-				//
+
 				// but it will happen when we win, cuz we have no idea we won
-				// and it won't let us move.
+				// and it won't let us move.  well, let's guess whether we won:
+				if(mpos[0] > 4000 && mpos[0] == ms_prev.x && mpos[1] == ms_prev.y) {
+					System.out.println("ack, can't move.  assuming we just won");
+					won = true;
+					return action;
+				}
 				if(verbose1)
 					System.out.println("mario state mismatch; attempting resync");
 				resync(observation);
@@ -251,7 +275,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		super.UpdateMap(sensors);
 
 		// quantize mario's position to get the map origin
-		WorldState ws = new WorldState(sensors.levelScene, mpos);
+		WorldState ws = new WorldState(sensors.levelScene, mpos, observation.getEnemiesFloatPos());
 
 		int next_action = searchForAction(ms, ws);
 		if(next_action/MarioState.ACT_JUMP > 0)
