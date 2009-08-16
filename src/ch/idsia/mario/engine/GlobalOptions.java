@@ -8,9 +8,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.Vector;
-
-import com.reddit.programming.mario.DebugPolyLineList;
 
 public class GlobalOptions {
     public static boolean Labels = false;
@@ -34,9 +31,7 @@ public class GlobalOptions {
     private static int seed = 0;
     private static int difficulty = 0;
     
-    public static DebugPolyLineList MarioLines = new DebugPolyLineList();
-    public static int[][] MarioPos = new int[400][3];
-	public static int MarioPosSize = 0;
+    public static int[][] MarioPos = new int[400][4];
 
     public static boolean StopSimulationIfWin;
 
