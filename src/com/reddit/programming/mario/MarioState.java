@@ -4,7 +4,8 @@ public final class MarioState extends SpriteState
 {
 	// FIXME: try to minimize the sizes of these fields as much as possible; we
 	// allocate a huge number of MarioState objects.
-	public int jumpTime = 0;
+	public int jumpTime = 0,
+		   invulnerableTime = 0;
 	public boolean big = true,  // mario is big
 		   fire = true, // mario can throw fireballs
 		   wasOnGround = false, // previous frame (used for stomping logic)
@@ -55,38 +56,6 @@ public final class MarioState extends SpriteState
 		n.pred = this;
 		n.g = g + 1;
 
-		// enemies and mario take turns acting here, so let enemies go, then mario
-		for(int i=0;i<ws.enemies.length;i+=3) {
-			int t = (int)ws.enemies[i];
-			
-			// FIXME: shells are dangerous iff they're moving and not being carried
-			if(t >= 13) // shells and other non-enemies start at 13
-				continue;
-			float ex = ws.enemies[i+1] - n.x;
-			float ey = ws.enemies[i+2] - n.y;
-			float w = 16;
-
-			// dumb hack: move ex forward by the sideways speed of the enemy
-			// 11: flower, 8: bullet
-			ex -= n.g * (t == 11 ? 0 : t == 8 ? 4 : 1.75f);
-
-			// red & green (winged & not) are big, others are small
-			float height=(t>=4 && t <= 7) ? 24 : 12;
-			float width = 4;
-
-			if (ex > -width*2-4 && ex < width*2+4) {
-				if (ey > -height && ey < (n.big ? 24:12)) {
-					// 9 and above is spiky; otherwise we can stomp
-					// the rest of this junk is the stomp logic
-					if(t >= 9 || (n.ya <= 0 || wasOnGround || onGround || ey<=0))
-						n.dead = true;
-					else
-						stomp(ex,ey,height);
-				}
-			}
-
-		}
-
 		int jump_steps = action/ACT_JUMP;
 		if(jump_steps > 1) {
 			action = (action&7) + 8;
@@ -97,6 +66,9 @@ public final class MarioState extends SpriteState
 			n.move(action);
 		}
 
+		// run collision checks and update the world with it
+		n.ws = ws.interact(n);
+
 		return n;
 	}
 
@@ -105,6 +77,8 @@ public final class MarioState extends SpriteState
 		float sideWaysSpeed = (action&ACT_SPEED) != 0 ? 1.2f : 0.6f;
 		//System.out.println("move: sidewaysspeed = " + sideWaysSpeed);
 		//System.out.println(String.format("move: xy=%5.1f,%5.1f", x, y));
+
+		if(invulnerableTime > 0) invulnerableTime--;
 
 		if (xa > 2) facing = 1;
 		else if (xa < -2) facing = -1;
@@ -320,10 +294,10 @@ public final class MarioState extends SpriteState
 	}
 	
 	// ex,ey position is relative!
-	private void stomp(float ex, float ey, float eh)
+	public void stomp(EnemyState enemy)
 	{
-		float targetY = ey - eh / 2;
-		move(0, targetY);
+		float targetY = enemy.y - enemy.height() / 2;
+		move(0, targetY - y); 
 
 		xJumpSpeed = 0;
 		yJumpSpeed = -1.9f;
@@ -331,7 +305,24 @@ public final class MarioState extends SpriteState
 		ya = jumpTime * yJumpSpeed;
 		onGround = false;
 		sliding = false;
-		//invulnerableTime = 1;
+		invulnerableTime = 1;
+	}
+
+	public void getHurt()
+	{
+		if (invulnerableTime > 0) return;
+
+		// TODO: add cost somehow, even if we don't die!
+		if (big) {
+			if (fire) {
+				fire = false;
+			} else {
+				big = false;
+			}
+			invulnerableTime = 32;
+		} else {
+			dead = true;
+		}
 	}
 }
 

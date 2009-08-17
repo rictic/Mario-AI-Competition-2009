@@ -27,6 +27,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	private int DrawIndex = 0;
 
 	MarioState ms = null, ms_prev = null;
+	WorldState ws = null;
 	float pred_x, pred_y;
 
 	public BestFirstAgent() {
@@ -263,14 +264,18 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 		super.UpdateMap(sensors);
 
-		// quantize mario's position to get the map origin
-		WorldState ws = new WorldState(sensors.levelScene, mpos, observation.getEnemiesFloatPos());
 		if(verbose2) {
 			float[] e = observation.getEnemiesFloatPos();
 			for(int i=0;i<e.length;i+=3) {
-				System.out.printf("e %d %f,%f\n", (int)e[i], e[i+1], e[i+2]);
+				System.out.printf(" e %d %f,%f\n", (int)e[i], e[i+1], e[i+2]);
 			}
 		}
+
+		// quantize mario's position to get the map origin
+		if(ws == null)
+			ws = new WorldState(sensors.levelScene, mpos, observation.getEnemiesFloatPos());
+		else
+			ws.update(sensors.levelScene, mpos, observation.getEnemiesFloatPos());
 
 		int next_action = searchForAction(ms, ws);
 		if(next_action/MarioState.ACT_JUMP > 0)

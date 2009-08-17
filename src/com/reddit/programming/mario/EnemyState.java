@@ -2,15 +2,47 @@ package com.reddit.programming.mario;
 
 public final class EnemyState extends SpriteState
 {
+	// instance variables
 	public int type;
-
 	// we need to simulate enemy death, too, cuz it doesn't tell us whether
 	// we're looking at dead enemies
 	public int deadTime = 0;
 	public boolean flyDeath = false;
 
+	// enemy kinds
+	public static final int KIND_GOOMBA = 2;
+	public static final int KIND_GOOMBA_WINGED = 3;
+	public static final int KIND_RED_KOOPA = 4;
+	public static final int KIND_RED_KOOPA_WINGED = 5;
+	public static final int KIND_GREEN_KOOPA = 6;
+	public static final int KIND_GREEN_KOOPA_WINGED = 7;
+	public static final int KIND_BULLET_BILL = 8;
+	public static final int KIND_SPIKY = 9;
+	public static final int KIND_SPIKY_WINGED = 10;
+	public static final int KIND_ENEMY_FLOWER = 11;
+	public static final int KIND_FLOWER_ENEMY = 12;
+
+	// not actually enemies
+	public static final int KIND_SHELL = 13;
+	public static final int KIND_MUSHROOM = 14;
+
+	// and we won't see any of these
+	public static final int KIND_FIRE_FLOWER = 15;    
+	public static final int KIND_PARTICLE = 21;
+	public static final int KIND_SPARCLE = 22;
+	public static final int KIND_COIN_ANIM = 20;
+	public static final int KIND_FIREBALL = 25;
+
 	public static final float width = 4;
 	public float height() { return type >= 4 && type <= 7 ? 24 : 12; }
+
+	public EnemyState clone() {
+		EnemyState e = new EnemyState(x,y,type);
+		e.xa = xa; e.ya = ya;
+		e.deadTime = deadTime;
+		e.flyDeath = flyDeath;
+		return e;
+	}
 
 	public final boolean avoidCliffs() { return type == KIND_RED_KOOPA; }
 
@@ -25,7 +57,7 @@ public final class EnemyState extends SpriteState
 		return false;
 	}
 
-	public final boolean noFireballDeath() {
+	public final boolean spiky() {
 		switch (type) {
 			case KIND_SPIKY:
 			case KIND_SPIKY_WINGED:
@@ -34,17 +66,11 @@ public final class EnemyState extends SpriteState
 		return false;
 	}
 
-	public static final int KIND_GOOMBA = 2;
-	public static final int KIND_GOOMBA_WINGED = 3;
-	public static final int KIND_RED_KOOPA = 4;
-	public static final int KIND_RED_KOOPA_WINGED = 5;
-	public static final int KIND_GREEN_KOOPA = 6;
-	public static final int KIND_GREEN_KOOPA_WINGED = 7;
-	public static final int KIND_BULLET_BILL = 8;
-	public static final int KIND_SPIKY = 9;
-	public static final int KIND_SPIKY_WINGED = 10;
-	public static final int KIND_ENEMY_FLOWER = 11;
-	public static final int KIND_FLOWER_ENEMY = 12;
+	public final boolean noFireballDeath() { return spiky(); }
+
+	public final boolean dead() {
+		return deadTime != 0;
+	}
 
 	EnemyState(float _x, float _y, int _type) {
 		x=_x; y=_y; type=_type;
@@ -56,12 +82,13 @@ public final class EnemyState extends SpriteState
 				type, x, y, _x,_y);
 	}
 
+	// returns false iff we should remove the enemy from the list
 	public boolean move(WorldState ws) {
 		if (deadTime > 0) {
 			deadTime--;
 
 			if (deadTime == 0) {
-				deadTime = 1; // what the hell for?!
+				deadTime = 1; // keep us marked dead even when the timer goes away
 				return false;
 			}
 
@@ -196,6 +223,42 @@ public final class EnemyState extends SpriteState
 
         return ws.isBlocking(x, y, xa, ya);
     }
+
+	// you may destructively update ws here as it's fresh for the purpose of this stomp
+	public EnemyState stomp(WorldState ws) {
+		EnemyState e = clone();
+		if(e.winged()) {
+			e.type--;
+			e.ya = 0;
+		} else {
+			e.deadTime = 10;
+
+			if (type == KIND_RED_KOOPA || type == KIND_GREEN_KOOPA) {
+				// TODO: ws.addShell(x,y)
+			}
+		}
+		return e;
+	}
+
+    public WorldState collideCheck(WorldState ws, MarioState ms)
+	{
+		if (deadTime != 0) return ws;
+
+		float xMarioD = ms.x - x;
+		float yMarioD = ms.y - y;
+		float height = this.height();
+		if (xMarioD > -width*2-4 && xMarioD < width*2+4) {
+			if (yMarioD > -height && yMarioD < (ms.big ? 24 : 12)) {
+				if (!spiky() && ms.ya > 0 && yMarioD <= 0 && (!ms.onGround || !ms.wasOnGround)) {
+					ws = ws.stomp(this, ms);
+				} else {
+					ms.getHurt();
+				}
+			}
+		}
+		return ws;
+	}
+
 
 	/*
     public boolean shellCollideCheck(Shell shell)
