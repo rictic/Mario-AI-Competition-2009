@@ -4,11 +4,9 @@ public final class MarioState extends SpriteState
 {
 	// FIXME: try to minimize the sizes of these fields as much as possible; we
 	// allocate a huge number of MarioState objects.
-	public int facing = 1, jumpTime = 0;
+	public int jumpTime = 0;
 	public boolean big = true,  // mario is big
 		   fire = true, // mario can throw fireballs
-		   dead = false, // dead
-		   onGround = false, // standing on ground
 		   wasOnGround = false, // previous frame (used for stomping logic)
 		   mayJump = true,  // yep
 		   sliding = false; // sliding down the side of a wall
@@ -57,16 +55,7 @@ public final class MarioState extends SpriteState
 		n.pred = this;
 		n.g = g + 1;
 
-		int jump_steps = action/ACT_JUMP;
-		if(jump_steps > 1) {
-			action = (action&7) + 8;
-			for(int i=0;i<jumpstep_table[jump_steps];i++) {
-				n.move(action);
-			}
-		} else {
-			n.move(action);
-		}
-
+		// enemies and mario take turns acting here, so let enemies go, then mario
 		for(int i=0;i<ws.enemies.length;i+=3) {
 			int t = (int)ws.enemies[i];
 			
@@ -77,6 +66,10 @@ public final class MarioState extends SpriteState
 			float ey = ws.enemies[i+2] - n.y;
 			float w = 16;
 
+			// dumb hack: move ex forward by the sideways speed of the enemy
+			// 11: flower, 8: bullet
+			ex -= n.g * (t == 11 ? 0 : t == 8 ? 4 : 1.75f);
+
 			// red & green (winged & not) are big, others are small
 			float height=(t>=4 && t <= 7) ? 24 : 12;
 			float width = 4;
@@ -85,13 +78,23 @@ public final class MarioState extends SpriteState
 				if (ey > -height && ey < (n.big ? 24:12)) {
 					// 9 and above is spiky; otherwise we can stomp
 					// the rest of this junk is the stomp logic
-					if(t >= 9 || (ya <= 0 || wasOnGround || onGround || ey<=0))
+					if(t >= 9 || (n.ya <= 0 || wasOnGround || onGround || ey<=0))
 						n.dead = true;
 					else
 						stomp(ex,ey,height);
 				}
 			}
 
+		}
+
+		int jump_steps = action/ACT_JUMP;
+		if(jump_steps > 1) {
+			action = (action&7) + 8;
+			for(int i=0;i<jumpstep_table[jump_steps];i++) {
+				n.move(action);
+			}
+		} else {
+			n.move(action);
 		}
 
 		return n;
@@ -296,43 +299,27 @@ public final class MarioState extends SpriteState
 		int My = (int) (this.y / 16);
 		if (x == Mx && y == My) return false;
 
-		//System.out.println(String.format("move: hitcheck %f,%f -> %d,%d M@%d,%d", _x,_y,x,y,Mx,My));
+		boolean blocking = ws.isBlocking(x,y,xa,ya);
 
-		// move x,y world coordinates to the 22x22 reference frame surrounding mario
-		x -= ws.MapX;
-		y -= ws.MapY;
-		//System.out.println(String.format("move: hitcheck maporigin=%d,%d xy=%d,%d", MapX,MapY,x,y));
+		byte block = ws.getBlock(x,y);
 
-		// if we run off the edge of our map fragment here we're... blocking, i guess?
-		// no, because we start intersecting the top edge of the map.  awesome!
-		if(x < 0 || x >= 22 || y < 0 || y >= 22)
-			return false;
-
-		byte block = ws.map[y][x];
-		if(block == 1) return false; // that's mario's previous position; ignore
 		if(block == 34) { // coin
 			// yay for crazy side effects: pick up coin
 			ws = ws.removeTile(x,y);
 			return false;
 		}
-		if(block == -11) return ya > 0; // platform
-		//if(block != 0) {
-		//	System.out.println("collision w/ " + _x + "," + _y + "map coords " + x + "," + y + ": " + block);
-		//}
-		return block != 0;
 
-		// ugh.  if we're simulating enemy state, we need to propagate here.
-		// if (blocking && ya < 0)
-		// {
-		//   world.bump(x, y, large);
-		// }
-	}
+		if (blocking && ya < 0)
+		  ws = ws.bump(x, y, big);
 	
+		return blocking;
+	}
+
 	public int marioMode() {
 		return ((big) ? 1 : 0) + ((fire) ? 1 : 0);
 	}
-
-	// positions are relative!
+	
+	// ex,ey position is relative!
 	private void stomp(float ex, float ey, float eh)
 	{
 		float targetY = ey - eh / 2;

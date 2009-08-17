@@ -7,6 +7,13 @@ public final class WorldState
 	public byte[][] map;
 	public int[] heightmap;
 	public int MapX, MapY;
+	// TODO: maintain a list of enemy states sorted by x
+	//
+	// when we get a new observation, sort the observation by x and filter
+	// through the list, using the nearest enemy of the same type and comparing
+	// predicted states with actual
+	//
+	
 	float[] enemies;
 	WorldState pred = null;
 	HashMap<WSHashKey, WorldState> succ; // successor map
@@ -94,11 +101,42 @@ public final class WorldState
 	}
 
 	WorldState removeTile(int x, int y) {
+		x -= MapX; y -= MapY;
+		if(x < 0 || x >= 22 || y < 0 || y >= 22)
+			return this;
+
 		WSHashKey h = new WSHashKey(x*22+y);
 		WorldState s = succ.get(h);
 		if(s == null)
 			return _removeTile(h,x,y);
 		return s;
+	}
+
+	final byte getBlock(int x, int y) {
+		// move x,y world coordinates to the 22x22 reference frame
+		x -= MapX;
+		y -= MapY;
+		if(x < 0 || x >= 22 || y < 0 || y >= 22)
+			return 0;
+
+		return map[y][x];
+	}
+
+	final boolean isBlocking(int x, int y, float xa, float ya) {
+		byte block = getBlock(x,y);
+
+		if(block == 1) return false; // mario; ignore
+		if(block == 34) return false; // coin
+		if(block == -11) return ya > 0; // platform
+		return block != 0;
+	}
+
+	final WorldState bump(int x, int y, boolean big) {
+		System.out.printf("bumping tile @%d,%d = %d\n", x,y,getBlock(x,y));
+		//if(big) {
+		//	return removeTile(x,y);
+		//}
+		return this;
 	}
 }
 

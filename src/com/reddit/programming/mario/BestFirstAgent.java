@@ -22,7 +22,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = true;
 	private static final int maxBreadth = 256;
-	private static final int maxSteps = 2000;
+	private static final int maxSteps = 5500;
 	private boolean won = false;
 	private int DrawIndex = 0;
 
@@ -136,10 +136,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 			if(pq.size() > maxBreadth)
 				pq = prune_pq();
 			MarioState next = pq.remove();
-
-			// next.cost can be infinite, and still at the head of the queue,
-			// if the node got marked dead
-			//if(next.cost == Float.POSITIVE_INFINITY) continue;
 
 			int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
 			color = color|(color<<8)|(color<<16);
@@ -255,16 +251,26 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 					return action;
 				}
 				if(verbose1)
-					System.out.printf("mario state mismatch (%f,%f) -> (%f,%f); attempting resync",
+					System.out.printf("mario state mismatch (%f,%f) -> (%f,%f); attempting resync\n",
 							ms.x,ms.y, mpos[0], mpos[1]);
 				resync(observation);
 			}
 		}
+		// resync these things all the time
+		ms.mayJump = observation.mayMarioJump();
+		ms.onGround = observation.isMarioOnGround();
+		ms.big = observation.getMarioMode() > 0;
 
 		super.UpdateMap(sensors);
 
 		// quantize mario's position to get the map origin
 		WorldState ws = new WorldState(sensors.levelScene, mpos, observation.getEnemiesFloatPos());
+		if(verbose2) {
+			float[] e = observation.getEnemiesFloatPos();
+			for(int i=0;i<e.length;i+=3) {
+				System.out.printf("e %d %f,%f\n", (int)e[i], e[i+1], e[i+2]);
+			}
+		}
 
 		int next_action = searchForAction(ms, ws);
 		if(next_action/MarioState.ACT_JUMP > 0)
@@ -293,8 +299,9 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	private void resync(Environment observation) {
 		float[] mpos = observation.getMarioFloatPos();
 		ms.x = mpos[0]; ms.y = mpos[1];
-		ms.mayJump = observation.mayMarioJump();
-		ms.onGround = observation.isMarioOnGround();
+		//ms.mayJump = observation.mayMarioJump();
+		//ms.onGround = observation.isMarioOnGround();
+		//ms.big = observation.getMarioMode() > 0;
 		// again, Mario's iteration looks like this:
 		//   xa',ya'[n] = xa,ya[n-1] + lastmove_sx,y
 		//   x,y[n] = x,y[n-1] + xa',ya'[n]
