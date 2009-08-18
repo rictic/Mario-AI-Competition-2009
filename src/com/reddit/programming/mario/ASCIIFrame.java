@@ -5,7 +5,6 @@ package com.reddit.programming.mario;
 
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Panel;
 import java.awt.Point;
 import java.awt.TextArea;
 
@@ -20,6 +19,7 @@ import ch.idsia.mario.engine.MarioComponent;
  */
 public class ASCIIFrame extends JFrame
 {
+	private static final long serialVersionUID = 8327358465710691901L;
 	private TextArea asciiText;
 	Dimension defaultSize = new Dimension(300, 300);
 	Point defaultLocation = new Point(350, 350);

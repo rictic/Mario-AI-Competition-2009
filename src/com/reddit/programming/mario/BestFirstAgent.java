@@ -1,15 +1,13 @@
 package com.reddit.programming.mario;
 
+import java.awt.Color;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
-import java.awt.Color;
-import java.awt.Point;
-import java.io.IOException;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
@@ -33,7 +31,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	private static final int maxBreadth = 256;
 	private static final int maxSteps = 500;
 	private boolean won = false;
-	private int DrawIndex = 0;
 
 	MarioState ms = null, ms_prev = null;
 	WorldState ws = null;
@@ -53,7 +50,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		marioPosition = null;
 	}
 
-	private static final float lookaheadDist = 9*16;
+//	private static final float lookaheadDist = 9*16;
 	private float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
@@ -270,14 +267,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 				DrawIndex = id;
 		}
 	}
-
-	private void addToDrawPath(MarioState mario) {
-		GlobalOptions.MarioPos[DrawIndex] = new int[]{(int)mario.x, (int)mario.y, costToTransparency(mario.cost)};
-		DrawIndex++;
-		if (DrawIndex >= 400)
-			DrawIndex = 0;
-	}
-
 	
 	public static int costToTransparency(float cost) {
 		if (cost <= 0) return 80;
@@ -368,7 +357,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		if(stdinSingleStep) {
 			try {
 				System.in.read();
-			} catch(IOException e) {};
+			} catch(IOException e) {}
 		}
 
 		return action;
