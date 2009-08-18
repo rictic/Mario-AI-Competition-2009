@@ -69,7 +69,7 @@ public final class MarioState extends SpriteState
 		}
 
 		// run collision checks and update the world with it
-		n.ws = ws.interact(n);
+		n.ws = n.ws.interact(n);
 
 		return n;
 	}
@@ -314,7 +314,6 @@ public final class MarioState extends SpriteState
 	{
 		if (invulnerableTime > 0) return;
 
-		// TODO: add cost somehow, even if we don't die!
 		if (big) {
 			if (fire) {
 				fire = false;
@@ -326,6 +325,7 @@ public final class MarioState extends SpriteState
 			dead = true;
 		}
 
+		// hack: add death cost, even if we don't die
 		dead = true;
 	}
 }
