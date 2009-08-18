@@ -48,6 +48,8 @@ public class Play {
 			RegisterableAgent.registerAgent (controller);
 		}
 
+		GlobalOptions.currentController = controller.getName();
+		GlobalOptions.writeFrames = true; //set to true to write frames to disk
 		EvaluationOptions options = new CmdLineOptions(new String[0]);
 		options.setAgent(controller);
 		Task task = new ProgressTask(options);

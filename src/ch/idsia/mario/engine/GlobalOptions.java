@@ -39,6 +39,8 @@ public class GlobalOptions {
 	public static int MarioPosSize = 0;
 
     public static boolean StopSimulationIfWin;
+	public static boolean writeFrames = false;
+	public static String currentController = "";
 
     public static void registerMarioComponent(MarioComponent mc)
     {

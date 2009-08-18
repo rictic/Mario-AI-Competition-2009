@@ -962,20 +962,23 @@ public class LevelScene extends Scene implements SpriteContext
 //            renderBlackout(g, (int) (mario.xDeathPos - xCam), (int) (mario.yDeathPos - yCam), (int) (320 - t));
         }
 
-        // write frames to disk
-        frameNumber++;
-        // Copy image to buffered image
-        Graphics g2 = im.createGraphics();
+        if (GlobalOptions.writeFrames) {
+            String runName = GlobalOptions.currentController + "-s" + GlobalOptions.getSeed() + "d" + GlobalOptions.getDifficulty();
+            new File(runName).mkdirs(); //make the directory
+        	// write frames to disk
+            frameNumber++;
+            // Copy image to buffered image
+            Graphics g2 = im.createGraphics();
 
-        // Paint the image onto the buffered image
-        g2.drawImage(renderer.image, 0, 0, null);
-        g2.dispose();
+            // Paint the image onto the buffered image
+            g2.drawImage(renderer.image, 0, 0, null);
+            g2.dispose();
+            
+            try
+            {
+                ImageIO.write(im, "PNG", new File(runName + "/" + String.format("%04d", frameNumber) + ".png"));
+            } catch (IOException e1){System.err.println("Unable to write frame out");}
 
-        try
-        {
-            ImageIO.write(im, "PNG", new File("s" + GlobalOptions.getSeed() + "d" + GlobalOptions.getDifficulty() + "f" + String.format("%04d", frameNumber) + ".png"));
-        } catch (IOException e1)
-        {
         }
     }
 
