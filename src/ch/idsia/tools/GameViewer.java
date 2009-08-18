@@ -63,8 +63,9 @@ public class GameViewer extends JFrame
                 for (String s: toolsConfigurator.getMarioComponent().getTextObservation(
                         ShowEnemiesObservation.getState(),
                         ShowLevelMapObservation.getState(),
-                        ShowCompleteObservation.getState(),
-                        ZLevelValue) )
+                        ShowMergedObservation.getState(),
+                        ZLevelMapValue,
+                        ZLevelEnemiesValue) )
                 {
                     g.setColor((s.charAt(0) == '~') ? Color.YELLOW : Color.GREEN);
                     g.drawString(s, 0, y_dump += 11);
@@ -108,16 +109,22 @@ public class GameViewer extends JFrame
     public Label LabelConsole = new Label("TextFieldConsole:");
     public Checkbox ShowLevelMapObservation = new Checkbox("Show Level Map Observation", true);
     public Checkbox ShowEnemiesObservation = new Checkbox("Show Enemies Observation");
-    public Checkbox ShowCompleteObservation = new Checkbox("Show Complete Observation");
+    public Checkbox ShowMergedObservation = new Checkbox("Show Merged Observation");
     public Button btnUpdate = new Button("Update");
     public Checkbox ContinuousUpdates = new Checkbox("Continuous Updates", false);
-    CheckboxGroup ZLevel = new CheckboxGroup();
-    Checkbox Z0 = new Checkbox("Z0", ZLevel, true);
-    Checkbox Z1 = new Checkbox("Z1", ZLevel, false);
-    Checkbox Z2 = new Checkbox("Z2", ZLevel, false);
+    CheckboxGroup ZLevelMap = new CheckboxGroup();
+    Checkbox Z0_Map = new Checkbox("Z0_Map", ZLevelMap, true);
+    Checkbox Z1_Map = new Checkbox("Z1_Map", ZLevelMap, false);
+    Checkbox Z2_Map = new Checkbox("Z2_Map", ZLevelMap, false);
+    CheckboxGroup ZLevelEnemies = new CheckboxGroup();
+    Checkbox Z0_Enemies = new Checkbox("Z0_Enemies", ZLevelEnemies, true);
+    Checkbox Z1_Enemies = new Checkbox("Z1_Enemies", ZLevelEnemies, false);
+    Checkbox Z2_Enemies = new Checkbox("Z2_Enemies", ZLevelEnemies, false);
+
 
     private ToolsConfigurator toolsConfigurator = null;
-    private int ZLevelValue = 0;
+    private int ZLevelMapValue = 0;
+    private int ZLevelEnemiesValue = 0;
 
     public GameViewer(Dimension size, Point location)
     {
@@ -135,19 +142,23 @@ public class GameViewer extends JFrame
         ShowEnemiesObservation.addItemListener(gameViewerActions);
         Console.addActionListener(gameViewerActions);
         ShowLevelMapObservation.addItemListener(gameViewerActions);
-        ShowCompleteObservation.addItemListener(gameViewerActions);
+        ShowMergedObservation.addItemListener(gameViewerActions);
         btnUpdate.addActionListener(gameViewerActions);
         ContinuousUpdates.addItemListener(gameViewerActions);
-        Z0.addItemListener(gameViewerActions);
-        Z1.addItemListener(gameViewerActions);
-        Z2.addItemListener(gameViewerActions);
+        Z0_Map.addItemListener(gameViewerActions);
+        Z1_Map.addItemListener(gameViewerActions);
+        Z2_Map.addItemListener(gameViewerActions);
+        Z0_Enemies.addItemListener(gameViewerActions);
+        Z1_Enemies.addItemListener(gameViewerActions);
+        Z2_Enemies.addItemListener(gameViewerActions);
 
-        JPanel GameViewerOptionsPanel = new JPanel(new GridLayout(0,2));
-        GameViewerOptionsPanel.add(Z0); GameViewerOptionsPanel.add(LabelConsole);
-        GameViewerOptionsPanel.add(Z1); GameViewerOptionsPanel.add(Console);
-        GameViewerOptionsPanel.add(Z2); GameViewerOptionsPanel.add(btnUpdate);
+
+        JPanel GameViewerOptionsPanel = new JPanel(new GridLayout(0,3));
+        GameViewerOptionsPanel.add(Z0_Map); GameViewerOptionsPanel.add(Z0_Enemies); GameViewerOptionsPanel.add(LabelConsole);
+        GameViewerOptionsPanel.add(Z1_Map); GameViewerOptionsPanel.add(Z1_Enemies); GameViewerOptionsPanel.add(Console);
+        GameViewerOptionsPanel.add(Z2_Map); GameViewerOptionsPanel.add(Z2_Enemies); GameViewerOptionsPanel.add(btnUpdate);
         GameViewerOptionsPanel.add(ShowLevelMapObservation); GameViewerOptionsPanel.add(ShowEnemiesObservation);
-        GameViewerOptionsPanel.add(ShowCompleteObservation); GameViewerOptionsPanel.add(ContinuousUpdates);
+        GameViewerOptionsPanel.add(ShowMergedObservation); GameViewerOptionsPanel.add(ContinuousUpdates);
         ContinuousUpdates.setState(GlobalOptions.GameVeiwerContinuousUpdatesOn);
 
         GameViewerOptionsPanel.setBorder(new TitledBorder(new EtchedBorder(), "Game Viewer Options"));
@@ -207,43 +218,58 @@ public class GameViewer extends JFrame
                 Console.setText("Level Map " + (ShowLevelMapObservation.getState() ? "Shown" : "Hidden") );
                 gameViewerViewPanel.repaint();
             }
-            else if (ob == ShowCompleteObservation)
+            else if (ob == ShowMergedObservation)
             {
-                Console.setText("Complete Observation " + (ShowCompleteObservation.getState() ? "Shown" : "Hidden") );
+                Console.setText("Merged Observation " + (ShowMergedObservation.getState() ? "Shown" : "Hidden") );
                 gameViewerViewPanel.repaint();
             }
             else if (ob == ContinuousUpdates)
             {
                 Console.setText("Continuous Updates " + (ContinuousUpdates.getState() ? "On" : "Off") );
-//                if (ContinuousUpdates.getState())
-//                    gameViewerViewPanel.start();
-//                else
-//                    gameViewerViewPanel.stop();
-
             }
-            else if (ob == Z0)
+            else if (ob == Z0_Map)
             {
-                if (Z0.getState())
-                    ZLevelValue = 0;
-                Console.setText("Zoom Level: Z" + ZLevelValue);
+                if (Z0_Map.getState())
+                    ZLevelMapValue = 0;
+                Console.setText("Zoom Level Map: Z" + ZLevelMapValue);
                 gameViewerViewPanel.repaint();
             }
-            else if (ob == Z1)
+            else if (ob == Z1_Map)
             {
-                if (Z1.getState())
-                    ZLevelValue = 1;
-                Console.setText("Zoom Level: Z" + ZLevelValue);
+                if (Z1_Map.getState())
+                    ZLevelMapValue = 1;
+                Console.setText("Zoom Level Map: Z" + ZLevelMapValue);
                 gameViewerViewPanel.repaint();
             }
-            else if (ob == Z2)
+            else if (ob == Z2_Map)
             {
-                if (Z2.getState())
-                    ZLevelValue = 2;
-                Console.setText("Zoom Level: Z" + ZLevelValue);
+                if (Z2_Map.getState())
+                    ZLevelMapValue = 2;
+                Console.setText("Zoom Level Map: Z" + ZLevelMapValue);
+                gameViewerViewPanel.repaint();
+            }
+            else if (ob == Z0_Enemies)
+            {
+                if (Z0_Enemies.getState())
+                    ZLevelEnemiesValue = 0;
+                Console.setText("Zoom Level Enemies: Z" + ZLevelEnemiesValue);
+                gameViewerViewPanel.repaint();
+            }
+            else if (ob == Z1_Enemies)
+            {
+                if (Z1_Enemies.getState())
+                    ZLevelEnemiesValue = 1;
+                Console.setText("Zoom Level Enemies: Z" + ZLevelEnemiesValue);
+                gameViewerViewPanel.repaint();
+            }
+            else if (ob == Z2_Enemies)
+            {
+                if (Z2_Enemies.getState())
+                    ZLevelEnemiesValue = 2;
+                Console.setText("Zoom Level Enemies: Z" + ZLevelEnemiesValue);
                 gameViewerViewPanel.repaint();
             }
         }
-
     }
 
     public void setToolsConfigurator(ToolsConfigurator toolsConfigurator){this.toolsConfigurator = toolsConfigurator;}
@@ -258,5 +284,4 @@ public class GameViewer extends JFrame
     {
         return ContinuousUpdates.getState();
     }
-
 }

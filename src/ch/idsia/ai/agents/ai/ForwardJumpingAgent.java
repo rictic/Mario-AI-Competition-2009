@@ -13,8 +13,10 @@ import ch.idsia.mario.environments.Environment;
  * Package: ch.idsia.ai.agents.ai;
  */
 
-public class ForwardJumpingAgent extends RegisterableAgent implements Agent
-{
+public class ForwardJumpingAgent extends RegisterableAgent implements Agent {
+
+    static final boolean superslow = false;
+
     public ForwardJumpingAgent()
     {
         super("ForwardJumpingAgent");
@@ -30,6 +32,8 @@ public class ForwardJumpingAgent extends RegisterableAgent implements Agent
 
     public boolean[] getAction(Environment observation)
     {
+        try {Thread.sleep (39);}
+        catch (Exception e){}
         action[Mario.KEY_SPEED] = action[Mario.KEY_JUMP] =  observation.mayMarioJump() || !observation.isMarioOnGround();
         return action;
     }

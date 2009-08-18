@@ -42,7 +42,7 @@ public class ScaredAgent extends RegisterableAgent implements Agent {
     }
 
     public boolean[] getAction(Environment observation) {
-        byte[][] levelScene = observation.getLevelSceneObservation();
+        byte[][] levelScene = observation.getLevelSceneObservation(/*1*/);
         if (/*levelScene[11][13] != 0 ||*/ levelScene[11][12] != 0 ||
            /* levelScene[12][13] == 0 ||*/ levelScene[12][12] == 0 )
         {
