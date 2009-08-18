@@ -45,7 +45,6 @@ public class SpriteState
 	public static final int KIND_BULLET_BILL = 8;
 	public static final int KIND_SPIKY = 9;
 	public static final int KIND_SPIKY_WINGED = 10;
-	public static final int KIND_ENEMY_FLOWER = 11;
 	public static final int KIND_FLOWER_ENEMY = 12;
 
 	// not actually enemies

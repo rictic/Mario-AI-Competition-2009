@@ -18,7 +18,7 @@ public final class BestFirstAgent extends RegisterableAgent implements Agent
 	private PriorityQueue<MarioState> pq, pq2;
 	private static final boolean verbose1 = false;
 	private static final boolean verbose2 = false;
-	private static final boolean drawPath = true;
+	private static final boolean drawPath = false;
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
 	private static final int maxBreadth = 256;
