@@ -168,13 +168,13 @@ public final class WorldState
 			}
 			if(closest==null || closestdist > 16) { // allow a slop of 4 pixels (4^2 = 16)
 				// assume new enemy
-				System.out.printf("new enemy @%f,%f type %d\n",
-						eobs.x, eobs.y, eobs.type);
+				//System.out.printf("new enemy @%f,%f type %d\n",
+				//		eobs.x, eobs.y, eobs.type);
 				closest = SpriteState.newEnemy(eobs.x, eobs.y, eobs.type);
 			} else {
 				if(closestdist != 0) {
-					System.out.printf("enemy t=%d sync problem: %f,%f -> %f,%f\n",
-							eobs.type, closest.x, closest.y, eobs.x, eobs.y);
+					//System.out.printf("enemy t=%d sync problem: %f,%f -> %f,%f\n",
+					//		eobs.type, closest.x, closest.y, eobs.x, eobs.y);
 					closest.x = eobs.x;
 					closest.y = eobs.y;
 				}
@@ -184,8 +184,8 @@ public final class WorldState
 				newenemies.add(closest);
 		}
 		for(SpriteState s : enemies) {
-			System.out.printf("enemy t=%d @%f,%f disappeared?\n",
-					s.type, s.x, s.y);
+			//System.out.printf("enemy t=%d @%f,%f disappeared?\n",
+			//		s.type, s.x, s.y);
 		}
 		enemies = newenemies;
 	}

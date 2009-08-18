@@ -16,13 +16,13 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
 	private PriorityQueue<MarioState> pq, pq2;
-	private static final boolean verbose1 = true;
-	private static final boolean verbose2 = true;
+	private static final boolean verbose1 = false;
+	private static final boolean verbose2 = false;
 	private static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
-	private static final boolean stdinSingleStep = true;
+	private static final boolean stdinSingleStep = false;
 	private static final int maxBreadth = 256;
-	private static final int maxSteps = 5500;
+	private static final int maxSteps = 2500;
 	private boolean won = false;
 	private int DrawIndex = 0;
 
