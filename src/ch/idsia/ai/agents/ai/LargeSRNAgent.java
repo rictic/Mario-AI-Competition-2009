@@ -47,8 +47,8 @@ public class LargeSRNAgent extends RegisterableAgent implements Agent, Evolvable
 
     public boolean[] getAction(Environment observation) {
         double[] inputs;// = new double[numberOfInputs];
-        byte[][] scene = observation.getLevelSceneObservation();
-        byte[][] enemies = observation.getEnemiesObservation();
+        byte[][] scene = observation.getLevelSceneObservation(/*1*/);
+        byte[][] enemies = observation.getEnemiesObservation(/*0*/);
         inputs = new double[numberOfInputs];
         int which = 0;
         for (int i = -3; i < 4; i++) {

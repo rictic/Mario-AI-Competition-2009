@@ -100,36 +100,16 @@ public class CmdLineOptions extends EvaluationOptions
                 System.out.println(el.getKey() + ": " + el.getValue());
         }
         GlobalOptions.GameVeiwerContinuousUpdatesOn = isGameViewerContinuousUpdates();        
-
     }
-
-//    public static void main(String[] args) {
-//        CmdLineOptions cl = new CmdLineOptions(new String[]{"-ll", "42", "sadf", "AA", "-gv", "on", "sd", "lsd", "-echo", "-ll"});
-//        System.out.println(cl.getLevelLength());
-//        System.out.println(cl.isGameViewer());
-//    }
 
     public Boolean isToolsConfigurator() {
         return b(getParameterValue("-tc"));      }
-//
-//        String value = (optionsHashMap.get("-tc") != null) ? optionsHashMap.get("-tc")  : optionsHashMap.get("-toolsConfigurator");
-//        return (value == null) ? defaultOptionsHashMap.get("-toolsConfigurator").equals("on") : value.equals("on");
-//    }
 
     public Boolean isGameViewer() {
         return b(getParameterValue("-gv"));      }
-//        String value = (optionsHashMap.get("-gv") != null) ? optionsHashMap.get("-gv")  : optionsHashMap.get("-gameViewer");
-//        return (value != null) && value.equals("on") || defaultOptionsHashMap.get("-gameViewer").equals("on");
-//    }
 
     public Boolean isGameViewerContinuousUpdates() {
         return b(getParameterValue("-gvc"));      }
-
-    public Boolean isTimer() {
-        return b(getParameterValue("-t"));      }
-
-//    public Integer getAttemptsNumber() {
-//        return i(getParameterValue("-an"));      }
 
     public Boolean isEcho() {
         return b(getParameterValue("-echo"));      }

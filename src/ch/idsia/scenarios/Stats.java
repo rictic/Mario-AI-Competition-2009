@@ -18,6 +18,7 @@ public class Stats {
         Agent controller = RegisterableAgent.load ("com.reddit.programming.mario.BestFirstAgent");
         final int startingSeed = Integer.parseInt ("0");
         doStats (new TimingAgent(controller), startingSeed);
+        //System.exit(0);
     }
 
     public static void doStats (Agent agent, int startingSeed) {
@@ -46,7 +47,7 @@ public class Stats {
         //testConfig (controller, options, startingSeed, 15, false);
         //testConfig (controller, options, startingSeed, 20, true);
         //testConfig (controller, options, startingSeed, 20, false);
-        System.out.println("Competition score: " + competitionScore);
+        System.out.println("Stats sum: " + competitionScore);
     }
 
     public static double testConfig (TimingAgent controller, EvaluationOptions options, int seed, int level, boolean paused) {
