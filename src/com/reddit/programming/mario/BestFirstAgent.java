@@ -22,7 +22,7 @@ public final class BestFirstAgent extends RegisterableAgent implements Agent
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
 	private static final int maxBreadth = 256;
-	private static final int maxSteps = 2500;
+	private static final int maxSteps = 5500;
 	private boolean won = false;
 	private int DrawIndex = 0;
 
