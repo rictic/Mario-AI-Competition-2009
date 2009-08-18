@@ -62,6 +62,20 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		// little help also adds a small penalty for walking up to something in
 		// the first place
 		if(MarioX < 21) {
+			int thisY = s.ws.heightmap[MarioX];
+			if(thisY == 22) { // we're either above or inside a chasm
+				float edgeY = (22+s.ws.MapY)*16;
+				// find near edge
+				for(int i=MarioX-1;i>=0;i--) {
+					if(s.ws.heightmap[i] != 22) {
+						edgeY = (s.ws.heightmap[i]+s.ws.MapY)*16;
+						break;
+					}
+				}
+				if(s.y > edgeY+1) { // we're inside a chasm; don't waste time searching for a way out
+					return Float.POSITIVE_INFINITY;
+				}
+			}
 			float nextColY = (s.ws.heightmap[MarioX+1] + s.ws.MapY)*16;
 			if(nextColY < s.y)
 				steps += MarioMath.stepsToJump(s.y-nextColY);
@@ -284,6 +298,12 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		ms = ms.next(next_action, ws);
 		pred_x = ms.x;
 		pred_y = ms.y;
+		if(verbose2) {
+			System.out.printf("MarioState (%f,%f,%f,%f) -> action %d -> (%f,%f,%f,%f)\n",
+				ms_prev.x, ms_prev.y, ms_prev.xa, ms_prev.ya,
+				next_action,
+				ms.x, ms.y, ms.xa, ms.ya);
+		}
 		//System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
 		//		next_action, ms.x, ms.y, ms.xa, ms.ya));
 
