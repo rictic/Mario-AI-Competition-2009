@@ -289,7 +289,7 @@ public final class BestFirstAgent extends RegisterableAgent implements Agent
 								}
 							}
 						}
-						bestfound = ms;	
+						bestfound = ms;
 						synchronized(notificationObject) {
 							notificationObject.notifyAll();
 						}

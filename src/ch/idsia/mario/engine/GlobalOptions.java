@@ -1,15 +1,12 @@
 package ch.idsia.mario.engine;
 
-import ch.idsia.tools.GameViewer;
-import ch.idsia.tools.LOGGER;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.Vector;
 
-import com.reddit.programming.mario.DebugPolyLineList;
+import ch.idsia.tools.GameViewer;
+import ch.idsia.tools.LOGGER;
 
 public class GlobalOptions {
     public static boolean Labels = false;
