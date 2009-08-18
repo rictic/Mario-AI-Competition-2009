@@ -68,7 +68,7 @@ public final class BulletBillState extends SpriteState
 
 		float xMarioD = ms.x - x;
 		float yMarioD = ms.y - y;
-		float w = 16;
+//		float w = 16;
 		if (xMarioD > -16 && xMarioD < 16) {
 			if (yMarioD > -height() && yMarioD < ms.height()) {
 				if (ms.ya > 0 && yMarioD <= 0 && (!ms.onGround || !ms.wasOnGround)) {

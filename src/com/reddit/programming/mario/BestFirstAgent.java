@@ -30,9 +30,8 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
 	private static final int maxBreadth = 256;
-	private static final int maxSteps = 5500;
+	private static final int maxSteps = 500;
 	private boolean won = false;
-	private int DrawIndex = 0;
 
 	MarioState ms = null, ms_prev = null;
 	WorldState ws = null;
@@ -52,7 +51,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		marioPosition = null;
 	}
 
-	private static final float lookaheadDist = 9*16;
+//	private static final float lookaheadDist = 9*16;
 	private float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
@@ -68,6 +67,20 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		// little help also adds a small penalty for walking up to something in
 		// the first place
 		if(MarioX < 21) {
+			int thisY = s.ws.heightmap[MarioX];
+			if(thisY == 22) { // we're either above or inside a chasm
+				float edgeY = (22+s.ws.MapY)*16;
+				// find near edge
+				for(int i=MarioX-1;i>=0;i--) {
+					if(s.ws.heightmap[i] != 22) {
+						edgeY = (s.ws.heightmap[i]+s.ws.MapY)*16;
+						break;
+					}
+				}
+				if(s.y > edgeY+1) { // we're inside a chasm; don't waste time searching for a way out
+					return Float.POSITIVE_INFINITY;
+				}
+			}
 			float nextColY = (s.ws.heightmap[MarioX+1] + s.ws.MapY)*16;
 			if(nextColY < s.y)
 				steps += MarioMath.stepsToJump(s.y-nextColY);
@@ -286,14 +299,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 				DrawIndex = id;
 		}
 	}
-
-	private void addToDrawPath(MarioState mario) {
-		GlobalOptions.MarioPos[DrawIndex] = new int[]{(int)mario.x, (int)mario.y, costToTransparency(mario.cost)};
-		DrawIndex++;
-		if (DrawIndex >= 400)
-			DrawIndex = 0;
-	}
-
 	
 	public static int costToTransparency(float cost) {
 		if (cost <= 0) return 80;
@@ -367,6 +372,12 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		ms = ms.next(next_action, ws);
 		pred_x = ms.x;
 		pred_y = ms.y;
+		if(verbose2) {
+			System.out.printf("MarioState (%f,%f,%f,%f) -> action %d -> (%f,%f,%f,%f)\n",
+				ms_prev.x, ms_prev.y, ms_prev.xa, ms_prev.ya,
+				next_action,
+				ms.x, ms.y, ms.xa, ms.ya);
+		}
 		//System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
 		//		next_action, ms.x, ms.y, ms.xa, ms.ya));
 
@@ -378,7 +389,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		if(stdinSingleStep) {
 			try {
 				System.in.read();
-			} catch(IOException e) {};
+			} catch(IOException e) {}
 		}
 
 		return action;
