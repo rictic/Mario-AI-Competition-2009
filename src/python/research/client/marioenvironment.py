@@ -8,7 +8,6 @@ class MarioEnvironment(TCPEnvironment):
     """ An Environment class, wrapping access to the MarioServer, 
     and allowing interactions to a level. """
 
-
     # Level settings
     levelDifficulty = 0
     levelType = 0
@@ -47,4 +46,3 @@ class MarioEnvironment(TCPEnvironment):
             argstring += "-fastTCP on"
 
         self.client.sendData("reset -maxFPS on " + argstring + self.otherServerArgs + "\r\n")
-

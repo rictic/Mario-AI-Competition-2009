@@ -9,7 +9,7 @@ import ch.idsia.tools.EvaluationInfo;
  * Time: 2:13:59 PM
  * Package: .Simulation
  */
-public interface ISimulation
+public interface Simulation
 {
     public void setSimulationOptions(SimulationOptions simulationOptions);
 
