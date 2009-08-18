@@ -28,7 +28,7 @@ public final class WorldState
 		WSHashKey() { modType = MOD_NONE; }
 		WSHashKey(int _modTile) {
 			modType = MOD_REMOVETILE;
-			modTile = modTile;
+			modTile = _modTile;
 		}
 
 		@Override
