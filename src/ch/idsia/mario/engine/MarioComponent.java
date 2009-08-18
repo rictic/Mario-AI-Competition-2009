@@ -108,12 +108,14 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     }
 
+    // write frames to disk
+    public VolatileImage image = null;
     public EvaluationInfo run1(int currentAttempt, int totalNumberOfAttempts) {
         running = true;
         adjustFPS();
         EvaluationInfo evaluationInfo = new EvaluationInfo();
 
-        VolatileImage image = null;
+        image = null;
         Graphics g = null;
         Graphics og = null;
 
