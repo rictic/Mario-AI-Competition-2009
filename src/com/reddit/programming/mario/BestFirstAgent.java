@@ -163,7 +163,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 			synchronized(notificationObject) {
 				for (StateSearcher searcher : searchers)
 					searchPool.execute(searcher);
-				notificationObject.wait(budget);
+				notificationObject.wait(Math.max(5,budget));
 			}
 		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
 		long timeElapsed = System.currentTimeMillis() - startTime;
