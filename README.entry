@@ -18,11 +18,12 @@ cd classes; java ch.idsia.scenarios.Play com.reddit.programming.mario.BestFirstA
 The competition score results I get on seed 0 are:
 Scoring controller ch.idsia.ai.agents.ai.TimingAgent@a18aa2 with starting
 seed 0
-Difficulty 0 score 4325.5874 (avg time 5.8973)
-Difficulty 3 score 4302.5446 (avg time 9.7637)
-Difficulty 5 score 4328.7757 (avg time 10.8971)
-Difficulty 10 score 4325.9854 (avg time 16.3775)
-Competition score: 17282.893017578124
+Difficulty 0 score 4325.5874 (avg time 6.0379)
+Difficulty 3 score 4303.2063 (avg time 9.6070)
+Difficulty 5 score 4330.7710 (avg time 9.4616)
+Difficulty 10 score 4326.2982 (avg time 16.7745)
+Competition score: 17285.862939453124
+
 
 Needless to say, it passes all of the seed 0-9 levels.  The arbitrariness
 of scoring after completing a level (i.e. the score is level length +
@@ -90,7 +91,8 @@ For actually watching its behavior, I recommend turning maxSteps down to
 maxBreadth is the number of nodes kept when periodically pruning the
 priority queue of search nodes.
 
-We have another branch of code which launches a search thread on each CPU
-and abandons the search after 40ms, but given the rules, we deemed it
-unnecessary; it also has significant overhead.
+Peter wrote a branch of code which launches a search thread on each CPU and
+abandons the search after 40ms, but given the rules, we deemed it
+unnecessary; it also has significant overhead.  For the next phase we will
+probably use this approach.
 
