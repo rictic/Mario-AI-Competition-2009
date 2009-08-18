@@ -17,6 +17,16 @@ import ch.idsia.tools.EvaluationOptions;
 public class Play {
 
     public static void main(String[] args) {
+		int seed = (int) (Math.random () * Integer.MAX_VALUE);
+		int difficulty = 10;
+		
+		if (args.length > 1) {
+			seed = Integer.parseInt(args[1]);
+		}
+		if (args.length > 2) {
+			difficulty = Integer.parseInt(args[2]);
+		}
+
         Agent controller = new HumanKeyboardAgent();
         if (args.length > 0) {
             controller = RegisterableAgent.load (args[0]);
@@ -29,8 +39,9 @@ public class Play {
         options.setVisualization(true);
         options.setMaxAttempts(1);
         options.setMatlabFileName("");
-        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
-        options.setLevelDifficulty(3);
+        options.setLevelRandSeed(seed);
+        options.setLevelDifficulty(difficulty);
+		//options.setLevelLength(1024);
         task.setOptions(options);
 
         System.out.println ("Score: " + task.evaluate (controller)[0]);
