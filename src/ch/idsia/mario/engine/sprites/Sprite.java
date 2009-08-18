@@ -48,8 +48,7 @@ public class Sprite
     public int layer = 1;
 
     public SpriteTemplate spriteTemplate;
-    public float transparency = 1.0f;
-    
+
     public void move()
     {
         x+=xa;
@@ -66,9 +65,8 @@ public class Sprite
         int xPixel = (int)x-xPicO;
         int yPixel = (int)y-yPicO;
 
-        Graphics2D g2d = (Graphics2D)og;
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,transparency));
-        g2d.drawImage(sheet[xPic][yPic], xPixel+(xFlipPic?wPic:0), yPixel+(yFlipPic?hPic:0), xFlipPic?-wPic:wPic, yFlipPic?-hPic:hPic, null);
+
+        og.drawImage(sheet[xPic][yPic], xPixel+(xFlipPic?wPic:0), yPixel+(yFlipPic?hPic:0), xFlipPic?-wPic:wPic, yFlipPic?-hPic:hPic, null);
         if (GlobalOptions.Labels)
             og.drawString("" + xPixel + "," + yPixel, xPixel, yPixel);
     }

@@ -1,7 +1,5 @@
 package ch.idsia.mario.environments;
 
-import ch.idsia.mario.engine.LevelScene;
-
 /**
  * Created by IntelliJ IDEA.
  * User: Sergey Karakovskiy
@@ -35,7 +33,7 @@ public interface Environment
     public int getMarioMode();
 
     public float[] getEnemiesFloatPos();
-    
+
     public String getBitmapEnemiesObservation();
 
     public String getBitmapLevelObservation();

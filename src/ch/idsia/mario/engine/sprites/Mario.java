@@ -343,11 +343,8 @@ public class Mario extends Sprite
         }
 
         onGround = false;
-    //System.out.println("mariosprite: (xa,ya)1 = " + xa + "," + ya);
         move(xa, 0);
-    //System.out.println("mariosprite: (x,y,xa,ya)2 = " + x + "," + y + "," + xa + "," + ya);
         move(0, ya);
-    //System.out.println("mariosprite: (x,y,xa,ya)3 = " + x + "," + y + "," + xa + "," + ya);
 
         if (y > world.level.height * 16 + 16)
         {
@@ -370,7 +367,6 @@ public class Mario extends Sprite
             x = world.level.width * 16;
             xa = 0;
         }
-    //System.out.println("mariostate: (x,y,xa,ya)4 = " + x + "," + y + "," + xa + "," + ya);
 
         ya *= 0.85f;
         if (onGround)
@@ -397,7 +393,6 @@ public class Mario extends Sprite
                 carried = null;
             }
         }
-    //System.out.println("mariostate: (xa,ya)5 = " + xa + "," + ya);
     }
 
     private void calcPic()

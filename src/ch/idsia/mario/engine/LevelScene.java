@@ -9,19 +9,11 @@ import ch.idsia.mario.environments.Environment;
 import ch.idsia.utils.MathX;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.io.File;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.reddit.programming.mario.StaticMario;
-
-import javax.imageio.ImageIO;
 
 
 public class LevelScene extends Scene implements SpriteContext
@@ -610,11 +602,11 @@ public class LevelScene extends Scene implements SpriteContext
          recorder.addLong(LevelGenerator.lastSeed);
          }*/
 
+
         paused = false;
         Sprite.spriteContext = this;
         sprites.clear();
         layer = new LevelRenderer(level, graphicsConfiguration, 320, 240);
-        im = new BufferedImage(layer.width, layer.height, BufferedImage.TYPE_INT_ARGB);
         for (int i = 0; i < 2; i++)
         {
             int scrollSpeed = 4 >> i;
@@ -824,12 +816,6 @@ public class LevelScene extends Scene implements SpriteContext
     private DecimalFormat df = new DecimalFormat("00");
     private DecimalFormat df2 = new DecimalFormat("000");
 
-	public ArrayList<StaticMario> temporarySprites = new ArrayList(400);
-    
-    // write frames to disk
-    private long frameNumber = 0;
-    BufferedImage im = null;
-
     public void render(Graphics g, float alpha)
     {
         int xCam = (int) (mario.xOld + (mario.x - mario.xOld) * alpha) - 160;
@@ -863,33 +849,10 @@ public class LevelScene extends Scene implements SpriteContext
         }
 
         g.translate(xCam, yCam);
-        
+
         layer.setCam(xCam, yCam);
         layer.render(g, tick, paused?0:alpha);
         layer.renderExit0(g, tick, paused?0:alpha, mario.winTime==0);
-
-        // Draw the lines to the screen
-        g.translate(-xCam, -yCam);
-        GlobalOptions.MarioLines.DrawAll(g, this, xCam, yCam);
-        g.translate(xCam, yCam);
-		
-//        for (StaticMario sm : temporarySprites)
-//        	removeSprite(sm);
-//        temporarySprites.clear();
-        
-//        for (int i = 0; i < GlobalOptions.MarioPosSize; i += 2)
-//		{
-//			// uncomment this for mario ghosts
-//			StaticMario marioVisSprite = new StaticMario(this, GlobalOptions.MarioPos[i][0], GlobalOptions.MarioPos[i][1], GlobalOptions.MarioPos[i][2], Mario.large?1:0);
-//			addSprite(marioVisSprite);
-//			temporarySprites.add(marioVisSprite);
-//			g.setColor(new Color(GlobalOptions.MarioPos[i][2]));
-////			g.drawLine(GlobalOptions.MarioPos[i][0] - xCam,
-////						GlobalOptions.MarioPos[i][1] - yCam,
-////						GlobalOptions.MarioPos[i + 1][0] - xCam,
-////						GlobalOptions.MarioPos[i + 1][1] - yCam);
-//			
-//		}
 
         g.translate(-xCam, -yCam);
 
@@ -983,25 +946,6 @@ public class LevelScene extends Scene implements SpriteContext
 //            }
 
 //            renderBlackout(g, (int) (mario.xDeathPos - xCam), (int) (mario.yDeathPos - yCam), (int) (320 - t));
-        }
-
-        if (GlobalOptions.writeFrames) {
-            String runName = GlobalOptions.currentController + "-s" + GlobalOptions.getSeed() + "d" + GlobalOptions.getDifficulty();
-            new File(runName).mkdirs(); //make the directory
-        	// write frames to disk
-            frameNumber++;
-            // Copy image to buffered image
-            Graphics g2 = im.createGraphics();
-
-            // Paint the image onto the buffered image
-            g2.drawImage(renderer.image, 0, 0, null);
-            g2.dispose();
-            
-            try
-            {
-                ImageIO.write(im, "PNG", new File(runName + "/" + String.format("%04d", frameNumber) + ".png"));
-            } catch (IOException e1){System.err.println("Unable to write frame out");}
-
         }
     }
 

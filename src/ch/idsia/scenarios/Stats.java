@@ -15,10 +15,11 @@ public class Stats {
 
     public static void main(String[] args) {
 
-        Agent controller = RegisterableAgent.load ("com.reddit.programming.mario.BestFirstAgent");
-        final int startingSeed = Integer.parseInt ("0");
-        doStats (new TimingAgent(controller), startingSeed);
+        Agent controller = RegisterableAgent.load (args[0]);
+        final int startingSeed = Integer.parseInt (args[1]);
+        doStats (controller, startingSeed);
         //System.exit(0);
+
     }
 
     public static void doStats (Agent agent, int startingSeed) {
@@ -53,7 +54,7 @@ public class Stats {
     public static double testConfig (TimingAgent controller, EvaluationOptions options, int seed, int level, boolean paused) {
         options.setLevelDifficulty(level);
         options.setPauseWorld(paused);
-        StatisticalSummary ss = test (controller, options, seed, level);
+        StatisticalSummary ss = test (controller, options, seed);
         System.out.printf("Level %d %s %.4f (%.4f) (min %.4f max %.4f) (avg time %.4f)\n",
                 level, paused ? "paused" : "unpaused",
                 ss.mean(), ss.sd(), ss.min(), ss.max(), controller.averageTimeTaken());
@@ -61,7 +62,7 @@ public class Stats {
     }
 
 
-    public static StatisticalSummary test (TimingAgent controller, EvaluationOptions options, int seed, int level) {
+    public static StatisticalSummary test (Agent controller, EvaluationOptions options, int seed) {
         StatisticalSummary ss = new StatisticalSummary ();
         for (int i = 0; i < numberOfTrials; i++) {
             options.setLevelRandSeed(seed + i);
@@ -69,7 +70,6 @@ public class Stats {
             options.setAgent(controller);
             Evaluator evaluator = new Evaluator (options);
             EvaluationInfo result = evaluator.evaluate().get(0);
-			System.out.printf("  map seed %d diff %2d -> %f (%f ms/frame)\n", seed+i, level, result.computeDistancePassed(), controller.averageTimeTaken());
             ss.add (result.computeDistancePassed());
         }
         return ss;

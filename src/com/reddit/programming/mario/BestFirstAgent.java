@@ -8,11 +8,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import ch.idsia.ai.agents.Agent;
-import ch.idsia.mario.engine.GlobalOptions;
+import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 
-public final class BestFirstAgent extends RedditAgent implements Agent
+public final class BestFirstAgent extends RegisterableAgent implements Agent
 {
 	private boolean[] action;
 	protected int[] marioPosition = null;
@@ -26,11 +26,8 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	
 	private static final boolean verbose1 = false;
 	private static final boolean verbose2 = false;
-	private static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
 	private static final boolean stdinSingleStep = false;
-	private static final int maxBreadth = 256;
-	private static final int maxSteps = 500;
 	private boolean won = false;
 
 	MarioState ms = null, ms_prev = null;
@@ -46,7 +43,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	@Override
 	public void reset() {
 		// disable enemies for the time being
-//		GlobalOptions.pauseWorld = true;
 		ms = null;
 		marioPosition = null;
 	}
@@ -101,7 +97,9 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		return false;
 	}
 
-	private void addLine(float x0, float y0, float x1, float y1, int color) {
+	private final void addLine(float x0, float y0, float x1, float y1, int color) {
+		/*
+		 * cannot draw lines on the offical codebase
 		if(drawPath && GlobalOptions.MarioPosSize < 400) {
 			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int)x0;
 			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int)y0;
@@ -112,6 +110,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = color;
 			GlobalOptions.MarioPosSize++;
 		}
+		*/
 	}
 
 //	private PriorityQueue<MarioState> prune_pq() {
@@ -150,7 +149,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		//System.out.println("creating searchers");
 		for (i = 0; i < pqs.length; i++) pqs[i] = new PriorityQueue<MarioState>(20, msComparator);
 		i = 0;
-		GlobalOptions.MarioPosSize = 0;
 		while (!pq.isEmpty())
 			pqs[i++%pqs.length].add(pq.remove());
 		
@@ -284,8 +282,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 //							System.out.printf("BestFirst: searched %d iterations; best a=%s cost=%f lookahead=%f\n", 
 //									n, actionToString(ms.root_action), ms.cost, ms.g);
 							MarioState s;
-							if(GlobalOptions.MarioPosSize > 400-46)
-								GlobalOptions.MarioPosSize = 400-46;
 							for(s = ms;s != initialState;s = s.pred) {
 								if(verbose2) {
 									System.out.printf("state %d: ", (int)s.g);
@@ -303,18 +299,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 				}
 			}
 		}
-
-		private void addToDrawPath(MarioState mario) {
-			GlobalOptions.MarioPos[DrawIndex] = new int[]{(int)mario.x, (int)mario.y, costToTransparency(mario.cost)};
-			DrawIndex += simultaneousSearchers;
-			if (DrawIndex >= 400)
-				DrawIndex = id;
-		}
-	}
-	
-	public static int costToTransparency(float cost) {
-		if (cost <= 0) return 80;
-		return Math.max(0, 40-(int)cost);
 	}
 
 	public static MarioState marioMin(MarioState a, MarioState b) {
@@ -347,7 +331,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 				// but it will happen when we win, cuz we have no idea we won
 				// and it won't let us move.  well, let's guess whether we won:
 				if(mpos[0] > 4000 && mpos[0] == ms_prev.x && mpos[1] == ms_prev.y) {
-					System.out.println("ack, can't move.  assuming we just won");
+					//System.out.println("ack, can't move.  assuming we just won");
 					won = true;
 					return action;
 				}
@@ -361,8 +345,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		ms.mayJump = observation.mayMarioJump();
 		ms.onGround = observation.isMarioOnGround();
 		ms.big = observation.getMarioMode() > 0;
-
-		super.UpdateMap(sensors);
 
 		if(verbose2) {
 			float[] e = observation.getEnemiesFloatPos();
