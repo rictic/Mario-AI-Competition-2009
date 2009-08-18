@@ -16,7 +16,7 @@ import java.awt.*;
  */
 public class EvaluationOptions extends SimulationOptions
 {
-    public EvaluationOptions() {        super();    }
+    public EvaluationOptions() { super(); }
 
     public void setUpOptions(String[] args) {
         for (int i = 0; i < args.length - 1; i += 2)
@@ -35,6 +35,7 @@ public class EvaluationOptions extends SimulationOptions
         GlobalOptions.pauseWorld = isPauseWorld();
         GlobalOptions.PowerRestoration = isPowerRestoration();
         GlobalOptions.StopSimulationIfWin = isStopSimulationIfWin();
+        GlobalOptions.TimerOn = isTimer();
     }    
 
     public Boolean isExitProgramWhenFinished()    {
@@ -98,4 +99,8 @@ public class EvaluationOptions extends SimulationOptions
     {
         return b(getParameterValue("-fastTCP"));
     }
+
+    public boolean isTimer() {
+        return b(getParameterValue("-t"));      }
+
 }

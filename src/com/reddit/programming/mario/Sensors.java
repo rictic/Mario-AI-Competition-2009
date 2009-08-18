@@ -101,7 +101,7 @@ public class Sensors {
 
 	public static final int KIND_UNDEF = -42;
 
-	public final static int BLANK = -1;
+	public final static int BLANK = 0;
 	public final static int GOOMBA = 2;
 	public final static int WINGED_GOOMBA = 3;
 	public final static int RED_KOOPA_TROOPA = 4;

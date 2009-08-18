@@ -74,11 +74,7 @@ public class ToolsConfigurator extends JFrame
         toolsConfigurator.setGameViewer(gameViewer);
         gameViewer.setAlwaysOnTop(false);
         gameViewer.setToolsConfigurator(toolsConfigurator);
-
-        if (cmdLineOptions.isGameViewer())
-        {
-            gameViewer.setVisible(true);
-        }
+        gameViewer.setVisible(cmdLineOptions.isGameViewer());
 
         if (!cmdLineOptions.isToolsConfigurator())
         {
