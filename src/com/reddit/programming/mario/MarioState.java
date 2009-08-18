@@ -56,6 +56,7 @@ public final class MarioState extends SpriteState
 		n.action = action;
 		n.ws = ws.step();
 		n.pred = this;
+		n.invulnerableTime = invulnerableTime;
 		n.g = g + 1;
 
 		int jump_steps = action/ACT_JUMP;
