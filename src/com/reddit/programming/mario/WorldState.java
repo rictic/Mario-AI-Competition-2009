@@ -11,7 +11,7 @@ public final class WorldState
 	public int MapX, MapY;
 
 	// List of currently known enemies; maintained sorted by x coordinate
-	public Vector<EnemyState> enemies;
+	public Vector<SpriteState> enemies;
 
 	WorldState pred = null;
 	HashMap<WSHashKey, WorldState> succ; // successor map
@@ -23,7 +23,7 @@ public final class WorldState
 		static final int MOD_STOMP = 2;
 		public int modType = MOD_NONE;
 		public int modTile = 0;
-		public EnemyState modEnemy = null;
+		public SpriteState modEnemy = null;
 
 		WSHashKey() { modType = MOD_NONE; }
 		WSHashKey(int _modTile) {
@@ -56,7 +56,7 @@ public final class WorldState
 		MapX = (int)marioPosition[0]/16 - 11;
 		MapY = (int)marioPosition[1]/16 - 11;
 		succ = new HashMap<WSHashKey, WorldState>();
-		enemies = new Vector<EnemyState>();
+		enemies = new Vector<SpriteState>();
 		syncEnemies(enemyPosition);
 		buildHeightMap();
 	}
@@ -151,11 +151,11 @@ public final class WorldState
 //		Arrays.sort(obs);
 
 		// merge enemy observations into our internal enemy array
-		Vector<EnemyState> newenemies = new Vector<EnemyState>(obs.length+2);
+		Vector<SpriteState> newenemies = new Vector<SpriteState>(obs.length+2);
 		for(EnemyObservation eobs : obs) {
-			EnemyState closest = null;
+			SpriteState closest = null;
 			float closestdist=Float.POSITIVE_INFINITY;
-			for(EnemyState s : enemies) {
+			for(SpriteState s : enemies) {
 				if(s.type != eobs.type)
 					continue;
 				float ex = s.x - eobs.x;
@@ -170,17 +170,20 @@ public final class WorldState
 				// assume new enemy
 				System.out.printf("new enemy @%f,%f type %d\n",
 						eobs.x, eobs.y, eobs.type);
-				closest = new EnemyState(eobs.x, eobs.y, eobs.type);
-			} else if(closestdist != 0) {
-				System.out.printf("enemy t=%d sync problem: %f,%f -> %f,%f\n",
-						eobs.type, closest.x, closest.y, eobs.x, eobs.y);
-				closest.x = eobs.x;
-				closest.y = eobs.y;
+				closest = SpriteState.newEnemy(eobs.x, eobs.y, eobs.type);
+			} else {
+				if(closestdist != 0) {
+					System.out.printf("enemy t=%d sync problem: %f,%f -> %f,%f\n",
+							eobs.type, closest.x, closest.y, eobs.x, eobs.y);
+					closest.x = eobs.x;
+					closest.y = eobs.y;
+				}
+				enemies.remove(closest);
 			}
-			enemies.remove(closest);
-			newenemies.add(closest);
+			if(closest != null)
+				newenemies.add(closest);
 		}
-		for(EnemyState s : enemies) {
+		for(SpriteState s : enemies) {
 			System.out.printf("enemy t=%d @%f,%f disappeared?\n",
 					s.type, s.x, s.y);
 		}
@@ -189,9 +192,14 @@ public final class WorldState
 
 	public void stepEnemies() {
 		for(int i=0;i<enemies.size();i++) {
-			EnemyState e = enemies.get(i).clone();
-			e.move(this);
-			enemies.set(i, e);
+			SpriteState e = enemies.get(i).clone();
+			boolean keep = e.move(this);
+			if(keep) {
+				enemies.set(i, e);
+			} else {
+				enemies.remove(i);
+				i--;
+			}
 		}
 	}
 
@@ -200,9 +208,9 @@ public final class WorldState
 	// WorldState
 	public WorldState interact(MarioState ms) {
 		WorldState ws = this;
-		for(EnemyState e : enemies) {
+		for(SpriteState e : enemies) {
 			// TODO: if it's a shell or fireball, then skip it
-			if(e.type >= EnemyState.KIND_SHELL)
+			if(e.type >= SpriteState.KIND_SHELL)
 				continue;
 			ws = e.collideCheck(ws, ms);
 		}
@@ -247,7 +255,7 @@ public final class WorldState
 		return block != 0;
 	}
 
-	final WorldState stomp(EnemyState e, MarioState ms) {
+	final WorldState stomp(SpriteState e, MarioState ms) {
 		// destructively modify mario
 		ms.stomp(e);
 		// clone us, and clone e, and splice e in the array

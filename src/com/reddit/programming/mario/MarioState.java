@@ -32,6 +32,8 @@ public final class MarioState extends SpriteState
 		x = _x; y = _y; xa = _xa; ya = _ya;
 	}
 
+	public float height() { return big ? 24 : 12; }
+
 	public void print() {
 		System.out.printf("g=%d a:%d x:(%f,%f) v:(%f,%f) %s%s%s cost=%f\n", (int)g, action,x,y,xa,ya,
 				onGround ? "G":"g",
@@ -294,7 +296,7 @@ public final class MarioState extends SpriteState
 	}
 	
 	// ex,ey position is relative!
-	public void stomp(EnemyState enemy)
+	public void stomp(SpriteState enemy)
 	{
 		float targetY = enemy.y - enemy.height() / 2;
 		move(0, targetY - y); 
