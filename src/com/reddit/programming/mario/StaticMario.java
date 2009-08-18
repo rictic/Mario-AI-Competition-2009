@@ -37,4 +37,25 @@ public class StaticMario extends Sprite
 
         wPic = hPic = size;
     }
+
+    public void setMode(int marioMode)
+    {
+        int size = 32;
+        if (marioMode == 0)
+        {
+        	sheet = Art.smallMario;
+        	size = 16;
+            xPicO = 8;
+            yPicO = 15;
+        }
+        else
+        {
+        	sheet = marioMode > 1 ? Art.fireMario : Art.mario;
+        	size = 32;
+        	xPicO = 16;
+            yPicO = 31;
+        }
+
+        wPic = hPic = size;
+    }
 }

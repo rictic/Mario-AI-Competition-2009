@@ -9,7 +9,7 @@ public class LevelRenderer
 {
     private int xCam;
     private int yCam;
-    private Image image;
+    public Image image;
     private Graphics2D g;
     private static final Color transparent = new Color(0, 0, 0, 0);
     private Level level;
