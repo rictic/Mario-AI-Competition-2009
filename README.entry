@@ -84,6 +84,9 @@ setting; the average frame is far less than 40ms, but some difficult frames
 take much longer.  Since the realtime constraints were specified as average
 frames, I have taken the liberty to jack this value up.
 
+For actually watching its behavior, I recommend turning maxSteps down to
+500 or so.
+
 maxBreadth is the number of nodes kept when periodically pruning the
 priority queue of search nodes.
 
