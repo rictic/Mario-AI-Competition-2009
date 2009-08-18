@@ -3,7 +3,6 @@ package com.reddit.programming.mario;
 import java.awt.Graphics;
 import java.util.Vector;
 
-import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.LevelScene;
 
 public class DebugPolyLineList

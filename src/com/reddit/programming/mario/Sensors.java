@@ -1,9 +1,5 @@
 package com.reddit.programming.mario;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ch.idsia.mario.engine.LevelScene;
 import ch.idsia.mario.engine.sprites.Sprite;
 import ch.idsia.mario.environments.Environment;
 
