@@ -397,6 +397,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 
 	private void resync(Environment observation) {
 		System.out.println("Out of sync, resyncing");
+		decisions.removeAllElements();
 		float[] mpos = observation.getMarioFloatPos();
 		ms.x = mpos[0]; ms.y = mpos[1];
 		//ms.mayJump = observation.mayMarioJump();
