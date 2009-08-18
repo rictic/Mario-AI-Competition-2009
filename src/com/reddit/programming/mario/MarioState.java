@@ -52,7 +52,7 @@ public final class MarioState extends SpriteState
 		n.xJumpSpeed = xJumpSpeed; n.yJumpSpeed = yJumpSpeed;
 		n.root_action = root_action;
 		n.action = action;
-		n.ws = ws;
+		n.ws = ws.step();
 		n.pred = this;
 		n.g = g + 1;
 
@@ -323,6 +323,8 @@ public final class MarioState extends SpriteState
 		} else {
 			dead = true;
 		}
+
+		dead = true;
 	}
 }
 

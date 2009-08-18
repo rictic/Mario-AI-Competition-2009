@@ -74,6 +74,11 @@ public final class EnemyState extends SpriteState
 
 	EnemyState(float _x, float _y, int _type) {
 		x=_x; y=_y; type=_type;
+		// most likely they've been falling for a step before we ever see them
+		if (winged())
+			ya = 0.6f;
+		else
+			ya = 2;
         facing = -1;
     }
 
