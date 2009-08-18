@@ -21,8 +21,8 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	private ExecutorService searchPool = Executors.newFixedThreadPool(simultaneousSearchers);
 	private StateSearcher[] searchers = new StateSearcher[simultaneousSearchers];
 	private Stack<Integer> decisions = new Stack<Integer>();
-	private static final int budgetPerFrame = 40; //time, in milliseconds, that we can think per frame
-	private int budget = 0;  //time, in milliseconds, that we can spend planning
+	private static final int budgetPerFrame = 35; //time, in milliseconds, that we can think per frame
+	private long budget = 0;  //time, in milliseconds, that we can spend planning
 	
 	private static final boolean verbose1 = false;
 	private static final boolean verbose2 = false;
@@ -154,14 +154,20 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		while (!pq.isEmpty())
 			pqs[i++%pqs.length].add(pq.remove());
 		
-		for (i = 0; i < searchers.length; i++){
-			searchers[i] = new StateSearcher(initialState, ws, pqs[i], i);
-			searchPool.execute(searchers[i]);
-		}
+		Object notificationObject = new Object();
+		
+		for (i = 0; i < searchers.length; i++)
+			searchers[i] = new StateSearcher(initialState, ws, pqs[i], i,notificationObject);
+		long startTime = System.currentTimeMillis();
 		try {
-			Thread.sleep(budget);
+			synchronized(notificationObject) {
+				for (StateSearcher searcher : searchers)
+					searchPool.execute(searcher);
+				notificationObject.wait(budget);
+			}
 		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
-		budget = 0; //used up our whole budget (assuming we weren't interrupted)
+		long timeElapsed = System.currentTimeMillis() - startTime;
+		budget -= timeElapsed; 
 		
 		for (StateSearcher searcher: searchers)
 			searcher.stop();
@@ -211,11 +217,13 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		public boolean isStopped = false;
 		private MarioState bestfound;
 		private int DrawIndex = 0;
+		private Object notificationObject;
 		
-		public StateSearcher(MarioState initialState, WorldState ws, PriorityQueue<MarioState> pq, int id) {
+		public StateSearcher(MarioState initialState, WorldState ws, PriorityQueue<MarioState> pq, int id, Object notificationObject) {
 			this.pq = pq; this.ws = ws; 
 			this.initialState = initialState; this.bestfound = null;
 			this.id = id; DrawIndex = id;
+			this.notificationObject = notificationObject;
 		}
 
 		public void stop() {
@@ -284,6 +292,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 								}
 							}
 							bestfound = ms;
+							notificationObject.notifyAll();
 							return;
 						}
 					}
