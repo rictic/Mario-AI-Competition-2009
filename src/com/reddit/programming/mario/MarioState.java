@@ -296,7 +296,6 @@ public final class MarioState extends SpriteState
 		return ((big) ? 1 : 0) + ((fire) ? 1 : 0);
 	}
 	
-	// ex,ey position is relative!
 	public void stomp(SpriteState enemy)
 	{
 		float targetY = enemy.y - enemy.height() / 2;

@@ -19,12 +19,16 @@ public class Play {
     public static void main(String[] args) {
 		int seed = (int) (Math.random () * Integer.MAX_VALUE);
 		int difficulty = 10;
+		int length = 320;
 		
 		if (args.length > 1) {
 			seed = Integer.parseInt(args[1]);
 		}
 		if (args.length > 2) {
 			difficulty = Integer.parseInt(args[2]);
+		}
+		if (args.length > 3) {
+			length = Integer.parseInt(args[3]);
 		}
 
         Agent controller = new HumanKeyboardAgent();
@@ -41,7 +45,7 @@ public class Play {
         options.setMatlabFileName("");
         options.setLevelRandSeed(seed);
         options.setLevelDifficulty(difficulty);
-		//options.setLevelLength(1024);
+		options.setLevelLength(length);
         task.setOptions(options);
 
         System.out.println ("Score: " + task.evaluate (controller)[0]);
