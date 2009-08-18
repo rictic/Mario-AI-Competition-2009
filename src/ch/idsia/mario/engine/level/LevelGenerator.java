@@ -11,6 +11,7 @@ public class LevelGenerator
     public static final int TYPE_UNDERGROUND = 1;
     public static final int TYPE_CASTLE = 2;
 
+    private static Random levelSeedRandom = new Random();
     public static long lastSeed;
     public static final int LevelLengthMinThreshold = 50;
 
@@ -112,20 +113,6 @@ public class LevelGenerator
         }
 
         fixWalls();
-
-//        FileOutputStream fos = null;
-//        try {
-////            fos = new FileOutputStream("level.txt");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
-//        try {
-//            //level.ASCIIToOutputStream(fos );
-//            level.ASCIIToOutputStream(System.out);
-////            fos.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
         return level;
     }
 

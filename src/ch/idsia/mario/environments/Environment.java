@@ -1,7 +1,5 @@
 package ch.idsia.mario.environments;
 
-import ch.idsia.mario.engine.LevelScene;
-
 /**
  * Created by IntelliJ IDEA.
  * User: Sergey Karakovskiy
@@ -12,7 +10,6 @@ import ch.idsia.mario.engine.LevelScene;
 
 public interface Environment
 {
-//    public static final int NumberOfActionSlots = 16;
     public static final int numberOfButtons = 5;
     public static final int numberOfObservationElements = 486 + 1;
     public static final int HalfObsWidth = 11;
@@ -20,18 +17,23 @@ public interface Environment
 
     // always the same dimensionality: 22x22
     // always centered on the agent
-    public byte[][] getCompleteObservation();
 
-    public byte[][] getEnemiesObservation();
 
-    public byte[][] getLevelSceneObservation();
+    // upcoming feature for Milano conf, unkomment this, if you would like to try it!
+    // Chaning ZLevel during the game on-the-fly;
+    // if your agent recieves too ambiguous observation, it might request for more precise for the next step
+    public byte[][] getCompleteObservation(/*int ZLevelMap, int ZLevelEnemies*/);
+
+    public byte[][] getEnemiesObservation(/*int ZLevelEnemies*/);
+
+    public byte[][] getLevelSceneObservation(/*int ZLevelMap*/);
 
     public float[] getMarioFloatPos();
 
     public int getMarioMode();
 
     public float[] getEnemiesFloatPos();
-    
+
     public String getBitmapEnemiesObservation();
 
     public String getBitmapLevelObservation();

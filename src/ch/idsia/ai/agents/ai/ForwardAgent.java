@@ -72,7 +72,7 @@ public class ForwardAgent extends RegisterableAgent implements Agent
             char cur_char = estate.charAt(i);
             if (cur_char != 0)
             {
-                MathX.show(cur_char);
+                //MathX.show(cur_char);
             }
             for (int j = 0; j < 16; ++j)
             {
@@ -93,8 +93,8 @@ public class ForwardAgent extends RegisterableAgent implements Agent
                     }
                     catch (Exception e)
                     {
-                        System.out.println("row = " + row);
-                        System.out.println("col = " + col);
+                        //System.out.println("row = " + row);
+                        //System.out.println("col = " + col);
                     }
                 }
                 else
@@ -107,7 +107,7 @@ public class ForwardAgent extends RegisterableAgent implements Agent
             }
         }
 
-        System.out.println("totalBitsDecoded = " + totalBitsDecoded);
+        //System.out.println("totalBitsDecoded = " + totalBitsDecoded);
         return dstate;
     }
 
@@ -118,7 +118,7 @@ public class ForwardAgent extends RegisterableAgent implements Agent
         // this Agent requires observation.
 
         assert(observation != null);
-        byte[][] levelScene = observation.getCompleteObservation();
+        byte[][] levelScene = observation.getCompleteObservation(/*1, 0*/);
         float[] marioPos = observation.getMarioFloatPos();
         float[] enemiesPos = observation.getEnemiesFloatPos();
         String encodedState = observation.getBitmapLevelObservation();

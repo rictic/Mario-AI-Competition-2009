@@ -46,8 +46,8 @@ public class SmallSRNAgent extends RegisterableAgent implements Agent, Evolvable
     }
 
     public boolean[] getAction(Environment observation) {
-        byte[][] scene = observation.getLevelSceneObservation();
-        byte[][] enemies = observation.getEnemiesObservation();
+        byte[][] scene = observation.getLevelSceneObservation(/*1*/);
+        byte[][] enemies = observation.getEnemiesObservation(/*0*/);
         double[] inputs = new double[]{probe(-1, -1, scene), probe(0, -1, scene), probe(1, -1, scene),
                                 probe(-1, 0, scene), probe(0, 0, scene), probe(1, 0, scene),
                                 probe(-1, 1, scene), probe(0, 1, scene), probe(1, 1, scene),

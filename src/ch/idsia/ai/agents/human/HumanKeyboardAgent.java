@@ -2,10 +2,8 @@ package ch.idsia.ai.agents.human;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
-import ch.idsia.utils.ArrayUtils;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -40,7 +38,6 @@ public class HumanKeyboardAgent extends KeyAdapter implements Agent
     public boolean[] getAction(Environment observation)
     {
         float[] enemiesPos = observation.getEnemiesFloatPos();
-        System.out.println(ArrayUtils.toString(enemiesPos));
         return Action;
     }
 
@@ -81,10 +78,6 @@ public class HumanKeyboardAgent extends KeyAdapter implements Agent
             case KeyEvent.VK_A:
                 Action[Mario.KEY_SPEED] = isPressed;
                 break;
-            case KeyEvent.VK_SPACE:
-              if (isPressed)
-                  GlobalOptions.pauseWorld = !GlobalOptions.pauseWorld;
-              break;
         }
     }
 

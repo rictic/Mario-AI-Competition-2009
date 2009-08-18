@@ -1,6 +1,5 @@
 package ch.idsia.scenarios;
 
-import wox.serial.Easy;
 import ch.idsia.ai.Evolvable;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
@@ -9,6 +8,11 @@ import ch.idsia.ai.ea.ES;
 import ch.idsia.ai.tasks.MultiSeedProgressTask;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.EvaluationOptions;
+import wox.serial.Easy;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

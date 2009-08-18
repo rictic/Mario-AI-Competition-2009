@@ -176,7 +176,7 @@ public class ParameterContainer
             defaultOptionsHashMap.put("-an","1"); //defaultOptionsHashMap.put("-attemptsNumber","5");
             defaultOptionsHashMap.put("-echo","off"); //defaultOptionsHashMap.put("-echo","off");
             defaultOptionsHashMap.put("-ewf","on"); //defaultOptionsHashMap.put("-exitWhenFinished","off");
-            defaultOptionsHashMap.put("-fastTCP","on"); //
+            defaultOptionsHashMap.put("-fastTCP","off"); //
             defaultOptionsHashMap.put("-gv","off"); //defaultOptionsHashMap.put("-gameViewer","off");
             defaultOptionsHashMap.put("-gvc","off"); //defaultOptionsHashMap.put("-gameViewerContinuousUpdates","off");
             defaultOptionsHashMap.put("-ld","0"); //defaultOptionsHashMap.put("-levelDifficulty","0");

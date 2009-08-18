@@ -46,8 +46,8 @@ public class MediumMLPAgent extends RegisterableAgent implements Agent, Evolvabl
     }
 
     public boolean[] getAction(Environment observation) {
-        byte[][] scene = observation.getLevelSceneObservation();
-        byte[][] enemies = observation.getEnemiesObservation();
+        byte[][] scene = observation.getLevelSceneObservation(/*1*/);
+        byte[][] enemies = observation.getEnemiesObservation(/*0*/);
         double[] inputs = new double[numberOfInputs];
         int which = 0;
         for (int i = -2; i < 3; i++) {

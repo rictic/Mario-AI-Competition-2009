@@ -71,15 +71,15 @@ public class ServerAgent extends RegisterableAgent implements Agent
     {
 //        byte[][] levelScene = observation.getLevelSceneObservation();
         // MERGED
-        byte[][] completeObs = observation.getCompleteObservation();
+        byte[][] mergedObs = observation.getCompleteObservation(/*1, 0*/);
 
         String tmpData = "O " +
                 observation.mayMarioJump() + " " + observation.isMarioOnGround();
-        for (int x = 0; x < completeObs.length; ++x)
+        for (int x = 0; x < mergedObs.length; ++x)
         {
-            for (int y = 0; y < completeObs.length; ++y)
+            for (int y = 0; y < mergedObs.length; ++y)
             {
-                tmpData += " " + (completeObs[x][y]);
+                tmpData += " " + (mergedObs[x][y]);
             }
         }
         tmpData += " " + observation.getMarioFloatPos()[0]
