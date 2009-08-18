@@ -551,15 +551,12 @@ public class Mario extends Sprite
     {
         int x = (int) (_x / 16);
         int y = (int) (_y / 16);
-    int Mx = (int) (this.x / 16); // mario's quantized pos
-    int My = (int) (this.y / 16);
         if (x == (int) (this.x / 16) && y == (int) (this.y / 16)) return false;
 
         boolean blocking = world.level.isBlocking(x, y, xa, ya);
 
         byte block = world.level.getBlock(x, y);
 
-          //System.out.println(String.format("mariosprite: hitcheck %f,%f -> %d,%d M@%d,%d blk=%d", _x,_y, x,y, Mx,My, block));
         if (((Level.TILE_BEHAVIORS[block & 0xff]) & Level.BIT_PICKUPABLE) > 0)
         {
             Mario.getCoin();
@@ -574,9 +571,6 @@ public class Mario extends Sprite
             world.bump(x, y, large);
         }
 
-        if(blocking) {
-          //System.out.println("mariosprite: collision w/ " + _x + "," + _y + "map coords " + x + "," + y + ": " + block);
-        }
         return blocking;
     }
 

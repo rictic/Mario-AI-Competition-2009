@@ -4,11 +4,11 @@ public final class MarioState extends SpriteState
 {
 	// FIXME: try to minimize the sizes of these fields as much as possible; we
 	// allocate a huge number of MarioState objects.
-	public int facing = 1, jumpTime = 0;
+	public int jumpTime = 0,
+		   invulnerableTime = 0;
 	public boolean big = true,  // mario is big
 		   fire = true, // mario can throw fireballs
-		   dead = false, // dead
-		   onGround = false, // standing on ground
+		   wasOnGround = false, // previous frame (used for stomping logic)
 		   mayJump = true,  // yep
 		   sliding = false; // sliding down the side of a wall
 	public float xJumpSpeed = 0, yJumpSpeed = 0; // can we get rid of this somehow?
@@ -32,6 +32,8 @@ public final class MarioState extends SpriteState
 		x = _x; y = _y; xa = _xa; ya = _ya;
 	}
 
+	public float height() { return big ? 24 : 12; }
+
 	public void print() {
 		System.out.printf("g=%d a:%d x:(%f,%f) v:(%f,%f) %s%s%s cost=%f\n", (int)g, action,x,y,xa,ya,
 				onGround ? "G":"g",
@@ -46,12 +48,13 @@ public final class MarioState extends SpriteState
 		n.big = big; n.fire = fire;
 		n.dead = dead;
 		n.onGround = onGround;
+		n.wasOnGround = onGround;
 		n.mayJump = mayJump;
 		n.sliding = sliding;
 		n.xJumpSpeed = xJumpSpeed; n.yJumpSpeed = yJumpSpeed;
 		n.root_action = root_action;
 		n.action = action;
-		n.ws = ws;
+		n.ws = ws.step();
 		n.pred = this;
 		n.g = g + 1;
 
@@ -65,22 +68,8 @@ public final class MarioState extends SpriteState
 			n.move(action);
 		}
 
-		for(int i=0;i<ws.enemies.length;i+=3) {
-			int t = (int)ws.enemies[i];
-			if(t >= 13) // shells and other non-enemies start at 13
-				continue;
-			float ex = ws.enemies[i+1] - n.x;
-			float ey = ws.enemies[i+2] - n.y;
-			float w = 16;
-			float width = 4, height=24;
-			if (ex > -width*2-4 && ex < width*2+4) {
-				//if (ey > -(t>1?12:24) && ey < (n.big ? 24:12)) {
-				if (ey > -24 && ey < (n.big ? 24:12)) {
-					n.dead = true;
-				}
-			}
-
-		}
+		// run collision checks and update the world with it
+		n.ws = ws.interact(n);
 
 		return n;
 	}
@@ -90,6 +79,8 @@ public final class MarioState extends SpriteState
 		float sideWaysSpeed = (action&ACT_SPEED) != 0 ? 1.2f : 0.6f;
 		//System.out.println("move: sidewaysspeed = " + sideWaysSpeed);
 		//System.out.println(String.format("move: xy=%5.1f,%5.1f", x, y));
+
+		if(invulnerableTime > 0) invulnerableTime--;
 
 		if (xa > 2) facing = 1;
 		else if (xa < -2) facing = -1;
@@ -284,40 +275,58 @@ public final class MarioState extends SpriteState
 		int My = (int) (this.y / 16);
 		if (x == Mx && y == My) return false;
 
-		//System.out.println(String.format("move: hitcheck %f,%f -> %d,%d M@%d,%d", _x,_y,x,y,Mx,My));
+		boolean blocking = ws.isBlocking(x,y,xa,ya);
 
-		// move x,y world coordinates to the 22x22 reference frame surrounding mario
-		x -= ws.MapX;
-		y -= ws.MapY;
-		//System.out.println(String.format("move: hitcheck maporigin=%d,%d xy=%d,%d", MapX,MapY,x,y));
+		byte block = ws.getBlock(x,y);
 
-		// if we run off the edge of our map fragment here we're... blocking, i guess?
-		// no, because we start intersecting the top edge of the map.  awesome!
-		if(x < 0 || x >= 22 || y < 0 || y >= 22)
-			return false;
-
-		byte block = ws.map[y][x];
-		if(block == 1) return false; // that's mario's previous position; ignore
 		if(block == 34) { // coin
 			// yay for crazy side effects: pick up coin
 			ws = ws.removeTile(x,y);
 			return false;
 		}
-		if(block == -11) return ya > 0; // platform
-		//if(block != 0) {
-		//	System.out.println("collision w/ " + _x + "," + _y + "map coords " + x + "," + y + ": " + block);
-		//}
-		return block != 0;
 
-		// ugh.  if we're simulating enemy state, we need to propagate here.
-		// if (blocking && ya < 0)
-		// {
-		//   world.bump(x, y, large);
-		// }
-	}
+		if (blocking && ya < 0)
+		  ws = ws.bump(x, y, big);
 	
+		return blocking;
+	}
+
 	public int marioMode() {
 		return ((big) ? 1 : 0) + ((fire) ? 1 : 0);
+	}
+	
+	// ex,ey position is relative!
+	public void stomp(SpriteState enemy)
+	{
+		float targetY = enemy.y - enemy.height() / 2;
+		move(0, targetY - y); 
+
+		xJumpSpeed = 0;
+		yJumpSpeed = -1.9f;
+		jumpTime = 8;
+		ya = jumpTime * yJumpSpeed;
+		onGround = false;
+		sliding = false;
+		invulnerableTime = 1;
+	}
+
+	public void getHurt()
+	{
+		if (invulnerableTime > 0) return;
+
+		// TODO: add cost somehow, even if we don't die!
+		if (big) {
+			if (fire) {
+				fire = false;
+			} else {
+				big = false;
+			}
+			invulnerableTime = 32;
+		} else {
+			dead = true;
+		}
+
+		dead = true;
 	}
 }
 
