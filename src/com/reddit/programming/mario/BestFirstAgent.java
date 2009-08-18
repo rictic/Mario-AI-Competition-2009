@@ -167,6 +167,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 			}
 		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
 		long timeElapsed = System.currentTimeMillis() - startTime;
+//		System.out.printf("Used up %d of %d millis\n", timeElapsed, budget);
 		budget -= timeElapsed; 
 		
 		for (StateSearcher searcher: searchers)
@@ -278,7 +279,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 					ms.g = next.g + 1;
 					ms.cost = ms.g + h;// + ((a&ACT_JUMP)>0?0.0001f:0);
 					n++;
-					if(h <= 0) {
+					if(h < 0.1f) {
 						if(verbose1) {
 //							System.out.printf("BestFirst: searched %d iterations; best a=%s cost=%f lookahead=%f\n", 
 //									n, actionToString(ms.root_action), ms.cost, ms.g);
@@ -291,10 +292,12 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 									s.print();
 								}
 							}
-							bestfound = ms;
-							notificationObject.notifyAll();
-							return;
 						}
+						bestfound = ms;	
+						synchronized(notificationObject) {
+							notificationObject.notifyAll();
+						}
+						return;
 					}
 					pq.add(ms);
 				}
