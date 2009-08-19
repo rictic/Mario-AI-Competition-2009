@@ -11,7 +11,7 @@ class StateSearcher implements Runnable {
 		private final ThreadedBestFirstAgent heuristicSearchingAgent;
 		private final PriorityQueue<MarioState> pq;
 		private final MarioState initialState;
-		private final WorldState ws;
+//		private final WorldState ws;
 		final int id;
 		private boolean shouldStop = false;
 		public boolean isStopped = false;
@@ -21,7 +21,7 @@ class StateSearcher implements Runnable {
 		
 		public StateSearcher(ThreadedBestFirstAgent threadedBestFirstAgent, MarioState initialState, WorldState ws, PriorityQueue<MarioState> pq, int id, Object notificationObject) {
 			heuristicSearchingAgent = threadedBestFirstAgent;
-			this.pq = pq; this.ws = ws; 
+			this.pq = pq; //this.ws = ws; 
 			this.initialState = initialState; this.bestfound = null;
 			this.id = id; DrawIndex = id;
 			this.notificationObject = notificationObject;

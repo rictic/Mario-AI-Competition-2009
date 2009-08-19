@@ -2,16 +2,12 @@ package com.reddit.programming.mario;
 
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.PriorityQueue;
-import java.util.Stack;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import ch.idsia.ai.agents.Agent;
+import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
-import ch.idsia.ai.agents.RegisterableAgent;
 
 public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 {
