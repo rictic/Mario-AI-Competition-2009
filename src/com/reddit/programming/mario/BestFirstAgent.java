@@ -11,8 +11,9 @@ import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
+import ch.idsia.ai.agents.RegisterableAgent;
 
-public final class BestFirstAgent extends RedditAgent implements Agent
+public final class BestFirstAgent extends RegisterableAgent implements Agent
 {
 	private boolean[] action;
 	protected int[] marioPosition = null;
@@ -146,6 +147,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 			if(verbose2)
 				System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
+		Object notificationObject = new Object();
 		PriorityQueue<MarioState>[] pqs = new PriorityQueue[searchers.length];
 		//System.out.println("creating searchers");
 		for (i = 0; i < pqs.length; i++) pqs[i] = new PriorityQueue<MarioState>(20, msComparator);
@@ -153,8 +155,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		GlobalOptions.MarioPosSize = 0;
 		while (!pq.isEmpty())
 			pqs[i++%pqs.length].add(pq.remove());
-		
-		Object notificationObject = new Object();
 		
 		for (i = 0; i < searchers.length; i++)
 			searchers[i] = new StateSearcher(initialState, ws, pqs[i], i,notificationObject);
@@ -284,8 +284,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 //							System.out.printf("BestFirst: searched %d iterations; best a=%s cost=%f lookahead=%f\n", 
 //									n, actionToString(ms.root_action), ms.cost, ms.g);
 							MarioState s;
-							if(GlobalOptions.MarioPosSize > 400-46)
-								GlobalOptions.MarioPosSize = 400-46;
 							for(s = ms;s != initialState;s = s.pred) {
 								if(verbose2) {
 									System.out.printf("state %d: ", (int)s.g);
@@ -293,10 +291,8 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 								}
 							}
 						}
-						bestfound = ms;	
-						synchronized(notificationObject) {
-							notificationObject.notifyAll();
-						}
+						bestfound = ms;
+						synchronized(notificationObject) {notificationObject.notify();}
 						return;
 					}
 					pq.add(ms);
@@ -361,8 +357,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		ms.mayJump = observation.mayMarioJump();
 		ms.onGround = observation.isMarioOnGround();
 		ms.big = observation.getMarioMode() > 0;
-
-		super.UpdateMap(sensors);
 
 		if(verbose2) {
 			float[] e = observation.getEnemiesFloatPos();

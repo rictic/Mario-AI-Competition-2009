@@ -911,30 +911,33 @@ public class LevelScene extends Scene implements SpriteContext
         g.translate(xCam, yCam);
         g.setColor(Color.BLACK);
         layer.renderExit1(g, tick, paused?0:alpha);
+        
+        if (GlobalOptions.drawText) {
+            drawStringDropShadow(g, "MARIO: " + df.format(Mario.lives), 0, 0, 7);
+//          drawStringDropShadow(g, "#########", 0, 1, 7);
 
-        drawStringDropShadow(g, "MARIO: " + df.format(Mario.lives), 0, 0, 7);
-//        drawStringDropShadow(g, "#########", 0, 1, 7);
+            drawStringDropShadow(g, "COINS", 14, 0, 7);
+            drawStringDropShadow(g, " "+df.format(Mario.coins), 14, 1, 7);
 
-        drawStringDropShadow(g, "COINS", 14, 0, 7);
-        drawStringDropShadow(g, " "+df.format(Mario.coins), 14, 1, 7);
+            drawStringDropShadow(g, "DIFFICULTY", 24, 0, 7);
+            drawStringDropShadow(g, " "+ this.levelDifficulty, 24, 1, 7);
 
-        drawStringDropShadow(g, "DIFFICULTY", 24, 0, 7);
-        drawStringDropShadow(g, " "+ this.levelDifficulty, 24, 1, 7);
-
-        drawStringDropShadow(g, "WorldPause", 24, 2, 7);
-        drawStringDropShadow(g, " "+ mario.world.paused, 24, 3, 7);
+            drawStringDropShadow(g, "WorldPause", 24, 2, 7);
+            drawStringDropShadow(g, " "+ mario.world.paused, 24, 3, 7);
 
 
-        drawStringDropShadow(g, "TIME", 35, 0, 7);
-        int time = (timeLeft+15-1)/15;
-        if (time<0) time = 0;
-        drawStringDropShadow(g, " "+df2.format(time), 35, 1, 7);
-        if (GlobalOptions.Labels)
-        {
-            g.drawString("xCam: " + xCam + "yCam: " + yCam, 70, 40);
-            g.drawString("x : " + mario.x + "y: " + mario.y, 70, 50);
-            g.drawString("xOld : " + mario.xOld + "yOld: " + mario.yOld, 70, 60);
+            drawStringDropShadow(g, "TIME", 35, 0, 7);
+            int time = (timeLeft+15-1)/15;
+            if (time<0) time = 0;
+            drawStringDropShadow(g, " "+df2.format(time), 35, 1, 7);
+            if (GlobalOptions.Labels)
+            {
+            	g.drawString("xCam: " + xCam + "yCam: " + yCam, 70, 40);
+            	g.drawString("x : " + mario.x + "y: " + mario.y, 70, 50);
+            	g.drawString("xOld : " + mario.xOld + "yOld: " + mario.yOld, 70, 60);
+            }        	
         }
+
 
 //        if (mario.keys[Mario.KEY_DUMP_CURRENT_WORLD])
 //        {
