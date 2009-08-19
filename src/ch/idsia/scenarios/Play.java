@@ -29,9 +29,9 @@ import ch.idsia.utils.ArrayUtils;
 public class Play {
 
 	public static void main(String[] args) {
-		int seed = (int) (Math.random () * Integer.MAX_VALUE);
-		int difficulty = 10;
-		int length = 320;
+		int seed = 30;//(int) (Math.random () * Integer.MAX_VALUE);
+		int difficulty = 15;
+		int length = 1500;
 		
 		if (args.length > 1) {
 			seed = Integer.parseInt(args[1]);
@@ -46,12 +46,14 @@ public class Play {
 		GlobalOptions.setSeed(seed);
 		GlobalOptions.setDifficulty(difficulty);
 
-		Agent controller = new BestFirstAgent(); // This line uses the agent you imported above.
+		Agent controller = new BudgetingBestFirstAgent(); // This line uses the agent you imported above.
 		if (args.length > 0) {
 			controller = RegisterableAgent.load (args[0]);
 			RegisterableAgent.registerAgent (controller);
 		}
 
+		GlobalOptions.currentController = controller.getName();
+		GlobalOptions.writeFrames = false; //set to true to write frames to disk
 		EvaluationOptions options = new CmdLineOptions(new String[0]);
 		options.setAgent(controller);
 		Task task = new ProgressTask(options);

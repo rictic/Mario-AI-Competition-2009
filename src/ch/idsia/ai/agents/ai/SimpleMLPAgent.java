@@ -3,7 +3,6 @@ package ch.idsia.ai.agents.ai;
 import ch.idsia.ai.Evolvable;
 import ch.idsia.ai.MLP;
 import ch.idsia.ai.agents.Agent;
-import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.mario.environments.Environment;
 
 /**
@@ -15,7 +14,7 @@ import ch.idsia.mario.environments.Environment;
 public class  SimpleMLPAgent implements Agent, Evolvable {
 
     private MLP mlp;
-    private String name;
+    private String name = "SimpleMLPAgent";
     final int numberOfOutputs = 6;
     final int numberOfInputs = 10;
 
@@ -44,7 +43,7 @@ public class  SimpleMLPAgent implements Agent, Evolvable {
     }
 
     public boolean[] getAction(Environment observation) {
-        byte[][] scene = observation.getLevelSceneObservation();
+        byte[][] scene = observation.getLevelSceneObservation(/*1*/);
         double[] inputs = new double[]{probe(-1, -1, scene), probe(0, -1, scene), probe(1, -1, scene),
                               probe(-1, 0, scene), probe(0, 0, scene), probe(1, 0, scene),
                                 probe(-1, 1, scene), probe(0, 1, scene), probe(1, 1, scene),

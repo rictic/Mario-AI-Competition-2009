@@ -32,6 +32,8 @@ public class GeneralizerEnemies implements Generalizer
                     case(Sprite.KIND_PARTICLE):
                     case(Sprite.KIND_SPARCLE):
                         return Sprite.KIND_NONE;
+                    case(Sprite.KIND_FIREBALL):
+                        return Sprite.KIND_FIREBALL;
                     case(Sprite.KIND_BULLET_BILL):
                     case(Sprite.KIND_GOOMBA):
                     case(Sprite.KIND_GOOMBA_WINGED):

@@ -1,10 +1,9 @@
 package com.reddit.programming.mario;
 
 import ch.idsia.ai.agents.Agent;
-import ch.idsia.ai.agents.RegisterableAgent;
+import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
-import ch.idsia.mario.engine.GlobalOptions;
 
 //Based on ForwardAgent
 
@@ -14,7 +13,6 @@ public class HardcodedAgent extends RedditAgent implements Agent
 	private int jumpCounter = 0;
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
-	private ASCIIFrame asciiFrame = new ASCIIFrame();;
 	MarioState ms;
 	float pred_x, pred_y;
 
@@ -108,19 +106,14 @@ public class HardcodedAgent extends RedditAgent implements Agent
 		(action[Mario.KEY_JUMP] ? 4 : 0) |
 		(action[Mario.KEY_LEFT] ? 8 : 0);
 		// quantize mario's position to get the map origin
-		int mX = (int)ms.x/16 - 11;
-		int mY = (int)ms.y/16 - 11;
+//		int mX = (int)ms.x/16 - 11;
+//		int mY = (int)ms.y/16 - 11;
 //		ms = ms.next(_act_token, sensors.levelScene, mX,mY);
 		pred_x = ms.x;
 		pred_y = ms.y;
 		System.out.println(String.format("action: %d; predicted x,y=(%5.1f,%5.1f) xa,ya=(%5.1f,%5.1f)",
 				_act_token, ms.x, ms.y, ms.xa, ms.ya));
 		return action;
-	}
-
-	private boolean isThereGround(byte[][] levelScene) {
-
-		return true;
 	}
 
 	private boolean dangerousHorizontalEnemies(byte[][] enemiesScene) {

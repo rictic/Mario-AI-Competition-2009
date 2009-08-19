@@ -108,12 +108,14 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     }
 
+    // write frames to disk
+    public VolatileImage image = null;
     public EvaluationInfo run1(int currentAttempt, int totalNumberOfAttempts) {
         running = true;
         adjustFPS();
         EvaluationInfo evaluationInfo = new EvaluationInfo();
 
-        VolatileImage image = null;
+        image = null;
         Graphics g = null;
         Graphics og = null;
 
@@ -183,40 +185,45 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             ((LevelScene) scene).mario.cheatKeys = cheatAgent.getAction(null);
 
             if (GlobalOptions.VisualizationOn) {
-                String msg = "Attempt: " + currentAttempt + " of " + ((totalNumberOfAttempts == -1) ? "\\infty" : totalNumberOfAttempts);
-                drawString(og, msg, 7, 31, 0);
-                drawString(og, msg, 6, 30, 1);
+            	if (GlobalOptions.drawText){
+                    String msg = "Attempt: " + currentAttempt + " of " + ((totalNumberOfAttempts == -1) ? "\\infty" : totalNumberOfAttempts);
+                    drawString(og, msg, 7, 31, 0);
+                    drawString(og, msg, 6, 30, 1);
 
-                msg = agent.getName();
-                drawString(og, msg, 7, 41, 0);
-                drawString(og, msg, 6, 40, 5);
+                    msg = agent.getName();
+                    drawString(og, msg, 7, 41, 0);
+                    drawString(og, msg, 6, 40, 5);
 
-                msg = "Selected Actions: ";
-                drawString(og, msg, 7, 51, 0);
-                drawString(og, msg, 6, 50, 6);
+                    msg = "Selected Actions: ";
+                    drawString(og, msg, 7, 51, 0);
+                    drawString(og, msg, 6, 50, 6);
 
-                msg = "";
-                if (action != null)
-                {
-                    for (int i = 0; i < Environment.numberOfButtons; ++i)
-                        msg += (action[i]) ? scene.keysStr[i] : "      ";
-                }
-                else
-                    msg = "NULL";                    
-                drawString(og, msg, 6, 70, 1);
+                    msg = "";
+                    if (action != null)
+                    {
+                        for (int i = 0; i < Environment.numberOfButtons; ++i)
+                            msg += (action[i]) ? scene.keysStr[i] : "      ";
+                    }
+                    else
+                        msg = "NULL";                    
+                    drawString(og, msg, 6, 70, 1);
 
 
-                if (!this.hasFocus() && tick / 4 % 2 == 0) {
-                    String msgClick = "CLICK TO PLAY";
-//                    og.setColor(Color.YELLOW);
-//                    og.drawString(msgClick, 320 + 1, 20 + 1);
-                    drawString(og, msgClick, 160 - msgClick.length() * 4, 110, 1);
-                    drawString(og, msgClick, 160 - msgClick.length() * 4, 110, 7);
-                }
-                og.setColor(Color.DARK_GRAY);
-                drawString(og, "FPS: " + ((GlobalOptions.FPS > 99) ? "\\infty" : GlobalOptions.FPS.toString()), 5, 22, 0);
-                drawString(og, "FPS: " + ((GlobalOptions.FPS > 99) ? "\\infty" : GlobalOptions.FPS.toString()), 4, 21, 7);
-
+                    
+                    if (!this.hasFocus() && tick / 4 % 2 == 0) {
+                        String msgClick = "CLICK TO PLAY";
+//                        og.setColor(Color.YELLOW);
+//                        og.drawString(msgClick, 320 + 1, 20 + 1);
+                        drawString(og, msgClick, 160 - msgClick.length() * 4, 110, 1);
+                        drawString(og, msgClick, 160 - msgClick.length() * 4, 110, 7);
+                    }
+                    og.setColor(Color.DARK_GRAY);
+                    
+                    drawString(og, "FPS: " + ((GlobalOptions.FPS > 99) ? "\\infty" : GlobalOptions.FPS.toString()), 5, 22, 0);
+                    drawString(og, "FPS: " + ((GlobalOptions.FPS > 99) ? "\\infty" : GlobalOptions.FPS.toString()), 4, 21, 7);
+            		
+            	}
+            	
                 if (width != 320 || height != 240) {
                         g.drawImage(image, 0, 0, 640 * 2, 480 * 2, null);
                 } else {
@@ -271,16 +278,6 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         }
     }
 
-//    public void keyPressed(KeyEvent arg0)
-//    {
-//        toggleKey(arg0.getKeyCode(), true);
-//    }
-//
-//    public void keyReleased(KeyEvent arg0)
-//    {
-//        toggleKey(arg0.getKeyCode(), false);
-//    }
-
     public void startLevel(long seed, int difficulty, int type, int levelLength, int timeLimit) {
         scene = new LevelScene(graphicsConfiguration, this, seed, difficulty, type, levelLength, timeLimit);
         levelScene = ((LevelScene) scene);
@@ -313,9 +310,9 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 //        scene.init();
     }
 
-    public List<String> getTextObservation(boolean Enemies, boolean LevelMap, boolean Complete, int ZLevel) {
+    public List<String> getTextObservation(boolean Enemies, boolean LevelMap, boolean Complete, int ZLevelMap, int ZLevelEnemies) {
         if (scene instanceof LevelScene)
-            return ((LevelScene) scene).LevelSceneAroundMarioASCII(Enemies, LevelMap, Complete, ZLevel, 1);
+            return ((LevelScene) scene).LevelSceneAroundMarioASCII(Enemies, LevelMap, Complete, ZLevelMap, ZLevelEnemies);
         else {
             return new ArrayList<String>();
         }
@@ -341,21 +338,27 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         }
     }
 
-    public byte[][] getCompleteObservation() {
+    // upcoming feature for Milano conf, unkomment this, if you would like to try it!
+    // Chaning ZLevel during the game on-the-fly;
+    public byte[][] getCompleteObservation(/*int ZLevelMap, int ZLevelEnemies*/) {
+//        this.ZLevelMap = ZLevelMap;
+//        this.ZLevelEnemies = ZLevelEnemies;
         if (scene instanceof LevelScene)
-            return ((LevelScene) scene).completeObservation(ZLevelEnemies, ZLevelMap);
+            return ((LevelScene) scene).mergedObservation(this.ZLevelMap, this.ZLevelEnemies);
         return null;
     }
 
-    public byte[][] getEnemiesObservation() {
+    public byte[][] getEnemiesObservation(/*int ZLevelEnemies*/) {
+//        this.ZLevelEnemies = ZLevelEnemies;
         if (scene instanceof LevelScene)
-            return ((LevelScene) scene).enemiesObservation(ZLevelEnemies);
+            return ((LevelScene) scene).enemiesObservation(this.ZLevelEnemies);
         return null;
     }
 
-    public byte[][] getLevelSceneObservation() {
+    public byte[][] getLevelSceneObservation(/*int ZLevelMap*/) {
+//        this.ZLevelMap = ZLevelMap;
         if (scene instanceof LevelScene)
-            return ((LevelScene) scene).levelSceneObservation(ZLevelMap);
+            return ((LevelScene) scene).levelSceneObservation(this.ZLevelMap);
         return null;
     }
 

@@ -292,10 +292,6 @@ public final class MarioState extends SpriteState
 	
 		return blocking;
 	}
-
-	public int marioMode() {
-		return ((big) ? 1 : 0) + ((fire) ? 1 : 0);
-	}
 	
 	public void stomp(SpriteState enemy)
 	{
@@ -328,6 +324,10 @@ public final class MarioState extends SpriteState
 
 		// hack: add death cost, even if we don't die
 		dead = true;
+	}
+	
+	public int marioMode() {
+		return ((big) ? 1 : 0) + ((fire) ? 1 : 0);
 	}
 }
 

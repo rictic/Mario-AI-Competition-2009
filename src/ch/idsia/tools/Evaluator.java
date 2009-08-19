@@ -4,10 +4,9 @@ import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 import ch.idsia.mario.simulation.BasicSimulator;
-import ch.idsia.mario.simulation.ISimulation;
+import ch.idsia.mario.simulation.Simulation;
 import ch.idsia.tools.tcp.Server;
 import ch.idsia.tools.tcp.ServerAgent;
-import ch.idsia.tools.tcp.TCP_MODE;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class Evaluator implements Runnable
         Server server = new Server(evaluationOptions.getServerAgentPort(), Environment.numberOfObservationElements, Environment.numberOfButtons);
         evaluationOptions.setAgent(new ServerAgent(server, evaluationOptions.isFastTCP()));
 
-        ISimulation simulator = new BasicSimulator(evaluationOptions.getSimulationOptionsCopy());
+        Simulation simulator = new BasicSimulator(evaluationOptions.getSimulationOptionsCopy());
         while (server.isRunning())
         {
             String resetData = server.recvUnSafe();
@@ -94,7 +93,6 @@ public class Evaluator implements Runnable
                 server.restartServer();
             }
         }
-
     }
 
     public List<EvaluationInfo> evaluate()
@@ -106,7 +104,7 @@ public class Evaluator implements Runnable
         }
 
 
-        ISimulation simulator = new BasicSimulator(evaluationOptions.getSimulationOptionsCopy());
+        Simulation simulator = new BasicSimulator(evaluationOptions.getSimulationOptionsCopy());
         // Simulate One Level
 
         EvaluationInfo evaluationInfo;
@@ -214,7 +212,8 @@ public class Evaluator implements Runnable
 
     public void start()
     {
-        thisThread.start();
+        if (thisThread.getState() == Thread.State.NEW)
+            thisThread.start();
     }
 
     public void init(EvaluationOptions evaluationOptions)

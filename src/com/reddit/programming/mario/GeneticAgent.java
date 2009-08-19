@@ -21,7 +21,7 @@ public class GeneticAgent extends RegisterableAgent implements Agent, CrossoverE
 	
 	private static final int    numberOfCases = 6;
 	private static final int    numberOfButtons = Environment.numberOfButtons * GeneticAgent.numberOfCases;
-	private static final double probOfMutation = 0.02;
+//	private static final double probOfMutation = 0.02;
 	
 	private static final int CASE_DEFAULT        = 0;
 	private static final int CASE_WALL           = 1;
