@@ -24,7 +24,7 @@ public class PlayForever {
 
 	public static void main(String[] args) {
 		int seed = (int) (Math.random () * Integer.MAX_VALUE);
-		int difficulty = 10;
+		int difficulty = 20;
 		int length = 100000;
 		
 		if (args.length > 1) {
