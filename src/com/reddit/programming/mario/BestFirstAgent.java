@@ -158,33 +158,52 @@ public final class BestFirstAgent extends RegisterableAgent implements Agent
 		
 		for (i = 0; i < searchers.length; i++)
 			searchers[i] = new StateSearcher(initialState, ws, pqs[i], i,notificationObject);
-		long startTime = System.currentTimeMillis();
+		for (StateSearcher searcher : searchers)
+			searchPool.execute(searcher);
+		
+		MarioState bestfound = null;
+		long totalElapsed = 0;
 		try {
 			synchronized(notificationObject) {
-				for (StateSearcher searcher : searchers)
-					searchPool.execute(searcher);
-				notificationObject.wait(Math.max(5,budget));
+				while ( //we have time left to spend
+						budget > 0 &&
+						//either we've found nothing, we've only searched three steps out,
+						//  or the best option we can find is terrible
+						(bestfound == null || bestfound.g <= 3 || bestfound.cost > 1000)
+						// and we haven't spent more than three seconds on this frame
+						//  (spending more is unlikely to be helpful)
+						&& totalElapsed < 3000) {
+					
+					long startTime = System.currentTimeMillis();
+					notificationObject.wait(Math.min(Math.max(5,budget), 200));
+					long timeElapsed = System.currentTimeMillis() - startTime;
+					totalElapsed += timeElapsed;
+					budget -= timeElapsed; 
+					for (StateSearcher searcher: searchers)
+						bestfound = marioMin(searcher.bestfound, bestfound);
+				}
 			}
 		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
-		long timeElapsed = System.currentTimeMillis() - startTime;
-//		System.out.printf("Used up %d of %d millis\n", timeElapsed, budget);
-		budget -= timeElapsed; 
+		
 		
 		for (StateSearcher searcher: searchers)
 			searcher.stop();
 		for (StateSearcher searcher: searchers)
 			while(!searcher.isStopped){}
 		
-		MarioState bestfound = null;
-		for (StateSearcher searcher: searchers) {
-			bestfound = marioMin(searcher.bestfound, bestfound);
-
 //			if (verbose1)
 //				System.out.printf("searcher_(%d): best root_action=%s cost=%f lookahead=%f\n",
 //						searcher.id, actionToString(bestfound.root_action), bestfound.cost, bestfound.g);
-		}
+
 
 //		addLine(bestfound, 0xffffff);
+		
+		//not good enough, search again next frame
+		if (bestfound.cost > 40){
+			decisions.push(bestfound.action);
+			return searchForAction(null,null);
+		}
+			
 		
 		while(bestfound.pred != null){
 			decisions.push(bestfound.action);
