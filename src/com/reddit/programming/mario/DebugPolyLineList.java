@@ -72,12 +72,6 @@ public class DebugPolyLineList
 				}
 			}
 		}
-		try
-		{
-			System.out.println(polyLines.elementAt(0).points.elementAt(0).x);
-		}
-		catch(Exception e)
-		{}
 		
 		polyLines.clear();
 	}
