@@ -21,7 +21,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 	private ExecutorService searchPool = Executors.newFixedThreadPool(simultaneousSearchers);
 	private StateSearcher[] searchers = new StateSearcher[simultaneousSearchers];
 	private Stack<Integer> decisions = new Stack<Integer>();
-	private static final int budgetPerFrame = 35; //time, in milliseconds, that we can think per frame
+	private static final int budgetPerFrame = 30; //time, in milliseconds, that we can think per frame
 	private long budget = 0;  //time, in milliseconds, that we can spend planning
 	
 	private static final boolean verbose1 = false;
@@ -190,7 +190,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 			decisions.push(bestfound.action);
 			bestfound = bestfound.pred;
 		}
-		int desiredSize = Math.max(5, Math.min(20, decisions.size() / 2));
+		int desiredSize = Math.max(5, Math.min(10, decisions.size() / 2));
 		while(decisions.size() > desiredSize) decisions.remove(0);
 		
 //		if (verbose1){
