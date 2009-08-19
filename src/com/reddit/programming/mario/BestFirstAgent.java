@@ -9,8 +9,9 @@ import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
+import ch.idsia.ai.agents.RegisterableAgent;
 
-public final class BestFirstAgent extends RedditAgent implements Agent
+public final class BestFirstAgent extends RegisterableAgent implements Agent
 {
 	private boolean[] action;
 	protected int[] marioPosition = null;
@@ -276,8 +277,6 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		ms.mayJump = observation.mayMarioJump();
 		ms.onGround = observation.isMarioOnGround();
 		ms.big = observation.getMarioMode() > 0;
-
-		super.UpdateMap(sensors);
 
 		if(verbose2) {
 			float[] e = observation.getEnemiesFloatPos();
