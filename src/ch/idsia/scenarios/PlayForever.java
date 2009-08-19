@@ -25,7 +25,7 @@ public class PlayForever {
 	public static void main(String[] args) {
 		int seed = (int) (Math.random () * Integer.MAX_VALUE);
 		int difficulty = 10;
-		int length = 320;
+		int length = 100000;
 		
 		if (args.length > 1) {
 			seed = Integer.parseInt(args[1]);
@@ -37,6 +37,7 @@ public class PlayForever {
 			length = Integer.parseInt(args[3]);
 		}
 
+		GlobalOptions.drawText = false;
 		while (true) {
 			Agent controller = new BestFirstAgent(); // This line uses the agent you imported above.
 			if (args.length > 0) {
@@ -45,10 +46,11 @@ public class PlayForever {
 			}
 			GlobalOptions.setSeed(seed);
 			GlobalOptions.setDifficulty(difficulty);
-
+			
 			
 			GlobalOptions.currentController = controller.getName();
 			GlobalOptions.writeFrames = false; //set to true to write frames to disk
+			GlobalOptions.TimerOn = false;
 			EvaluationOptions options = new CmdLineOptions(new String[0]);
 			options.setAgent(controller);
 			Task task = new ProgressTask(options);
@@ -59,6 +61,8 @@ public class PlayForever {
 			options.setLevelLength(length);
 			options.setLevelRandSeed(seed);
 			options.setLevelDifficulty(difficulty);
+			options.setTimeLimit(0);
+			
 			task.setOptions(options);
 
 			System.out.println("Score: " + ArrayUtils.toString(task.evaluate(controller)));
