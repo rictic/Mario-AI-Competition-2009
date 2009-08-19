@@ -31,12 +31,16 @@ public class Play {
 	public static void main(String[] args) {
 		int seed = (int) (Math.random () * Integer.MAX_VALUE);
 		int difficulty = 10;
+		int length = 320;
 		
 		if (args.length > 1) {
 			seed = Integer.parseInt(args[1]);
 		}
 		if (args.length > 2) {
 			difficulty = Integer.parseInt(args[2]);
+		}
+		if (args.length > 3) {
+			length = Integer.parseInt(args[3]);
 		}
 
 		GlobalOptions.setSeed(seed);
@@ -48,6 +52,8 @@ public class Play {
 			RegisterableAgent.registerAgent (controller);
 		}
 
+		GlobalOptions.currentController = controller.getName();
+		GlobalOptions.writeFrames = false; //set to true to write frames to disk
 		EvaluationOptions options = new CmdLineOptions(new String[0]);
 		options.setAgent(controller);
 		Task task = new ProgressTask(options);
@@ -55,7 +61,7 @@ public class Play {
 		options.setVisualization(true);
 		options.setMaxAttempts(1);
 		options.setMatlabFileName("");
-		//options.setLevelLength(1024);
+		options.setLevelLength(length);
 		options.setLevelRandSeed(seed);
 		options.setLevelDifficulty(difficulty);
 		task.setOptions(options);

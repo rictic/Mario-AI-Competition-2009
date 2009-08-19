@@ -14,7 +14,7 @@ import ch.idsia.tools.EvaluationInfo;
  * Package: .Simulation
  */
 
-public class BasicSimulator implements ISimulation
+public class BasicSimulator implements Simulation
 {
     SimulationOptions simulationOptions = null;
     private MarioComponent marioComponent;
@@ -49,6 +49,8 @@ public class BasicSimulator implements ISimulation
                                  , simulationOptions.getLevelType(), simulationOptions.getLevelLength(),
                                   simulationOptions.getTimeLimit());
         marioComponent.setPaused(simulationOptions.isPauseWorld());
+        marioComponent.setZLevelEnemies(simulationOptions.getZLevelEnemies());
+        marioComponent.setZLevelMap(simulationOptions.getZLevelMap());
         return marioComponent.run1(simulationOptions.currentAttempt++,
                 simulationOptions.getMaxAttempts()
         );

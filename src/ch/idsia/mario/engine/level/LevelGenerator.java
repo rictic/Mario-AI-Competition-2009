@@ -112,20 +112,6 @@ public class LevelGenerator
         }
 
         fixWalls();
-
-//        FileOutputStream fos = null;
-//        try {
-////            fos = new FileOutputStream("level.txt");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
-//        try {
-//            //level.ASCIIToOutputStream(fos );
-//            level.ASCIIToOutputStream(System.out);
-////            fos.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
         return level;
     }
 

@@ -1,8 +1,7 @@
 package com.reddit.programming.mario;
 
-import java.util.Vector;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Vector;
 
 public final class WorldState
 {
@@ -28,7 +27,7 @@ public final class WorldState
 		WSHashKey() { modType = MOD_NONE; }
 		WSHashKey(int _modTile) {
 			modType = MOD_REMOVETILE;
-			modTile = modTile;
+			modTile = _modTile;
 		}
 
 		@Override
@@ -78,7 +77,7 @@ public final class WorldState
 		WorldState s = succ.get(h);
 		if(s == null) {
 			s = clone();
-			s.enemies = (Vector)enemies.clone();
+			s.enemies = (Vector<SpriteState>)enemies.clone();
 			s.stepEnemies();
 			succ.put(h, s);
 		}
@@ -126,13 +125,12 @@ public final class WorldState
 		map = newmap;
 	}
 
-	private static class EnemyObservation implements Comparable {
+	private static class EnemyObservation implements Comparable<EnemyObservation> {
 		int type;
 		float x, y;
 
 		EnemyObservation(int type, float x, float y) { this.type=type; this.x=x; this.y=y; }
-		public int compareTo(Object _b) {
-			EnemyObservation b = (EnemyObservation)_b;
+		public int compareTo(EnemyObservation b) {
 			return x<b.x ? -1 : x>b.x ? 1 : 0;
 		}
 	}
@@ -183,10 +181,10 @@ public final class WorldState
 			if(closest != null)
 				newenemies.add(closest);
 		}
-		for(SpriteState s : enemies) {
-			//System.out.printf("enemy t=%d @%f,%f disappeared?\n",
-			//		s.type, s.x, s.y);
-		}
+//		for(SpriteState s : enemies) {
+//			//System.out.printf("enemy t=%d @%f,%f disappeared?\n",
+//			//		s.type, s.x, s.y);
+//		}
 		enemies = newenemies;
 	}
 
