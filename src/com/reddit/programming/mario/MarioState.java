@@ -54,23 +54,24 @@ public final class MarioState extends SpriteState
 		n.xJumpSpeed = xJumpSpeed; n.yJumpSpeed = yJumpSpeed;
 		n.root_action = root_action;
 		n.action = action;
-		n.ws = ws.step();
 		n.pred = this;
 		n.invulnerableTime = invulnerableTime;
-		n.g = g + 1;
 
 		int jump_steps = action/ACT_JUMP;
 		if(jump_steps > 1) {
 			action = (action&7) + 8;
 			for(int i=0;i<jumpstep_table[jump_steps];i++) {
+				n.g = g + 1;
+				n.ws = ws.step();
 				n.move(action);
+				n.ws = n.ws.interact(n);
 			}
 		} else {
+			n.g = g + 1;
+			n.ws = ws.step();
 			n.move(action);
+			n.ws = n.ws.interact(n);
 		}
-
-		// run collision checks and update the world with it
-		n.ws = n.ws.interact(n);
 
 		return n;
 	}
