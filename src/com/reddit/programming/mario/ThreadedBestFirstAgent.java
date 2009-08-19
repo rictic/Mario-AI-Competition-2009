@@ -19,12 +19,13 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 		super("ThreadedBestFirstAgent");
 	}
 
-	private final PriorityQueue<MarioState> getInitialPriorityQueue(MarioState initialState, WorldState ws) {
+	protected final PriorityQueue<MarioState> getInitialPriorityQueue(MarioState initialState, WorldState ws) {
 		bestfound = null;
 		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
 		initialState.ws = ws;
 		initialState.g = 0;
 		initialState.dead = false;
+		initialState.pred = null;
 		// add initial set
 		for(int a=1;a<16;a++) {
 			if(useless_action(a, initialState))
