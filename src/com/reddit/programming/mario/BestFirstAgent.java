@@ -140,6 +140,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 			if(verbose2)
 				System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
+		Object notificationObject = new Object();
 		PriorityQueue<MarioState>[] pqs = new PriorityQueue[searchers.length];
 		//System.out.println("creating searchers");
 		for (i = 0; i < pqs.length; i++) pqs[i] = new PriorityQueue<MarioState>(20, msComparator);
@@ -148,11 +149,13 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 			pqs[i++%pqs.length].add(pq.remove());
 		
 		for (i = 0; i < searchers.length; i++){
-			searchers[i] = new StateSearcher(initialState, ws, pqs[i], i);
+			searchers[i] = new StateSearcher(initialState, ws, pqs[i], i, notificationObject);
 			searchPool.execute(searchers[i]);
 		}
 		try {
-			Thread.sleep(40);
+			synchronized(notificationObject){
+				notificationObject.wait(30);
+			}
 		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
 		for (StateSearcher searcher: searchers)
 			searcher.stop();
@@ -182,11 +185,13 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 		public boolean isStopped = false;
 		private MarioState bestfound;
 		private int DrawIndex = 0;
+		private Object notificationObject;
 		
-		public StateSearcher(MarioState initialState, WorldState ws, PriorityQueue<MarioState> pq, int id) {
+		public StateSearcher(MarioState initialState, WorldState ws, PriorityQueue<MarioState> pq, int id, Object notificationObject) {
 			this.pq = pq; this.ws = ws; 
 			this.initialState = initialState; this.bestfound = null;
 			this.id = id; DrawIndex = id;
+			this.notificationObject = notificationObject;
 		}
 
 		public void stop() {
@@ -253,6 +258,7 @@ public final class BestFirstAgent extends RedditAgent implements Agent
 							}
 						}
 						bestfound = ms;
+						synchronized(notificationObject) {notificationObject.notify();}
 						return;
 					}
 					pq.add(ms);
