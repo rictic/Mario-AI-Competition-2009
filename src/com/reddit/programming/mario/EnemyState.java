@@ -53,10 +53,8 @@ public class EnemyState extends SpriteState
 		return false;
 	}
 
-
-	public final boolean dead() {
-		return deadTime != 0;
-	}
+	@Override
+	public final boolean dead() { return deadTime != 0; }
 
 	EnemyState(float _x, float _y, int _type) {
 		x=_x; y=_y; type=_type;

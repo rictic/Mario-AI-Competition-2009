@@ -97,5 +97,21 @@ final class MarioMath {
 			return secantSolve(_fallDistance, height, ya0, 0);
 	}
 
+	// how long will it take us to stomp enemy e?
+	public static float stepsToStomp(MarioState ms, SpriteState e) {
+		float dx = stepsToRun(e.x - ms.x, ms.xa);
+		float dy = 0;
+		if(e.y < ms.y) {
+			if(ms.onGround) {
+				dy = stepsToJump(ms.y - e.y);
+			} else {
+				// ugh.  steps to fall, then to jump?
+			}
+		} else if(e.y > ms.y) {
+			dy = stepsToFall(e.y - ms.y, ms.ya);
+		}
+		return (float) Math.sqrt(dx*dx + dy*dy);
+	}
+
 }
 

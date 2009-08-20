@@ -7,6 +7,7 @@ public final class MarioState extends SpriteState
 	public int jumpTime = 0,
 		   invulnerableTime = 0;
 	public boolean big = true,  // mario is big
+		   dead = false, // yep
 		   fire = true, // mario can throw fireballs
 		   wasOnGround = false, // previous frame (used for stomping logic)
 		   mayJump = true,  // yep
@@ -33,6 +34,7 @@ public final class MarioState extends SpriteState
 	}
 
 	public float height() { return big ? 24 : 12; }
+	public final boolean dead() { return dead; }
 
 	public void print() {
 		System.out.printf("g=%d a:%d x:(%f,%f) v:(%f,%f) %s%s%s cost=%f\n", (int)g, action,x,y,xa,ya,

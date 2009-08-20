@@ -12,6 +12,9 @@ public final class BulletBillState extends SpriteState
 	public final float height() { return 12; }
 
 	@Override
+	public final boolean dead() { return deadTime != 0; }
+
+	@Override
 	public SpriteState clone() {
 		BulletBillState e = new BulletBillState(x,y);
 		e.xa = xa; e.ya = ya;

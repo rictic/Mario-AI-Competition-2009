@@ -7,9 +7,9 @@ public class SpriteState
 	public int facing = 1;
 	public int type = -1;
 	public boolean onGround = false; // standing on ground
-	public boolean dead = false;
 	public float x,y,xa = 0, ya = 0;
 	public float height() { return -1; }
+	public boolean dead() { return false; }
 
 	public SpriteState clone() { return null; }
 
@@ -59,5 +59,6 @@ public class SpriteState
 	public static final int KIND_COIN_ANIM = 20;
 	public static final int KIND_FIREBALL = 25;
 
+	public boolean spiky() { return type >= KIND_SPIKY && type <= KIND_FLOWER_ENEMY; }
 }
 
