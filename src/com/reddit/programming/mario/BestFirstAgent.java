@@ -2,6 +2,7 @@ package com.reddit.programming.mario;
 
 import java.awt.Color;
 import java.util.PriorityQueue;
+import java.util.Comparator;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
@@ -27,7 +28,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 	}
 
 //	private static final float lookaheadDist = 9*16;
-	private float cost(MarioState s, MarioState initial) {
+	protected float cost(MarioState s, MarioState initial) {
 		float steps = 0;
 		if(s.dead)
 			steps += Tunables.DeadCost;
@@ -68,7 +69,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 
 	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
 
-	private boolean useless_action(int a, MarioState s) {
+	protected boolean useless_action(int a, MarioState s) {
 		if((a&MarioState.ACT_LEFT)>0 && (a&MarioState.ACT_RIGHT)>0) return true;
 		if((a/MarioState.ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
@@ -77,7 +78,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 		return false;
 	}
 
-	private void addLine(float x0, float y0, float x1, float y1, int color) {
+	protected void addLine(float x0, float y0, float x1, float y1, int color) {
 		if(drawPath && GlobalOptions.MarioPosSize < 400) {
 			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int)x0;
 			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int)y0;

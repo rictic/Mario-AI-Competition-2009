@@ -37,7 +37,7 @@ public class TweakRunner {
 		float bestScore = -1e10f;		
 			
 		Random rnd = new Random();
-		boolean flip = false;
+		boolean flip = true;
 		for (int i =0 ; i< 1000; ++i)
 		{
 			Tunables.FactorA = settings[0];
@@ -52,7 +52,8 @@ public class TweakRunner {
 			float score = DoRun();
 			if (score > bestScore)
 			{
-				flip = false;
+				if (bestScore != -1e10f)
+					flip = false;
 				bestScore = score;
 				for (int j = 0; j<best.length; ++j)
 					best[j] = settings[j];
@@ -73,7 +74,7 @@ public class TweakRunner {
 					for (int j = 0; j<best.length; ++j)
 						settings[j] = best[j];
 					int j = rnd.nextInt(best.length);
-					settings[j] *= 1 + 0.02*(0.5 - rnd.nextFloat());
+					settings[j] *= 1 + 0.01*(rnd.nextBoolean()?1:-1);
 				}
 				else
 				{
