@@ -101,7 +101,7 @@ public class EnemyState extends SpriteState
 		move(0, ya, ws);
 
 		ya *= winged() ? 0.95f : 0.85f;
-		xa *= DAMPING_X;
+		xa *= DAMPING_X; // useless
 
 		if (!onGround) {
 			if (winged())
@@ -114,6 +114,33 @@ public class EnemyState extends SpriteState
 
 		return true;
 	}
+
+	@Override
+	public void resync(float x, float y, float prev_x, float prev_y) {
+		this.x = x;
+		this.y = y;
+		this.xa = x - prev_x;
+		if(this.xa == 0) {
+			// the only way we could be not moving horizontally is if we're dead.
+			// since we mispredicted this death, assume we've only been dead
+			// one frame.
+			deadTime = 9;
+			return;
+		}
+		facing = (this.xa < 0) ? -1 : 1;
+		this.ya = (y - prev_y) * (winged() ? 0.95f : 0.85f);
+		if (!onGround) {
+			if (winged())
+				ya += 0.6f;
+			else
+				ya += 2;
+		}
+		// this is unlikely to be accurate on winged dudes but whatever
+		else if (winged())
+			ya = -10;
+
+	}
+
 
     private boolean move(float xa, float ya, WorldState ws)
     {

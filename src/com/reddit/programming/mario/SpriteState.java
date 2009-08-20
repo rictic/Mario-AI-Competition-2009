@@ -21,10 +21,10 @@ public class SpriteState
 	// you may destructively update ws here as it's fresh for the purpose of this stomp
 	public SpriteState stomp(WorldState ws) { return this; }
 
-	static public SpriteState newEnemy(float x, float y, int type) {
+	static public SpriteState newEnemy(float x, float y, int type, float[] marioPos) {
 		switch(type) {
 			case KIND_BULLET_BILL:
-				return new BulletBillState(x,y);
+				return new BulletBillState(x,y, marioPos);
 			case KIND_FLOWER_ENEMY:
 				return new FlowerEnemyState(x,y);
 			case KIND_SHELL:
@@ -33,6 +33,15 @@ public class SpriteState
 				return null;
 		}
 		return new EnemyState(x,y,type);
+	}
+
+	// default resync: dead reckoning
+	public void resync(float x, float y, float prev_x, float prev_y) {
+		System.out.printf("spritestate:resync\n");
+		this.x = x;
+		this.y = y;
+		this.xa = x - prev_x;
+		this.ya = y - prev_y;
 	}
 
 	// enemy kinds

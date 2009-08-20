@@ -16,16 +16,22 @@ public final class BulletBillState extends SpriteState
 
 	@Override
 	public SpriteState clone() {
-		BulletBillState e = new BulletBillState(x,y);
+		BulletBillState e = new BulletBillState(x,y,facing);
 		e.xa = xa; e.ya = ya;
 		e.deadTime = deadTime;
 		return e;
 	}
 
-	BulletBillState(float _x, float _y) {
+	BulletBillState(float _x, float _y, int dir) {
 		x=_x; y=_y; type=KIND_BULLET_BILL;
-		ya = -5; // used iff we get stomped
-		facing = -1;
+		facing = dir;
+		xa = 4*facing;
+    }
+
+	BulletBillState(float _x, float _y, float[] marioPos) {
+		x=_x; y=_y; type=KIND_BULLET_BILL;
+		facing = _x < marioPos[0] ? 1 : -1;
+		xa = 4*facing;
     }
 
 	// returns false iff we should remove the enemy from the list
