@@ -37,7 +37,6 @@ public class TweakRunner {
 		float bestScore = -1e10f;		
 			
 		Random rnd = new Random();
-		boolean flip = true;
 		for (int i =0 ; i< 1000; ++i)
 		{
 			Tunables.FactorA = settings[0];
@@ -52,47 +51,39 @@ public class TweakRunner {
 			float score = DoRun();
 			if (score > bestScore)
 			{
-				if (bestScore != -1e10f)
-					flip = false;
 				bestScore = score;
 				for (int j = 0; j<best.length; ++j)
 					best[j] = settings[j];
 				System.out.println(score+":"+ArrayUtils.toString(best));
 			}
-			else if ((score == bestScore)&&!flip)
+			else if (score == bestScore)
 			{
 				System.out.println("=");
-				for (int j = 0; j<best.length; ++j)
-					settings[j] = settings[j] + (best[j] - settings[j]);
+				int j = rnd.nextInt(best.length);
+				settings[j] *= 1 + 0.01*(rnd.nextBoolean()?1:-1);
 			}
 			else
 			{
-				if (flip)
-				{
-					flip = false;
-					System.out.println(".");
-					for (int j = 0; j<best.length; ++j)
-						settings[j] = best[j];
-					int j = rnd.nextInt(best.length);
-					settings[j] *= 1 + 0.01*(rnd.nextBoolean()?1:-1);
-				}
-				else
-				{
-					flip = true;
-					System.out.println("-");
-					for (int j = 0; j<best.length; ++j)
-						settings[j] = settings[j] - (best[j] - settings[j]);
-				}
+				System.out.println(".");
+				for (int j = 0; j<best.length; ++j)
+					settings[j] = best[j];
+				int j = rnd.nextInt(best.length);
+				settings[j] *= 1 + 0.01*(rnd.nextBoolean()?1:-1);
 			}
 		}
 	}
 	
 	private static float DoRun()
 	{
+		float result =0;
+		for (int i = 0; i< 50; ++i)
+			result += Run(i, 20, 200);
+		return result;
+	}
+	
+	private static float Run(int seed, int difficulty, int length)
+	{
 		// we need a redoable state that stresses mario enough
-		int seed = 1000;
-		int difficulty = 30;
-		int length = 1000;
 		
 		GlobalOptions.setSeed(seed);
 		GlobalOptions.setDifficulty(difficulty);
