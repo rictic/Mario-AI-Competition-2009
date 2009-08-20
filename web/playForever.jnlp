@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Web Start Deployment Template -->
+<jnlp spec="1.0+"
+    codebase="http://rictic.com/"
+    href="playForever.jnlp">
+
+<information>
+    <title>Mario AI</title>
+    <vendor>The programming.reddit MarioAI Team!</vendor>
+    <homepage href="http://github.com/rictic/Mario-AI-Competition-2009/"/>
+    <description>Mario AI Plays Forever</description>
+    <description kind="one-line">Your computer plays Mario so you don't have to.  He's pretty good when he doesn't fall into holes.</description>
+    <description kind="short"   >Your computer plays Mario so you don't have to.  He's pretty good when he doesn't fall into holes.</description>
+    <description kind="tooltip" >Your computer plays Mario so you don't have to.  He's pretty good when he doesn't fall into holes.</description>
+<!--     <icon href="../image/logo_48x48.gif"/> -->
+<!--     <icon kind="splash" href="../image/loading.jpg"/> -->
+    <offline-allowed/>
+    <shortcut>
+        <desktop/>
+    </shortcut>
+</information>
+
+<security>
+    <all-permissions/>
+</security>
+
+<resources>
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5"  max-heap-size="1024m"/>
+    <j2se href="http://java.sun.com/products/autodl/j2se" version="1.5+" max-heap-size="1024m"/>
+    <jar href="playForever.jar"/>
+    <jar href="jdom.jar"/>
+</resources>
+
+<application-desc main-class="ch.idsia.scenarios.PlayForever"/>
+
+</jnlp>

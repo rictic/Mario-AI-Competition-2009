@@ -51,7 +51,9 @@ public class Art
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+        	RuntimeException rte = new RuntimeException();
+        	rte.setStackTrace(e.getStackTrace());
+            throw rte;
         }
 
     }
@@ -60,19 +62,20 @@ public class Art
     {
 //        System.out.println("trying to get " + imageName);
         String[] filenames = new String[]{imageName, curDir + "/img/" + imageName, curDir + "/../img/" + imageName};
-        File imageFile = null;
+        BufferedImage source = null;
         for (String filename : filenames) {
         	File testFile = new File(filename);
         	if (testFile.exists()){
-        		imageFile = testFile;
+        		source = ImageIO.read(testFile);
         		continue;
         	}
         }
-        if (imageFile == null)
-        	throw new IOException("Couldn't find image" + imageFile);
+        if (source == null)
+        	try {
+        		source = ImageIO.read(Art.class.getResourceAsStream(imageName));
+        	}
+        	catch(IOException e) {throw new IOException("can't find file" + imageName);}
         
-        BufferedImage source = ImageIO.read(imageFile);
-
         Image image = gc.createCompatibleImage(source.getWidth(), source.getHeight(), Transparency.BITMASK);
         Graphics2D g = (Graphics2D) image.getGraphics();
         g.setComposite(AlphaComposite.Src);

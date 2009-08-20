@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <title>Mario AI</title>
+        <link href="style.css" media="screen" rel="Stylesheet" type="text/css" />        
+    </head>
+    <body>
+        <div class='main'>
+		    <h2>Watch your computer play the mario.</h2>  <h5>It's pretty good, when it doesn't jump into pits.</h5>
+		
+		    <h3 class="checkingJava">Just a sec, checking your Java</h3>
+		    <h3 class='invisible javaFail'>
+		        You don't have Java Web Start (Enterprisey Edition for the Professional Enterprise) and you'll have to install it for your computer to play mario for you.  We live in troubled times.  <a href='http://java.sun.com/javase/downloads/ea.jsp'>You can download Java here</a>
+		    </h3>
+		    <h3 class='invisible javaWorking'>
+		        <a href='../playForever.jnlp'>Click here to run the Mario</a>!
+		    </h3>
+		
+		    <h3>Like in this Youtubes (only we've disabled the lines and words for now):</h3>
+		    
+		    <object width="853" height="505"><param name="movie" value="http://www.youtube.com/v/NmpIEbiRyCU&hl=en&fs=1&hd=1"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/NmpIEbiRyCU&hl=en&fs=1&hd=1" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="853" height="505"></embed></object>
+    	</div>
+	  
+    	<script type="text/javascript">
+            jwsPresent = 0;
+    	    if (navigator.mimeTypes && navigator.mimeTypes.length && navigator.mimeTypes['application/x-java-jnlp-file'])
+                jwsPresent = 1;
+        </script>
+        <script type="VBScript">
+            on error resume next
+            If Not(IsObject(CreateObject("JavaWebStart.isInstalled"))) Then
+                jwsPresent = 0
+            Else
+                jwsPresent = 1
+            End If
+        </script>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+	    <script type="text/javascript">
+	        google.load("jquery","1.3.0");
+
+            google.setOnLoadCallback(function() {
+                $(".checkingJava").hide();
+                if (jwsPresent === 1)
+                    $(".javaWorking").show();
+                else
+                    $(".javaFail").show();
+            });
+        </script>
+	  
+	  
+        <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript">
+        try{
+        var pageTracker = _gat._getTracker("UA-306413-1");
+        pageTracker._trackPageview();
+        } catch(err) {}
+        </script>
+    </body>
+</html>
