@@ -48,8 +48,9 @@ public final class BestFirstAgent extends RegisterableAgent implements Agent
 
 //	private static final float lookaheadDist = 9*16;
 	private float cost(MarioState s, MarioState initial) {
+		float steps = 0;
 		if(s.dead)
-			return Float.POSITIVE_INFINITY;
+			steps += Tunables.DeadCost;
 
 		int MarioX = (int)s.x/16 - s.ws.MapX;
 		int goal = 21;
@@ -57,7 +58,7 @@ public final class BestFirstAgent extends RegisterableAgent implements Agent
 		//while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
 		//no don't
 		//
-		float steps = MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa);
+		steps += Tunables.FactorA * MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa);
 		// if we're standing in front of some thing, give the heuristic a
 		// little help also adds a small penalty for walking up to something in
 		// the first place
@@ -73,12 +74,12 @@ public final class BestFirstAgent extends RegisterableAgent implements Agent
 					}
 				}
 				if(s.y > edgeY+1) { // we're inside a chasm; don't waste time searching for a way out
-					return Float.POSITIVE_INFINITY;
+					steps += Tunables.ChasmPenalty;
 				}
 			}
 			float nextColY = (s.ws.heightmap[MarioX+1] + s.ws.MapY)*16;
 			if(nextColY < s.y)
-				steps += MarioMath.stepsToJump(s.y-nextColY);
+				steps += Tunables.FactorB *MarioMath.stepsToJump(s.y-nextColY);
 		}
 
 		return steps;
@@ -135,7 +136,7 @@ public final class BestFirstAgent extends RegisterableAgent implements Agent
 				continue;
 			MarioState ms = initialState.next(a, ws);
 			ms.root_action = a;
-			ms.cost = 1 + cost(ms, initialState);
+			ms.cost = Tunables.FactorC + cost(ms, initialState);
 			pq.add(ms);
 			if(verbose2)
 				System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
@@ -169,12 +170,12 @@ public final class BestFirstAgent extends RegisterableAgent implements Agent
 
 				// if we die, penalize the predecessor path that got us here
 				if(ms.dead) {
-					float penalty = 1000;
+					float penalty = Tunables.DeathPenalty;
 					for(ms = ms.pred;ms != initialState;ms = ms.pred) {
 						pq.remove(ms);
 						ms.cost += penalty;
 						pq.add(ms);
-						penalty = penalty/4;
+						penalty = penalty/Tunables.DeathPenaltyWeakening;
 					}
 					// removing things from a priority queue is ridiculously
 					// slow, so we'll just mark it dead
@@ -183,8 +184,8 @@ public final class BestFirstAgent extends RegisterableAgent implements Agent
 				}
 
 				float h = cost(ms, initialState);
-				ms.g = next.g + 1;
-				ms.cost = ms.g + h;// + ((a/MarioState.ACT_JUMP)>0?0.0001f:0);
+				ms.g = next.g + Tunables.GIncrement;
+				ms.cost = ms.g + h + ((a/MarioState.ACT_JUMP)>0?Tunables.FeetOnTheGroundBonus:0);
 				if(h < 0.1f) {
 					pq.clear();
 					if(verbose1) {
