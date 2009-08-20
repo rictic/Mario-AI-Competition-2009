@@ -61,7 +61,7 @@ public class Stats {
     }
 
 
-    public static StatisticalSummary test (Agent controller, EvaluationOptions options, int seed, int level) {
+    public static StatisticalSummary test (TimingAgent controller, EvaluationOptions options, int seed, int level) {
         StatisticalSummary ss = new StatisticalSummary ();
         for (int i = 0; i < numberOfTrials; i++) {
             options.setLevelRandSeed(seed + i);
@@ -69,7 +69,7 @@ public class Stats {
             options.setAgent(controller);
             Evaluator evaluator = new Evaluator (options);
             EvaluationInfo result = evaluator.evaluate().get(0);
-			System.out.printf("  map seed %d diff %2d -> %f\n", seed+i, level, result.computeDistancePassed());
+			System.out.printf("  map seed %d diff %2d -> %f (%f ms/frame)\n", seed+i, level, result.computeDistancePassed(), controller.averageTimeTaken());
             ss.add (result.computeDistancePassed());
         }
         return ss;

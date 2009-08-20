@@ -52,6 +52,8 @@ public class EvaluationOptions extends SimulationOptions
 
     public Point getViewLocation()
     {
+    	if (GlobalOptions.dontResetWindowPosition)
+    		return null;
         int x = i(getParameterValue("-vlx"));
         int y = i(getParameterValue("-vly"));
         return new Point(x, y);

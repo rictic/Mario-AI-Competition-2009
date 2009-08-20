@@ -106,7 +106,9 @@ public class ToolsConfigurator extends JFrame
         }
 //        marioComponentFrame.setTitle(evaluationOptions.getAgent().getName() + " - Mario Intelligent 2.0");
         marioComponentFrame.setAlwaysOnTop(evaluationOptions.isViewAlwaysOnTop());
-        marioComponentFrame.setLocation(evaluationOptions.getViewLocation());
+        Point newWindowLocation = evaluationOptions.getViewLocation();
+        if (newWindowLocation != null)
+        	marioComponentFrame.setLocation(newWindowLocation);
         marioComponentFrame.setVisible(evaluationOptions.isVisualization());
     }
 

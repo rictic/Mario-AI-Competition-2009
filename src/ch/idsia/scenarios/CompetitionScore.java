@@ -20,8 +20,8 @@ public class CompetitionScore {
     final static int numberOfTrials = 10;
 
     public static void main(String[] args) {
-        Agent controller = RegisterableAgent.load (args[0]);
-        final int startingSeed = Integer.parseInt (args[1]);
+        Agent controller = RegisterableAgent.load ("com.reddit.programming.mario.BestFirstAgent");
+        final int startingSeed = Integer.parseInt ("0");
         score (controller, startingSeed);
         System.exit (0);
     }

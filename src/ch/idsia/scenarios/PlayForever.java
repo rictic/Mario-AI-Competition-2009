@@ -39,7 +39,7 @@ public class PlayForever {
 
 		GlobalOptions.drawText = false;
 		while (true) {
-			Agent controller = new BestFirstAgent(); // This line uses the agent you imported above.
+			Agent controller = new ThreadedBestFirstAgent(); // This line uses the agent you imported above.
 			if (args.length > 0) {
 				controller = RegisterableAgent.load (args[0]);
 				RegisterableAgent.registerAgent (controller);
@@ -51,6 +51,7 @@ public class PlayForever {
 			GlobalOptions.currentController = controller.getName();
 			GlobalOptions.writeFrames = false; //set to true to write frames to disk
 			GlobalOptions.TimerOn = false;
+			GlobalOptions.dontResetWindowPosition = true;
 			EvaluationOptions options = new CmdLineOptions(new String[0]);
 			options.setAgent(controller);
 			Task task = new ProgressTask(options);
