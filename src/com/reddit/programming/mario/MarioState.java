@@ -7,6 +7,7 @@ public final class MarioState extends SpriteState
 	public int jumpTime = 0,
 		   invulnerableTime = 0;
 	public boolean big = true,  // mario is big
+		   dead = false, // yep
 		   fire = true, // mario can throw fireballs
 		   wasOnGround = false, // previous frame (used for stomping logic)
 		   mayJump = true,  // yep
@@ -33,6 +34,7 @@ public final class MarioState extends SpriteState
 	}
 
 	public float height() { return big ? 24 : 12; }
+	public final boolean dead() { return dead; }
 
 	public void print() {
 		System.out.printf("g=%d a:%d x:(%f,%f) v:(%f,%f) %s%s%s cost=%f\n", (int)g, action,x,y,xa,ya,
@@ -54,23 +56,24 @@ public final class MarioState extends SpriteState
 		n.xJumpSpeed = xJumpSpeed; n.yJumpSpeed = yJumpSpeed;
 		n.root_action = root_action;
 		n.action = action;
-		n.ws = ws.step();
 		n.pred = this;
 		n.invulnerableTime = invulnerableTime;
-		n.g = g + 1;
 
 		int jump_steps = action/ACT_JUMP;
 		if(jump_steps > 1) {
 			action = (action&7) + 8;
 			for(int i=0;i<jumpstep_table[jump_steps];i++) {
+				n.g = g + 1;
+				n.ws = ws.step();
 				n.move(action);
+				n.ws = n.ws.interact(n);
 			}
 		} else {
+			n.g = g + 1;
+			n.ws = ws.step();
 			n.move(action);
+			n.ws = n.ws.interact(n);
 		}
-
-		// run collision checks and update the world with it
-		n.ws = n.ws.interact(n);
 
 		return n;
 	}

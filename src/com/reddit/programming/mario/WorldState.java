@@ -56,7 +56,7 @@ public final class WorldState
 		MapY = (int)marioPosition[1]/16 - 11;
 		succ = new HashMap<WSHashKey, WorldState>();
 		enemies = new Vector<SpriteState>();
-		syncEnemies(enemyPosition);
+		syncEnemies(enemyPosition, marioPosition);
 		buildHeightMap();
 	}
 
@@ -90,8 +90,7 @@ public final class WorldState
 		MapX = (int)marioPosition[0]/16 - 11;
 		MapY = (int)marioPosition[1]/16 - 11;
 		buildHeightMap();
-		stepEnemies();
-		syncEnemies(enemyPosition);
+		syncEnemies(enemyPosition, marioPosition);
 		succ.clear();
 	}
 
@@ -136,7 +135,7 @@ public final class WorldState
 	}
 
 	// this function is terrible and slow, but it only needs to be done once per real frame.
-	public void syncEnemies(float[] enemyObs) {
+	public void syncEnemies(float[] enemyObs, float[] marioPos) {
 		// when we get a new observation, sort the observation by x and filter
 		// through the list, using the nearest enemy of the same type and comparing
 		// predicted states with actual
@@ -150,10 +149,19 @@ public final class WorldState
 
 		// merge enemy observations into our internal enemy array
 		Vector<SpriteState> newenemies = new Vector<SpriteState>(obs.length+2);
+		Vector<SpriteState> oldenemies = (Vector<SpriteState>)enemies.clone();
+		// step enemies forward one, while keeping oldenemies for resync purposes
+		for(int i=0;i<enemies.size();i++) {
+			SpriteState e = enemies.get(i).clone();
+			e.move(this);
+			enemies.set(i, e);
+		}
 		for(EnemyObservation eobs : obs) {
 			SpriteState closest = null;
 			float closestdist=Float.POSITIVE_INFINITY;
-			for(SpriteState s : enemies) {
+			int closest_idx = 0;
+			for(int i=0;i<enemies.size();i++) {
+				SpriteState s = enemies.get(i);
 				if(s.type != eobs.type)
 					continue;
 				float ex = s.x - eobs.x;
@@ -162,29 +170,26 @@ public final class WorldState
 				if(closest == null || dist < closestdist) {
 					closest = s;
 					closestdist = dist;
+					closest_idx = i;
 				}
 			}
 			if(closest==null || closestdist > 16) { // allow a slop of 4 pixels (4^2 = 16)
 				// assume new enemy
 				//System.out.printf("new enemy @%f,%f type %d\n",
 				//		eobs.x, eobs.y, eobs.type);
-				closest = SpriteState.newEnemy(eobs.x, eobs.y, eobs.type);
+				closest = SpriteState.newEnemy(eobs.x, eobs.y, eobs.type, marioPos);
 			} else {
 				if(closestdist != 0) {
-					//System.out.printf("enemy t=%d sync problem: %f,%f -> %f,%f\n",
-					//		eobs.type, closest.x, closest.y, eobs.x, eobs.y);
-					closest.x = eobs.x;
-					closest.y = eobs.y;
+					SpriteState prev = oldenemies.get(closest_idx);
+					//System.out.printf("enemy t=%d sync problem: %f,%f -> %f,%f; delta=%f,%f\n",
+					//		eobs.type, closest.x, closest.y, eobs.x, eobs.y,
+					//		eobs.x-prev.x, eobs.y-prev.y);
+					closest.resync(eobs.x, eobs.y, prev.x, prev.y);
 				}
-				enemies.remove(closest);
 			}
 			if(closest != null)
 				newenemies.add(closest);
 		}
-//		for(SpriteState s : enemies) {
-//			//System.out.printf("enemy t=%d @%f,%f disappeared?\n",
-//			//		s.type, s.x, s.y);
-//		}
 		enemies = newenemies;
 	}
 
@@ -207,7 +212,7 @@ public final class WorldState
 	public WorldState interact(MarioState ms) {
 		WorldState ws = this;
 		for(SpriteState e : enemies) {
-			// TODO: if it's a shell or fireball, then skip it
+			// if it's a shell or fireball, then skip it
 			if(e.type >= SpriteState.KIND_SHELL)
 				continue;
 			ws = e.collideCheck(ws, ms);

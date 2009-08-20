@@ -74,6 +74,22 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 				steps += MarioMath.stepsToJump(s.y-nextColY);
 		}
 
+		/*
+		SpriteState closest = null;
+		float closest_stomp = 0;
+		for(SpriteState e : s.ws.enemies) {
+			if(e.type <= 8 && !e.dead()) {
+				float n = MarioMath.stepsToStomp(s, e);
+				if(closest == null || n < closest_stomp) {
+					closest_stomp = n;
+					closest = e;
+				}
+			}
+		}
+		if(closest != null)
+			return closest_stomp;
+			*/
+
 		return steps;
 	}
 

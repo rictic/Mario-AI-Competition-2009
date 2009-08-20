@@ -67,5 +67,13 @@ public final class FlowerEnemyState extends EnemyState
 		return true;
     }
 
+	public void resync(float x, float y, float prev_x, float prev_y) {
+		this.x = x;
+		this.y = y;
+		this.xa = 0;
+		this.ya = (y - prev_y)*0.9f + 0.1f;
+	}
+
+
 }
 
