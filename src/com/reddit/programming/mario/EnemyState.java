@@ -129,6 +129,11 @@ public class EnemyState extends SpriteState
 		}
 		facing = (this.xa < 0) ? -1 : 1;
 		this.ya = (y - prev_y) * (winged() ? 0.95f : 0.85f);
+		if(xa != 0 && ya == 0) {
+			// if we're moving along the ground, then we aren't dead from a
+			// shell or something
+			deadTime = 0;
+		}
 		if (!onGround) {
 			if (winged())
 				ya += 0.6f;

@@ -37,7 +37,6 @@ public class SpriteState
 
 	// default resync: dead reckoning
 	public void resync(float x, float y, float prev_x, float prev_y) {
-		System.out.printf("spritestate:resync\n");
 		this.x = x;
 		this.y = y;
 		this.xa = x - prev_x;
