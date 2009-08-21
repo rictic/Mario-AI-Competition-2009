@@ -68,17 +68,23 @@ public class TweakRunner {
 				for (int j = 0; j<best.length; ++j)
 					settings[j] = best[j];
 				int j = rnd.nextInt(best.length);
-				settings[j] *= 1 + 0.01*(rnd.nextBoolean()?1:-1);
+				float delta = 0.01f*(rnd.nextBoolean()?1:-1);
+				settings[j] = (settings[j] * (1f+delta)) + delta;
 			}
 		}
 	}
 	
 	private static float DoRun()
 	{
-		float result =0;
+		float min = 1e10f;
+		float sum = 0;
 		for (int i = 0; i< 50; ++i)
-			result += Run(i, 20, 300);
-		return result;
+		{
+			float r = Run(i, 20, 300);
+			min = Math.min(r, min);
+			sum += r;
+		}
+		return (min * 100) + (sum / 50);
 	}
 	
 	private static float Run(int seed, int difficulty, int length)
