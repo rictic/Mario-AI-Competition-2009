@@ -144,6 +144,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
         while (/*Thread.currentThread() == animator*/ running) {
             // Display the next frame of animation.
 //                repaint();
+			tm = System.currentTimeMillis();
             scene.tick();
             if (gameViewer != null && gameViewer.getContinuousUpdatesState())
                 gameViewer.tick();
@@ -239,8 +240,7 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
             if (delay > 0)
                 try {
                     tm += delay;
-                    //Thread.sleep(Math.max(0, tm - System.currentTimeMillis()));
-                    Thread.sleep(delay);
+                    Thread.sleep(Math.max(0, tm - System.currentTimeMillis()));
                 } catch (InterruptedException e) {
                     break;
                 }
