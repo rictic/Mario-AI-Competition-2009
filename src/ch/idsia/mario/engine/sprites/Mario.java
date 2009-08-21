@@ -362,6 +362,7 @@ public class Mario extends Sprite
 
         if (x > world.level.xExit * 16)
         {
+            x = world.level.xExit * 16;
             win();
         }
 
