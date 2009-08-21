@@ -3,3 +3,8 @@ classes
 .classpath
 .project
 .pydevproject
+marioai.jcp
+marioai.jcu
+marioai.jcw
+src_marioai.txt
+*~

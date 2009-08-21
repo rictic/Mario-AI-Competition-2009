@@ -77,7 +77,7 @@ public class TweakRunner {
 	{
 		float result =0;
 		for (int i = 0; i< 50; ++i)
-			result += Run(i, 20, 200);
+			result += Run(i, 20, 300);
 		return result;
 	}
 	
