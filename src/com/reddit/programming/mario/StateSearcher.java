@@ -14,7 +14,7 @@ class StateSearcher implements Runnable {
 //		private final WorldState ws;
 		final int id;
 		private boolean shouldStop = false;
-		public boolean isStopped = false;
+		public  volatile boolean isStopped = false;
 		MarioState bestfound;
 		private int DrawIndex = 0;
 		private Object notificationObject;
