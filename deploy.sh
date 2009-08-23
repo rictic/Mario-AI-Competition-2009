@@ -1,0 +1,1 @@
+scp -r web/* rictic@rictic.com:~/rictic.com/public/

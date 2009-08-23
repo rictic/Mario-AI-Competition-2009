@@ -3,3 +3,5 @@ classes
 .classpath
 .project
 .pydevproject
+web/jdom.jar
+web/playForever.jar
