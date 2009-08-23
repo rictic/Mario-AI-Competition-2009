@@ -78,7 +78,7 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 		initializeSearchers(initialState, ws, notificationObject);
 		try {
 			synchronized(notificationObject){
-				notificationObject.wait(30);
+				notificationObject.wait(25);
 			}
 		} catch (InterruptedException e) {throw new RuntimeException("Interrupted from sleep searching for the best action");}
 		stopSearchers();
