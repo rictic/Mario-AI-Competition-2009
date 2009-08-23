@@ -39,68 +39,163 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 		marioPosition = null;
 	}
 
-//	private static final float lookaheadDist = 9*16;
+	private static final float lookaheadDist = 9*16;
 	protected float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 
 		int MarioX = (int)s.x/16 - s.ws.MapX;
 		int goal = 21;
-		// move goal back from the abyss
-		//while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
-		//no don't
+		float fgoalX = (goal+s.ws.MapX)*16+8;
+		float xsteps = MarioMath.stepsToRun(fgoalX - s.x, s.xa);
+		if(MarioX < 0 || MarioX >= 22) // mario ran off the screen; we're done
+			return xsteps;
+		
+		// We need to determine how many steps, at a minimum, it will take to
+		// jump over whatever obstacles are in front of us.
 		//
-		float steps = MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa);
-		// if we're standing in front of some thing, give the heuristic a
-		// little help also adds a small penalty for walking up to something in
-		// the first place
-		if(MarioX < 21) {
-			int thisY = s.ws.heightmap[MarioX];
-			if(thisY == 22) { // we're either above or inside a chasm
-				float edgeY = (22+s.ws.MapY)*16;
-				// find near edge
-				for(int i=MarioX-1;i>=0;i--) {
-					if(s.ws.heightmap[i] != 22) {
-						edgeY = (s.ws.heightmap[i]+s.ws.MapY)*16;
-						break;
+		// We also need to know whether we're going to fall into an abyss with
+		// nothing we can do about it, as soon as it is possible to know this,
+		// so as to terminate the search here.
+		//
+		// So: if Mario is on the ground, we just figure in however long it
+		// takes to jump above obstacles of various heights; otherwise, we need
+		// to figure out the best place he could land and whether he needs to
+		// make a further jump from there
+		//
+		// First, what is the biggest obstacle in front of us?
+
+		float ysteps = 0;
+		int ledgeY = 22;
+		int ledgeX = MarioX;
+		for(int i=MarioX;i<=goal;i++) {
+			if(s.ws.heightmap[i] < ledgeY) {
+				ledgeY = s.ws.heightmap[i];
+				ledgeX = i;
+			}
+		}
+		// fLedgeX,Y is mario's leftmost location atop highest ledge in front of us
+		float fLedgeY = (ledgeY+s.ws.MapY)*16 - 1;
+		float fLedgeX = (ledgeX+s.ws.MapX)*16 - 4;
+
+
+		if(s.onGround) {
+			if(s.y <= fLedgeY)
+				return MarioMath.stepsToRun(fgoalX - s.x, s.xa);
+			else {
+				// (this assumes we can reach the ledge from our current location..)
+				return MarioMath.stepsToJump(s.y - fLedgeY) + 
+					MarioMath.stepsToRun(fgoalX - ledgeX, s.xa);
+			}
+		} else {
+			// we're in the air.  okay, how far left and right can we possibly land?
+			MarioState l = s.clone(), r = s.clone();
+			// save x and y at apogee
+			float jMinY = l.y, jMinX = l.x, jMaxX = r.x;
+			int stepsTop=0;
+			int stepsy=0;
+			int stepsL=0, stepsR=0;
+			while(!l.dead && !l.onGround) {
+				l.move(MarioState.ACT_SPEED | MarioState.ACT_LEFT | MarioState.ACT_JUMP);
+				stepsL++;
+				if(l.y < jMinY) {
+					jMinY = l.y;
+					jMinX = l.x;
+					stepsTop = stepsL;
+				}
+			}
+			while(!r.dead && !r.onGround) {
+				r.move(MarioState.ACT_SPEED | MarioState.ACT_RIGHT | MarioState.ACT_JUMP);
+				stepsR++;
+				if(r.y <= jMinY) {
+					// if we have an unobstructed path to the right then this
+					// should happen exactly once
+					jMinY = r.y;
+					jMaxX = r.x;
+					stepsTop = stepsR;
+				}
+			}
+			if(r.dead && l.dead) // we're dead no matter what!  forget it!
+				return Float.POSITIVE_INFINITY;
+
+			// tried a bunch of advanced shit below, but just doing the
+			// on-ground case here again seems to work great.
+			if(s.y <= fLedgeY)
+				return MarioMath.stepsToRun(fgoalX - s.x, s.xa);
+			else {
+				// (this assumes we can reach the ledge from our current location..)
+				return MarioMath.stepsToJump(s.y - fLedgeY) + 
+					MarioMath.stepsToRun(fgoalX - ledgeX, s.xa);
+			}
+
+			/*
+			// okay, now, can we surmount the highest obstacle in this jump?
+			// if so, then we're golden.
+			if(jMinY <= fLedgeY) {
+				return Math.max(Math.min(stepsL, stepsR),
+								MarioMath.stepsToRun(fgoalX - s.x, s.xa));
+			} else { // if not, we have to land, then jump over it.
+				// search the heightmap between the left and right landings for
+				// the highest perch we can reach
+				int perchX=0, perchY=22;
+				for(float i=l.x;i<=r.x;i+=16) {
+					int idx = (int)i/16 - s.ws.MapX;
+					if(idx<0 || idx>=22)
+						continue;
+					if(s.ws.heightmap[idx] < perchY) { // look for leftmost edge
+						perchX = idx;
+						perchY = s.ws.heightmap[idx];
 					}
 				}
-				if(s.y > edgeY+1) { // we're inside a chasm; don't waste time searching for a way out
-					return Float.POSITIVE_INFINITY;
+				// leftmost position to land
+				float landy = (perchY+s.ws.MapY)*16 - 1;
+				float landx = (perchX+s.ws.MapX)*16 - 4;
+				// are we already above the landing?
+				if(s.y <= landy) {
+					// if so, then figure out how much time it takes to land,
+					// jump to the next ledge, and then run right
+					return MarioMath.stepsToFall(landy - s.y, s.ya) +
+						MarioMath.stepsToJump(fLedgeY - landy) +
+						MarioMath.stepsToRun(fgoalX - fLedgeX, s.xa);
+				} else {
+					// ok, we need to reach apogee first, then land, then jump,
+					// then run.
+					return stepsTop +
+						MarioMath.stepsToFall(landy - jMinY, 0) +
+						MarioMath.stepsToJump(fLedgeY - landy) +
+						MarioMath.stepsToRun(fgoalX - fLedgeX, s.xa);
 				}
 			}
-			float nextColY = (s.ws.heightmap[MarioX+1] + s.ws.MapY)*16;
-			if(nextColY < s.y)
-				steps += MarioMath.stepsToJump(s.y-nextColY);
-		}
-
-		/*
-		SpriteState closest = null;
-		float closest_stomp = 0;
-		for(SpriteState e : s.ws.enemies) {
-			if(e.type <= 8 && !e.dead()) {
-				float n = MarioMath.stepsToStomp(s, e);
-				if(closest == null || n < closest_stomp) {
-					closest_stomp = n;
-					closest = e;
-				}
-			}
-		}
-		if(closest != null)
-			return closest_stomp;
 			*/
+		}
 
-		return steps;
+		// unreachable
 	}
 
 
 	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
 
-	protected boolean useless_action(int a, MarioState s) {
+	static final public boolean useless_action(int a, MarioState s) {
+		// speed without left or right: useless
+		if((a&MarioState.ACT_SPEED)>0 && 
+		   !((a&MarioState.ACT_LEFT)>0 || (a&MarioState.ACT_RIGHT)>0))
+			return true;
+		// left and right at the same time: useless
 		if((a&MarioState.ACT_LEFT)>0 && (a&MarioState.ACT_RIGHT)>0) return true;
+		// jumping when the jump button doesn't do anything: useless
 		if((a/MarioState.ACT_JUMP)>0) {
 			if(s.jumpTime == 0 && !s.mayJump) return true;
 			if(s.jumpTime <= 0 && !s.onGround && !s.sliding) return true;
+		}
+		// standing next to something that we're going to collide with by
+		// moving right: useless (except for walljumps actually)
+		int ix = (int) s.x;
+		if((a&MarioState.ACT_RIGHT)>0 && s.xa == 0 && (s.x - ix) == 0 && (ix&15) == (16-5)) {
+			// ok, we are exactly at a brick boundary.  is there something there?
+			if(s.ws.isBlocking((ix+5)/16, (int)(s.y/16), 1,s.ya) ||
+			   s.ws.isBlocking((ix+5)/16, (int)(s.y/16)-1, 1,s.ya) ||
+			   s.ws.isBlocking((ix+5)/16, (int)(s.y/16)-2, 1,s.ya))
+				return true;
 		}
 		return false;
 	}
@@ -148,7 +243,10 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 		if(ms == null) {
 			// assume one frame of falling before we get an observation :(
 			ms = new MarioState(mpos[0], mpos[1], 0.0f, 3.0f);
+			ws = new WorldState(sensors.levelScene, ms, observation.getEnemiesFloatPos());
 		} else {
+			ws = ws.update(sensors.levelScene, ms, observation.getEnemiesFloatPos());
+
 			//System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 			if(mpos[0] != pred_x || mpos[1] != pred_y) {
 				// generally this shouldn't happen, unless we mispredict
@@ -162,9 +260,13 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 					won = true;
 					return action;
 				}
-				if(verbose1)
+				if(verbose1) {
 					System.out.printf("mario state mismatch (%f,%f) -> (%f,%f); attempting resync\n",
 							ms.x,ms.y, mpos[0], mpos[1]);
+					try {
+						System.in.read();
+					} catch(IOException e) {}
+				}
 				resync(observation);
 			}
 		}
@@ -179,12 +281,6 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 				System.out.printf(" e %d %f,%f\n", (int)e[i], e[i+1], e[i+2]);
 			}
 		}
-
-		// quantize mario's position to get the map origin
-		if(ws == null)
-			ws = new WorldState(sensors.levelScene, mpos, observation.getEnemiesFloatPos());
-		else
-			ws.update(sensors.levelScene, mpos, observation.getEnemiesFloatPos());
 
 		int next_action = searchForAction(ms, ws);
 		if(next_action/MarioState.ACT_JUMP > 0)

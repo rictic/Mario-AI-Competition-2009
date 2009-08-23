@@ -27,7 +27,7 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 		initialState.dead = false;
 		initialState.pred = null;
 		// add initial set
-		for(int a=1;a<16;a++) {
+		for(int a=0;a<16;a++) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, ws);

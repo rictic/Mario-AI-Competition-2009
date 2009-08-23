@@ -40,7 +40,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 
 		int a,n;
 		// add initial set
-		for(a=1;a<16;a++) {
+		for(a=0;a<16;a++) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, ws);
@@ -71,7 +71,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 			line1.color = new Color(color);
 
 			//System.out.printf("a*: trying "); next.print();
-			for(a=1;a<16;a++) {
+			for(a=0;a<16;a++) {
 				if(useless_action(a, next))
 					continue;
 				MarioState ms = next.next(a, next.ws);
