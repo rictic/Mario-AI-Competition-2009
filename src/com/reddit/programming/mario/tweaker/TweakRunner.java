@@ -8,7 +8,7 @@ import com.reddit.programming.mario.*;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.ai.*;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
-import ch.idsia.ai.tasks.ProgressTask;
+import ch.idsia.ai.tasks.ProgressPlusTimeLeftTask;
 import ch.idsia.ai.tasks.Task;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.tools.CmdLineOptions;
@@ -37,6 +37,8 @@ public class TweakRunner {
 		float bestScore = -1e10f;		
 			
 		Random rnd = new Random();
+		int idx = 0;
+		boolean direction = false;
 		for (int i =0 ; i< 1000; ++i)
 		{
 			Tunables.FactorA = settings[0];
@@ -54,37 +56,43 @@ public class TweakRunner {
 				bestScore = score;
 				for (int j = 0; j<best.length; ++j)
 					best[j] = settings[j];
+				float delta = rnd.nextFloat()*(direction?1:-1);
+				settings[idx] = (settings[idx] * (1f+delta)) + delta;
 				System.out.println(score+":"+ArrayUtils.toString(best));
 			}
-			else if (score == bestScore)
-			{
-				System.out.println("=");
-				int j = rnd.nextInt(best.length);
-				settings[j] *= 1 + 0.01*(rnd.nextBoolean()?1:-1);
-			}
+//			 if (score == bestScore)
+//			{
+//				System.out.println("=");
+//				float delta = rnd.nextFloat()*(direction?1:-1);
+//				settings[idx] = (settings[idx] * (1f+delta)) + delta;
+//			}
 			else
 			{
 				System.out.println(".");
 				for (int j = 0; j<best.length; ++j)
 					settings[j] = best[j];
-				int j = rnd.nextInt(best.length);
-				float delta = 0.01f*(rnd.nextBoolean()?1:-1);
-				settings[j] = (settings[j] * (1f+delta)) + delta;
+				idx = rnd.nextInt(best.length);
+				direction = rnd.nextBoolean();
+				float delta = rnd.nextFloat()*(direction?1:-1);
+				settings[idx] = (settings[idx] * (1f+delta)) + delta;
 			}
 		}
 	}
 	
 	private static float DoRun()
 	{
-		float min = 1e10f;
+//		float min = 1e10f;
 		float sum = 0;
-		for (int i = 0; i< 50; ++i)
+		int c = 20;
+		for (int i = 0; i< c; ++i)
 		{
-			float r = Run(i, 20, 300);
-			min = Math.min(r, min);
+			float r = Run(i, 20, 100);
+//			min = Math.min(r, min);
 			sum += r;
 		}
-		return (min * 100) + (sum / 50);
+		return
+//			 (min) +
+			 	 (sum / c);
 	}
 	
 	private static float Run(int seed, int difficulty, int length)
@@ -99,7 +107,7 @@ public class TweakRunner {
 		GlobalOptions.writeFrames = false;
 		EvaluationOptions options = new CmdLineOptions(new String[0]);
 		options.setAgent(controller);
-		Task task = new ProgressTask(options);
+		Task task = new ProgressPlusTimeLeftTask(options);
 		options.setMaxFPS(true);
 		options.setVisualization(false);
 		options.setMaxAttempts(1);

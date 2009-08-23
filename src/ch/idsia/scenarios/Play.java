@@ -46,7 +46,7 @@ public class Play {
 		GlobalOptions.setSeed(seed);
 		GlobalOptions.setDifficulty(difficulty);
 
-		Agent controller = new BudgetingBestFirstAgent(); // This line uses the agent you imported above.
+		Agent controller = new BestFirstAgent(); // This line uses the agent you imported above.
 		if (args.length > 0) {
 			controller = RegisterableAgent.load (args[0]);
 			RegisterableAgent.registerAgent (controller);
