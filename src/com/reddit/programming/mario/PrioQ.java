@@ -17,7 +17,7 @@ public class PrioQ {
         int i = size;
         if (i >= queue.length)
         {
-        	drop(queue.length/2);
+        	drop();
         	i = size;
         }
         size = i + 1;
@@ -61,9 +61,14 @@ public class PrioQ {
         return result;
     }
     
-    public void drop(int count) {
+    public void drop() {
     	Arrays.sort(queue, 0, size, comparator);
-        for (int i = 0; i< count; ++i)
+    	int l = size;
+//    	int l2 = l >> 1;
+    	int l4 = l >> 2;
+//    	for (int i = 1; i<l4; ++i)
+//    		queue[l4+i] = queue[l4+i*2];
+        for (int i = 0; i< l4; ++i)
 			queue[--size] = null;        	
         for (int i = (size >>> 1) - 1; i >= 0; i--)
             siftDown(i, queue[i]);

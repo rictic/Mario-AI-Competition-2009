@@ -9,7 +9,7 @@ import ch.idsia.mario.engine.GlobalOptions;
 public final class BestFirstAgent extends HeuristicSearchingAgent implements Agent
 {
 	private PrioQ pq;
-	private static final int maxSteps = 1024;
+	private static final int maxSteps = 500;
 
 	public BestFirstAgent() {
 		super("BestFirstAgent");
@@ -29,6 +29,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 		float steps = 0;
 		if(s.dead)
 			steps += Tunables.DeadCost;
+		steps += Tunables.HurtCost * s.hurt();
 
 		int MarioX = (int)s.x/16 - s.ws.MapX;
 		if (MarioX < 0)
@@ -144,6 +145,9 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 				ms.g = next.g + Tunables.GIncrement;
 				ms.cost = ms.g + h + ((a/MarioState.ACT_JUMP)>0?Tunables.FeetOnTheGroundBonus:0);
 
+				if (h < 0.1f)
+					continue;
+				/*
 				if(h < 0.1f) {
 					pq.clear();
 					if(verbose1) {
@@ -171,6 +175,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 					Tunables.PathFound++;
 					return ms.root_action;
 				}
+				*/
 				pq.offer(ms);
 				pq_siz++;
 				bestfound = marioMin(ms,bestfound);

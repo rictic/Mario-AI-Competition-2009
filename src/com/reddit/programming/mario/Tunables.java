@@ -3,13 +3,14 @@ package com.reddit.programming.mario;
 
 public class Tunables {
 	public static float FactorA = 1f;
-	public static float FactorB = 0.9799f;
-	public static float FactorC = 1.0662f;
-	public static float GIncrement = 1.02f;
-	public static float DeadCost = 100f;
+	public static float FactorB = 1f;//0.9799f;
+	public static float FactorC = 1f;//1.0662f;
+	public static float GIncrement = 1.0342971f;//1.02f;
+	public static float HurtCost = 20;
+	public static float DeadCost = 1000f;
 	public static float ChasmPenalty = 1000f;
-	public static float FeetOnTheGroundBonus = -0.6184f;
-	public static int MaxBreadth = 20000;
+	public static float FeetOnTheGroundBonus = 0f;//-0.6184f;
+	public static int MaxBreadth = 53;
 	public static float PathFound = 0;
 	
 // old set

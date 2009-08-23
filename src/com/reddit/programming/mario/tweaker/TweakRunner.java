@@ -19,7 +19,7 @@ import java.util.Random;
 public class TweakRunner {
 	
 	public static void main(String[] args) {
-		float[] best = new float[8];
+		float[] best = new float[9];
 		best[0] = Tunables.FactorA;
 		best[1] = Tunables.FactorB;
 		best[2] = Tunables.FactorC;
@@ -28,17 +28,22 @@ public class TweakRunner {
 		best[5] = Tunables.ChasmPenalty;
 		best[6] = Tunables.FeetOnTheGroundBonus;
 		best[7] = Tunables.MaxBreadth;
+		best[8] = Tunables.HurtCost;
 		
-		float[] settings = new float[8];
+		float[] settings = new float[best.length];
 		for (int i = 0; i<best.length; ++i)
 			settings[i] = best[i];
 			
-		int parameter = 3;
+		int parameter = -1;
 
 		float bestScore = -1e10f;		
 			
 		Random rnd = new Random();
-		int idx = 0;
+		int idx;
+		if (parameter == -1)
+			idx = rnd.nextInt(best.length);
+		else
+			idx = parameter;		
 		boolean direction = false;
 		for (int i =0 ; i< 1000; ++i)
 		{
@@ -50,17 +55,19 @@ public class TweakRunner {
 			Tunables.ChasmPenalty = settings[5];
 			Tunables.FeetOnTheGroundBonus = settings[6];
 			Tunables.MaxBreadth = (int)settings[7];
+			Tunables.HurtCost = settings[8];
 			float score;
 			if (Tunables.MaxBreadth >= 2)
 				score = DoRun();
 			else
 				score = -1e10f;
+			score -= Tunables.MaxBreadth;
 			if (score > bestScore)
 			{
 				bestScore = score;
 				for (int j = 0; j<best.length; ++j)
 					best[j] = settings[j];
-				float delta = rnd.nextFloat()*(direction?1:-1);
+				float delta = 0.5f * rnd.nextFloat()*(direction?1:-1);
 				settings[idx] = (settings[idx] * (1f+delta));
 				System.out.println(score+":"+ArrayUtils.toString(best));
 			}
@@ -80,7 +87,7 @@ public class TweakRunner {
 				else
 					idx = parameter;
 				direction = rnd.nextBoolean();
-				float delta = rnd.nextFloat()*(direction?1:-1);
+				float delta = 0.5f * rnd.nextFloat()*(direction?1:-1);
 				settings[idx] = (settings[idx] * (1f+delta)) + 0.01f*delta;
 			}
 		}
