@@ -1,22 +1,19 @@
 package com.reddit.programming.mario;
 
 import java.awt.Color;
-import java.util.PriorityQueue;
-import java.util.Comparator;
+import java.util.*;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
 
 public final class BestFirstAgent extends HeuristicSearchingAgent implements Agent
 {
-	private PriorityQueue<MarioState> pq, pq2;
-	private static final int maxBreadth = 256;
-	private static final int maxSteps = 500;
+	private PrioQ pq;
+	private static final int maxSteps = 1024;
 
 	public BestFirstAgent() {
 		super("BestFirstAgent");
-		pq = new PriorityQueue<MarioState>(maxBreadth, msComparator);
-		pq2 = new PriorityQueue<MarioState>(maxBreadth, msComparator);
+		pq = new PrioQ(Tunables.MaxBreadth);
 	}
 
 	@Override
@@ -34,6 +31,11 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 			steps += Tunables.DeadCost;
 
 		int MarioX = (int)s.x/16 - s.ws.MapX;
+		if (MarioX < 0)
+		{
+			System.out.println("Whuh ?");
+			MarioX = 0;
+		}
 		int goal = 21;
 		// move goal back from the abyss
 		//while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
@@ -82,15 +84,6 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 		}
 	}
 
-	private PriorityQueue<MarioState> prune_pq() {
-		// first, swap pq2 and pq
-		PriorityQueue<MarioState> p = pq; pq = pq2; pq2 = p;
-		while(!pq2.isEmpty() && pq.size() < maxBreadth/2)
-			pq.add(pq2.remove());
-		pq2.clear();
-		return pq;
-	}
-
 	@Override
 	protected int searchForAction(MarioState initialState, WorldState ws) {
 		pq.clear();
@@ -110,7 +103,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 			MarioState ms = initialState.next(a, ws);
 			ms.root_action = a;
 			ms.cost = Tunables.FactorC + cost(ms, initialState);
-			pq.add(ms);
+			pq.offer(ms);
 			if(verbose2)
 				System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
@@ -122,18 +115,20 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 		// search after ~40ms
 		int pq_siz=0;
 		for(n=0;n<maxSteps && !pq.isEmpty();n++) {
-			if(pq.size() > maxBreadth)
-				pq = prune_pq();
-			DebugPolyLine line1 = new DebugPolyLine(Color.BLUE);
-			MarioState next = pq.remove();
+			DebugPolyLine line1 = null;
+			if (drawPath)
+				line1 = new DebugPolyLine(Color.BLUE);
+			MarioState next = pq.poll();
 
-			int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
-			color = color|(color<<8)|(color<<16);
-			addLine(next.x, next.y, next.pred.x, next.pred.y, color);
-			line1.AddPoint(next.x, next.y);
-			line1.AddPoint(next.pred.x, next.pred.y);
-			line1.color = new Color(color);
-
+			if (drawPath)
+			{
+				int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
+				color = color|(color<<8)|(color<<16);
+				addLine(next.x, next.y, next.pred.x, next.pred.y, color);
+				line1.AddPoint(next.x, next.y);
+				line1.AddPoint(next.pred.x, next.pred.y);
+				line1.color = new Color(color);
+			}
 			//System.out.printf("a*: trying "); next.print();
 			for(a=0;a<16;a++) {
 				if(useless_action(a, next))
@@ -141,24 +136,14 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 				MarioState ms = next.next(a, next.ws);
 				ms.pred = next;
 
-				// if we die, penalize the predecessor path that got us here
 				if(ms.dead) {
-					float penalty = Tunables.DeathPenalty;
-					for(ms = ms.pred;ms != initialState;ms = ms.pred) {
-						pq.remove(ms);
-						ms.cost += penalty;
-						pq.add(ms);
-						penalty = penalty/Tunables.DeathPenaltyWeakening;
-					}
-					// removing things from a priority queue is ridiculously
-					// slow, so we'll just mark it dead
-					//ms.pred.cost = Float.POSITIVE_INFINITY;
 					continue;
 				}
 
 				float h = cost(ms, initialState);
 				ms.g = next.g + Tunables.GIncrement;
 				ms.cost = ms.g + h + ((a/MarioState.ACT_JUMP)>0?Tunables.FeetOnTheGroundBonus:0);
+
 				if(h < 0.1f) {
 					pq.clear();
 					if(verbose1) {
@@ -168,30 +153,34 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 					MarioState s;
 					if(GlobalOptions.MarioPosSize > 400-46)
 						GlobalOptions.MarioPosSize = 400-46;
-					
-					DebugPolyLine line2 = new DebugPolyLine(Color.YELLOW);
-					for(s = ms;s != initialState;s = s.pred) {
-						if(verbose2) {
-							System.out.printf("state %d: ", (int)s.g);
-							s.print();
+					if (drawPath)
+					{
+						DebugPolyLine line2 = new DebugPolyLine(Color.YELLOW);
+						for(s = ms;s != initialState;s = s.pred) {
+							if(verbose2) {
+								System.out.printf("state %d: ", (int)s.g);
+								s.print();
+							}
+							// green line shows taken path
+							line2.AddPoint(s.x, s.y);
+							line2.AddPoint(s.pred.x, s.pred.y);
+							//addLine(s.x, s.y, s.pred.x, s.pred.y, 0x00ff00);
 						}
-						// green line shows taken path
-						line2.AddPoint(s.x, s.y);
-						line2.AddPoint(s.pred.x, s.pred.y);
-						//addLine(s.x, s.y, s.pred.x, s.pred.y, 0x00ff00);
-					}
-					GlobalOptions.MarioLines.PushFront(line2);
+						GlobalOptions.MarioLines.PushFront(line2);
+						}
+					Tunables.PathFound++;
 					return ms.root_action;
 				}
-				pq.add(ms);
+				pq.offer(ms);
 				pq_siz++;
 				bestfound = marioMin(ms,bestfound);
 			}
-			GlobalOptions.MarioLines.Push(line1);
+			if (drawPath)
+				GlobalOptions.MarioLines.Push(line1);
 		}
 
 		if (!pq.isEmpty())
-			bestfound = marioMin(pq.remove(), bestfound);
+			bestfound = marioMin(pq.poll(), bestfound);
 		if(verbose1) {
 			System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
 					bestfound.root_action, bestfound.cost, bestfound.g);

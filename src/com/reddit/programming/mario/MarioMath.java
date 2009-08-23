@@ -81,7 +81,19 @@ final class MarioMath {
 
 	// runDistance is terrible to invert, so use the secant method to solve it
 	public static float stepsToRun(float distance, float v0) {
-		return secantSolve(_runDistance, distance, v0, 0);
+		float x0=1, x1=2, xdiff;
+		float sgn = 1;
+		if(distance < 0) { sgn = -1; distance = -distance; }
+		do {
+			float fx0 = runDistance(v0, x0);
+			float fx1 = runDistance(v0, x1);
+			xdiff = (fx1-distance) * (x1 - x0)/(fx1 - fx0);
+			x0 = x1;
+			x1 -= xdiff;
+			// if our iteration takes us negative, negate and hope it doesn't loop
+			if(x1 < 0) x1 = -x1; // reflect about min
+		} while(Math.abs(xdiff) > 1e-4);
+		return x1*sgn;
 	}
 
 	// as, of course, is fallDistance

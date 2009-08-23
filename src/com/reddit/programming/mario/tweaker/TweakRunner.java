@@ -19,20 +19,21 @@ import java.util.Random;
 public class TweakRunner {
 	
 	public static void main(String[] args) {
-		float[] best = new float[9];
+		float[] best = new float[8];
 		best[0] = Tunables.FactorA;
 		best[1] = Tunables.FactorB;
 		best[2] = Tunables.FactorC;
-		best[3] = Tunables.DeathPenalty;
-		best[4] = Tunables.DeathPenaltyWeakening;
-		best[5] = Tunables.GIncrement;
-		best[6] = Tunables.DeadCost;
-		best[7] = Tunables.ChasmPenalty;
-		best[8] = Tunables.FeetOnTheGroundBonus;
+		best[3] = Tunables.GIncrement;
+		best[4] = Tunables.DeadCost;
+		best[5] = Tunables.ChasmPenalty;
+		best[6] = Tunables.FeetOnTheGroundBonus;
+		best[7] = Tunables.MaxBreadth;
 		
-		float[] settings = new float[9];
+		float[] settings = new float[8];
 		for (int i = 0; i<best.length; ++i)
 			settings[i] = best[i];
+			
+		int parameter = 3;
 
 		float bestScore = -1e10f;		
 			
@@ -44,20 +45,23 @@ public class TweakRunner {
 			Tunables.FactorA = settings[0];
 			Tunables.FactorB = settings[1];
 			Tunables.FactorC = settings[2];
-			Tunables.DeathPenalty = settings[3];
-			Tunables.DeathPenaltyWeakening = settings[4];
-			Tunables.GIncrement = settings[5];
-			Tunables.DeadCost = settings[6];
-			Tunables.ChasmPenalty = settings[7];
-			Tunables.FeetOnTheGroundBonus = settings[8];
-			float score = DoRun();
+			Tunables.GIncrement = settings[3];
+			Tunables.DeadCost = settings[4];
+			Tunables.ChasmPenalty = settings[5];
+			Tunables.FeetOnTheGroundBonus = settings[6];
+			Tunables.MaxBreadth = (int)settings[7];
+			float score;
+			if (Tunables.MaxBreadth >= 2)
+				score = DoRun();
+			else
+				score = -1e10f;
 			if (score > bestScore)
 			{
 				bestScore = score;
 				for (int j = 0; j<best.length; ++j)
 					best[j] = settings[j];
 				float delta = rnd.nextFloat()*(direction?1:-1);
-				settings[idx] = (settings[idx] * (1f+delta)) + delta;
+				settings[idx] = (settings[idx] * (1f+delta));
 				System.out.println(score+":"+ArrayUtils.toString(best));
 			}
 //			 if (score == bestScore)
@@ -71,10 +75,13 @@ public class TweakRunner {
 				System.out.println(".");
 				for (int j = 0; j<best.length; ++j)
 					settings[j] = best[j];
-				idx = rnd.nextInt(best.length);
+				if (parameter == -1)
+					idx = rnd.nextInt(best.length);
+				else
+					idx = parameter;
 				direction = rnd.nextBoolean();
 				float delta = rnd.nextFloat()*(direction?1:-1);
-				settings[idx] = (settings[idx] * (1f+delta)) + delta;
+				settings[idx] = (settings[idx] * (1f+delta)) + 0.01f*delta;
 			}
 		}
 	}
@@ -83,11 +90,13 @@ public class TweakRunner {
 	{
 //		float min = 1e10f;
 		float sum = 0;
-		int c = 20;
+		int c = 10;
 		for (int i = 0; i< c; ++i)
 		{
-			float r = Run(i, 20, 100);
+			float r = Run(i, 20, 200);
 //			min = Math.min(r, min);
+			if (r < 0)
+				return -1;
 			sum += r;
 		}
 		return
@@ -98,7 +107,7 @@ public class TweakRunner {
 	private static float Run(int seed, int difficulty, int length)
 	{
 		// we need a redoable state that stresses mario enough
-		
+		Tunables.PathFound = 0;
 		GlobalOptions.setSeed(seed);
 		GlobalOptions.setDifficulty(difficulty);
 
@@ -117,6 +126,6 @@ public class TweakRunner {
 		options.setLevelDifficulty(difficulty);
 		task.setOptions(options);
 		
-		return (float)task.evaluate(controller)[0];
+		return (float)task.evaluate(controller)[0] + Tunables.PathFound;
 	}	
 }
