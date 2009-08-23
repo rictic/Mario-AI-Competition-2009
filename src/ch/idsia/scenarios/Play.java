@@ -7,18 +7,14 @@ package ch.idsia.scenarios;
 //If you're using Eclipse, you should expand this import statement.
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.RegisterableAgent;
-
-//This line imports your interface agent.
-import com.reddit.programming.mario.*;
-import ch.idsia.ai.agents.RegisterableAgent;
-import ch.idsia.ai.agents.ai.*;
-import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.EvaluationOptions;
 import ch.idsia.utils.ArrayUtils;
+
+import com.reddit.programming.mario.BestFirstAgent;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,7 +42,7 @@ public class Play {
 		GlobalOptions.setSeed(seed);
 		GlobalOptions.setDifficulty(difficulty);
 
-		Agent controller = new BudgetingBestFirstAgent(); // This line uses the agent you imported above.
+		Agent controller = new BestFirstAgent(); // This line uses the agent you imported above.
 		if (args.length > 0) {
 			controller = RegisterableAgent.load (args[0]);
 			RegisterableAgent.registerAgent (controller);
