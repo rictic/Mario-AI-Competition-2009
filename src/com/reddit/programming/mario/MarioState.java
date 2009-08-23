@@ -43,8 +43,7 @@ public final class MarioState extends SpriteState
 				sliding ? "S":"s", cost);
 	}
 
-	public MarioState next(int action, WorldState ws) {
-		// this is what passes for clone()
+	public MarioState clone() {
 		MarioState n = new MarioState(x,y, xa,ya);
 		n.facing = facing; n.jumpTime = jumpTime;
 		n.big = big; n.fire = fire;
@@ -55,30 +54,38 @@ public final class MarioState extends SpriteState
 		n.sliding = sliding;
 		n.xJumpSpeed = xJumpSpeed; n.yJumpSpeed = yJumpSpeed;
 		n.root_action = root_action;
+		n.invulnerableTime = invulnerableTime;
+		n.ws = ws;
+		return n;
+	}
+
+	public MarioState next(int action, WorldState ws) {
+		MarioState n = clone();
 		n.action = action;
 		n.pred = this;
-		n.invulnerableTime = invulnerableTime;
 
 		int jump_steps = action/ACT_JUMP;
 		if(jump_steps > 1) {
 			action = (action&7) + 8;
 			for(int i=0;i<jumpstep_table[jump_steps];i++) {
 				n.g = g + 1;
-				n.ws = ws.step();
+				n.ws = ws;
 				n.move(action);
+				n.ws = n.ws.step();
 				n.ws = n.ws.interact(n);
 			}
 		} else {
 			n.g = g + 1;
-			n.ws = ws.step();
+			n.ws = ws;
 			n.move(action);
+			n.ws = n.ws.step();
 			n.ws = n.ws.interact(n);
 		}
 
 		return n;
 	}
 
-	private void move(int action) {
+	public void move(int action) {
 		boolean ducking = false; // just... we aren't doing this
 		float sideWaysSpeed = (action&ACT_SPEED) != 0 ? 1.2f : 0.6f;
 		//System.out.println("move: sidewaysspeed = " + sideWaysSpeed);
@@ -275,6 +282,7 @@ public final class MarioState extends SpriteState
 	{
 		int x = (int) (_x / 16); // block's quantized pos
 		int y = (int) (_y / 16);
+
 		int Mx = (int) (this.x / 16); // mario's quantized pos
 		int My = (int) (this.y / 16);
 		if (x == Mx && y == My) return false;

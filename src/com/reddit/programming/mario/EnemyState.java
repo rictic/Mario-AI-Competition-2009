@@ -132,7 +132,8 @@ public class EnemyState extends SpriteState
 		if(xa != 0 && ya == 0) {
 			// if we're moving along the ground, then we aren't dead from a
 			// shell or something
-			deadTime = 0;
+			//deadTime = 0;
+			// hm.  we can't necessarily resurrect enemies like this.
 		}
 		if (!onGround) {
 			if (winged())

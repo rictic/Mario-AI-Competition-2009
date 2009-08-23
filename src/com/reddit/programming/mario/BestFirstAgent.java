@@ -69,15 +69,6 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 
 	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
 
-	protected boolean useless_action(int a, MarioState s) {
-		if((a&MarioState.ACT_LEFT)>0 && (a&MarioState.ACT_RIGHT)>0) return true;
-		if((a/MarioState.ACT_JUMP)>0) {
-			if(s.jumpTime == 0 && !s.mayJump) return true;
-			if(s.jumpTime <= 0 && !s.onGround && !s.sliding) return true;
-		}
-		return false;
-	}
-
 	protected void addLine(float x0, float y0, float x1, float y1, int color) {
 		if(drawPath && GlobalOptions.MarioPosSize < 400) {
 			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int)x0;
@@ -113,7 +104,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 
 		int a,n;
 		// add initial set
-		for(a=1;a<16;a++) {
+		for(a=0;a<16;a++) {
 			if(useless_action(a, initialState))
 				continue;
 			MarioState ms = initialState.next(a, ws);
@@ -144,7 +135,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 			line1.color = new Color(color);
 
 			//System.out.printf("a*: trying "); next.print();
-			for(a=1;a<16;a++) {
+			for(a=0;a<16;a++) {
 				if(useless_action(a, next))
 					continue;
 				MarioState ms = next.next(a, next.ws);

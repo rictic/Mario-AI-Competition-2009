@@ -50,14 +50,14 @@ public final class WorldState
 		}
 	}
 	
-	public WorldState(byte[][] _map, float[] marioPosition, float[] enemyPosition) {
+	public WorldState(byte[][] _map, MarioState ms, float[] enemyPosition) {
 		map = _map;
-		MapX = (int)marioPosition[0]/16 - 11;
-		MapY = (int)marioPosition[1]/16 - 11;
+		MapX = (int)ms.x/16 - 11;
+		MapY = (int)ms.y/16 - 11;
 		succ = new HashMap<WSHashKey, WorldState>();
 		enemies = new Vector<SpriteState>();
-		syncEnemies(enemyPosition, marioPosition);
 		buildHeightMap();
+		syncEnemies(enemyPosition, ms);
 	}
 
 	WorldState() {}
@@ -84,14 +84,14 @@ public final class WorldState
 		return s;
 	}
 
-	// destructive update
-	public void update(byte[][] _map, float[] marioPosition, float[] enemyPosition) {
+	// destructive update, but returns new worldstate.  bleh, it's a mess.
+	public WorldState update(byte[][] _map, MarioState ms, float[] enemyPosition) {
 		map = _map;
-		MapX = (int)marioPosition[0]/16 - 11;
-		MapY = (int)marioPosition[1]/16 - 11;
+		MapX = (int)ms.x/16 - 11;
+		MapY = (int)ms.y/16 - 11;
 		buildHeightMap();
-		syncEnemies(enemyPosition, marioPosition);
 		succ.clear();
+		return syncEnemies(enemyPosition, ms);
 	}
 
 	void buildHeightMap() {
@@ -135,11 +135,10 @@ public final class WorldState
 	}
 
 	// this function is terrible and slow, but it only needs to be done once per real frame.
-	public void syncEnemies(float[] enemyObs, float[] marioPos) {
+	public WorldState syncEnemies(float[] enemyObs, MarioState ms) {
 		// when we get a new observation, sort the observation by x and filter
 		// through the list, using the nearest enemy of the same type and comparing
 		// predicted states with actual
-
 		EnemyObservation[] obs = new EnemyObservation[enemyObs.length/3];
 		for(int i=0;i<enemyObs.length;i+=3)
 			obs[i/3] = new EnemyObservation((int)enemyObs[i], enemyObs[i+1], enemyObs[i+2]);
@@ -147,21 +146,19 @@ public final class WorldState
 		// TODO: make this one pass, left-to-right, sorted ascending x
 //		Arrays.sort(obs);
 
+		// step the world (and interact with mario)
+		WorldState ws = step();
+		ws = ws.interact(ms);
+		Vector<SpriteState> newenemies = new Vector<SpriteState>(ws.enemies.size()+2);
+		Vector<SpriteState> oldenemies = enemies;
+
 		// merge enemy observations into our internal enemy array
-		Vector<SpriteState> newenemies = new Vector<SpriteState>(obs.length+2);
-		Vector<SpriteState> oldenemies = (Vector<SpriteState>)enemies.clone();
-		// step enemies forward one, while keeping oldenemies for resync purposes
-		for(int i=0;i<enemies.size();i++) {
-			SpriteState e = enemies.get(i).clone();
-			e.move(this);
-			enemies.set(i, e);
-		}
 		for(EnemyObservation eobs : obs) {
 			SpriteState closest = null;
 			float closestdist=Float.POSITIVE_INFINITY;
 			int closest_idx = 0;
-			for(int i=0;i<enemies.size();i++) {
-				SpriteState s = enemies.get(i);
+			for(int i=0;i<ws.enemies.size();i++) {
+				SpriteState s = ws.enemies.get(i);
 				if(s.type != eobs.type)
 					continue;
 				float ex = s.x - eobs.x;
@@ -177,7 +174,7 @@ public final class WorldState
 				// assume new enemy
 				//System.out.printf("new enemy @%f,%f type %d\n",
 				//		eobs.x, eobs.y, eobs.type);
-				closest = SpriteState.newEnemy(eobs.x, eobs.y, eobs.type, marioPos);
+				closest = SpriteState.newEnemy(eobs.x, eobs.y, eobs.type, ms);
 			} else {
 				if(closestdist != 0) {
 					SpriteState prev = oldenemies.get(closest_idx);
@@ -190,7 +187,18 @@ public final class WorldState
 			if(closest != null)
 				newenemies.add(closest);
 		}
-		enemies = newenemies;
+		ws.enemies = newenemies;
+		/*
+		for(SpriteState s : ws.enemies) {
+			if(s instanceof EnemyState) {
+				EnemyState e = (EnemyState)s;
+				System.out.printf("-> e t=%d xy=%f,%f xaya=%f,%f deadTime=%d\n",
+						e.type, e.x,e.y, e.xa,e.ya, e.deadTime);
+			}
+		}
+		*/
+
+		return ws;
 	}
 
 	public void stepEnemies() {

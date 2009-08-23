@@ -5,7 +5,7 @@ final class MarioMath {
 	public static float stepsToJump(float h) {
 		if(h < 26.6f) return 10*h/133;
 		if(h < 64.6) return (float) (17-Math.sqrt(281-80*h/19))/2;
-		return Float.POSITIVE_INFINITY;
+		return stepsToJump(64) + stepsToJump(h-64);
 	}
 
 	// I LOVE ALL THIS TYPING!
