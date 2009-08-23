@@ -53,8 +53,8 @@ class StateSearcher implements Runnable {
 					addToDrawPath(next.pred);
 
 				bestfound = ThreadedBestFirstAgent.marioMin(next,bestfound);
-				for(int a=1;a<16;a++) {
-					if(heuristicSearchingAgent.useless_action(a, next))
+				for(int a=0;a<16;a++) {
+					if(HeuristicSearchingAgent.useless_action(a, next))
 						continue;
 					MarioState ms = next.next(a, next.ws);
 					

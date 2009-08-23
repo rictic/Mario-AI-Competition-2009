@@ -28,9 +28,9 @@ public final class BulletBillState extends SpriteState
 		xa = 4*facing;
     }
 
-	BulletBillState(float _x, float _y, float[] marioPos) {
+	BulletBillState(float _x, float _y, MarioState ms) {
 		x=_x; y=_y; type=KIND_BULLET_BILL;
-		facing = _x < marioPos[0] ? 1 : -1;
+		facing = _x < ms.x ? 1 : -1;
 		xa = 4*facing;
     }
 

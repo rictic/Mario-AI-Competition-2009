@@ -21,10 +21,10 @@ public class SpriteState
 	// you may destructively update ws here as it's fresh for the purpose of this stomp
 	public SpriteState stomp(WorldState ws) { return this; }
 
-	static public SpriteState newEnemy(float x, float y, int type, float[] marioPos) {
+	static public SpriteState newEnemy(float x, float y, int type, MarioState ms) {
 		switch(type) {
 			case KIND_BULLET_BILL:
-				return new BulletBillState(x,y, marioPos);
+				return new BulletBillState(x,y, ms);
 			case KIND_FLOWER_ENEMY:
 				return new FlowerEnemyState(x,y);
 			case KIND_SHELL:

@@ -69,14 +69,16 @@ public final class MarioState extends SpriteState
 			action = (action&7) + 8;
 			for(int i=0;i<jumpstep_table[jump_steps];i++) {
 				n.g = g + 1;
-				n.ws = ws.step();
+				n.ws = ws;
 				n.move(action);
+				n.ws = n.ws.step();
 				n.ws = n.ws.interact(n);
 			}
 		} else {
 			n.g = g + 1;
-			n.ws = ws.step();
+			n.ws = ws;
 			n.move(action);
+			n.ws = n.ws.step();
 			n.ws = n.ws.interact(n);
 		}
 
@@ -281,11 +283,9 @@ public final class MarioState extends SpriteState
 		int x = (int) (_x / 16); // block's quantized pos
 		int y = (int) (_y / 16);
 
-		/* mario used to be in the observation, which was useless and annoying
 		int Mx = (int) (this.x / 16); // mario's quantized pos
 		int My = (int) (this.y / 16);
 		if (x == Mx && y == My) return false;
-		*/
 
 		boolean blocking = ws.isBlocking(x,y,xa,ya);
 
