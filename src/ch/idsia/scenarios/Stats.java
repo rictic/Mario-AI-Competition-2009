@@ -3,6 +3,7 @@ package ch.idsia.scenarios;
 import ch.idsia.ai.agents.RegisterableAgent;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.ai.TimingAgent;
+import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.tools.EvaluationOptions;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.Evaluator;
@@ -11,7 +12,7 @@ import ch.idsia.utils.StatisticalSummary;
 
 public class Stats {
 
-    final static int numberOfTrials = 100;
+    final static int numberOfTrials = 50;
 
     public static void main(String[] args) {
 
@@ -29,25 +30,31 @@ public class Stats {
         options.setMaxAttempts(1);
         options.setVisualization(false);
         options.setMaxFPS(true);
+        options.setLevelLength(100000);
         System.out.println("Testing controller " + controller + " with starting seed " + startingSeed);
 
         double competitionScore = 0;
 
-        competitionScore += testConfig (controller, options, startingSeed, 0, true);
-        competitionScore += testConfig (controller, options, startingSeed, 0, false);
-        competitionScore += testConfig (controller, options, startingSeed, 3, true);
-        competitionScore += testConfig (controller, options, startingSeed, 3, false);
-        competitionScore += testConfig (controller, options, startingSeed, 5, true);
-        competitionScore += testConfig (controller, options, startingSeed, 5, false);
+//        competitionScore += testConfig (controller, options, startingSeed, 0, true);
+//        competitionScore += testConfig (controller, options, startingSeed, 0, false);
+//        competitionScore += testConfig (controller, options, startingSeed, 3, true);
+//        competitionScore += testConfig (controller, options, startingSeed, 3, false);
+//        competitionScore += testConfig (controller, options, startingSeed, 5, true);
+//        competitionScore += testConfig (controller, options, startingSeed, 5, false);
         //testConfig (controller, options, startingSeed, 8, true);
         //testConfig (controller, options, startingSeed, 8, false);
-        competitionScore += testConfig (controller, options, startingSeed, 10, true);
-        competitionScore += testConfig (controller, options, startingSeed, 10, false);
+//        competitionScore += testConfig (controller, options, startingSeed, 10, true);
+//        competitionScore += testConfig (controller, options, startingSeed, 10, false);
         //testConfig (controller, options, startingSeed, 15, true);
         //testConfig (controller, options, startingSeed, 15, false);
         //testConfig (controller, options, startingSeed, 20, true);
-        //testConfig (controller, options, startingSeed, 20, false);
+        long startTime = System.currentTimeMillis();
+        competitionScore += testConfig (controller, options, startingSeed, 20, false);
+        long finishTime = System.currentTimeMillis();
         System.out.println("Stats sum: " + competitionScore);
+        long secondsTaken = ((finishTime-startTime)/1000);
+        System.out.printf("Time taken: %ds", secondsTaken);
+        System.out.printf("Average FPS: %d", GlobalOptions.totalFrames / secondsTaken);
     }
 
     public static double testConfig (TimingAgent controller, EvaluationOptions options, int seed, int level, boolean paused) {

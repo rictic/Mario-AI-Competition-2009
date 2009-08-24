@@ -43,7 +43,8 @@ public class GlobalOptions {
 	public static String currentController = "";
 	public static boolean drawText = true;
 	public static boolean dontResetWindowPosition = false;
-
+	public static long totalFrames = 0;
+	
     public static void registerMarioComponent(MarioComponent mc)
     {
         marioComponent = mc;
