@@ -124,8 +124,8 @@ public class TweakRunner {
 		EvaluationOptions options = new CmdLineOptions(new String[0]);
 		options.setAgent(controller);
 		Task task = new ProgressPlusTimeLeftTask(options);
-		options.setMaxFPS(true);
-		options.setVisualization(false);
+		options.setMaxFPS(false);
+		options.setVisualization(true);
 		options.setMaxAttempts(1);
 		options.setMatlabFileName("");
 		options.setLevelLength(length);
