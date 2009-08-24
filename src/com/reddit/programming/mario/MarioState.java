@@ -35,8 +35,6 @@ public final class MarioState extends SpriteState
 	}
 
 	public float height() { return big ? 24 : 12; }
-	public final boolean dead() { return dead; }
-	public final int hurt() { return hurt; }
 
 	public void print() {
 		System.out.printf("g=%d a:%d x:(%f,%f) v:(%f,%f) %s%s%s cost=%f\n", (int)g, action,x,y,xa,ya,

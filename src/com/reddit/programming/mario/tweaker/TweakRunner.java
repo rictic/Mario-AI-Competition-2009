@@ -20,16 +20,15 @@ import ch.idsia.scenarios.CompetitionScore;
 public class TweakRunner {
 	
 	public static void main(String[] args) {
-		float[] best = new float[9];
+		float[] best = new float[8];
 		best[0] = Tunables.FactorA;
 		best[1] = Tunables.FactorB;
 		best[2] = Tunables.FactorC;
 		best[3] = Tunables.GIncrement;
 		best[4] = Tunables.DeadCost;
-		best[5] = Tunables.ChasmPenalty;
-		best[6] = Tunables.FeetOnTheGroundBonus;
-		best[7] = Tunables.MaxBreadth;
-		best[8] = Tunables.HurtCost;
+		best[5] = Tunables.FeetOnTheGroundBonus;
+		best[6] = Tunables.MaxBreadth;
+		best[7] = Tunables.HurtCost;
 		
 		float[] settings = new float[best.length];
 		for (int i = 0; i<best.length; ++i)
@@ -53,10 +52,9 @@ public class TweakRunner {
 			Tunables.FactorC = settings[2];
 			Tunables.GIncrement = settings[3];
 			Tunables.DeadCost = settings[4];
-			Tunables.ChasmPenalty = settings[5];
-			Tunables.FeetOnTheGroundBonus = settings[6];
-			Tunables.MaxBreadth = (int)settings[7];
-			Tunables.HurtCost = settings[8];
+			Tunables.FeetOnTheGroundBonus = settings[5];
+			Tunables.MaxBreadth = (int)settings[6];
+			Tunables.HurtCost = settings[7];
 			float score;
 			if (Tunables.MaxBreadth >= 2)
 				score = DoRun();

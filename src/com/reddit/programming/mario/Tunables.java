@@ -6,8 +6,7 @@ public class Tunables {
 	public static float FactorB = 1f;
 	public static float FactorC = 1f;
 	public static float GIncrement = 1f;
-	public static float DeadCost = 10f;
-	public static float ChasmPenalty = 10f;
+	public static float DeadCost = 100000f;
 	public static float FeetOnTheGroundBonus = 0f;
 	public static int MaxBreadth = 50;
 	public static float HurtCost = 1f;
