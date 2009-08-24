@@ -19,7 +19,7 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 	public ThreadedBestFirstAgent() {
 		super("ThreadedBestFirstAgent");
 	}
-
+	
 	protected final PriorityQueue<MarioState> getInitialPriorityQueue(MarioState initialState, WorldState ws) {
 		bestfound = null;
 		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
@@ -40,6 +40,7 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 		}
 		return pq;
 	}
+	
 	protected final void initializeSearchers(MarioState initialState, WorldState ws, Object notificationObject) {
 		PriorityQueue<MarioState> pq = getInitialPriorityQueue(initialState, ws);
 		PriorityQueue<MarioState>[] pqs = new PriorityQueue[searchers.length];

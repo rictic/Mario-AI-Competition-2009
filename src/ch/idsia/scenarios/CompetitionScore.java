@@ -17,7 +17,7 @@ import ch.idsia.utils.StatisticalSummary;
  */
 public class CompetitionScore {
 
-    final static int numberOfTrials = 1;
+    final static int numberOfTrials = 10;
 
     public static void main(String[] args) {
         Agent controller = RegisterableAgent.load ("com.reddit.programming.mario.BestFirstAgent");
