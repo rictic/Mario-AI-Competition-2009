@@ -69,16 +69,15 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 				MarioState ms = next.next(a, next.ws);
 				ms.pred = next;
 
-				if(ms.dead) {
+				if(ms.dead)
 					continue;
-				}
 
 				float h = cost(ms, initialState);
 				ms.g = next.g + Tunables.GIncrement;
 				ms.cost = ms.g + h + ((a/MarioState.ACT_JUMP)>0?Tunables.FeetOnTheGroundBonus:0);
 
 				if (h < 0.1f)
-					continue;
+					return ms.root_action;
 				/*
 				if(h < 0.1f) {
 					pq.clear();
