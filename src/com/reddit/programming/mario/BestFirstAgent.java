@@ -1,8 +1,6 @@
 package com.reddit.programming.mario;
 
 import java.awt.Color;
-import java.util.*;
-
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
 
@@ -13,80 +11,18 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 
 	public BestFirstAgent() {
 		super("BestFirstAgent");
+	}
+
+	public void reset() {
+		super.reset();
 		pq = new PrioQ(Tunables.MaxBreadth);
 	}
 
-	@Override
-	public void reset() {
-		// disable enemies for the time being
-		//GlobalOptions.pauseWorld = true;
-		ms = null;
-		marioPosition = null;
-	}
 
-//	private static final float lookaheadDist = 9*16;
-	protected float cost(MarioState s, MarioState initial) {
-		float steps = 0;
-		if(s.dead)
-			steps += Tunables.DeadCost;
-		steps += Tunables.HurtCost * s.hurt();
-
-		int MarioX = (int)s.x/16 - s.ws.MapX;
-		if (MarioX < 0)
-		{
-			System.out.println("Whuh ?");
-			MarioX = 0;
-		}
-		int goal = 21;
-		// move goal back from the abyss
-		//while(goal > 11 && s.ws.heightmap[goal] == 22) goal--;
-		//no don't
-		//
-		steps += Tunables.FactorA * MarioMath.stepsToRun((goal+s.ws.MapX)*16+8 - s.x, s.xa);
-		// if we're standing in front of some thing, give the heuristic a
-		// little help also adds a small penalty for walking up to something in
-		// the first place
-		if(MarioX < 21) {
-			int thisY = s.ws.heightmap[MarioX];
-			if(thisY == 22) { // we're either above or inside a chasm
-				float edgeY = (22+s.ws.MapY)*16;
-				// find near edge
-				for(int i=MarioX-1;i>=0;i--) {
-					if(s.ws.heightmap[i] != 22) {
-						edgeY = (s.ws.heightmap[i]+s.ws.MapY)*16;
-						break;
-					}
-				}
-				if(s.y > edgeY+1) { // we're inside a chasm; don't waste time searching for a way out
-					steps += Tunables.ChasmPenalty;
-				}
-			}
-			float nextColY = (s.ws.heightmap[MarioX+1] + s.ws.MapY)*16;
-			if(nextColY < s.y)
-				steps += Tunables.FactorB *MarioMath.stepsToJump(s.y-nextColY);
-		}
-
-		return steps;
-	}
-
-
-	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
-
-	protected void addLine(float x0, float y0, float x1, float y1, int color) {
-		if(drawPath && GlobalOptions.MarioPosSize < 400) {
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int)x0;
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int)y0;
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = color;
-			GlobalOptions.MarioPosSize++;
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][0] = (int)x1;
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][1] = (int)y1;
-			GlobalOptions.MarioPos[GlobalOptions.MarioPosSize][2] = color;
-			GlobalOptions.MarioPosSize++;
-		}
-	}
 
 	@Override
 	protected int searchForAction(MarioState initialState, WorldState ws) {
+		DebugPolyLine line1;
 		pq.clear();
 		GlobalOptions.MarioPosSize = 0;
 
@@ -114,15 +50,11 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 		// FIXME: instead of using a hardcoded number of iterations,
 		// periodically grab the system millisecond clock and terminate the
 		// search after ~40ms
-		int pq_siz=0;
 		for(n=0;n<maxSteps && !pq.isEmpty();n++) {
-			DebugPolyLine line1 = null;
-			if (drawPath)
-				line1 = new DebugPolyLine(Color.BLUE);
 			MarioState next = pq.poll();
 
-			if (drawPath)
-			{
+			if (drawPath) {
+				line1 = new DebugPolyLine(Color.BLUE);
 				int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
 				color = color|(color<<8)|(color<<16);
 				addLine(next.x, next.y, next.pred.x, next.pred.y, color);
@@ -177,7 +109,6 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 				}
 				*/
 				pq.offer(ms);
-				pq_siz++;
 				bestfound = marioMin(ms,bestfound);
 			}
 			if (drawPath)
