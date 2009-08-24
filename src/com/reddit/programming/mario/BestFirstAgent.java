@@ -9,7 +9,7 @@ import ch.idsia.mario.engine.GlobalOptions;
 public final class BestFirstAgent extends HeuristicSearchingAgent implements Agent
 {
 	private PriorityQueue<MarioState> pq, pq2;
-	private static final int maxBreadth = 256;
+	private static final int maxBreadth = 53;
 	private static final int maxSteps = 500;
 
 	public BestFirstAgent() {
@@ -77,20 +77,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 				MarioState ms = next.next(a, next.ws);
 				ms.pred = next;
 
-				// if we die, penalize the predecessor path that got us here
-				if(ms.dead) {
-					float penalty = 1000;
-					for(ms = ms.pred;ms != initialState;ms = ms.pred) {
-						pq.remove(ms);
-						ms.cost += penalty;
-						pq.add(ms);
-						penalty = penalty/4;
-					}
-					// removing things from a priority queue is ridiculously
-					// slow, so we'll just mark it dead
-					//ms.pred.cost = Float.POSITIVE_INFINITY;
-					continue;
-				}
+				if(ms.dead) continue;
 
 				float h = cost(ms, initialState);
 				ms.g = next.g + 1;
