@@ -85,9 +85,11 @@ public abstract class HeuristicSearchingAgent extends RegisterableAgent implemen
 			if(s.y <= fLedgeY)
 				return damage + MarioMath.stepsToRun(fgoalX - s.x, s.xa);
 			else {
+				float sj = MarioMath.stepsToJump(s.y - fLedgeY);
+				float sr1 = MarioMath.stepsToRun(fLedgeX - s.x, s.xa);
+				float sr2 = MarioMath.stepsToRun(fgoalX - fLedgeX, s.xa);
 				// (this assumes we can reach the ledge from our current location..)
-				return damage + MarioMath.stepsToJump(s.y - fLedgeY) + 
-					MarioMath.stepsToRun(fgoalX - ledgeX, s.xa);
+				return damage + Math.max(sj,sr1) + sr2;
 			}
 		} else {
 			// we're in the air.  okay, how far left and right can we possibly land?
@@ -125,9 +127,11 @@ public abstract class HeuristicSearchingAgent extends RegisterableAgent implemen
 			if(s.y <= fLedgeY)
 				return damage + MarioMath.stepsToRun(fgoalX - s.x, s.xa);
 			else {
+				float sj = MarioMath.stepsToJump(s.y - fLedgeY);
+				float sr1 = MarioMath.stepsToRun(fLedgeX - s.x, s.xa);
+				float sr2 = MarioMath.stepsToRun(fgoalX - fLedgeX, s.xa);
 				// (this assumes we can reach the ledge from our current location..)
-				return damage + MarioMath.stepsToJump(s.y - fLedgeY) + 
-					MarioMath.stepsToRun(fgoalX - ledgeX, s.xa);
+				return damage + Math.max(sj,sr1) + sr2;
 			}
  
 			/*
@@ -244,8 +248,7 @@ public abstract class HeuristicSearchingAgent extends RegisterableAgent implemen
 
 			//System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 			if(mpos[0] != pred_x || mpos[1] != pred_y) {
-				if (!epsilon(mpos[0],pred_x)||!epsilon(mpos[1], pred_y))
-				{
+				if (!epsilon(mpos[0],pred_x)||!epsilon(mpos[1], pred_y)) {
 					// generally this shouldn't happen, unless we mispredict
 					// something.  currently if we stomp an enemy then we don't
 					// predict that and get confused.
@@ -261,12 +264,9 @@ public abstract class HeuristicSearchingAgent extends RegisterableAgent implemen
 					if(verbose1) {
 						System.out.printf("mario state mismatch (%f,%f) -> (%f,%f); attempting resync\n",
 								ms.x,ms.y, mpos[0], mpos[1]);
-						if (stdinSingleStep)
-						{
-							try {
-								System.in.read();
-							} catch(IOException e) {}
-						}
+						if(!stdinSingleStep) try {
+							System.in.read();
+						} catch(IOException e) {}
 					}
 				}
 			}

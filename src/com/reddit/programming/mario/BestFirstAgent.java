@@ -31,6 +31,8 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 		initialState.ws = ws;
 		initialState.g = 0;
 		initialState.dead = false;
+		
+		float threshold = 1e10f;
 
 		initialState.cost = cost(initialState, initialState);
 
@@ -89,10 +91,12 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 					if (!goalFound)
 						Tunables.PathFound++;
 					goalFound = true;
+					if (h < threshold)
+						threshold = h;
 					continue;
 				}				
-
-				pq.offer(ms);
+				if (ms.cost < threshold)
+					pq.offer(ms);
 				pq_siz++;
 			}
 			if (drawPath)
