@@ -16,6 +16,7 @@ public class EnemyState extends SpriteState
 	public SpriteState clone() {
 		EnemyState e = new EnemyState(x,y,type);
 		e.xa = xa; e.ya = ya;
+		e.facing = facing;
 		e.deadTime = deadTime;
 		e.flyDeath = flyDeath;
 		return e;

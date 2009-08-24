@@ -18,6 +18,7 @@ public final class BulletBillState extends SpriteState
 	public SpriteState clone() {
 		BulletBillState e = new BulletBillState(x,y,facing);
 		e.xa = xa; e.ya = ya;
+		e.facing = facing;
 		e.deadTime = deadTime;
 		return e;
 	}
