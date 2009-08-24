@@ -172,15 +172,19 @@ public final class WorldState
 			}
 			if(closest==null || closestdist > 16) { // allow a slop of 4 pixels (4^2 = 16)
 				// assume new enemy
-				//System.out.printf("new enemy @%f,%f type %d\n",
-				//		eobs.x, eobs.y, eobs.type);
+				if(HeuristicSearchingAgent.verbose2) {
+					System.out.printf("new enemy @%f,%f type %d\n",
+							eobs.x, eobs.y, eobs.type);
+				}
 				closest = SpriteState.newEnemy(eobs.x, eobs.y, eobs.type, ms);
 			} else {
 				if(closestdist != 0) {
 					SpriteState prev = oldenemies.get(closest_idx);
-					//System.out.printf("enemy t=%d sync problem: %f,%f -> %f,%f; delta=%f,%f\n",
-					//		eobs.type, closest.x, closest.y, eobs.x, eobs.y,
-					//		eobs.x-prev.x, eobs.y-prev.y);
+					if(HeuristicSearchingAgent.verbose2) {
+						System.out.printf("enemy t=%d sync problem: %f,%f -> %f,%f; delta=%f,%f\n",
+								eobs.type, closest.x, closest.y, eobs.x, eobs.y,
+								eobs.x-prev.x, eobs.y-prev.y);
+					}
 					closest.resync(eobs.x, eobs.y, prev.x, prev.y);
 				}
 			}
@@ -188,15 +192,15 @@ public final class WorldState
 				newenemies.add(closest);
 		}
 		ws.enemies = newenemies;
-		/*
-		for(SpriteState s : ws.enemies) {
-			if(s instanceof EnemyState) {
-				EnemyState e = (EnemyState)s;
-				System.out.printf("-> e t=%d xy=%f,%f xaya=%f,%f deadTime=%d\n",
-						e.type, e.x,e.y, e.xa,e.ya, e.deadTime);
+		if(HeuristicSearchingAgent.verbose2) {
+			for(SpriteState s : ws.enemies) {
+				if(s instanceof EnemyState) {
+					EnemyState e = (EnemyState)s;
+					System.out.printf("-> e t=%d xy=%f,%f xaya=%f,%f deadTime=%d\n",
+							e.type, e.x,e.y, e.xa,e.ya, e.deadTime);
+				}
 			}
 		}
-		*/
 
 		return ws;
 	}
@@ -278,9 +282,14 @@ public final class WorldState
 
 	final WorldState bump(int x, int y, boolean big) {
 		//System.out.printf("bumping tile @%d,%d = %d\n", x,y,getBlock(x,y));
-		//if(big) {
-		//	return removeTile(x,y);
-		//}
+		if(big) {
+			switch(getBlock(x,y)) {
+				case 16: // regular brick
+					// unfortunately it could also be a hidden coin or
+					// something else
+					return removeTile(x,y);
+			}
+		}
 		return this;
 	}
 

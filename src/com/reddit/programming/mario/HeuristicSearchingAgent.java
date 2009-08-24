@@ -15,8 +15,8 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
 	
-	protected static final boolean verbose1 = false;
-	protected static final boolean verbose2 = false;
+	public static final boolean verbose1 = false;
+	public static final boolean verbose2 = false;
 	protected static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
 	protected static final boolean stdinSingleStep = false;
