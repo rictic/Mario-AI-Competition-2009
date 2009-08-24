@@ -4,7 +4,7 @@ import java.util.*;
 
 public class PrioQ {
 	private static MarioStateComparator comparator = new MarioStateComparator();
-    private transient MarioState[] queue;
+    private MarioState[] queue;
     private int size = 0;
 
     public PrioQ(int initialCapacity) {

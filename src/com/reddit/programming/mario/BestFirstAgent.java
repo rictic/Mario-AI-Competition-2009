@@ -114,6 +114,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 		// FIXME: instead of using a hardcoded number of iterations,
 		// periodically grab the system millisecond clock and terminate the
 		// search after ~40ms
+		boolean goalFound = false;
 		int pq_siz=0;
 		for(n=0;n<maxSteps && !pq.isEmpty();n++) {
 			DebugPolyLine line1 = null;
@@ -145,8 +146,15 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 				ms.g = next.g + Tunables.GIncrement;
 				ms.cost = ms.g + h + ((a/MarioState.ACT_JUMP)>0?Tunables.FeetOnTheGroundBonus:0);
 
+				bestfound = marioMin(ms,bestfound);
+
 				if (h < 0.1f)
+				{
+					if (!goalFound)
+						Tunables.PathFound++;
+					goalFound = true;
 					continue;
+				}				
 				/*
 				if(h < 0.1f) {
 					pq.clear();
@@ -178,7 +186,6 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 				*/
 				pq.offer(ms);
 				pq_siz++;
-				bestfound = marioMin(ms,bestfound);
 			}
 			if (drawPath)
 				GlobalOptions.MarioLines.Push(line1);
