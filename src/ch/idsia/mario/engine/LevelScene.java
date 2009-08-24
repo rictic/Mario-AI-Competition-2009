@@ -650,6 +650,7 @@ public class LevelScene extends Scene implements SpriteContext
 
     public void tick()
     {
+    	GlobalOptions.totalFrames++;
         if (GlobalOptions.TimerOn)
                 timeLeft--;
         if (timeLeft==0)
