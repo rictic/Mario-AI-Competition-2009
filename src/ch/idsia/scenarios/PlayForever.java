@@ -39,7 +39,7 @@ public class PlayForever {
 
 		GlobalOptions.drawText = false;
 		while (true) {
-			Agent controller = new ThreadedBestFirstAgent(); // This line uses the agent you imported above.
+			Agent controller = new BestFirstAgent(); // This line uses the agent you imported above.
 			if (args.length > 0) {
 				controller = RegisterableAgent.load (args[0]);
 				RegisterableAgent.registerAgent (controller);

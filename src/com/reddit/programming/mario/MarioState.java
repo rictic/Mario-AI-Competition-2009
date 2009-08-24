@@ -5,7 +5,8 @@ public final class MarioState extends SpriteState
 	// FIXME: try to minimize the sizes of these fields as much as possible; we
 	// allocate a huge number of MarioState objects.
 	public int jumpTime = 0,
-		   invulnerableTime = 0;
+		   invulnerableTime = 0,
+		   hurt = 0;
 	public boolean big = true,  // mario is big
 		   dead = false, // yep
 		   fire = true, // mario can throw fireballs
@@ -35,6 +36,7 @@ public final class MarioState extends SpriteState
 
 	public float height() { return big ? 24 : 12; }
 	public final boolean dead() { return dead; }
+	public final int hurt() { return hurt; }
 
 	public void print() {
 		System.out.printf("g=%d a:%d x:(%f,%f) v:(%f,%f) %s%s%s cost=%f\n", (int)g, action,x,y,xa,ya,
@@ -48,6 +50,7 @@ public final class MarioState extends SpriteState
 		n.facing = facing; n.jumpTime = jumpTime;
 		n.big = big; n.fire = fire;
 		n.dead = dead;
+		n.hurt = hurt;
 		n.onGround = onGround;
 		n.wasOnGround = onGround;
 		n.mayJump = mayJump;
@@ -331,9 +334,7 @@ public final class MarioState extends SpriteState
 		} else {
 			dead = true;
 		}
-
-		// hack: add death cost, even if we don't die
-		dead = true;
+		hurt++;
 	}
 	
 	public int marioMode() {
