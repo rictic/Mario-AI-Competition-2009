@@ -1,6 +1,5 @@
 package com.reddit.programming.mario;
 
-import java.util.PriorityQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -20,9 +19,9 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 		super("ThreadedBestFirstAgent");
 	}
 
-	protected final PriorityQueue<MarioState> getInitialPriorityQueue(MarioState initialState, WorldState ws) {
+	protected final PrioQ getInitialPriorityQueue(MarioState initialState, WorldState ws) {
 		bestfound = null;
-		PriorityQueue<MarioState> pq = new PriorityQueue<MarioState>(20, msComparator);
+		PrioQ pq = new PrioQ(Tunables.MaxBreadth);
 		initialState.ws = ws;
 		initialState.g = 0;
 		initialState.dead = false;
@@ -34,20 +33,20 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 			MarioState ms = initialState.next(a, ws);
 			ms.root_action = a;
 			ms.cost = 1 + cost(ms, initialState);
-			pq.add(ms);
+			pq.offer(ms);
 			if(verbose2)
 				System.out.printf("BestFirst: root action %d initial cost=%f\n", a, ms.cost);
 		}
 		return pq;
 	}
 	protected final void initializeSearchers(MarioState initialState, WorldState ws, Object notificationObject) {
-		PriorityQueue<MarioState> pq = getInitialPriorityQueue(initialState, ws);
-		PriorityQueue<MarioState>[] pqs = new PriorityQueue[searchers.length];
+		PrioQ pq = getInitialPriorityQueue(initialState, ws);
+		PrioQ[] pqs = new PrioQ[searchers.length];
 		//System.out.println("creating searchers");
-		for (int i = 0; i < pqs.length; i++) pqs[i] = new PriorityQueue<MarioState>(20, msComparator);
+		for (int i = 0; i < pqs.length; i++) pqs[i] = new PrioQ(Tunables.MaxBreadth);
 		int i = 0;
 		while (!pq.isEmpty())
-			pqs[i++%pqs.length].add(pq.remove());
+			pqs[i++%pqs.length].offer(pq.poll());
 		
 		for (i = 0; i < searchers.length; i++){
 			searchers[i] = new StateSearcher(initialState, ws, pqs[i], i, notificationObject);
@@ -89,7 +88,7 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 	}
 	
 	private class StateSearcher implements Runnable {
-		private final PriorityQueue<MarioState> pq;
+		private final PrioQ pq;
 		private final MarioState initialState;
 //		private final WorldState ws;
 		final int id;
@@ -99,7 +98,7 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 		private int DrawIndex = 0;
 		private Object notificationObject;
 		
-		public StateSearcher(MarioState initialState, WorldState ws, PriorityQueue<MarioState> pq, int id, Object notificationObject) {
+		public StateSearcher(MarioState initialState, WorldState ws, PrioQ pq, int id, Object notificationObject) {
 			this.pq = pq; //this.ws = ws; 
 			this.initialState = initialState; this.bestfound = null;
 			this.id = id; DrawIndex = id;
@@ -122,7 +121,7 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 //				if(pq.size() > maxBreadth)
 //					pq = prune_pq();
 			
-				MarioState next = pq.remove();
+				MarioState next = pq.poll();
 
 				// next.cost can be infinite, and still at the head of the queue,
 				// if the node got marked dead
@@ -145,17 +144,12 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 					if(ms.dead) continue;
 					ms.pred = next;
 
-					// if we die, prune our predecessor node that got us here
-					if(ms.dead) {
-						// removing things from a priority queue is ridiculously
-						// slow, so we'll just mark it dead
-						ms.pred.cost = Float.POSITIVE_INFINITY;
+					if(ms.dead)
 						continue;
-					}
 
 					float h = cost(ms, initialState);
-					ms.g = next.g + 1;
-					ms.cost = ms.g + h;// + ((a&ACT_JUMP)>0?0.0001f:0);
+					ms.g = next.g + Tunables.GIncrement;
+					ms.cost = ms.g + h + ((a/MarioState.ACT_JUMP)>0?Tunables.FeetOnTheGroundBonus:0);
 					n++;
 					if(h <= 0) {
 						if(ThreadedBestFirstAgent.verbose1) {
@@ -173,7 +167,7 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 						synchronized(notificationObject) {notificationObject.notify();}
 						return;
 					}
-					pq.add(ms);
+					pq.offer(ms);
 				}
 			}
 		}
