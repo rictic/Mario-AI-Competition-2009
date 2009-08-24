@@ -83,9 +83,11 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 			if(s.y <= fLedgeY)
 				return MarioMath.stepsToRun(fgoalX - s.x, s.xa);
 			else {
+				float sj = MarioMath.stepsToJump(s.y - fLedgeY);
+				float sr1 = MarioMath.stepsToRun(fLedgeX - s.x, s.xa);
+				float sr2 = MarioMath.stepsToRun(fgoalX - fLedgeX, s.xa);
 				// (this assumes we can reach the ledge from our current location..)
-				return MarioMath.stepsToJump(s.y - fLedgeY) + 
-					MarioMath.stepsToRun(fgoalX - ledgeX, s.xa);
+				return Math.max(sj,sr1) + sr2;
 			}
 		} else {
 			// we're in the air.  okay, how far left and right can we possibly land?
@@ -123,9 +125,11 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 			if(s.y <= fLedgeY)
 				return MarioMath.stepsToRun(fgoalX - s.x, s.xa);
 			else {
+				float sj = MarioMath.stepsToJump(s.y - fLedgeY);
+				float sr1 = MarioMath.stepsToRun(fLedgeX - s.x, s.xa);
+				float sr2 = MarioMath.stepsToRun(fgoalX - fLedgeX, s.xa);
 				// (this assumes we can reach the ledge from our current location..)
-				return MarioMath.stepsToJump(s.y - fLedgeY) + 
-					MarioMath.stepsToRun(fgoalX - ledgeX, s.xa);
+				return Math.max(sj,sr1) + sr2;
 			}
 
 			/*
@@ -263,7 +267,7 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 				if(verbose1) {
 					System.out.printf("mario state mismatch (%f,%f) -> (%f,%f); attempting resync\n",
 							ms.x,ms.y, mpos[0], mpos[1]);
-					try {
+					if(!stdinSingleStep) try {
 						System.in.read();
 					} catch(IOException e) {}
 				}
