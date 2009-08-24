@@ -20,11 +20,11 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 	protected static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
 	protected static final boolean stdinSingleStep = false;
-	protected boolean won = false;
 
 	MarioState ms = null, ms_prev = null;
 	WorldState ws = null;
 	float pred_x, pred_y;
+	boolean won = false;
 
 	public HeuristicSearchingAgent(String name) {
 		super(name);
@@ -37,6 +37,7 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 //		GlobalOptions.pauseWorld = true;
 		ms = null;
 		marioPosition = null;
+		won = false;
 	}
 
 	private static final float lookaheadDist = 9*16;
@@ -234,9 +235,8 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 	@Override
 	public boolean[] getAction(Environment observation)
 	{
-		if(won) // we won!  we can't do anything!
+		if (won)
 			return action;
-
 		sensors.updateReadings(observation);
 		marioPosition = sensors.getMarioPosition();
 		float[] mpos = observation.getMarioFloatPos();
@@ -249,26 +249,33 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 
 			//System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 			if(mpos[0] != pred_x || mpos[1] != pred_y) {
-				// generally this shouldn't happen, unless we mispredict
-				// something.  currently if we stomp an enemy then we don't
-				// predict that and get confused.
-
-				// but it will happen when we win, cuz we have no idea we won
-				// and it won't let us move.  well, let's guess whether we won:
-				if(mpos[0] > 4000 && mpos[0] == ms_prev.x && mpos[1] == ms_prev.y) {
-					System.out.println("ack, can't move.  assuming we just won");
-					won = true;
-					return action;
+				if (!epsilon(mpos[0],pred_x)||!epsilon(mpos[1], pred_y))
+				{
+					// generally this shouldn't happen, unless we mispredict
+					// something.  currently if we stomp an enemy then we don't
+					// predict that and get confused.
+	
+					// but it will happen when we win, cuz we have no idea we won
+					// and it won't let us move.  well, let's guess whether we won:
+					if(mpos[0] > 4000 && mpos[0] == ms_prev.x && mpos[1] == ms_prev.y) {
+						if (verbose1)
+							System.out.println("ack, can't move.  assuming we just won");
+						won = true;
+						return action;
+					}
+					if(verbose1) {
+						System.out.printf("mario state mismatch (%f,%f) -> (%f,%f); attempting resync\n",
+								ms.x,ms.y, mpos[0], mpos[1]);
+						//if (stdinSingleStep)
+						{
+							try {
+								System.in.read();
+							} catch(IOException e) {}
+						}
+					}
 				}
-				if(verbose1) {
-					System.out.printf("mario state mismatch (%f,%f) -> (%f,%f); attempting resync\n",
-							ms.x,ms.y, mpos[0], mpos[1]);
-					try {
-						System.in.read();
-					} catch(IOException e) {}
-				}
-				resync(observation);
 			}
+			resync(observation, !epsilon(mpos[0],pred_x), !epsilon(mpos[1],pred_y));
 		}
 		// resync these things all the time
 		ms.mayJump = observation.mayMarioJump();
@@ -303,7 +310,8 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 		action[Mario.KEY_LEFT] = (next_action&MarioState.ACT_LEFT)!=0;
 		action[Mario.KEY_JUMP] = (next_action&MarioState.ACT_JUMP)!=0;
 
-		if(stdinSingleStep) {
+		if(stdinSingleStep) 
+		{
 			try {
 				System.in.read();
 			} catch(IOException e) {}
@@ -311,10 +319,16 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 
 		return action;
 	}
+	
+	private static boolean epsilon(float a, float b)
+	{
+		return Math.abs(a-b) < 0.01;
+	}
 
-	private void resync(Environment observation) {
+	private void resync(Environment observation, boolean x, boolean y) {
 		float[] mpos = observation.getMarioFloatPos();
-		ms.x = mpos[0]; ms.y = mpos[1];
+		ms.x = mpos[0];
+		ms.y = mpos[1];
 		//ms.mayJump = observation.mayMarioJump();
 		//ms.onGround = observation.isMarioOnGround();
 		//ms.big = observation.getMarioMode() > 0;
@@ -328,8 +342,10 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 		// if there *was* a collision and xa,ya are wrong, they probably will
 		// be corrected by each call next()
 		if(ms_prev != null) {
-			ms.xa = (ms.x - ms_prev.x) * 0.89f;
-			ms.ya = (ms.y - ms_prev.y) * 0.85f;
+			if (x)
+				ms.xa = (ms.x - ms_prev.x) * 0.89f;
+			if (y)
+				ms.ya = (ms.y - ms_prev.y) * 0.85f;
 		}
 	}
 }

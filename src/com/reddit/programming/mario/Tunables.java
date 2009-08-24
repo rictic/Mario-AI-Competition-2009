@@ -3,14 +3,14 @@ package com.reddit.programming.mario;
 
 public class Tunables {
 	public static float FactorA = 1f;
-	public static float FactorB = 1.2465f;//0.9799f;
-	public static float FactorC = 1.0752f;//1.0662f;
-	public static float GIncrement = 1.4f;//1.02f;
+	public static float FactorB = 1f;
+	public static float FactorC = 1f;
+	public static float GIncrement = 1f;
 	public static float DeadCost = 10f;
 	public static float ChasmPenalty = 10f;
-	public static float FeetOnTheGroundBonus = 0f;//-0.6184f;
+	public static float FeetOnTheGroundBonus = 0f;
 	public static int MaxBreadth = 50;
-	public static float HurtCost = 1.3557f;
+	public static float HurtCost = 1f;
 
 	public static float PathFound = 0;
 	
@@ -33,4 +33,10 @@ public class Tunables {
 //W501915.6:[1.0,1.0,0.9620644,0.60162866,1000.0,1000.0,5.594521E-4,50.646908,1.1577977]
 // 3883.2:[1.0,1.0,1.0,1.3977877,10.0,10.0,0.0,50.0,1.4354287]
 // 3862.9:[1.0,1.2465067,1.0752265,1.4,10.0,10.0,0.0,50.0,1.3556814]
+// 3881.5:[1.0,1.2258537,1.0752265,1.4,10.0,10.0,0.0,50.0,1.3556814]
+//3854.9:[1.0,1.2258,0.6868117,1.3997444,10.0,10.0,0.0,47.277386,1.3556]
+
+// set d CompetitionScore (trails:1)
+
+//17467.0:[1.0,1.0,1.0,1.0,10.0,10.0,0.0,5.84851,1.0]
 }

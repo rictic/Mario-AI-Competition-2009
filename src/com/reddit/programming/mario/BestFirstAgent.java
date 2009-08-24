@@ -9,7 +9,7 @@ import ch.idsia.mario.engine.GlobalOptions;
 public final class BestFirstAgent extends HeuristicSearchingAgent implements Agent
 {
 	private PrioQ pq;
-	private static final int maxSteps = 500;
+	private static final int maxSteps = 1000;
 
 	public BestFirstAgent() {
 		super("BestFirstAgent");
@@ -18,6 +18,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 
 	@Override
 	public void reset() {
+		super.reset();
 		// disable enemies for the time being
 		//GlobalOptions.pauseWorld = true;
 		ms = null;
@@ -155,35 +156,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 					goalFound = true;
 					continue;
 				}				
-				/*
-				if(h < 0.1f) {
-					pq.clear();
-					if(verbose1) {
-						System.out.printf("BestFirst: searched %d iterations (%d states); best a=%d cost=%f lookahead=%f\n", 
-								n, pq_siz, ms.root_action, ms.cost, ms.g);
-					}
-					MarioState s;
-					if(GlobalOptions.MarioPosSize > 400-46)
-						GlobalOptions.MarioPosSize = 400-46;
-					if (drawPath)
-					{
-						DebugPolyLine line2 = new DebugPolyLine(Color.YELLOW);
-						for(s = ms;s != initialState;s = s.pred) {
-							if(verbose2) {
-								System.out.printf("state %d: ", (int)s.g);
-								s.print();
-							}
-							// green line shows taken path
-							line2.AddPoint(s.x, s.y);
-							line2.AddPoint(s.pred.x, s.pred.y);
-							//addLine(s.x, s.y, s.pred.x, s.pred.y, 0x00ff00);
-						}
-						GlobalOptions.MarioLines.PushFront(line2);
-						}
-					Tunables.PathFound++;
-					return ms.root_action;
-				}
-				*/
+
 				pq.offer(ms);
 				pq_siz++;
 			}
@@ -193,7 +166,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 
 		if (!pq.isEmpty())
 			bestfound = marioMin(pq.poll(), bestfound);
-		if(verbose1) {
+		if(verbose2) {
 			System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
 					bestfound.root_action, bestfound.cost, bestfound.g);
 		}

@@ -15,6 +15,7 @@ import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.EvaluationOptions;
 import ch.idsia.utils.ArrayUtils;
 import java.util.Random;
+import ch.idsia.scenarios.CompetitionScore;
 
 public class TweakRunner {
 	
@@ -34,7 +35,7 @@ public class TweakRunner {
 		for (int i = 0; i<best.length; ++i)
 			settings[i] = best[i];
 			
-		int parameter = -1;
+		int parameter = 7;
 
 		float bestScore = -1e10f;		
 			
@@ -95,12 +96,14 @@ public class TweakRunner {
 	
 	private static float DoRun()
 	{
+			return(float)CompetitionScore.score(new BestFirstAgent(), 0);
+			/*
 //		float min = 1e10f;
 		float sum = 0;
 		int c = 20;
 		for (int i = 0; i< c; ++i)
 		{
-			float r = Run(i, 20, 200);
+			//float r = Run(i, 20, 200);
 //			min = Math.min(r, min);
 			if (r < 0)
 				return -1;
@@ -108,7 +111,7 @@ public class TweakRunner {
 		}
 		return
 //			 (min) +
-			 	 (sum / c);
+			 	 (sum / c);*/
 	}
 	
 	private static float Run(int seed, int difficulty, int length)
