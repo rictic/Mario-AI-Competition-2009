@@ -234,8 +234,9 @@ public abstract class HeuristicSearchingAgent extends RegisterableAgent implemen
 	@Override
 	public boolean[] getAction(Environment observation)
 	{
-		if (won)
+		if(won) // we won!  we can't do anything!
 			return action;
+
 		sensors.updateReadings(observation);
 		marioPosition = sensors.getMarioPosition();
 		float[] mpos = observation.getMarioFloatPos();
@@ -303,8 +304,7 @@ public abstract class HeuristicSearchingAgent extends RegisterableAgent implemen
 		action[Mario.KEY_LEFT] = (next_action&MarioState.ACT_LEFT)!=0;
 		action[Mario.KEY_JUMP] = (next_action&MarioState.ACT_JUMP)!=0;
 
-		if(stdinSingleStep) 
-		{
+		if(stdinSingleStep) {
 			try {
 				System.in.read();
 			} catch(IOException e) {}

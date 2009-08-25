@@ -1,8 +1,6 @@
 package com.reddit.programming.mario;
 
 import java.awt.Color;
-import java.util.*;
-
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.GlobalOptions;
 
@@ -12,7 +10,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 	private static final int maxSteps = 1000;
 
 	public BestFirstAgent() {
-		super("BestFirstAgent");
+		super("Tuned BestFirstAgent");
 	}
 
 	@Override
@@ -21,10 +19,11 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 		pq = new PrioQ(Tunables.MaxBreadth);
 	}
 
-	public static final Comparator<MarioState> msComparator = new MarioStateComparator();
+
 
 	@Override
 	protected int searchForAction(MarioState initialState, WorldState ws) {
+		DebugPolyLine line1;
 		pq.clear();
 		GlobalOptions.MarioPosSize = 0;
 
@@ -57,13 +56,10 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 		boolean goalFound = false;
 		int pq_siz=0;
 		for(n=0;n<maxSteps && !pq.isEmpty();n++) {
-			DebugPolyLine line1 = null;
-			if (drawPath)
-				line1 = new DebugPolyLine(Color.BLUE);
 			MarioState next = pq.poll();
 
-			if (drawPath)
-			{
+			if (drawPath) {
+				line1 = new DebugPolyLine(Color.BLUE);
 				int color = (int) Math.min(255, 10000*Math.abs(next.cost - next.pred.cost));
 				color = color|(color<<8)|(color<<16);
 				addLine(next.x, next.y, next.pred.x, next.pred.y, color);
