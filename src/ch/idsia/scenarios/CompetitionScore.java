@@ -17,7 +17,7 @@ import ch.idsia.utils.StatisticalSummary;
  */
 public class CompetitionScore {
 
-    final static int numberOfTrials = 10;
+    final static int numberOfTrials = 1;
 
     public static void main(String[] args) {
         Agent controller = RegisterableAgent.load ("com.reddit.programming.mario.BestFirstAgent");
@@ -26,7 +26,7 @@ public class CompetitionScore {
         System.exit (0);
     }
 
-    public static void score (Agent agent, int startingSeed) {
+    public static double score (Agent agent, int startingSeed) {
         TimingAgent controller = new TimingAgent (agent);
         RegisterableAgent.registerAgent (controller);
         EvaluationOptions options = new CmdLineOptions(new String[0]);
@@ -43,6 +43,7 @@ public class CompetitionScore {
         competitionScore += testConfig (controller, options, startingSeed, 5, false);
         competitionScore += testConfig (controller, options, startingSeed, 10, false);
         System.out.println("Competition score: " + competitionScore);
+        return competitionScore;
     }
 
     public static double testConfig (TimingAgent controller, EvaluationOptions options, int seed, int level, boolean paused) {
@@ -55,7 +56,7 @@ public class CompetitionScore {
         if (averageTimeTaken > 40) {
             System.out.println("Maximum allowed average time is 40 ms per time step.\n" +
                     "Controller disqualified");
-            System.exit (0);
+  //          System.exit (0);
         }
         return ss.mean();
     }

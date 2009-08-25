@@ -4,7 +4,7 @@ import java.util.*;
 
 public class PrioQ {
 	private static MarioStateComparator comparator = new MarioStateComparator();
-    private transient MarioState[] queue;
+    private MarioState[] queue;
     private int size = 0;
 
     public PrioQ(int initialCapacity) {
@@ -14,12 +14,9 @@ public class PrioQ {
     public boolean offer(MarioState e) {
         if (e == null)
             throw new NullPointerException();
-        int i = size;
-        if (i >= queue.length)
-        {
+        if (size == queue.length)
         	drop();
-        	i = size;
-        }
+        int i = size;
         size = i + 1;
         if (i == 0)
             queue[0] = e;
@@ -63,12 +60,8 @@ public class PrioQ {
     
     public void drop() {
     	Arrays.sort(queue, 0, size, comparator);
-    	int l = size;
-//    	int l2 = l >> 1;
-    	int l4 = l >> 2;
-//    	for (int i = 1; i<l4; ++i)
-//    		queue[l4+i] = queue[l4+i*2];
-        for (int i = 0; i< l4; ++i)
+    	int l = size >> 1;
+        for (int i = 0; i< l; ++i)
 			queue[--size] = null;        	
         for (int i = (size >>> 1) - 1; i >= 0; i--)
             siftDown(i, queue[i]);

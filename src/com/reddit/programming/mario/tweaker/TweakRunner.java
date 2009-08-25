@@ -15,20 +15,20 @@ import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.EvaluationOptions;
 import ch.idsia.utils.ArrayUtils;
 import java.util.Random;
+import ch.idsia.scenarios.CompetitionScore;
 
 public class TweakRunner {
 	
 	public static void main(String[] args) {
-		float[] best = new float[9];
+		float[] best = new float[8];
 		best[0] = Tunables.FactorA;
 		best[1] = Tunables.FactorB;
 		best[2] = Tunables.FactorC;
 		best[3] = Tunables.GIncrement;
 		best[4] = Tunables.DeadCost;
-		best[5] = Tunables.ChasmPenalty;
-		best[6] = Tunables.FeetOnTheGroundBonus;
-		best[7] = Tunables.MaxBreadth;
-		best[8] = Tunables.HurtCost;
+		best[5] = Tunables.FeetOnTheGroundBonus;
+		best[6] = Tunables.MaxBreadth;
+		best[7] = Tunables.HurtCost;
 		
 		float[] settings = new float[best.length];
 		for (int i = 0; i<best.length; ++i)
@@ -52,10 +52,9 @@ public class TweakRunner {
 			Tunables.FactorC = settings[2];
 			Tunables.GIncrement = settings[3];
 			Tunables.DeadCost = settings[4];
-			Tunables.ChasmPenalty = settings[5];
-			Tunables.FeetOnTheGroundBonus = settings[6];
-			Tunables.MaxBreadth = (int)settings[7];
-			Tunables.HurtCost = settings[8];
+			Tunables.FeetOnTheGroundBonus = settings[5];
+			Tunables.MaxBreadth = (int)settings[6];
+			Tunables.HurtCost = settings[7];
 			float score;
 			if (Tunables.MaxBreadth >= 2)
 				score = DoRun();
@@ -95,12 +94,14 @@ public class TweakRunner {
 	
 	private static float DoRun()
 	{
+			return(float)CompetitionScore.score(new BestFirstAgent(), 0);
+			/*
 //		float min = 1e10f;
 		float sum = 0;
-		int c = 10;
+		int c = 20;
 		for (int i = 0; i< c; ++i)
 		{
-			float r = Run(i, 20, 200);
+			//float r = Run(i, 20, 200);
 //			min = Math.min(r, min);
 			if (r < 0)
 				return -1;
@@ -108,7 +109,7 @@ public class TweakRunner {
 		}
 		return
 //			 (min) +
-			 	 (sum / c);
+			 	 (sum / c);*/
 	}
 	
 	private static float Run(int seed, int difficulty, int length)
@@ -124,8 +125,8 @@ public class TweakRunner {
 		EvaluationOptions options = new CmdLineOptions(new String[0]);
 		options.setAgent(controller);
 		Task task = new ProgressPlusTimeLeftTask(options);
-		options.setMaxFPS(false);
-		options.setVisualization(true);
+		options.setMaxFPS(true);
+		options.setVisualization(false);
 		options.setMaxAttempts(1);
 		options.setMatlabFileName("");
 		options.setLevelLength(length);

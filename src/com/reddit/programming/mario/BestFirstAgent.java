@@ -10,9 +10,10 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 	private static final int maxSteps = 500;
 
 	public BestFirstAgent() {
-		super("BestFirstAgent");
+		super("Tuned BestFirstAgent");
 	}
 
+	@Override
 	public void reset() {
 		super.reset();
 		pq = new PrioQ(Tunables.MaxBreadth);
@@ -29,6 +30,8 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 		initialState.ws = ws;
 		initialState.g = 0;
 		initialState.dead = false;
+		
+		float threshold = 1e10f;
 
 		initialState.cost = cost(initialState, initialState);
 
@@ -50,6 +53,8 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 		// FIXME: instead of using a hardcoded number of iterations,
 		// periodically grab the system millisecond clock and terminate the
 		// search after ~40ms
+		boolean goalFound = false;
+		int pq_siz=0;
 		for(n=0;n<maxSteps && !pq.isEmpty();n++) {
 			MarioState next = pq.poll();
 
@@ -69,46 +74,26 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 				MarioState ms = next.next(a, next.ws);
 				ms.pred = next;
 
-				if(ms.dead)
-					continue;
+				if(ms.dead) continue;
 
 				float h = cost(ms, initialState);
 				ms.g = next.g + Tunables.GIncrement;
 				ms.cost = ms.g + h + ((a/MarioState.ACT_JUMP)>0?Tunables.FeetOnTheGroundBonus:0);
 
-				if (h < 0.1f)
-					return ms.root_action;
-				/*
-				if(h < 0.1f) {
-					pq.clear();
-					if(verbose1) {
-						System.out.printf("BestFirst: searched %d iterations (%d states); best a=%d cost=%f lookahead=%f\n", 
-								n, pq_siz, ms.root_action, ms.cost, ms.g);
-					}
-					MarioState s;
-					if(GlobalOptions.MarioPosSize > 400-46)
-						GlobalOptions.MarioPosSize = 400-46;
-					if (drawPath)
-					{
-						DebugPolyLine line2 = new DebugPolyLine(Color.YELLOW);
-						for(s = ms;s != initialState;s = s.pred) {
-							if(verbose2) {
-								System.out.printf("state %d: ", (int)s.g);
-								s.print();
-							}
-							// green line shows taken path
-							line2.AddPoint(s.x, s.y);
-							line2.AddPoint(s.pred.x, s.pred.y);
-							//addLine(s.x, s.y, s.pred.x, s.pred.y, 0x00ff00);
-						}
-						GlobalOptions.MarioLines.PushFront(line2);
-						}
-					Tunables.PathFound++;
-					return ms.root_action;
-				}
-				*/
-				pq.offer(ms);
 				bestfound = marioMin(ms,bestfound);
+
+				if (h < 0.1f)
+				{
+					if (!goalFound)
+						Tunables.PathFound++;
+					goalFound = true;
+					if (h < threshold)
+						threshold = h;
+					continue;
+				}				
+				if (ms.cost < threshold)
+					pq.offer(ms);
+				pq_siz++;
 			}
 			if (drawPath)
 				GlobalOptions.MarioLines.Push(line1);
@@ -116,14 +101,12 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 
 		if (!pq.isEmpty())
 			bestfound = marioMin(pq.poll(), bestfound);
-		if(verbose1) {
+		if(verbose2) {
 			System.out.printf("BestFirst: giving up on search; best root_action=%d cost=%f lookahead=%f\n",
 					bestfound.root_action, bestfound.cost, bestfound.g);
 		}
 		// return best so far
 		pq.clear();
 		return bestfound.root_action;
-
 	}
-	
 }

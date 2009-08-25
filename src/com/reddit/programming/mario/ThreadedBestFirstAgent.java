@@ -39,6 +39,7 @@ public class ThreadedBestFirstAgent extends HeuristicSearchingAgent implements A
 		}
 		return pq;
 	}
+	
 	protected final void initializeSearchers(MarioState initialState, WorldState ws, Object notificationObject) {
 		PrioQ pq = getInitialPriorityQueue(initialState, ws);
 		PrioQ[] pqs = new PrioQ[searchers.length];
