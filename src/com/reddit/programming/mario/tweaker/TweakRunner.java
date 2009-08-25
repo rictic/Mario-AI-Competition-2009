@@ -34,7 +34,7 @@ public class TweakRunner {
 		for (int i = 0; i<best.length; ++i)
 			settings[i] = best[i];
 			
-		int parameter = -1;
+		int parameter = 6;
 
 		float bestScore = -1e10f;		
 			
