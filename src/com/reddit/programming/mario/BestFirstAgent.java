@@ -9,7 +9,7 @@ import ch.idsia.mario.engine.GlobalOptions;
 public final class BestFirstAgent extends HeuristicSearchingAgent implements Agent
 {
 	private PrioQ pq;
-	private static final int maxSteps = 500;
+	private static final int maxSteps = 1000;
 
 	public BestFirstAgent() {
 		super("BestFirstAgent");

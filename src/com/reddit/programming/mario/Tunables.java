@@ -8,7 +8,7 @@ public class Tunables {
 	public static float GIncrement = 1f;
 	public static float DeadCost = 100000f;
 	public static float FeetOnTheGroundBonus = 0f;
-	public static int MaxBreadth = 50;
+	public static int MaxBreadth = 33;
 	public static float HurtCost = 5f;
 
 	public static float PathFound = 0;
