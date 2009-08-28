@@ -113,5 +113,19 @@ final class MarioMath {
 		return (float) Math.sqrt(dx*dx + dy*dy);
 	}
 
+	// can mario reach a ledge from his current jump trajectory
+	public static boolean canReachLedge(float x0, float xa, 
+			int apogeesteps, float apogeey, float x1, float y1) {
+		// how long will it take us to get from x0 to x1 at our current speed,
+		// regardless of the jump?
+		float nsteps = stepsToRun(x1-x0, xa);
+
+		// how far will we fall in that time?
+		float ya = 2.8045f; // after a full height jump, mario's ya will be 2.8045 at the apogee
+		float y = apogeey - fallDistance(ya, nsteps-apogeesteps);
+
+		// do we end up higher than the ledge at that point?  if so, we can make it.
+		return y <= y1;
+	}
 }
 

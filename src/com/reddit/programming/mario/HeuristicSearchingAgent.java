@@ -45,6 +45,7 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 			return Float.POSITIVE_INFINITY;
 
 		int MarioX = (int)s.x/16 - s.ws.MapX;
+		int MarioY = (int)s.y/16 - s.ws.MapY;
 		int goal = 21;
 		float fgoalX = (goal+s.ws.MapX)*16+8;
 		float xsteps = MarioMath.stepsToRun(fgoalX - s.x, s.xa);
@@ -78,10 +79,9 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 		float fLedgeY = (ledgeY+s.ws.MapY)*16 - 1;
 		float fLedgeX = (ledgeX+s.ws.MapX)*16 - 4;
 
-
 		if(s.onGround) {
 			if(s.y <= fLedgeY)
-				return MarioMath.stepsToRun(fgoalX - s.x, s.xa);
+				return xsteps;
 			else {
 				float sj = MarioMath.stepsToJump(s.y - fLedgeY);
 				float sr1 = MarioMath.stepsToRun(fLedgeX - s.x, s.xa);
@@ -93,60 +93,39 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 			// we're in the air.  okay, how far left and right can we possibly land?
 			MarioState l = s.clone(), r = s.clone();
 			// save x and y at apogee
-			float jMinY = l.y, jMinX = l.x, jMaxX = r.x;
-			int stepsTop=0;
-			int stepsy=0;
+			float apogeey = l.y;
+			int apogeesteps=0;
 			int stepsL=0, stepsR=0;
 			while(!l.dead && !l.onGround) {
 				l.move(MarioState.ACT_SPEED | MarioState.ACT_LEFT | MarioState.ACT_JUMP);
 				stepsL++;
-				if(l.y < jMinY) {
-					jMinY = l.y;
-					jMinX = l.x;
-					stepsTop = stepsL;
-				}
 			}
 			while(!r.dead && !r.onGround) {
 				r.move(MarioState.ACT_SPEED | MarioState.ACT_RIGHT | MarioState.ACT_JUMP);
 				stepsR++;
-				if(r.y <= jMinY) {
+				if(r.y <= apogeey) {
 					// if we have an unobstructed path to the right then this
 					// should happen exactly once
-					jMinY = r.y;
-					jMaxX = r.x;
-					stepsTop = stepsR;
+					apogeey = r.y;
+					apogeesteps = stepsR;
 				}
 			}
 			if(r.dead && l.dead) // we're dead no matter what!  forget it!
 				return Float.POSITIVE_INFINITY;
 
-			// tried a bunch of advanced shit below, but just doing the
-			// on-ground case here again seems to work great.
-			if(s.y <= fLedgeY)
-				return MarioMath.stepsToRun(fgoalX - s.x, s.xa);
-			else {
-				float sj = MarioMath.stepsToJump(s.y - fLedgeY);
-				float sr1 = MarioMath.stepsToRun(fLedgeX - s.x, s.xa);
-				float sr2 = MarioMath.stepsToRun(fgoalX - fLedgeX, s.xa);
-				// (this assumes we can reach the ledge from our current location..)
-				return Math.max(sj,sr1) + sr2;
-			}
-
-			/*
-			// okay, now, can we surmount the highest obstacle in this jump?
-			// if so, then we're golden.
-			if(jMinY <= fLedgeY) {
-				return Math.max(Math.min(stepsL, stepsR),
-								MarioMath.stepsToRun(fgoalX - s.x, s.xa));
+			// okay, now, can we surmount the highest obstacle in our current jump?
+			if(MarioMath.canReachLedge(s.x, s.xa, apogeesteps, apogeey, fLedgeX, fLedgeY)) {
+				// if so, then we're golden; just jump and run right.
+				return xsteps;
 			} else { // if not, we have to land, then jump over it.
 				// search the heightmap between the left and right landings for
-				// the highest perch we can reach
+				// the highest perch we can land on
 				int perchX=0, perchY=22;
 				for(float i=l.x;i<=r.x;i+=16) {
 					int idx = (int)i/16 - s.ws.MapX;
 					if(idx<0 || idx>=22)
 						continue;
-					if(s.ws.heightmap[idx] < perchY) { // look for leftmost edge
+					if(s.ws.heightmap[idx] < perchY && s.ws.heightmap[idx] >= MarioY) { // look for leftmost edge
 						perchX = idx;
 						perchY = s.ws.heightmap[idx];
 					}
@@ -155,22 +134,15 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 				float landy = (perchY+s.ws.MapY)*16 - 1;
 				float landx = (perchX+s.ws.MapX)*16 - 4;
 				// are we already above the landing?
-				if(s.y <= landy) {
-					// if so, then figure out how much time it takes to land,
-					// jump to the next ledge, and then run right
-					return MarioMath.stepsToFall(landy - s.y, s.ya) +
-						MarioMath.stepsToJump(fLedgeY - landy) +
-						MarioMath.stepsToRun(fgoalX - fLedgeX, s.xa);
-				} else {
-					// ok, we need to reach apogee first, then land, then jump,
-					// then run.
-					return stepsTop +
-						MarioMath.stepsToFall(landy - jMinY, 0) +
-						MarioMath.stepsToJump(fLedgeY - landy) +
-						MarioMath.stepsToRun(fgoalX - fLedgeX, s.xa);
-				}
+				//if(s.y <= landy) { this should always be true
+				// if so, then figure out how much time it takes to land,
+				// jump to the next ledge, and then run right
+				float sf = MarioMath.stepsToFall(landy - s.y, s.ya);
+				float sj = MarioMath.stepsToJump(fLedgeY - landy);
+				float sr1 = MarioMath.stepsToRun(fLedgeX - s.x, s.xa);
+				float sr2 = MarioMath.stepsToRun(fgoalX - fLedgeX, s.xa);
+				return Math.max(sf+sj, sr1) + sr2;
 			}
-			*/
 		}
 
 		// unreachable
