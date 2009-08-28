@@ -19,6 +19,7 @@ public class EnemyState extends SpriteState
 		e.facing = facing;
 		e.deadTime = deadTime;
 		e.flyDeath = flyDeath;
+		e.onGround = onGround;
 		return e;
 	}
 
@@ -243,7 +244,7 @@ public class EnemyState extends SpriteState
     }
 
 	@Override
-	public SpriteState stomp(WorldState ws) {
+	public SpriteState stomp(WorldState ws, MarioState ms) {
 		EnemyState e = (EnemyState) clone();
 		if(e.winged()) {
 			e.type--;
@@ -278,20 +279,17 @@ public class EnemyState extends SpriteState
 		return ws;
 	}
 
-
 	/*
-
-	// TODO
-    public boolean shellCollideCheck(Shell shell)
+    public SpriteState shellCollideCheck(ShellState shell)
     {
-        if (deadTime != 0) return false;
+        if (deadTime != 0) return this;
 
         float xD = shell.x - x;
         float yD = shell.y - y;
 
         if (xD > -16 && xD < 16)
         {
-            if (yD > -height() && yD < shell.height)
+            if (yD > -height() && yD < shell.height())
             {
                 xa = shell.facing * 2;
                 ya = -5;
@@ -354,6 +352,5 @@ public class EnemyState extends SpriteState
         }
     }
 */
-
 }
 

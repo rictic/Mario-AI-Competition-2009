@@ -9,7 +9,7 @@ import ch.idsia.mario.engine.GlobalOptions;
 public final class BestFirstAgent extends HeuristicSearchingAgent implements Agent
 {
 	private PriorityQueue<MarioState> pq, pq2;
-	private static final int maxBreadth = 53;
+	private static final int maxBreadth = 63;
 	private static final int maxSteps = 1000;
 
 	public BestFirstAgent() {
@@ -80,7 +80,6 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 				if(ms.dead) continue;
 
 				float h = cost(ms, initialState);
-				ms.g = next.g + 1;
 				ms.cost = ms.g + h;// + ((a/MarioState.ACT_JUMP)>0?0.0001f:0);
 				if(h < 0.1f) {
 					pq.clear();

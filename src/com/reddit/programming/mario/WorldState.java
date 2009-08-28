@@ -276,7 +276,7 @@ public final class WorldState
 		// clone us, and clone e, and splice e in the array
 		WorldState ws = clone();
 		ws.enemies = (Vector)enemies.clone();
-		ws.enemies.set(ws.enemies.indexOf(e), e.stomp(this));
+		ws.enemies.set(ws.enemies.indexOf(e), e.stomp(this, ms));
 		return ws;
 	}
 
@@ -293,5 +293,13 @@ public final class WorldState
 		return this;
 	}
 
+	// this is destructive, done during interact(), unlike bump and stomp
+	// (which are mario-initiated actions)
+	final void checkShellCollide(ShellState s) {
+		// FIXME
+	}
+
+	final void kick(ShellState s) {
+	}
 }
 

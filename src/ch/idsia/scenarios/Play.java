@@ -25,7 +25,7 @@ import com.reddit.programming.mario.BestFirstAgent;
 public class Play {
 
 	public static void main(String[] args) {
-		int seed = 30;//(int) (Math.random () * Integer.MAX_VALUE);
+		int seed = (int) (Math.random () * Integer.MAX_VALUE);
 		int difficulty = 15;
 		int length = 1500;
 		

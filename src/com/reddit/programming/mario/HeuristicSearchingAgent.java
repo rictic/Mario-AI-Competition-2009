@@ -40,7 +40,7 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 	}
 
 	private static final float lookaheadDist = 9*16;
-	protected float cost(MarioState s, MarioState initial) {
+	protected final float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
 

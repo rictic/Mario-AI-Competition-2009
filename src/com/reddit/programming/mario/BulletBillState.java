@@ -63,7 +63,7 @@ public final class BulletBillState extends SpriteState
 	}
 
 	@Override
-	public SpriteState stomp(WorldState ws) {
+	public SpriteState stomp(WorldState ws, MarioState ms) {
 		BulletBillState e = (BulletBillState) clone();
 		e.xa = 0;
 		e.ya = 1;

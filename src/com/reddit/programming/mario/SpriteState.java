@@ -19,7 +19,9 @@ public class SpriteState
     public WorldState collideCheck(WorldState ws, MarioState ms) { return ws; }
 
 	// you may destructively update ws here as it's fresh for the purpose of this stomp
-	public SpriteState stomp(WorldState ws) { return this; }
+	public SpriteState stomp(WorldState ws, MarioState ms) { return this; }
+    public SpriteState shellCollideCheck(ShellState shell) { return this; }
+    public SpriteState bumpCheck(int xTile, int yTile, MarioState ms) { return this; }
 
 	static public SpriteState newEnemy(float x, float y, int type, MarioState ms) {
 		switch(type) {
@@ -27,10 +29,10 @@ public class SpriteState
 				return new BulletBillState(x,y, ms);
 			case KIND_FLOWER_ENEMY:
 				return new FlowerEnemyState(x,y);
-			case KIND_SHELL:
-				return null;
 			case KIND_MUSHROOM:
 				return null;
+			case KIND_SHELL:
+				return new ShellState(x,y);
 		}
 		return new EnemyState(x,y,type);
 	}
