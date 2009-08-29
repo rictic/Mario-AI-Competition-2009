@@ -4,7 +4,6 @@ public final class FlowerEnemyState extends EnemyState
 {
 	// we need to simulate enemy death, too, cuz it doesn't tell us whether
 	// we're looking at dead enemies
-	public int deadTime = 0;
 	public int jumpTime = 0;
 	public int yStart = 200;
 

@@ -10,7 +10,7 @@ public final class WorldState
 	public int MapX, MapY;
 
 	// List of currently known enemies; maintained sorted by x coordinate
-	public Vector<SpriteState> enemies;
+	public Vector<SpriteState> enemies, addqueue;
 
 	WorldState pred = null;
 	HashMap<WSHashKey, WorldState> succ; // successor map
@@ -68,6 +68,7 @@ public final class WorldState
 		w.heightmap = heightmap;
 		w.succ = new HashMap<WSHashKey, WorldState>();
 		w.enemies = enemies; // share enemies vector by default
+		w.addqueue = addqueue;
 		return w;
 	}
 
@@ -194,11 +195,8 @@ public final class WorldState
 		ws.enemies = newenemies;
 		if(HeuristicSearchingAgent.verbose2) {
 			for(SpriteState s : ws.enemies) {
-				if(s instanceof EnemyState) {
-					EnemyState e = (EnemyState)s;
-					System.out.printf("-> e t=%d xy=%f,%f xaya=%f,%f deadTime=%d\n",
-							e.type, e.x,e.y, e.xa,e.ya, e.deadTime);
-				}
+				System.out.printf("-> e t=%d xy=%f,%f xaya=%f,%f deadTime=%d\n",
+						s.type, s.x,s.y, s.xa,s.ya, s.deadTime);
 			}
 		}
 
@@ -223,15 +221,22 @@ public final class WorldState
 	// WorldState
 	public WorldState interact(MarioState ms) {
 		WorldState ws = this;
+		ws.addqueue = new Vector<SpriteState>();
 		for(SpriteState e : enemies) {
-			// if it's a shell or fireball, then skip it
-			if(e.type >= SpriteState.KIND_SHELL)
-				continue;
 			ws = e.collideCheck(ws, ms);
 		}
-		// TODO: now do the shells
+		// TODO: now do shell collision checks
 		// TODO: now do the fireballs
+		// now bring in the added stuff
+		ws.enemies.addAll(ws.addqueue);
+		ws.addqueue = null;
 		return ws;
+	}
+
+	public void addShell(float x, float y) {
+		ShellState s = new ShellState(x,y);
+		s.move(this);
+		addqueue.add(s);
 	}
 
 	//////////////////////////////////////////////

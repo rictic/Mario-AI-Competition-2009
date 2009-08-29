@@ -15,8 +15,8 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 	protected int[] marioPosition = null;
 	protected Sensors sensors = new Sensors();
 	
-	public static final boolean verbose1 = false;
-	public static final boolean verbose2 = false;
+	public static final boolean verbose1 = true;
+	public static final boolean verbose2 = true;
 	protected static final boolean drawPath = true;
 	// enable to single-step with the enter key on stdin
 	protected static final boolean stdinSingleStep = false;
@@ -75,6 +75,7 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 				ledgeX = i;
 			}
 		}
+
 		// fLedgeX,Y is mario's leftmost location atop highest ledge in front of us
 		float fLedgeY = (ledgeY+s.ws.MapY)*16 - 1;
 		float fLedgeX = (ledgeX+s.ws.MapX)*16 - 4;
@@ -137,7 +138,7 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 				//if(s.y <= landy) { this should always be true
 				// if so, then figure out how much time it takes to land,
 				// jump to the next ledge, and then run right
-				float sf = MarioMath.stepsToFall(landy - s.y, s.ya);
+				float sf = 0; //MarioMath.stepsToFall(landy - s.y, s.ya);
 				float sj = MarioMath.stepsToJump(fLedgeY - landy);
 				float sr1 = MarioMath.stepsToRun(fLedgeX - s.x, s.xa);
 				float sr2 = MarioMath.stepsToRun(fgoalX - fLedgeX, s.xa);

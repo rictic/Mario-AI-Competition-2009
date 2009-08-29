@@ -6,6 +6,7 @@ public class SpriteState
 	static final float DAMPING_Y = 0.85f;
 	public int facing = 1;
 	public int type = -1;
+	public int deadTime = 0;
 	public boolean onGround = false; // standing on ground
 	public float x,y,xa = 0, ya = 0;
 	public float height() { return -1; }

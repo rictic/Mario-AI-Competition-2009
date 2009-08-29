@@ -72,14 +72,14 @@ public final class MarioState extends SpriteState
 				n.ws = ws;
 				n.move(action);
 				n.ws = n.ws.step();
-				n.ws = n.ws.interact(n);
+				n.ws = n.ws.interact(n, false);
 			}
 		} else {
 			n.g = g + 1;
 			n.ws = ws;
 			n.move(action);
 			n.ws = n.ws.step();
-			n.ws = n.ws.interact(n);
+			n.ws = n.ws.interact(n, false);
 		}
 
 		return n;
