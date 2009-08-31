@@ -43,6 +43,8 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 	protected final float cost(MarioState s, MarioState initial) {
 		if(s.dead)
 			return Float.POSITIVE_INFINITY;
+		if(s.hurt)
+			return 1000;
 
 		int MarioX = (int)s.x/16 - s.ws.MapX;
 		int MarioY = (int)s.y/16 - s.ws.MapY;
@@ -236,9 +238,10 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 					return action;
 				}
 				if(verbose1) {
+					float diff = Math.abs(ms.x-mpos[0]) + Math.abs(ms.y-mpos[1]);
 					System.out.printf("mario state mismatch (%f,%f) -> (%f,%f); attempting resync\n",
 							ms.x,ms.y, mpos[0], mpos[1]);
-					if(!stdinSingleStep) try {
+					if(!stdinSingleStep && diff > 0.01f) try {
 						System.in.read();
 					} catch(IOException e) {}
 				}
@@ -305,6 +308,8 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 		// if there *was* a collision and xa,ya are wrong, they probably will
 		// be corrected by each call next()
 		if(ms_prev != null) {
+			// we may have stepped on a turtle or something though, in which
+			// case the following just fucks us up
 			ms.xa = (ms.x - ms_prev.x) * 0.89f;
 			ms.ya = (ms.y - ms_prev.y) * 0.85f;
 		}

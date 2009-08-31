@@ -268,7 +268,7 @@ public class EnemyState extends SpriteState
 		float height = this.height();
 		if (xMarioD > -width*2-4 && xMarioD < width*2+4) {
 			if (yMarioD > -height && yMarioD < ms.height()) {
-				if (!spiky() && ms.ya > 0 && yMarioD <= 0 && (!ms.onGround || !ms.wasOnGround)) {
+				if ((!spiky()) && ms.ya > 0 && yMarioD <= 0 && (!ms.onGround || !ms.wasOnGround)) {
 					ws = ws.stomp(this, ms);
 				} else {
 					ms.getHurt();

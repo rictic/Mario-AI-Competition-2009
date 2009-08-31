@@ -8,6 +8,7 @@ public final class MarioState extends SpriteState
 		   invulnerableTime = 0;
 	public boolean big = true,  // mario is big
 		   dead = false, // yep
+		   hurt = false, // ow
 		   fire = true, // mario can throw fireballs
 		   wasOnGround = false, // previous frame (used for stomping logic)
 		   mayJump = true,  // yep
@@ -48,6 +49,7 @@ public final class MarioState extends SpriteState
 		n.facing = facing; n.jumpTime = jumpTime;
 		n.big = big; n.fire = fire;
 		n.dead = dead;
+		n.hurt = false;
 		n.onGround = onGround;
 		n.wasOnGround = onGround;
 		n.mayJump = mayJump;
@@ -71,15 +73,19 @@ public final class MarioState extends SpriteState
 				n.g = g + 1;
 				n.ws = ws;
 				n.move(action);
-				n.ws = n.ws.step();
-				n.ws = n.ws.interact(n, false);
+				if(!hurt) {
+					n.ws = n.ws.step();
+					n.ws = n.ws.interact(n, false);
+				}
 			}
 		} else {
 			n.g = g + 1;
 			n.ws = ws;
 			n.move(action);
-			n.ws = n.ws.step();
-			n.ws = n.ws.interact(n, false);
+			if(!hurt) {
+				n.ws = n.ws.step();
+				n.ws = n.ws.interact(n, false);
+			}
 		}
 
 		return n;
@@ -332,8 +338,7 @@ public final class MarioState extends SpriteState
 			dead = true;
 		}
 
-		// hack: add death cost, even if we don't die
-		dead = true;
+		hurt = true;
 	}
 	
 	public int marioMode() {

@@ -174,13 +174,19 @@ public final class WorldState
 				closest = SpriteState.newEnemy(eobs.x, eobs.y, eobs.type, ms);
 			} else {
 				if(closestdist != 0) {
-					SpriteState prev = oldenemies.get(closest_idx);
-					if(HeuristicSearchingAgent.verbose2) {
-						System.out.printf("enemy t=%d sync problem: %f,%f -> %f,%f; delta=%f,%f\n",
-								eobs.type, closest.x, closest.y, eobs.x, eobs.y,
-								eobs.x-prev.x, eobs.y-prev.y);
+					if(closest_idx >= oldenemies.size()) {
+						// if this was newly created but incorrectly i guess we
+						// have to force a recreation
+						closest = SpriteState.newEnemy(eobs.x, eobs.y, eobs.type, ms);
+					} else {
+						SpriteState prev = oldenemies.get(closest_idx);
+						if(HeuristicSearchingAgent.verbose2) {
+							System.out.printf("enemy t=%d sync problem: %f,%f -> %f,%f; delta=%f,%f\n",
+									eobs.type, closest.x, closest.y, eobs.x, eobs.y,
+									eobs.x-prev.x, eobs.y-prev.y);
+						}
+						closest.resync(eobs.x, eobs.y, prev.x, prev.y);
 					}
-					closest.resync(eobs.x, eobs.y, prev.x, prev.y);
 				}
 			}
 			if(closest != null)
