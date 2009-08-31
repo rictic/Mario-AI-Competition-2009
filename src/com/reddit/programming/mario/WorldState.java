@@ -57,7 +57,7 @@ public final class WorldState
 		succ = new HashMap<WSHashKey, WorldState>();
 		enemies = new Vector<SpriteState>();
 		buildHeightMap();
-		syncEnemies(enemyPosition, ms);
+		syncEnemies(this, enemyPosition, ms);
 	}
 
 	WorldState() {}
@@ -86,13 +86,13 @@ public final class WorldState
 	}
 
 	// destructive update, but returns new worldstate.  bleh, it's a mess.
-	public WorldState update(byte[][] _map, MarioState ms, float[] enemyPosition) {
+	public void sync(WorldState prevws, byte[][] _map, MarioState ms, float[] enemyPosition) {
 		map = _map;
 		MapX = (int)ms.x/16 - 11;
 		MapY = (int)ms.y/16 - 11;
 		buildHeightMap();
 		succ.clear();
-		return syncEnemies(enemyPosition, ms);
+		syncEnemies(prevws, enemyPosition, ms);
 	}
 
 	void buildHeightMap() {
@@ -136,7 +136,7 @@ public final class WorldState
 	}
 
 	// this function is terrible and slow, but it only needs to be done once per real frame.
-	public WorldState syncEnemies(float[] enemyObs, MarioState ms) {
+	public void syncEnemies(WorldState prevws, float[] enemyObs, MarioState ms) {
 		// when we get a new observation, sort the observation by x and filter
 		// through the list, using the nearest enemy of the same type and comparing
 		// predicted states with actual
@@ -144,22 +144,16 @@ public final class WorldState
 		for(int i=0;i<enemyObs.length;i+=3)
 			obs[i/3] = new EnemyObservation((int)enemyObs[i], enemyObs[i+1], enemyObs[i+2]);
 
-		// TODO: make this one pass, left-to-right, sorted ascending x
-//		Arrays.sort(obs);
-
-		// step the world (and interact with mario)
-		WorldState ws = step();
-		ws = ws.interact(ms);
-		Vector<SpriteState> newenemies = new Vector<SpriteState>(ws.enemies.size()+2);
-		Vector<SpriteState> oldenemies = enemies;
+		Vector<SpriteState> newenemies = new Vector<SpriteState>(enemies.size()+2);
+		Vector<SpriteState> oldenemies = prevws.enemies;
 
 		// merge enemy observations into our internal enemy array
 		for(EnemyObservation eobs : obs) {
 			SpriteState closest = null;
 			float closestdist=Float.POSITIVE_INFINITY;
 			int closest_idx = 0;
-			for(int i=0;i<ws.enemies.size();i++) {
-				SpriteState s = ws.enemies.get(i);
+			for(int i=0;i<enemies.size();i++) {
+				SpriteState s = enemies.get(i);
 				if(s.type != eobs.type)
 					continue;
 				float ex = s.x - eobs.x;
@@ -171,7 +165,7 @@ public final class WorldState
 					closest_idx = i;
 				}
 			}
-			if(closest==null || closestdist > 16) { // allow a slop of 4 pixels (4^2 = 16)
+			if(closest==null || closestdist > 64) { // allow a slop of 8 pixels
 				// assume new enemy
 				if(HeuristicSearchingAgent.verbose2) {
 					System.out.printf("new enemy @%f,%f type %d\n",
@@ -192,15 +186,13 @@ public final class WorldState
 			if(closest != null)
 				newenemies.add(closest);
 		}
-		ws.enemies = newenemies;
+		enemies = newenemies;
 		if(HeuristicSearchingAgent.verbose2) {
-			for(SpriteState s : ws.enemies) {
+			for(SpriteState s : enemies) {
 				System.out.printf("-> e t=%d xy=%f,%f xaya=%f,%f deadTime=%d\n",
 						s.type, s.x,s.y, s.xa,s.ya, s.deadTime);
 			}
 		}
-
-		return ws;
 	}
 
 	public void stepEnemies() {
@@ -219,22 +211,30 @@ public final class WorldState
 	// interact with mario after everyone does their move step
 	// destructively updates MarioState, but non-destructively returns updated
 	// WorldState
-	public WorldState interact(MarioState ms) {
+	public WorldState interact(MarioState ms, boolean verbose) {
 		WorldState ws = this;
 		ws.addqueue = new Vector<SpriteState>();
-		for(SpriteState e : enemies) {
-			ws = e.collideCheck(ws, ms);
+		int i;
+		if(verbose) System.out.printf("--interact\n");
+		for(i=0;i<ws.enemies.size();i++) {
+			ws = ws.enemies.get(i).collideCheck(ws, ms);
 		}
 		// TODO: now do shell collision checks
 		// TODO: now do the fireballs
 		// now bring in the added stuff
-		ws.enemies.addAll(ws.addqueue);
+		for(SpriteState s : ws.addqueue) {
+			if(verbose) {
+				System.out.printf("interact: new e t=%d xy=%f,%f xaya=%f,%f deadTime=%d\n",
+						s.type, s.x,s.y, s.xa,s.ya, s.deadTime);
+			}
+			ws.enemies.add(s);
+		}
 		ws.addqueue = null;
 		return ws;
 	}
 
 	public void addShell(float x, float y) {
-		ShellState s = new ShellState(x,y);
+		ShellState s = new ShellState(x,y, true);
 		s.move(this);
 		addqueue.add(s);
 	}

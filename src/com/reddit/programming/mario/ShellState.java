@@ -14,7 +14,7 @@ public class ShellState extends SpriteState
 
 	@Override
 	public SpriteState clone() {
-		ShellState e = new ShellState(x,y);
+		ShellState e = new ShellState(x,y,false);
 		e.xa = xa; e.ya = ya;
 		e.facing = facing;
 		e.deadTime = deadTime;
@@ -27,10 +27,10 @@ public class ShellState extends SpriteState
 	@Override
 	public final boolean dead() { return deadTime != 0; }
 
-	ShellState(float _x, float _y) {
+	ShellState(float _x, float _y, boolean predicted) {
 		x=_x; y=_y; type=KIND_SHELL;
 		xa = 0;
-		ya = -5;
+		ya = predicted ? -5 : -2.25f;
         facing = 0;
     }
 

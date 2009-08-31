@@ -10,7 +10,7 @@ public final class BestFirstAgent extends HeuristicSearchingAgent implements Age
 {
 	private PriorityQueue<MarioState> pq, pq2;
 	private static final int maxBreadth = 63;
-	private static final int maxSteps = 1000;
+	private static final int maxSteps = 500;
 
 	public BestFirstAgent() {
 		super("BestFirstAgent");

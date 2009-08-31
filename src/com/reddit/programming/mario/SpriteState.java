@@ -33,7 +33,7 @@ public class SpriteState
 			case KIND_MUSHROOM:
 				return null;
 			case KIND_SHELL:
-				return new ShellState(x,y);
+				return new ShellState(x,y, false);
 		}
 		return new EnemyState(x,y,type);
 	}

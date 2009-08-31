@@ -222,8 +222,6 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 			ms = new MarioState(mpos[0], mpos[1], 0.0f, 3.0f);
 			ws = new WorldState(sensors.levelScene, ms, observation.getEnemiesFloatPos());
 		} else {
-			ws = ws.update(sensors.levelScene, ms, observation.getEnemiesFloatPos());
-
 			//System.out.println(String.format("mario x,y=(%5.1f,%5.1f)", mpos[0], mpos[1]));
 			if(mpos[0] != pred_x || mpos[1] != pred_y) {
 				// generally this shouldn't happen, unless we mispredict
@@ -246,6 +244,8 @@ public class HeuristicSearchingAgent extends RegisterableAgent implements Agent
 				}
 				resync(observation);
 			}
+			ms.ws.sync(ws, sensors.levelScene, ms, observation.getEnemiesFloatPos());
+			ws = ms.ws;
 		}
 		// resync these things all the time
 		ms.mayJump = observation.mayMarioJump();
